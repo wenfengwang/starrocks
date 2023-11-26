@@ -1,0 +1,106 @@
+---
+displayed_sidebar: "Japanese"
+---
+
+# bitmap_to_base64
+
+## 説明
+
+ビットマップをBase64エンコードされた文字列に変換します。この関数はv2.5からサポートされています。
+
+## 構文
+
+```Haskell
+VARCHAR bitmap_to_base64(BITMAP bitmap)
+```
+
+## パラメーター
+
+`bitmap`: 変換するビットマップです。このパラメーターは必須です。入力値が無効な場合、エラーが返されます。
+
+## 戻り値
+
+VARCHAR型の値を返します。
+
+## 例
+
+例1: 他のビットマップ関数とともにこの関数を使用します。
+
+```Plain
+select bitmap_to_base64(bitmap_from_string("0, 1, 2, 3"));
++----------------------------------------------------+
+| bitmap_to_base64(bitmap_from_string('0, 1, 2, 3')) |
++----------------------------------------------------+
+| AjowAAABAAAAAAADABAAAAAAAAEAAgADAA==               |
++----------------------------------------------------+
+1 行が返されました (0.00 秒)
+
+
+select bitmap_to_base64(to_bitmap(1));
++--------------------------------+
+| bitmap_to_base64(to_bitmap(1)) |
++--------------------------------+
+| AQEAAAA=                       |
++--------------------------------+
+1 行が返されました (0.00 秒)
+
+
+select bitmap_to_base64(bitmap_empty());
++----------------------------------+
+| bitmap_to_base64(bitmap_empty()) |
++----------------------------------+
+| AA==                             |
++----------------------------------+
+1 行が返されました (0.00 秒)
+```
+
+例2: BITMAP列の各値をBase64エンコードされた文字列に変換します。
+
+1. `page_id`と`visit_date`を`AGGREGATE KEY`とする集計テーブル`page_uv`を作成します。このテーブルには変換されるべきBITMAP列`visit_users`が含まれています。
+
+    ```SQL
+        CREATE TABLE `page_uv`
+        (`page_id` INT NOT NULL,
+        `visit_date` datetime NOT NULL,
+        `visit_users` BITMAP BITMAP_UNION NOT NULL
+        ) ENGINE=OLAP
+        AGGREGATE KEY(`page_id`, `visit_date`)
+        DISTRIBUTED BY HASH(`page_id`)
+        PROPERTIES (
+        "replication_num" = "3",
+        "storage_format" = "DEFAULT"
+        );
+    ```
+
+2. このテーブルにデータを挿入します。
+
+    ```SQL
+      insert into page_uv values
+      (1, '2020-06-23 01:30:30', to_bitmap(13)),
+      (1, '2020-06-23 01:30:30', to_bitmap(23)),
+      (1, '2020-06-23 01:30:30', to_bitmap(33)),
+      (1, '2020-06-23 02:30:30', to_bitmap(13)),
+      (2, '2020-06-23 01:30:30', to_bitmap(23));
+      
+      select * from page_uv order by page_id;
+      +---------+---------------------+-------------+
+      | page_id | visit_date          | visit_users |
+      +---------+---------------------+-------------+
+      |       1 | 2020-06-23 01:30:30 | NULL        |
+      |       1 | 2020-06-23 02:30:30 | NULL        |
+      |       2 | 2020-06-23 01:30:30 | NULL        |
+      +---------+---------------------+-------------+
+    ```
+
+3. `visit_users`列の各値をBase64エンコードされた文字列に変換します。
+
+    ```Plain
+      select page_id, bitmap_to_base64(visit_users) from page_uv;
+      +---------+------------------------------------------+
+      | page_id | bitmap_to_base64(visit_users)            |
+      +---------+------------------------------------------+
+      |       1 | CgMAAAANAAAAAAAAABcAAAAAAAAAIQAAAAAAAAA= |
+      |       1 | AQ0AAAA=                                 |
+      |       2 | ARcAAAA=                                 |
+      +---------+------------------------------------------+
+    ```
