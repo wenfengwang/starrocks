@@ -4,9 +4,9 @@ displayed_sidebar: "Japanese"
 
 # bitmap_empty
 
-## Description
+## 説明
 
-空のビットマップを返します。主に挿入またはストリームロード中のデフォルト値を埋めるために使用されます。例えば:
+空のビットマップを返します。主に、挿入やストリームロード中のデフォルト値の補完に使用されます。例：
 
 ```bash
 cat data | curl --location-trusted -u user:passwd -T - \
@@ -14,13 +14,13 @@ cat data | curl --location-trusted -u user:passwd -T - \
     http://host:8410/api/test/testDb/_stream_load
 ```
 
-## Syntax
+## 構文
 
 ```Haskell
 BITMAP BITMAP_EMPTY()
 ```
 
-## Examples
+## 例
 
 ```Plain Text
 MySQL > select bitmap_count(bitmap_empty());
@@ -31,6 +31,6 @@ MySQL > select bitmap_count(bitmap_empty());
 +------------------------------+
 ```
 
-## keyword
+## キーワード
 
-BITMAP_EMPTY,BITMAP
+BITMAP_EMPTY, BITMAP

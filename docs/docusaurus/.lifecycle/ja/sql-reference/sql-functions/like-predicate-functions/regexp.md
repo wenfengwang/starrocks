@@ -1,51 +1,50 @@
-```yaml
 ---
-displayed_sidebar: "English"
+displayed_sidebar: "Japanese"
 ---
 
-# regexp
+# 正規表現
 
-## Description
+## 説明
 
-指定された `pattern` によって定義された正規表現と一致するかどうかをチェックします。一致する場合は、1 が返されます。それ以外の場合は、0 が返されます。入力パラメータのいずれかがNULLの場合は、NULLが返されます。
+指定された`pattern`によって定義される正規表現に一致するかどうかをチェックします。 はいの場合、1が返されます。 それ以外の場合、0が返されます。 入力パラメータのいずれかがNULLの場合、NULLが返されます。
 
-regexp() は、[like()](like.md)よりも複雑なマッチング条件をサポートしています。
+regexp（）は、[like（）]（like.md）よりも複雑な一致条件をサポートしています。
 
-## Syntax
+## 構文
 
 ```Haskell
-BOOLEAN regexp(VARCHAR expr, VARCHAR pattern);
+BOOLEAN regexp（VARCHAR expr、VARCHAR pattern）;
 ```
 
-## Parameters
+## パラメータ
 
-- `expr`: 文字列式。サポートされているデータ型は、VARCHAR です。
+- `expr`：文字列式。 サポートされるデータ型はVARCHARです。
 
-- `pattern`: 一致させるパターン。サポートされているデータ型は、VARCHAR です。
+- `pattern`：一致させるパターン。 サポートされるデータ型はVARCHARです。
 
-## Return value
+## 戻り値
 
-BOOLEAN 値を返します。
+BOOLEAN値を返します。
 
-## Examples
+## 例
 
-```Plain Text
-mysql> select regexp("abc123","abc*");
+```プレーンテキスト
+mysql> select regexp（"abc123"、"abc *"）;
 +--------------------------+
-| regexp('abc123', 'abc*') |
+| regexp（'abc123'、'abc *'）|
 +--------------------------+
-|                        1 |
+| 1 |
 +--------------------------+
-1 行が返されました (0.06 秒)
+1行が設定されました（0.06秒）
 
-select regexp("abc123","xyz*");
+select regexp（"abc123"、"xyz *"）;
 +--------------------------+
-| regexp('abc123', 'xyz*') |
+| regexp（'abc123'、'xyz *'）|
 +--------------------------+
-|                        0 |
+| 0 |
 +--------------------------+
 ```
 
-## Keywords
+## キーワード
 
-regexp, 正規表現
+regexp、regular

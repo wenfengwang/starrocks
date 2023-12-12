@@ -2,15 +2,15 @@
 displayed_sidebar: "Japanese"
 ---
 
-# タスクの削除
+# DROP TASK（タスクの削除）
 
 ## 説明
 
-[SUBMIT TASK](./SUBMIT_TASK.md)を使用して送信された非同期ETLタスクを削除します。この機能はStarRocks v2.5.7からサポートされています。
+[SUBMIT TASK](./SUBMIT_TASK.md) を使用して送信された非同期 ETL タスクを削除します。この機能は StarRocks v2.5.7 からサポートされています。
 
 > **注意**
 >
-> DROP TASKでタスクを削除すると、対応するTaskRunも同時にキャンセルされます。
+> DROP TASK でタスクを削除すると、同時に対応する TaskRun がキャンセルされます。
 
 ## 構文
 
@@ -20,13 +20,13 @@ DROP TASK <task_name>
 
 ## パラメータ
 
-| **パラメータ** | **説明**               |
-| ------------- | ----------------------------- |
-| task_name     | 削除するタスクの名前。 |
+| **パラメータ** | **説明**         |
+| --------------- | ----------------- |
+| task_name       | 削除するタスク名 |
 
-## 使用上の注意
+## 使用方法
 
-情報スキーマのメタデータビュー`tasks`および`task_runs`を問い合わせることで、非同期タスクの情報を確認できます。
+非同期タスクの情報は、Information Schema のメタデータビュー `tasks` および `task_runs` をクエリすることで確認できます。
 
 ```SQL
 SELECT * FROM INFORMATION_SCHEMA.tasks;

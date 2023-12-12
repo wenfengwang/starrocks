@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ビューの変更
+# VIEWの変更
 
 ## 説明
 
@@ -19,12 +19,12 @@ AS query_stmt
 
 注意：
 
-1. ビューは論理的であり、データは物理的な媒体に保存されていません。ビューは、クエリされた際に文の中でサブクエリとして使用されます。したがって、ビューの定義を変更することは、query_stmt を変更することと同等です。
-2. query_stmt は任意にサポートされる SQL です。
+1. ビューは論理的であり、データは物理媒体に保存されていません。ビューは、クエリされる際にステートメント内でサブクエリとして使用されます。したがって、ビューの定義を変更することは、query_stmtを変更することと同等です。
+2. query_stmtは任意のSQLをサポートしています。
 
 ## 例
 
-`example_db` の `example_view` を変更します。
+`example_db`の`example_view`を変更します。
 
 ```sql
 ALTER VIEW example_db.example_view

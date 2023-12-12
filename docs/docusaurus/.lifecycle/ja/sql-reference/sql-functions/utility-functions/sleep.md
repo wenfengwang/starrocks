@@ -2,27 +2,27 @@
 displayed_sidebar: "Japanese"
 ---
 
-# sleep
+# sleep（スリープ）
 
-## Description
+## Description（説明）
 
-指定された時間（秒単位）の操作の実行を遅延させ、sleepが中断されずに完了したことを示すBOOLEAN値を返します。sleepが中断されずに完了した場合は`1`が返されます。それ以外の場合は`0`が返されます。
+指定された期間（秒単位）操作の実行を遅らせ、スリープが中断されない場合はBOOLEAN値を返します。スリープが中断されなかった場合は`1`が返されます。それ以外の場合は`0`が返されます。
 
-## Syntax
+## Syntax（構文）
 
 ```Haskell
 BOOLEAN sleep(INT x);
 ```
 
-## Parameters
+## Parameters（パラメータ）
 
-`x`: 操作の実行を遅延させたい時間。INT型である必要があります。単位：秒。入力がNULLの場合、即座にNULLが返されます。
+`x`: 操作の実行を遅らせたい期間です。INT型でなければなりません。単位：秒。入力がNULLの場合、すぐにNULLが返されます。
 
-## Return value
+## Return value（戻り値）
 
-BOOLEAN型の値を返します。
+BOOLEAN型の値が返されます。
 
-## Examples
+## Examples（例）
 
 ```Plain Text
 select sleep(3);
@@ -31,7 +31,7 @@ select sleep(3);
 +----------+
 |        1 |
 +----------+
-1 row in set (3.00 sec)
+1 行が返されました (3.00 秒)
 
 select sleep(NULL);
 +-------------+
@@ -39,9 +39,9 @@ select sleep(NULL);
 +-------------+
 |        NULL |
 +-------------+
-1 row in set (0.00 sec)
+1 行が返されました (0.00 秒)
 ```
 
-## Keywords
+## Keywords（キーワード）
 
 SLEEP, sleep

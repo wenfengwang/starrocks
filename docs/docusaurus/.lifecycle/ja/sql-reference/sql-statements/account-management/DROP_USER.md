@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定されたユーザーを削除します。
+指定されたユーザーIDを削除します。
 
 ## 構文
 

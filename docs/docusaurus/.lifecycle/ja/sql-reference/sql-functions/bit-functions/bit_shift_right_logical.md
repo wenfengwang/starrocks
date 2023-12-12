@@ -2,13 +2,13 @@
 displayed_sidebar: "Japanese"
 ---
 
-# bit_shift_right
+# bit_shift_right（ビット右シフト）
 
 ## 説明
 
-数値式のバイナリ表現を指定したビット数だけ右にシフトします。
+数値式のバイナリ表現を指定されたビット数だけ右にシフトします。
 
-この関数は**算術右シフト**を実行し、ビットの長さは変わらず、下位ビットが破棄され、符号ビットが最上位ビットとして使用されます。例えば、`10101`を1ビット右シフトすると`11010`になります。
+この関数は**算術右シフト**を実行し、ビット長が変わらず、最下位ビットが削除され、符号ビットが最上位ビットとして使用されます。例えば、`10101`を1ビット右にシフトすると、`11010`になります。
 
 ## 構文
 
@@ -16,11 +16,11 @@ displayed_sidebar: "Japanese"
 bit_shift_right(value, shift)
 ```
 
-## パラメータ
+## パラメーター
 
-`value`: シフトする値または数値式。サポートされるデータ型はTINYINT、SMALLINT、INT、BIGINT、LARGEINTです。
+`value`: シフトする値または数値式。サポートされているデータ型はTINYINT、SMALLINT、INT、BIGINT、およびLARGEINTです。
 
-`shift`: シフトするビット数。サポートされるデータ型はBIGINTです。
+`shift`: シフトするビット数。サポートされているデータ型はBIGINTです。
 
 ## 戻り値
 
@@ -28,12 +28,12 @@ bit_shift_right(value, shift)
 
 ## 使用上の注意
 
-- どれかの入力パラメータがNULLの場合、NULLが返されます。
-- `shift`が0より小さい場合、0が返されます。
-- `value`を `0`で `shift`だけシフトすると、常に元の `value`が返されます。
-- `0`を `shift`だけシフトすると、常に `0`が返されます。
-- `value`のデータ型が整数でなくても数値である場合、その値は整数にキャストされます。 [Examples](#examples)を参照してください。
-- `value`のデータ型が文字列である場合、可能であればその値は整数にキャストされます。例えば、文字列"2.3"は2にキャストされます。値を整数にキャストできない場合、その値はNULLとして扱われます。 [Examples](#examples)を参照してください。
+- 入力パラメーターのいずれかがNULLの場合、NULLが返されます。
+- `shift`が0未満の場合、0が返されます。
+- `value`を`0`でシフトすると常に元の`value`が返されます。
+- `0`を`shift`でシフトすると常に`0`が返されます。
+- `value`のデータ型が数値であり、かつ整数でない場合、その値は整数にキャストされます。[例](#examples)を参照してください。
+- `value`のデータ型が文字列の場合、可能であればその値は整数にキャストされます。例えば、文字列"2.3"は2にキャストされます。値を整数にキャストできない場合、NULLとして扱われます。[例](#examples)を参照してください。
 
 ## 例
 
@@ -71,6 +71,6 @@ SELECT bit_shift_right(-2, 1);
 
 ## 参照
 
-- [bit_shift_left](bit_shift_left.md)
+- [bit_shift_left（ビット左シフト）](bit_shift_left.md)
 
-- [bit_shift_right_logical](bit_shift_right_logical.md)
+- [bit_shift_right_logical（論理ビット右シフト）](bit_shift_right_logical.md)

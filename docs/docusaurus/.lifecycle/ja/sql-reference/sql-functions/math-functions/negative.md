@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ネガティブ
+# negative
 
 ## 説明
 
-入力`arg`の負の値を返します。
+入力の`arg`の負の値を返します。
 
 ## 構文
 
@@ -14,9 +14,9 @@ displayed_sidebar: "Japanese"
 negative(arg)
 ```
 
-## パラメータ
+## パラメーター
 
-`arg`は以下のデータ型をサポートしています:
+`arg`は以下のデータ型をサポートしています：
 
 - BIGINT
 - DOUBLE

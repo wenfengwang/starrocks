@@ -1,13 +1,13 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "English"
 ---
 
 # DataX
 
-## dataxライターにはなぜwritemodeパラメータがありませんか？なぜテーブルはupdateモードで作成しなければならないのですか？
+## なぜdatax writerにはwritemodeパラメータがないのですか？なぜテーブルを更新モードで作成する必要がありますか？
 
-現在、挿入のみがサポートされています。
+現在はinsertのみがサポートされています。
 
-## DataXライターを使用してデータを同期化する際に、キーワードをどのように処理しますか？
+## DataX Writerを使用してデータを同期するときにキーワードをどのように処理しますか？
 
-キーワードをバッククォート(``)で囲みます。DataXの最新バージョンをダウンロードしたい場合は、[DataXライター](../../loading/DataX-starrocks-writer.md)を参照してください。
+バッククォート(``)でキーワードを囲みます。最新バージョンのDataXをダウンロードする場合は、[DataX Writer](../../loading/DataX-starrocks-writer.md)を参照してください。

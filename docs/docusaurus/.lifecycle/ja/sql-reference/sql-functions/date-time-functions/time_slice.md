@@ -1,3 +1,4 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -6,9 +7,9 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定された時間の粒度に基づいて、与えられた時間を時間間隔の始まりまたは終わりに変換します。
+指定された時間単位に基づいて、指定された時間を時間間隔の始まりまたは終わりに変換します。
 
-この機能はv2.3からサポートされています。v2.5では、指定された時間を時間間隔の終わりに変換することができます。
+この関数はv2.3からサポートされています。v2.5では、指定された時間を時間間隔の終わりに変換することができます。
 
 ## 構文
 
@@ -19,10 +20,10 @@ DATETIME time_slice(DATETIME dt, INTERVAL N type[, boundary])
 ## パラメータ
 
 - `dt`: 変換する時間、DATETIME。
-- `INTERVAL N type`: 時間の粒度、たとえば、`interval 5 second`。
-  - `N`は時間間隔の長さで、INT値でなければなりません。
-  - `type`はユニットであり、YEAR, QUARTER, MONTH, WEEK, DAY, HOUR, MINUTE, SECONDのいずれかです。
-- `boundary`: オプションです。時間間隔の始まり（`FLOOR`）または終わり（`CEIL`）を返すかどうかを指定するために使用されます。有効な値: FLOOR, CEIL。このパラメータは指定されていない場合、`FLOOR`がデフォルトです。このパラメータはv2.5からサポートされています。
+- `INTERVAL N type`: 時間の粒度、例：`interval 5 second`。
+  - `N`は時間間隔の長さです。INT値である必要があります。
+  - `type`は単位で、YEAR、QUARTER、MONTH、WEEK、DAY、HOUR、MINUTE、SECONDのいずれかです。
+- `boundary`: オプションです。時間間隔の始まり(`FLOOR`)または終わり(`CEIL`)を返すかどうかを指定するために使用されます。有効な値：FLOOR、CEIL。このパラメータが指定されていない場合、`FLOOR`がデフォルトです。このパラメータはv2.5からサポートされています。
 
 ## 戻り値
 
@@ -30,11 +31,11 @@ DATETIMEタイプの値を返します。
 
 ## 使用上の注意
 
-時間間隔はA.D. `0001-01-01 00:00:00`から始まります。
+時間間隔はA.D. `0001-01-01 00:00:00`から開始します。
 
 ## 例
 
-以下の例は、`test_all_type_select`テーブルに基づいて提供されています。
+以下の例は、`test_all_type_select`テーブルを基にしています。
 
 ```Plaintext
 select * from test_all_type_select order by id_int;
@@ -51,7 +52,7 @@ select * from test_all_type_select order by id_int;
 5 rows in set (0.06 sec)
 ```
 
-例1: 指定されたDATETIME値を`boundary`パラメータを指定せずに5秒の時間間隔の始まりに変換します。
+例1：`boundary`パラメータを指定せずに、5秒間隔の始まりに指定されたDATETIME値を変換します。
 
 ```Plaintext
 select time_slice(id_datetime, interval 5 second)
@@ -70,7 +71,7 @@ order by id_int;
 5 rows in set (0.16 sec)
 ```
 
-例2: 指定されたDATETIME値を`boundary`を`FLOOR`に設定して5日の時間間隔の始まりに変換します。
+例2：`boundary`を`FLOOR`に設定して、5日間隔の始まりに指定されたDATETIME値を変換します。
 
 ```Plaintext
 select time_slice(id_datetime, interval 5 day, FLOOR)
@@ -89,7 +90,7 @@ order by id_int;
 5 rows in set (0.15 sec)
 ```
 
-例3: 指定されたDATETIME値を5日の時間間隔の終わりに変換します。
+例3：指定されたDATETIME値を5日間隔の終わりに変換します。
 
 ```Plaintext
 select time_slice(id_datetime, interval 5 day, CEIL)

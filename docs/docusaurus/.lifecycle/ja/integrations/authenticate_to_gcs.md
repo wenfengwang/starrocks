@@ -6,38 +6,38 @@ displayed_sidebar: "Japanese"
 
 ## 認証方法
 
-v3.0以降、StarRocksではGoogle Cloud Storage（GCS）へアクセスするための以下の認証方法がサポートされています：
+v3.0以降、StarRocksはGoogle Cloud Storage（GCS）へのアクセスに以下の認証方法のいずれかを使用することをサポートしています。
 
 - VMベースの認証
 
-  Google Cloud Compute Engineにアタッチされたクレデンシャルを使用して、GCSに認証します。
+   Google Cloud Compute Engineにアタッチされた資格情報を使用してGCSに認証します。
 
 - サービスアカウントベースの認証
 
-  サービスアカウントを使用して、GCSに認証します。
+   サービスアカウントを使用してGCSに認証します。
 
-- インパーソネーションベースの認証
+- 偽装ベースの認証
 
-  サービスアカウントまたは仮想マシン（VM）インスタンスを別のサービスアカウントになりすます。
+   サービスアカウントまたは仮想マシン（VM）インスタンスを他のサービスアカウントに偽装させます。
 
 ## シナリオ
 
-StarRocksは、以下のシナリオでGCSへの認証を行うことができます：
+StarRocksは次の状況でGCSに認証できます。
 
-- GCSからデータをバッチロードする。
-- データをバックアップし、GCSにデータをリストアする。
-- GCSでParquetおよびORCファイルをクエリする。
-- GCSで[Hive](../data_source/catalog/hive_catalog.md)、[Iceberg](../data_source/catalog/iceberg_catalog.md)、[Hudi](../data_source/catalog/hudi_catalog.md)、および[Delta Lake](../data_source/catalog/deltalake_catalog.md)のテーブルをクエリする。
+- GCSからのデータのバッチロード
+- GCSへのデータのバックアップおよびリストア
+- GCS内のParquetやORCファイルのクエリ
+- GCSの[Hive](../data_source/catalog/hive_catalog.md)、[Iceberg](../data_source/catalog/iceberg_catalog.md)、[Hudi](../data_source/catalog/hudi_catalog.md)、および[Delta Lake](../data_source/catalog/deltalake_catalog.md)テーブルのクエリ。
 
-このトピックでは、[Hive catalog](../data_source/catalog/hive_catalog.md)、[file external table](../data_source/file_external_table.md)、および[Broker Load](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)の使用例を示し、StarRocksが異なるシナリオでGCSと統合する方法を示します。「例」セクションの`StorageCredentialParams`に関する詳細は、このトピックの"[パラメータ](../integrations/authenticate_to_gcs.md#parameters)"セクションを参照してください。
+このトピックでは、GCSとのさまざまなシナリオでStarRocksがどのように統合されるかを示すために、[Hiveカタログ](../data_source/catalog/hive_catalog.md)、[file external table](../data_source/file_external_table.md)、および[Broker Load](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)の情報を含めています。「StorageCredentialParams」の例の詳細については、このトピックの"[Parameters](../integrations/authenticate_to_gcs.md#parameters)"セクションを参照してください。
 
 > **注意**
 >
-> StarRocksは、GCSからのデータの読み込みまたはファイルの直接クエリをgsプロトコルに従ってサポートしています。したがって、GCSからデータを読み込むかファイルをクエリする場合は、ファイルパスに`gs`を接頭辞として含める必要があります。
+> StarRocksは、GCSからデータをロードしたりファイルを直接クエリしたりする場合、gsプロトコルに従う必要があります。そのため、GCSからデータをロードしたりファイルをクエリする場合は、ファイルパスに`gs`をプレフィックスとして含める必要があります。
 
 ### 外部カタログ
 
-GCSからファイルをクエリするために、以下のように[Hive catalog](../data_source/catalog/hive_catalog.md)という名前のHiveカタログを作成するために[CREATE EXTERNAL CATALOG](../sql-reference/sql-statements/data-definition/CREATE_EXTERNAL_CATALOG.md)ステートメントを使用します。
+次のように、Hiveカタログとして`hive_catalog_gcs`という名前のカタログを作成するために、[CREATE EXTERNAL CATALOG](../sql-reference/sql-statements/data-definition/CREATE_EXTERNAL_CATALOG.md)ステートメントを使用してGCSからファイルをクエリすることができます。
 
 ```SQL
 CREATE EXTERNAL CATALOG hive_catalog_gcs
@@ -51,7 +51,7 @@ PROPERTIES
 
 ### ファイル外部テーブル
 
-メタストアなしでGCSからデータファイル`test_file_external_tbl`をクエリするために、以下のように[file external table](../data_source/file_external_table.md)という外部ファイルテーブルを作成するために[CREATE EXTERNAL TABLE](../sql-reference/sql-statements/data-definition/CREATE_TABLE.md)ステートメントを使用します。
+次のように、メタストアなしでGCSから`test_file_external_tbl`という名前のデータファイルをクエリするために、[CREATE EXTERNAL TABLE](../sql-reference/sql-statements/data-definition/CREATE_TABLE.md)ステートメントを使用して`external_table_gcs`という名前のファイル外部テーブルを作成できます。
 
 ```SQL
 CREATE EXTERNAL TABLE external_table_gcs
@@ -68,9 +68,9 @@ PROPERTIES
 );
 ```
 
-### Brokerロード
+### ブローカーロード
 
-StarRocksテーブル`target_table`にデータをバッチロードするために、ラベルが`test_db.label0`のBrokerロードジョブを作成するために、[LOAD LABEL](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)ステートメントを使用します。
+次のように、StarRocksテーブル`target_table`にデータをバッチロードするために、ラベルが`test_db.label000`のブローカーロードジョブを作成するために、[LOAD LABEL](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)ステートメントを使用できます。
 
 ```SQL
 LOAD LABEL test_db.label000
@@ -91,21 +91,21 @@ WITH BROKER
 
 ### VMベースの認証
 
-StarRocksクラスタがGoogle Cloud Platform（GCP）のVMインスタンスに展開されており、そのVMインスタンスを使用してGCSに認証する場合は、次のように`StorageCredentialParams`を構成します。
+StarRocksクラスタがGoogle Cloud Platform（GCP）でホストされるVMインスタンスに展開されており、そのVMインスタンスを使用してGCSに認証したい場合は、`StorageCredentialParams`を以下のように設定します。
 
 ```Plain
 "gcp.gcs.use_compute_engine_service_account" = "true"
 ```
 
-次の表は、`StorageCredentialParams`で構成する必要のあるパラメータについて説明しています。
+次の表には、`StorageCredentialParams`で構成する必要があるパラメータの詳細が記載されています。
 
-| **パラメータ**                                | **デフォルト値** | **値の例** | **説明**                                           |
-| ------------------------------------------ | ----------------- | --------------------- | ------------------------------------------------------------ |
-| gcp.gcs.use_compute_engine_service_account | false             | true                  | Compute Engineにバインドされたサービスアカウントを直接使用するかどうかを指定します。 |
+| **パラメータ**                              | **デフォルト値** | **値の例** | **説明**                                                     |
+| ------------------------------------------ | ----------------- | ----------- | ------------------------------------------------------------ |
+| gcp.gcs.use_compute_engine_service_account | false             | true        | Compute Engineにバインドされたサービスアカウントを直接使用するかどうかを指定します。 |
 
 ### サービスアカウントベースの認証
 
-サービスアカウントを直接使用してGCSに認証する場合は、次のように`StorageCredentialParams`を構成します。
+サービスアカウントを直接使用してGCSに認証する場合、`StorageCredentialParams`を以下のように設定します。
 
 ```Plain
 "gcp.gcs.service_account_email" = "<google_service_account_email>",
@@ -113,35 +113,35 @@ StarRocksクラスタがGoogle Cloud Platform（GCP）のVMインスタンスに
 "gcp.gcs.service_account_private_key" = "<google_service_private_key>"
 ```
 
-次の表は、`StorageCredentialParams`で構成する必要のあるパラメータについて説明しています。
+次の表には、`StorageCredentialParams`で構成する必要があるパラメータの詳細が記載されています。
 
-| **パラメータ**                          | **デフォルト値** | **値の例**                                       | **説明**                                              |
-| -------------------------------------- | ----------------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
-| gcp.gcs.service_account_email          | ""                | "`user@hello.iam.gserviceaccount.com`"                        | サービスアカウントの作成時に生成されたJSONファイルのメールアドレス。 |
-| gcp.gcs.service_account_private_key_id | ""                | "61d257bd8479547cb3e04f0b9b6b9ca07af3b7ea"                  | サービスアカウントの作成時に生成されたJSONファイルのプライベートキーID。 |
-| gcp.gcs.service_account_private_key    | ""                | "-----BEGIN PRIVATE KEY----xxxx-----END PRIVATE KEY-----\n" | サービスアカウントの作成時に生成されたJSONファイルのプライベートキー。 |
+| **パラメータ**                          | **デフォルト値** | **値の例**                                     | **説明**                                                     |
+| -------------------------------------- | ----------------- | --------------------------------------------- | ------------------------------------------------------------ |
+| gcp.gcs.service_account_email          | ""                | "`user@hello.iam.gserviceaccount.com`"        | サービスアカウントの作成時に生成されたJSONファイル内のメールアドレスです。 |
+| gcp.gcs.service_account_private_key_id | ""                | "61d257bd8479547cb3e04f0b9b6b9ca07af3b7ea"  | サービスアカウントの作成時に生成されたJSONファイル内のプライベートキーIDです。 |
+| gcp.gcs.service_account_private_key    | ""                | "-----BEGIN PRIVATE KEY----xxxx-----END PRIVATE KEY-----\n" | サービスアカウントの作成時に生成されたJSONファイル内のプライベートキーです。 |
 
-### インパーソネーションベースの認証
+### 偽装ベースの認証
 
-#### VMインスタンスをサービスアカウントになりすます
+#### VMインスタンスがサービスアカウントを偽装する
 
-StarRocksクラスタがGCPのVMインスタンスに展開されており、そのVMインスタンスをサービスアカウントになりすますことを希望する場合は、GCSへアクセスするためにサービスアカウントから権限を継承するために`StorageCredentialParams`を構成します。
+StarRocksクラスタがGCP上のVMインスタンスに展開され、そのVMインスタンスを特定のサービスアカウントに偽装させる場合、つまりStarRocksがGCSへのアクセス権をサービスアカウントから継承する場合は、`StorageCredentialParams`を以下のように設定します。
 
 ```Plain
 "gcp.gcs.use_compute_engine_service_account" = "true",
 "gcp.gcs.impersonation_service_account" = "<assumed_google_service_account_email>"
 ```
 
-次の表は、`StorageCredentialParams`で構成する必要のあるパラメータについて説明しています。
+次の表には、`StorageCredentialParams`で構成する必要があるパラメータの詳細が記載されています。
 
-| **パラメータ**                                | **デフォルト値** | **値の例** | **説明**                                           |
-| ------------------------------------------ | ----------------- | --------------------- | ------------------------------------------------------------ |
-| gcp.gcs.use_compute_engine_service_account | false             | true                  | Compute Engineにバインドされたサービスアカウントを直接使用するかどうかを指定します。 |
-| gcp.gcs.impersonation_service_account      | ""                | "hello"               | なりすますことを希望するサービスアカウント。 |
+| **パラメータ**                              | **デフォルト値** | **値の例** | **説明**                                                     |
+| ------------------------------------------ | ----------------- | ----------- | ------------------------------------------------------------ |
+| gcp.gcs.use_compute_engine_service_account | false             | true        | Compute Engineにバインドされたサービスアカウントを直接使用するかどうかを指定します。 |
+| gcp.gcs.impersonation_service_account      | ""                | "hello"     | 偽装したいサービスアカウントです。                           |
 
-#### サービスアカウントが別のサービスアカウントになりすます
+#### サービスアカウントが別のサービスアカウントを偽装する
 
-サービスアカウント（一時的にメタサービスアカウントと呼ばれる）が別のサービスアカウント（一時的にデータサービスアカウントと呼ばれる）になり、StarRocksがデータサービスアカウントから権限を継承してGCSにアクセスすることを希望する場合は、`StorageCredentialParams`を構成します。
+サービスアカウント（一時的にメタサービスアカウントとして命名）が別のサービスアカウント（一時的にデータサービスアカウントとして命名）を偽装し、StarRocksがデータサービスアカウントからアクセス権を継承する場合は、`StorageCredentialParams`を以下のように設定します。
 
 ```Plain
 "gcp.gcs.service_account_email" = "<google_service_account_email>",
@@ -150,11 +150,11 @@ StarRocksクラスタがGCPのVMインスタンスに展開されており、そ
 "gcp.gcs.impersonation_service_account" = "<data_google_service_account_email>"
 ```
 
-次の表は、`StorageCredentialParams`で構成する必要のあるパラメータについて説明しています。
+次の表には、`StorageCredentialParams`で構成する必要があるパラメータの詳細が記載されています。
 
-| **パラメータ**                          | **デフォルト値** | **値の例**                                       | **説明**                                              |
-| -------------------------------------- | ----------------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
-| gcp.gcs.service_account_email          | ""                | "`user@hello.iam.gserviceaccount.com`"                        | メタサービスアカウントの作成時に生成されたJSONファイルのメールアドレス。 |
-| gcp.gcs.service_account_private_key_id | ""                | "61d257bd8479547cb3e04f0b9b6b9ca07af3b7ea"                  | メタサービスアカウントの作成時に生成されたJSONファイルのプライベートキーID。 |
-| gcp.gcs.service_account_private_key    | ""                | "-----BEGIN PRIVATE KEY----xxxx-----END PRIVATE KEY-----\n" | メタサービスアカウントの作成時に生成されたJSONファイルのプライベートキー。 |
-| gcp.gcs.impersonation_service_account  | ""                | "hello"                                                     | なりすますことを希望するデータサービスアカウント。 |
+| **パラメータ**                          | **デフォルト値** | **値の例**                                     | **説明**                                                     |
+| -------------------------------------- | ----------------- | --------------------------------------------- | ------------------------------------------------------------ |
+| gcp.gcs.service_account_email          | ""                | "`user@hello.iam.gserviceaccount.com`"        | メタサービスアカウントの作成時に生成されたJSONファイル内の電子メールアドレスです。 |
+| gcp.gcs.service_account_private_key_id | ""                | "61d257bd8479547cb3e04f0b9b6b9ca07af3b7ea"  | メタサービスアカウントの作成時に生成されたJSONファイル内のプライベートキーIDです。 |
+| gcp.gcs.service_account_private_key    | ""                | "-----BEGIN PRIVATE KEY----xxxx-----END PRIVATE KEY-----\n" | メタサービスアカウントの作成時に生成されたJSONファイル内のプライベートキーです。 |
+| gcp.gcs.impersonation_service_account  | ""                | "hello"     | 偽装したいデータサービスアカウントです。      |

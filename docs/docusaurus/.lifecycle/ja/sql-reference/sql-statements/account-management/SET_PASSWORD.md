@@ -9,14 +9,14 @@ displayed_sidebar: "Japanese"
 ### 構文
 
 ```SQL
-SET PASSWORD [FOR ユーザー識別子] =
-[PASSWORD('平文のパスワード')]|['ハッシュ化されたパスワード']
+SET PASSWORD [FOR user_identity] =
+[PASSWORD('plain password')]|['hashed password']
 ```
 
-SET PASSWORDコマンドは、ユーザーのログインパスワードを変更するために使用できます。[FOR ユーザー識別子] フィールドが存在しない場合、現在のユーザーのパスワードが変更されます。
+SET PASSWORDコマンドは、ユーザーのログインパスワードを変更するために使用できます。[FOR user_identity]フィールドが存在しない場合、現在のユーザーのパスワードが変更されます。
 
 ```plain text
-ユーザー識別子は、CREATE USERを使用してユーザーを作成する際に指定されたユーザー識別子と完全に一致している必要があります。それ以外の場合、ユーザーは存在しないと報告されます。ユーザー識別子が指定されていない場合、現在のユーザーは 'ユーザー名'@'ip' であり、これは任意のユーザー識別子と一致しない場合があります。現在のユーザーはSHOW GRANTSを通じて表示できます。
+user_identityは、CREATE USERを使用してユーザーを作成する際に指定したuser_identityと完全に一致する必要があります。そうでない場合、ユーザーは存在しないと報告されます。user_identityが指定されていない場合、現在のユーザーは'username'@'ip'であり、これは任意のuser_identityに一致しない可能性があります。現在のユーザーはSHOW GRANTSを使用して表示できます。 
 ```
 
 PASSWORD()は平文のパスワードを入力し、文字列の直接使用は暗号化されたパスワードの送信を必要とします。
@@ -32,7 +32,7 @@ PASSWORD()は平文のパスワードを入力し、文字列の直接使用は�
     SET PASSWORD = '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9'
     ```
 
-2. 指定されたユーザーのパスワードを変更する
+2. 指定したユーザーのパスワードを変更する
 
     ```SQL
     SET PASSWORD FOR 'jack'@'192.%' = PASSWORD('123456')

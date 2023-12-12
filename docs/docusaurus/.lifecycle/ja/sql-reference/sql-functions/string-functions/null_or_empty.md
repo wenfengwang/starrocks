@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# null_or_empty
+# null_or_empty（空またはNULL）
 
 ## 説明
 

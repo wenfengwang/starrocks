@@ -2,31 +2,31 @@
 displayed_sidebar: "Japanese"
 ---
 
-# StarRocksをHelmでデプロイする
+# Helmを使用してStarRocksをデプロイする
 
-[Helm](https://helm.sh/)はKubernetes向けのパッケージマネージャです。 [Helm Chart](https://helm.sh/docs/topics/charts/) はHelmパッケージであり、Kubernetesクラスター上でアプリケーションを実行するために必要なすべてのリソース定義を含んでいます。 このトピックでは、Helmを使用してKubernetesクラスター上にStarRocksクラスターを自動的にデプロイする方法について説明します。
+[Helm](https://helm.sh/)はKubernetes向けのパッケージマネージャーです。[Helm Chart](https://helm.sh/docs/topics/charts/)はHelmパッケージであり、Kubernetesクラスター上でアプリケーションを実行するために必要なリソース定義をすべて含んでいます。このトピックでは、Helmを使用してKubernetesクラスター上にStarRocksクラスターを自動的にデプロイする方法について説明します。
 
 ## 開始する前に
 
-- [Kubernetesクラスターを作成する](./sr_operator.md#create-kubernetes-cluster)。
-- [Helmをインストールする](https://helm.sh/docs/intro/quickstart/)。
+- [Kubernetesクラスターを作成](./sr_operator.md#create-kubernetes-cluster)します。
+- [Helmをインストール](https://helm.sh/docs/intro/quickstart/)します。
 
 ## 手順
 
-1. StarRocksのHelm Chartリポジトリを追加します。Helm ChartにはStarRocks OperatorとカスタムリソースStarRocksClusterの定義が含まれています。
-   1. Helm Chartリポジトリを追加します。
+1. StarRocksのHelm Chart Repoを追加します。Helm ChartにはStarRocks OperatorとカスタムリソースStarRocksClusterの定義が含まれています。
+   1. Helm Chart Repoを追加します。
 
       ```Bash
       helm repo add starrocks-community https://starrocks.github.io/starrocks-kubernetes-operator
       ```
 
-   2. Helm Chartリポジトリを最新バージョンに更新します。
+   2. Helm Chart Repoを最新バージョンに更新します。
 
       ```Bash
       helm repo update
       ```
 
-   3. 追加したHelm Chartリポジトリを表示します。
+   3. 追加したHelm Chart Repoを表示します。
 
       ```Bash
       $ helm search repo starrocks-community
@@ -37,13 +37,13 @@ displayed_sidebar: "Japanese"
       ```
 
 2. Helm Chartのデフォルトの **[values.yaml](https://github.com/StarRocks/starrocks-kubernetes-operator/blob/main/helm-charts/charts/kube-starrocks/values.yaml)** を使用してStarRocks OperatorとStarRocksクラスターをデプロイするか、デプロイ構成をカスタマイズするためのYAMLファイルを作成します。
-   1. デフォルトの構成でのデプロイ
+   1. デフォルトの構成でデプロイ
 
-      以下のコマンドを実行して、1つのFEと1つのBEからなるStarRocks OperatorとStarRocksクラスターをデプロイします。
+      以下のコマンドを実行して、1つのFEと1つのBEで構成されるStarRocks OperatorとStarRocksクラスターをデプロイします。
 
       ```Bash
       $ helm install starrocks starrocks-community/kube-starrocks
-      # 以下の結果が返されれば、StarRocks OperatorとStarRocksクラスターがデプロイされています。
+      # 以下の結果が返された場合、StarRocks OperatorとStarRocksクラスターがデプロイされています。
       NAME: starrocks
       LAST DEPLOYED: Tue Aug 15 15:12:00 2023
       NAMESPACE: starrocks
@@ -52,24 +52,24 @@ displayed_sidebar: "Japanese"
       TEST SUITE: None
       ```
 
-   2. カスタム構成でのデプロイ
-      - たとえば **my-values.yaml** などのYAMLファイルを作成し、Helm Chartのデフォルトの **[values.yaml](https://github.com/StarRocks/starrocks-kubernetes-operator/blob/main/helm-charts/charts/kube-starrocks/values.yaml)** でカスタマイズのための構成を行います。 サポートされているパラメータと説明については、デフォルトの **[values.yaml](https://github.com/StarRocks/starrocks-kubernetes-operator/blob/main/helm-charts/charts/kube-starrocks/values.yaml)** のコメントを参照してください。
-      - 以下のコマンドを実行して、 **my-values.yaml** のカスタム構成でStarRocks OperatorとStarRocksクラスターをデプロイします。
+   2. カスタム構成でデプロイ
+      - 例えば **my-values.yaml** というYAMLファイルを作成し、その中でStarRocks OperatorとStarRocksクラスターの構成をカスタマイズします。サポートされているパラメータとその説明については、Helm Chartのデフォルトの **[values.yaml](https://github.com/StarRocks/starrocks-kubernetes-operator/blob/main/helm-charts/charts/kube-starrocks/values.yaml)** 内のコメントを参照してください。
+      - 以下のコマンドを実行して、 **my-values.yaml** 中のカスタム構成でStarRocks OperatorとStarRocksクラスターをデプロイします。
 
         ```Bash
         helm install -f my-values.yaml starrocks starrocks-community/kube-starrocks
         ```
 
-    デプロイにはしばらく時間がかかります。 この期間中、デプロイコマンドの戻り結果でプロンプトコマンドを使用してデプロイ状況を確認できます。 デフォルトのプロンプトコマンドは次のとおりです：
+    デプロイには時間がかかります。この期間中は、デプロイコマンドの返された結果でプロンプトコマンドを使用してデプロイの状態を確認できます。デフォルトのプロンプトコマンドは次の通りです。
 
     ```Bash
     $ kubectl --namespace default get starrockscluster -l "cluster=kube-starrocks"
-    # 以下の結果が返されれば、デプロイが正常に完了しています。
+    # 以下の結果が返された場合、デプロイが完了しています。
     NAME             FESTATUS   CNSTATUS   BESTATUS
     kube-starrocks   running               running
     ```
 
-    デプロイ状況を確認するには `kubectl get pods` を実行することもできます。 すべてのポッドが `Running` の状態にあり、ポッド内のすべてのコンテナが `READY` の状態であれば、デプロイは正常に完了しています。
+    デプロイ状態を確認するには `kubectl get pods` を実行することもできます。すべてのPodが `Running` の状態であり、またPod内のすべてのコンテナが `READY` であれば、デプロイは正常に完了しています。
 
     ```Bash
     $ kubectl get pods
@@ -79,21 +79,21 @@ displayed_sidebar: "Japanese"
     kube-starrocks-operator-69c5c64595-pc7fv   1/1     Running   0          4m50s
     ```
 
-## 次の手順
+## 次のステップ
 
 - StarRocksクラスターへのアクセス
 
-  Kubernetesクラスター内外からStarRocksクラスターにアクセスできます。 詳細な手順については、[StarRocksクラスターへのアクセス](./sr_operator.md#access-starrocks-cluster)を参照してください。
+  StarRocksクラスターには、Kubernetesクラスター内外からアクセスできます。詳細な手順については、[StarRocksクラスターへのアクセス](./sr_operator.md#access-starrocks-cluster)を参照してください。
 
-- StarRocks OperatorおよびStarRocksクラスターの管理
+- StarRocks OperatorとStarRocksクラスターの管理
 
-  - StarRocks OperatorおよびStarRocksクラスターの構成を更新する必要がある場合は、[Helm Upgrade](https://helm.sh/docs/helm/helm_upgrade/)を参照してください。
-  - StarRocks OperatorおよびStarRocksクラスターをアンインストールする必要がある場合は、以下のコマンドを実行してください：
+  - StarRocks OperatorとStarRocksクラスターの構成を更新する必要がある場合は、[Helmアップグレード](https://helm.sh/docs/helm/helm_upgrade/)を参照してください。
+  - StarRocks OperatorとStarRocksクラスターをアンインストールする必要がある場合は、次のコマンドを実行してください。
 
     ```bash
     helm uninstall starrocks
     ```
 
-- StarRocksがメンテナンスするHelm Chartの検索
+- StarRocksが管理するHelm ChartをArtifact Hubで検索
 
   [kube-starrocks](https://artifacthub.io/packages/helm/kube-starrocks/kube-starrocks)を参照してください。

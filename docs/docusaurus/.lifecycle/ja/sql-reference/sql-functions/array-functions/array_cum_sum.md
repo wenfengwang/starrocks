@@ -17,17 +17,17 @@ array_cum_sum(array(double))
 
 ## パラメータ
 
-`array`: 配列内の要素はBIGINT（8バイトの符号付き整数）またはDOUBLE（8バイトの浮動小数点数）のいずれかである必要があります。
+`array`: 配列内の要素はBIGINT（8バイト符号付き整数）またはDOUBLE（8バイト浮動小数点数）の型である必要があります。
 
 ## 戻り値
 
 配列を返します。
 
-入力配列がNULLの場合は、NULLが返されます。
+入力配列がNULLの場合はNULLが返されます。
 
 ## 例
 
-例1：配列の累積和を返す。
+例1: 配列の累積和を返す。
 
 ```Plain
 select array_cum_sum([11, 11, 12]);
@@ -38,7 +38,7 @@ select array_cum_sum([11, 11, 12]);
 +---------------------------+
 ```
 
-例2：この関数をCASTと組み合わせる。
+例2: CASTと組み合わせてこの関数を使用する。
 
 ```Plain
 select array_cum_sum([cast(11.33 as double),cast(11.11 as double),cast(12.324 as double)]);
@@ -49,7 +49,7 @@ select array_cum_sum([cast(11.33 as double),cast(11.11 as double),cast(12.324 as
 +---------------------------------------------------------------------------------------+
 ```
 
-例3：入力配列にnullが含まれている。
+例3: 入力配列にnullが含まれています。
 
 ```Plain
 select array_cum_sum([null,1,2]);
@@ -60,7 +60,7 @@ select array_cum_sum([null,1,2]);
 +---------------------------------+
 ```
 
-例4：入力配列がnullです。
+例4: 入力配列がnullです。
 
 ```Plain
 select array_cum_sum(null);

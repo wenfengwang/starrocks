@@ -4,17 +4,17 @@ displayed_sidebar: "Japanese"
 
 # money_format
 
-## 説明
+## Description
 
-この関数は、通貨形式の文字列としてフォーマットされた文字列を返します。整数部は3ビットごとにコンマで区切られ、小数部は2ビットに予約されています。
+この関数は、通貨の形式に整形された文字列を返します。整数部は3ビットごとにカンマで区切られ、小数部は2ビット分確保されます。
 
-## 構文
+## Syntax
 
 ```Haskell
 VARCHAR money_format(Number)
 ```
 
-## 例
+## Examples
 
 ```Plain Text
 MySQL > select money_format(17014116);
@@ -39,6 +39,6 @@ MySQL > select money_format(1123.4);
 +----------------------+
 ```
 
-## キーワード
+## keyword
 
-MONEY_FORMAT, MONEY, FORMAT
+MONEY_FORMAT,MONEY,FORMAT

@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定された分を日付から引きます。分単位で正確です。
+指定された分を分単位で日付から引きます。
 
 ## 構文
 
@@ -16,15 +16,15 @@ DATETIME minutes_sub(DATETIME|DATE date, INT minutes);
 
 ## パラメーター
 
-- `date`: 基準日付。DATETIMEまたはDATEタイプである必要があります。
+- `date`: ベースとなる日付。DATETIMEまたはDATEの型でなければなりません。
 
-- `minutes`: 減らす分数。INT型で、ゼロ以上、ゼロ、またはゼロ以下である必要があります。
+- `minutes`: 減らす分数。INTの型であり、ゼロ以上の値でも、ゼロ以下の値でもかまいません。
 
 ## 戻り値
 
-DATETIME値を返します。
+DATETIMEの値を返します。
 
-`date`または`minutes`のどちらかがNULLの場合はNULLを返します。
+`date`または`minutes`のいずれかがNULLの場合は、NULLを返します。
 
 ## 例
 

@@ -2,24 +2,24 @@
 displayed_sidebar: "Japanese"
 ---
 
-# DataXライター
+# DataX ライター
 
 ## はじめに
 
-StarRocksWriterプラグインを使用すると、StarRocksの宛先テーブルにデータを書き込むことができます。具体的には、StarRocksWriterは[Stream Load](./StreamLoad.md)を介してCSVまたはJSON形式でデータをStarRocksにインポートし、`reader`によって読み取られたデータをStarRocksに内部的にキャッシュし、バルクインポートして書き込みパフォーマンスを向上させます。データの全体的なフローは `source -> Reader -> DataX channel -> Writer -> StarRocks` です。
+StarRocksWriterプラグインを使用すると、StarRocksのテーブルにデータを書き込むことができます。具体的には、StarRocksWriterは[Stream Load](./StreamLoad.md)を介してCSVまたはJSON形式でデータをStarRocksにインポートし、`reader`で読み込まれたデータを内部的にキャッシュし、より良い書き込みパフォーマンスのためにStarRocksにバルクインポートします。全体のデータフローは `source -> Reader -> DataX channel -> Writer -> StarRocks`です。
 
-[プラグインをダウンロードする](https://github.com/StarRocks/DataX/releases)
+[プラグインをダウンロード](https://github.com/StarRocks/DataX/releases)
 
-DataXの完全なパッケージをダウンロードするには、`https://github.com/alibaba/DataX` にアクセスし、starrockswriterプラグインを `datax/plugin/writer/` ディレクトリに配置してください。
+DataXの完全なパッケージをダウンロードするには、`https://github.com/alibaba/DataX`にアクセスし、starrockswriterプラグインを`datax/plugin/writer/`ディレクトリに配置してください。
 
-次のコマンドを使用してテストしてください：
+次のコマンドを使用してテストしてください:
 `python datax.py --jvm="-Xms6G -Xmx6G" --loglevel=debug job.json`
 
 ## 関数の説明
 
 ### サンプル構成
 
-以下は、MySQLからデータを読み取り、StarRocksにロードするための構成ファイルです。
+MySQLからデータを読み込んでStarRocksにロードするための構成ファイルは次のとおりです。
 
 ```json
 {
@@ -99,7 +99,7 @@ DataXの完全なパッケージをダウンロードするには、`https://git
 
 * **database**
 
-  * 説明: StarRocksテーブルのデータベース名
+  * 説明: StarRocksテーブルのデータベース名。
 
   * 必須: はい
 
@@ -107,7 +107,7 @@ DataXの完全なパッケージをダウンロードするには、`https://git
 
 * **table**
 
-  * 説明: StarRocksテーブルのテーブル名
+  * 説明: StarRocksテーブルのテーブル名。
 
   * 必須: はい
 
@@ -115,7 +115,7 @@ DataXの完全なパッケージをダウンロードするには、`https://git
 
 * **loadUrl**
 
-  * 説明: Stream Load用のStarRocks FEのアドレス。複数のFEアドレスを指定することができ、`fe_ip:fe_http_port`の形式で表します。
+  * 説明: Stream LoadのためのStarRocks FEのアドレスです。複数のFEアドレスを指定でき、`fe_ip:fe_http_port`の形式です。
 
   * 必須: はい
 
@@ -123,41 +123,42 @@ DataXの完全なパッケージをダウンロードするには、`https://git
 
 * **column**
 
-  * 説明: **データに書き込む必要がある**宛先テーブルのフィールド。列はコンマで区切られます。例: "column": ["id", "name", "age"]。
-    > **columnの構成項目は指定する必要があり、空白にしてはいけません。**
-    > 注意: 変更する際に列の数、タイプなどの変更があるとジョブが正しく実行されないか失敗する可能性があるため、空にしないことを強くお勧めします。構成項目はリーダーのquerySQLまたはcolumnと同じ順序でなければなりません。
+  * 説明: **データに書き込む必要がある**宛先テーブルのフィールド。カンマで区切られた列。例: "column": ["id", "name", "age"]。
+    > **columnの設定項目は指定する必要があり、空白にしてはいけません。**
+    > 注意: 宛先テーブルのquerySQLやcolumnと同じ順序で設定項目を記述する必要があるため、空白にしないように強く推奨します。列の数やタイプなどを変更した場合、ジョブが誤って実行されるか失敗する場合があります。
 
   * 必須: はい
+
   * デフォルト値: なし
 
 * **preSql**
 
-  * 説明: データを宛先テーブルに書き込む前に実行される標準ステートメント
+  * 説明: データを宛先テーブルに書き込む前に実行される標準ステートメント。
 
   * 必須: いいえ
 
-  * デフォルト: なし
+  * デフォルト: いいえ
 
 * **jdbcUrl**
 
-  * 説明: `preSql`および`postSql`を実行するための宛先データベースのJDBC接続情報
-
+  * 説明: `preSql`および`postSql`を実行するための宛先データベースのJDBC接続情報。
+  
   * 必須: いいえ
 
-  * デフォルト: なし
+  * デフォルト: いいえ
 
 * **loadProps**
 
-  * 説明: StreamLoad用のリクエストパラメータ。詳細についてはStreamLoad紹介ページを参照してください。
+  * 説明: StreamLoadのリクエストパラメータ。詳細についてはStreamLoadの紹介ページを参照してください。
 
   * 必須: いいえ
 
-  * デフォルト値: なし
+  * デフォルト値: いいえ
 
 ## 型変換
 
-デフォルトでは、受信データは文字列に変換され、`t`が列区切り記号であり、`n`が行区切り記号で、StreamLoadのインポートのための `csv` ファイルが形成されます。
-列区切り記号を変更する場合は、`loadProps`を適切に構成してください。
+デフォルトでは、入力データは文字列に変換され、`t`を列の区切り文字、`n`を行の区切り文字として、`csv`ファイルを形成してStreamLoadにインポートされます。
+列の区切り文字を変更するには、`loadProps`を適切に構成してください。
 
 ```json
 "loadProps": {
@@ -166,7 +167,7 @@ DataXの完全なパッケージをダウンロードするには、`https://git
 }
 ```
 
-インポート形式を `json` に変更する場合は、`loadProps`を適切に構成してください。
+インポート形式を`json`に変更するには、`loadProps`を適切に構成してください。
 
 ```json
 "loadProps": {
@@ -175,14 +176,14 @@ DataXの完全なパッケージをダウンロードするには、`https://git
 }
 ```
 
-> `json` フォーマットは、ライターがJSON形式でデータをStarRocksにインポートするためのものです。
+> `json`形式は、ライターがJSON形式でデータをStarRocksにインポートするためのものです。
 
 ## タイムゾーンについて
 
-ソースTPライブラリが別のタイムゾーンにある場合、`datax.py`を実行する際に、コマンドラインの後に以下のパラメータを追加してください。
+ソースのtpライブラリが別のタイムゾーンにある場合、datax.pyを実行する際に、次のパラメータをコマンドラインの後に追加してください。
 
 ```json
 "-Duser.timezone=xx"
 ```
 
-例: もしDataXがPostgresデータをインポートし、ソースライブラリがUTC時間である場合は、スタートアップ時にパラメータ`"-Duser.timezone=GMT+0"`を追加してください。
+例: DataXがPostgreSQLデータをインポートし、ソースライブラリがUTC時間にある場合、スタートアップ時にパラメータ"-Duser.timezone=GMT+0"を追加してください。

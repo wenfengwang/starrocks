@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-TINYINT、SMALLINT、INT型の列の異なる値の数をカウントし、COUNT(DISTINCT expr)の合計を返します。
+TINYINT、SMALLINT、およびINTの列の異なる値の数をカウントし、COUNT(DISTINCT expr)の合計を返します。
 
 ## 構文
 
@@ -14,9 +14,9 @@ TINYINT、SMALLINT、INT型の列の異なる値の数をカウントし、COUNT
 BIGINT bitmap_union_int(expr)
 ```
 
-### パラメータ
+### パラメーター
 
-`expr`: 列の式。サポートされる列の型はTINYINT、SMALLINT、INTです。
+`expr`: 列の式。サポートされている列の型はTINYINT、SMALLINT、およびINTです。
 
 ## 戻り値
 

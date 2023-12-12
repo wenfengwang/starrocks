@@ -1,12 +1,13 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# プロパティを表示する
+# プロパティを表示
 
 ## 説明
 
-このステートメントはユーザーのプロパティを表示するために使用されます。
+このステートメントは、ユーザーのプロパティを表示するために使用されます。
 
 構文:
 
@@ -22,8 +23,9 @@ SHOW PROPERTY [FOR ユーザー] [LIKE キー]
     SHOW PROPERTY FOR 'jack'
     ```
 
-2. jackユーザーがインポートしたクラスターに関連するプロパティを表示する
+2. Jackユーザーがインポートしたクラスタに関連するプロパティを表示する
 
     ```sql
     SHOW PROPERTY FOR 'jack' LIKE '%load_cluster%'
     ```
+```

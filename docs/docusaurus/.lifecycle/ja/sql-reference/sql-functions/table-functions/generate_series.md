@@ -6,13 +6,13 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-`start` と `end` で指定された間隔内の値のシリーズを生成し、オプションの `step` を持ちます。
+`start`、`end`で指定した区間内の値のシリーズを、オプションの`step`で生成します。
 
-generate_series() はテーブル関数です。テーブル関数は、各入力行に対して行セットを返すことができます。行セットには、ゼロ個、1個、または複数の行が含まれることができます。各行には1つ以上の列が含まれることができます。
+generate_series() はテーブル関数です。テーブル関数はそれぞれの入力行に対して行セットを返すことができます。行セットには、0行、1行、または複数行が含まれることがあります。各行には1つ以上の列が含まれることがあります。
 
-StarRocks で generate_series() を使用するには、入力パラメータが定数である場合は、TABLE キーワードで囲む必要があります。入力パラメータがカラム名のような式である場合、TABLE キーワードは必要ありません(Example 5 を参照)。
+StarRocksでgenerate_series()を使用するには、入力パラメータが定数の場合は、TABLEキーワードで囲む必要があります。列名などの式の場合は、TABLEキーワードは不要です（Example 5を参照）。
 
-この関数は v3.1 からサポートされています。
+この関数はv3.1からサポートされています。
 
 ## 構文
 
@@ -22,23 +22,23 @@ generate_series(start, end [,step])
 
 ## パラメータ
 
-- `start`: シリーズの開始値、必須です。サポートされているデータ型は INT、BIGINT、および LARGEINT です。
-- `end`: シリーズの終了値、必須です。サポートされているデータ型は INT、BIGINT、および LARGEINT です。
-- `step`: 増分または減分する値、オプションです。サポートされているデータ型は INT、BIGINT、および LARGEINT です。指定されていない場合、デフォルトのステップは 1 です。 `step` は負または正の値のいずれかにすることができますが、ゼロにすることはできません。
+- `start`: シリーズの開始値、必須。サポートされるデータ型はINT、BIGINT、LARGEINTです。
+- `end`: シリーズの終了値、必須。サポートされるデータ型はINT、BIGINT、LARGEINTです。
+- `step`: 増分または減分する値、オプション。サポートされるデータ型はINT、BIGINT、LARGEINTです。指定しない場合、デフォルトのステップは1です。`step`は負の値でも正の値でも構いませんが、0にすることはできません。
 
-これらの3つのパラメータは、データ型が同じでなければなりません。例: `generate_series(INT start, INT end [, INT step])`。
+3つのパラメータは同じデータ型でなければなりません。例えば、`generate_series(INT start, INT end [, INT step])`です。
 
-## 戻り値
+## 返り値
 
-`start` および `end` の入力パラメータと同じ値のシリーズを返します。
+入力パラメータ`start`と`end`と同じ値のシリーズを返します。
 
-- `step` が正の場合、`start` が `end` よりも大きい場合、0行が返されます。逆に、`step` が負の場合、`start` が `end` よりも小さい場合、0行が返されます。
-- `step` が 0 の場合、エラーが返されます。
-- この関数は、ヌルについて次のように処理します: 入力パラメータがリテラルヌルの場合、エラーが報告されます。式の結果がヌルである場合、0行が返されます(Example 5 を参照)。
+- `step`が正の場合、`start`が`end`よりも大きい場合に0行が返されます。逆に、`step`が負の場合、`start`が`end`よりも小さい場合に0行が返されます。
+- `step`が0の場合はエラーが返されます。
+- この関数は、nullに対して以下のように処理します: 入力パラメータがリテラルのnullである場合はエラーが報告されます。式の結果がnullである場合は0行が返されます（Example 5を参照）。
 
 ## 例
 
-Example 1: デフォルトのステップ `1` で昇順の範囲 [2,5] 内の値のシーケンスを生成します。
+Example 1: デフォルトのステップ`1`で範囲[2,5]内の値のシーケンスを昇順で生成します。
 
 ```SQL
 MySQL > select * from TABLE(generate_series(2, 5));
@@ -52,7 +52,7 @@ MySQL > select * from TABLE(generate_series(2, 5));
 +-----------------+
 ```
 
-Example 2: 指定されたステップ `2` で昇順の範囲 [2,5] 内の値のシーケンスを生成します。
+Example 2: 指定されたステップ`2`で範囲[2,5]内の値のシーケンスを昇順で生成します。
 
 ```SQL
 MySQL > select * from TABLE(generate_series(2, 5, 2));
@@ -64,7 +64,7 @@ MySQL > select * from TABLE(generate_series(2, 5, 2));
 +-----------------+
 ```
 
-Example 3: 指定されたステップ `-1` で降順の範囲 [5,2] 内の値のシーケンスを生成します。
+Example 3: 指定されたステップ`-1`で範囲[5,2]内の値のシーケンスを降順で生成します。
 
 ```SQL
 MySQL > select * from TABLE(generate_series(5, 2, -1));
@@ -78,14 +78,14 @@ MySQL > select * from TABLE(generate_series(5, 2, -1));
 +-----------------+
 ```
 
-Example 4: `step` が負であり、`start` が `end` より小さい場合、0行が返されます。
+Example 4: `step`が負で`start`が`end`よりも小さい場合は0行が返されます。
 
 ```SQL
 MySQL > select * from TABLE(generate_series(2, 5, -1));
 Empty set (0.01 sec)
 ```
 
-Example 5: generate_series() の入力パラメータとしてテーブル列を使用する場合、generate_series() に `TABLE()` を使用する必要はありません。
+Example 5: generate_series()の入力パラメータとしてテーブルの列を使用する場合、`TABLE()`をgenerate_series()と共に使用する必要はありません。
 
 ```SQL
 CREATE TABLE t_numbers(start INT, end INT)
@@ -110,7 +110,7 @@ SELECT * FROM t_numbers;
 |     9 |    6 |
 +-------+------+
 
--- (1,3) と (4,7) の行に対してステップ `1` で複数の行を生成します。
+-- 行(1,3)と行(4,7)に対してステップ1で複数の行を生成します。
 SELECT * FROM t_numbers, generate_series(t_numbers.start, t_numbers.end);
 +-------+------+-----------------+
 | start | end  | generate_series |
@@ -124,7 +124,7 @@ SELECT * FROM t_numbers, generate_series(t_numbers.start, t_numbers.end);
 |     4 |    7 |               7 |
 +-------+------+-----------------+
 
--- (5,2) と (9,6) の行に対してステップ `-1` で複数の行を生成します。
+-- 行(5,2)と行(9,6)に対してステップ-1で複数の行を生成します。
 SELECT * FROM t_numbers, generate_series(t_numbers.start, t_numbers.end, -1);
 +-------+------+-----------------+
 | start | end  | generate_series |
@@ -140,8 +140,8 @@ SELECT * FROM t_numbers, generate_series(t_numbers.start, t_numbers.end, -1);
 +-------+------+-----------------+
 ```
 
-入力行 `(NULL, 10)` はヌルの値を持ち、この行に対して 0行が返されます。
+入力行`(NULL, 10)`はNULL値を持っており、この行に対して0行が返されます。
 
 ## キーワード
 
-テーブル関数, シリーズの生成
+テーブル関数, シリーズを生成

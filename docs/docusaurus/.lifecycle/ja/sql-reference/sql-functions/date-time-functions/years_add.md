@@ -4,21 +4,21 @@ displayed_sidebar: "Japanese"
 
 # years_add
 
-## description
+## 説明
 
-### Syntax
+### 構文
 
 ```Haskell
 DATETIME YEARS_ADD(DATETIME expr1,INT expr2)
 ```
 
-日付に指定された時間間隔を追加します。単位は年です。
+指定された時間間隔を日付に追加します。単位は年です。
 
-expr1パラメーターは有効な日時表現です。
+expr1パラメーターは有効な日時式です。
 
 expr2パラメーターは追加したい年数です。
 
-## example
+## 例
 
 ```Plain Text
 select years_add('2010-11-30 23:50:50', 2);
@@ -36,6 +36,6 @@ select years_add('2010-11-30', 2);
 +----------------------------+
 ```
 
-## keyword
+## キーワード
 
 YEARS_ADD,ADD

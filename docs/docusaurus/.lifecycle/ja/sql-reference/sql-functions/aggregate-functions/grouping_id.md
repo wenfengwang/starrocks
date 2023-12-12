@@ -1,9 +1,9 @@
 ---
-displayed_sidebar: "英語"
+displayed_sidebar: "Japanese"
 ---
 
 
-# grouping_id
+# grouping_id（グルーピングID）
 
 ## 説明
 
@@ -12,13 +12,13 @@ grouping_idは、同じグルーピング基準のグルーピング統計結果
 ## 構文
 
 ```Haskell
-GROUPING_ID(式)
+GROUPING_ID(expr)
 ```
 
 ## 例
 
 ```Plain
-MySQL > SELECT COL1, GROUPING_ID(COL2) AS 'GroupingID' FROM tbl GROUP BY ROLLUP (COL1, COL2);
+MySQL > SELECT COL1,GROUPING_ID(COL2) AS 'GroupingID' FROM tbl GROUP BY ROLLUP (COL1, COL2);
 +------+------------+
 | COL1 | GroupingID |
 +------+------------+

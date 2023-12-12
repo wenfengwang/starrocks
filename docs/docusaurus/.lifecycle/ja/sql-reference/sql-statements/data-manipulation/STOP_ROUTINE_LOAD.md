@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ルーチンのロードを停止
+# ルーチンロードを停止する
 
 ## 例
 

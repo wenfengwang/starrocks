@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## Description
 
-データ分布が直交していなくてもビットマップの重複サイズを検索するための関数です。最初のパラメータはビットマップ列で、2番目のパラメータはフィルタリングに使用される次元列で、3番目のパラメータは可変長のパラメータであり、フィルタリング次元列の異なる値が取られます。
+データ配布が直交している必要がないビットマップの交差サイズを見つけるための関数。最初のパラメーターはビットマップ列で、2番目のパラメーターはフィルタリングに使用される次元列で、3番目のパラメーターは可変長パラメーターであり、フィルタリングされた次元列の異なる値を取ります。
 
 ## Syntax
 
@@ -14,20 +14,20 @@ displayed_sidebar: "Japanese"
 BITMAP INTERSECT_COUNT(bitmap_column, column_to_filter, filter_values)
 ```
 
-## パラメータ
+## Parameters
 
-`bitmap_column`: 計算されるビットマップ列です。
-`column_to_filter`: 交差する列の名前です。
-`filter_values`: フィルタリングされた次元列の異なる値です。
+`bitmap_column`: 計算されるビットマップ列。
+`column_to_filter`: 交差する列の名前。
+`filter_values`: フィルタリングされた次元列の異なる値。
 
-## 戻り値
+## Return value
 
-bigint タイプの値を返します。
+bigint型の値を返します。
 
-## 例
+## Example
 
 ```SQL
-mysql> select intersect_count(user_id, dt, '2020-10-01', '2020-10-02'), intersect_count(user_id, dt, '2020-10-01') from tbl where dt in ('2020-10-01', '2020-10-02');
+mysql>  select intersect_count(user_id, dt, '2020-10-01', '2020-10-02'), intersect_count(user_id, dt, '2020-10-01') from tbl where dt in ('2020-10-01', '2020-10-02');
 +--------------------------------------------------------------+------------------------------------------------+
 | intersect_count(`user_id`, `dt`, '2020-10-01', '2020-10-02') | intersect_count(`user_id`, `dt`, '2020-10-01') |
 +--------------------------------------------------------------+------------------------------------------------+

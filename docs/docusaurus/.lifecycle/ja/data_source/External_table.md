@@ -5,28 +5,28 @@ displayed_sidebar: "Japanese"
 # 外部テーブル
 
 :::note
-v3.0以降、Hive、Iceberg、およびHudiからデータをクエリする場合は、カタログを使用することを推奨します。[Hiveカタログ](../data_source/catalog/hive_catalog.md)、[Icebergカタログ](../data_source/catalog/iceberg_catalog.md)、[Hudiカタログ](../data_source/catalog/hudi_catalog.md)を参照してください。
+v3.0以降、Hive、Iceberg、およびHudiからデータをクエリする場合は、カタログを使用することを推奨します。[Hiveカタログ](../data_source/catalog/hive_catalog.md)、[Icebergカタログ](../data_source/catalog/iceberg_catalog.md)、および[Hudiカタログ](../data_source/catalog/hudi_catalog.md)を参照してください。
 
-v3.1以降、MySQLとPostgreSQLからデータをクエリする場合は[JDBCカタログ](../data_source/catalog/jdbc_catalog.md)を使用し、Elasticsearchからデータをクエリする場合は[Elasticsearchカタログ](../data_source/catalog/elasticsearch_catalog.md)を使用することを推奨します。
+v3.1以降、MySQLおよびPostgreSQLからデータをクエリする場合は[JDBCカタログ](../data_source/catalog/jdbc_catalog.md)を使用し、Elasticsearchからデータをクエリする場合は[Elasticsearchカタログ](../data_source/catalog/elasticsearch_catalog.md)を使用することを推奨します。
 :::
 
-StarRocksは、外部テーブルを使用して他のデータソースにアクセスできます。外部テーブルは、他のデータソースに格納されているデータテーブルを基に作成されます。StarRocksはデータテーブルのメタデータのみを保存します。外部テーブルを使用して、他のデータソースのデータを直接クエリできます。StarRocksは以下のデータソースをサポートしています: MySQL、StarRocks、Elasticsearch、Apache Hive™、Apache Iceberg、およびApache Hudi。**現時点では、別のStarRocksクラスタからデータを現在のStarRocksクラスタに書き込むことしかできません。読み取ることはできません。StarRocks以外のデータソースについて、これらのデータソースからの読み取りのみが可能です。**
+StarRocksは、外部テーブルを使用して他のデータソースにアクセスすることをサポートしています。外部テーブルは、他のデータソースに格納されているデータテーブルに基づいて作成されます。StarRocksはデータテーブルのメタデータのみを保存します。外部テーブルを使用して、他のデータソースのデータを直接クエリできます。StarRocksは、次のデータソースをサポートしています：MySQL、StarRocks、Elasticsearch、Apache Hive™、Apache Iceberg、およびApache Hudi。**現時点では、他のStarRocksクラスターからのデータを現在のStarRocksクラスターに書き込むことができますが、読み取ることはできません。StarRocks以外のデータソースについては、それらのデータソースからデータを読み取ることしかできません。**
 
-2.5以降、StarRocksでは、外部データソースのホットデータクエリを高速化するデータキャッシュ機能が提供されます。詳細については、[データキャッシュ](data_cache.md)を参照してください。
+2.5以降、StarRocksは外部データソース上のホットデータクエリを加速するデータキャッシュ機能を提供します。詳細については[Data Cache](data_cache.md)を参照してください。
 
 ## StarRocks外部テーブル
 
-StarRocks 1.19以降、StarRocksには、別のStarRocksクラスタにデータを書き込むStarRocks外部テーブルを使用することができます。これにより、読み書きの分離が実現され、リソースのより良い分離が提供されます。まず、宛先StarRocksクラスタ内で宛先テーブルを作成し、その後、ソースStarRocksクラスタ内で、`PROPERTIES`フィールドに宛先クラスタとテーブルの情報が指定された、宛先テーブルと同じスキーマのStarRocks外部テーブルを作成できます。
+StarRocks 1.19以降、StarRocksはStarRocks外部テーブルを使用して、1つのStarRocksクラスターから別のStarRocksクラスターにデータを書き込むことを可能にします。これにより読み取りと書き込みを分離し、リソースをより良く隔離できます。まず、宛先のStarRocksクラスターで宛先テーブルを作成し、次に、ソースのStarRocksクラスターで同じスキーマを持つStarRocks外部テーブルを作成し、`PROPERTIES`フィールドに宛先クラスターおよびテーブルの情報を指定できます。
 
-StarRocks外部テーブルへのデータは、INSERT INTOステートメントを使用してソースクラスタから宛先クラスタに書き込むことができます。これにより、次の目標が達成できます:
+INSERT INTOステートメントを使用して、ソースクラスターから宛先クラスターにデータを書き込むことで、データをソースクラスターから宛先クラスターに書き込むことができます。これにより、次の目標を実現できます：
 
-* StarRocksクラスタ間のデータ同期。
-* 読み書きの分離。データはソースクラスタに書き込まれ、ソースクラスタからのデータ変更が宛先クラスタに同期され、クエリサービスが提供されます。
+* StarRocksクラスター間のデータ同期。
+* 読み取りと書き込みの分離。データはソースクラスターに書き込まれ、ソースクラスターからのデータ変更は宛先クラスターに同期され、クエリサービスが提供されます。
 
 次のコードは、宛先テーブルと外部テーブルの作成方法を示しています。
 
 ~~~SQL
-# 宛先StarRocksクラスタ内で宛先テーブルを作成します。
+# 宛先StarRocksクラスターで宛先テーブルを作成します。
 CREATE TABLE t
 (
     k1 DATE,
@@ -38,7 +38,7 @@ CREATE TABLE t
 ENGINE=olap
 DISTRIBUTED BY HASH(k1);
 
-# ソースStarRocksクラスタ内で外部テーブルを作成します。
+# ソースStarRocksクラスターで外部テーブルを作成します。
 CREATE EXTERNAL TABLE external_t
 (
     k1 DATE,
@@ -59,52 +59,52 @@ PROPERTIES
     "table" = "t"
 );
 
-# StarRocks外部テーブルにデータを書き込むことで、ソースクラスタから宛先クラスタにデータを書き込みます。本番環境では、2番目のステートメントが推奨されます。
+# StarRocks外部テーブルにデータを書き込むことで、ソースクラスターから宛先クラスターにデータを書き込みます。本番環境では、2番目のステートメントが推奨されます。
 insert into external_t values ('2020-10-11', 1, 1, 'hello', '2020-10-11 10:00:00');
 insert into external_t select * from other_table;
 ~~~
 
-パラメータ:
+パラメータ：
 
 * **EXTERNAL:** このキーワードは、作成するテーブルが外部テーブルであることを示します。
-* **host:** このパラメータは、宛先StarRocksクラスタのリーダーFEノードのIPアドレスを指定します。
-* **port:**  このパラメータは、宛先StarRocksクラスタのFEノードのRPCポートを指定します。
+* **host:** このパラメータは、宛先StarRocksクラスターのリーダーFEノードのIPアドレスを指定します。
+* **port:**  このパラメータは、宛先StarRocksクラスターのFEノードのRPCポートを指定します。
 
   :::note
 
-  StarRocks外部テーブルが所属するソースクラスタが宛先StarRocksクラスタにアクセスできるようにするには、次のポートにアクセスできるようにネットワークとファイアウォールを構成する必要があります:
+  StarRocks外部テーブルが属するソースクラスターが宛先StarRocksクラスターにアクセスできるようにするためには、ネットワークとファイアウォールを構成して、次のポートへのアクセスを許可する必要があります：
 
-  * FEノードのRPCポート。FE構成ファイル**fe/fe.conf**の`rpc_port`を参照してください。デフォルトのRPCポートは `9020` です。
-  * BEノードのbRPCポート。BE構成ファイル**be/be.conf**の`brpc_port`を参照してください。デフォルトのbRPCポートは `8060` です。
+  * FEノードのRPCポート。FE設定ファイル **fe/fe.conf** にある`rpc_port`を参照してください。デフォルトのRPCポートは `9020` です。
+  * BEノードのbRPCポート。BE設定ファイル **be/be.conf** にある`brpc_port`を参照してください。デフォルトのbRPCポートは `8060` です。
 
   :::
 
-* **user:** このパラメータは、宛先StarRocksクラスタにアクセスする際に使用するユーザー名を指定します。
-* **password:** このパラメータは、宛先StarRocksクラスタにアクセスする際に使用するパスワードを指定します。
+* **user:** このパラメータは、宛先StarRocksクラスターにアクセスするために使用されるユーザー名を指定します。
+* **password:** このパラメータは、宛先StarRocksクラスターにアクセスするために使用されるパスワードを指定します。
 * **database:** このパラメータは、宛先テーブルが属するデータベースを指定します。
 * **table:** このパラメータは、宛先テーブルの名前を指定します。
 
-StarRocks外部テーブルを使用する際の次の制限が適用されます:
+次の制限がStarRocks外部テーブルの使用時に適用されます：
 
-* StarRocks外部テーブルでは、INSERT INTOおよびSHOW CREATE TABLEコマンドのみを実行できます。他のデータ書き込み方法はサポートされていません。また、StarRocks外部テーブルからのデータのクエリや外部テーブルへのDDL操作は実行できません。
-* 外部テーブルの作成構文は通常のテーブルの作成構文と同じですが、外部テーブルの列名およびその他の情報は宛先テーブルと同じである必要があります。
-* 外部テーブルは、宛先テーブルのテーブルメタデータを10秒ごとに同期します。宛先テーブルでDDL操作が実行されると、2つのテーブル間のデータ同期に遅延が発生する場合があります。
+* StarRocks外部テーブルに対しては、INSERT INTOおよびSHOW CREATE TABLEコマンドのみを実行できます。その他のデータ書き込みメソッドはサポートされていません。また、StarRocks外部テーブルからデータをクエリしたり、外部テーブルにDDL操作を実行したりすることはできません。
+* 外部テーブルを作成する構文は通常のテーブルの作成と同じですが、外部テーブルの列名および他の情報は宛先テーブルと同じである必要があります。
+* 外部テーブルは、宛先テーブルのテーブルメタデータを10秒ごとに同期します。宛先テーブルでDDL操作を実行すると、2つのテーブル間のデータ同期に遅延が生じることがあります。
 
-## JDBC互換データベース用の外部テーブル
+## JDBC互換データベースの外部テーブル
 
-v2.3.0以降、StarRocksでは、JDBC互換データベースをクエリするための外部テーブルが提供されます。これにより、StarRocksにデータをインポートする必要なく、これらのデータベースのデータを驚くほど高速に分析できます。このセクションでは、StarRocksで外部テーブルを作成し、JDBC互換データベースのデータをクエリする方法について説明します。
+v2.3.0以降、StarRocksはJDBC互換データベースをクエリする外部テーブルを提供しています。これにより、StarRocksにデータを取り込む必要なく、これらのデータベースのデータを高速に分析できます。このセクションでは、StarRocksで外部テーブルを作成し、JDBC互換データベースのデータをクエリする方法について説明します。
 
 ### 前提条件
 
-JDBC外部テーブルを使用してデータをクエリする前に、FEおよびBEがJDBCドライバのダウンロードURLにアクセスできることを確認してください。ダウンロードURLは、JDBCリソースを作成するために使用されるステートメントで指定された`driver_url`パラメータで指定されます。
+JDBC外部テーブルを使用してデータをクエリする前に、FEおよびBEがJDBCドライバーのダウンロードURLにアクセスできることを確認してください。ダウンロードURLは、JDBCリソースの作成に使用されるステートメントで`driver_url`パラメータで指定されます。
 
 ### JDBCリソースの作成と管理
 
 #### JDBCリソースの作成
 
-データベースからデータをクエリする外部テーブルを作成する前に、データベースの接続情報を管理するために、StarRocksにJDBCリソースを作成する必要があります。データベースはJDBCドライバをサポートしている必要があり、そのデータベースは"対象データベース"として参照されます。リソースを作成した後は、それを使用して外部テーブルを作成できます。
+データベースからデータをクエリするための外部テーブルを作成する前に、データベースの接続情報を管理するためにStarRocksにJDBCリソースを作成する必要があります。データベースはJDBCドライバーをサポートし、"ターゲットデータベース"として参照されます。リソースを作成した後、それを使用して外部テーブルを作成できます。
 
-次のステートメントを実行して、`jdbc0`という名前のJDBCリソースを作成します:
+以下のステートメントを実行して、`jdbc0`という名前のJDBCリソースを作成します：
 
 ~~~SQL
 CREATE EXTERNAL RESOURCE jdbc0
@@ -118,66 +118,65 @@ PROPERTIES (
 );
 ~~~
 
-`PROPERTIES`内の必須のパラメータは次のとおりです:
+`PROPERTIES`内で必要なパラメータは次のとおりです：
 
 * `type`: リソースのタイプ。値を`jdbc`に設定します。
 
-* `user`: ターゲットデータベースに接続する際に使用されるユーザー名。
+* `user`: ターゲットデータベースに接続するために使用されるユーザー名。
 
-* `password`: ターゲットデータベースに接続する際に使用されるパスワード。
+* `password`: ターゲットデータベースに接続するために使用されるパスワード。
 
-* `jdbc_uri`: JDBCドライバが対象データベースに接続するために使用するURI。URIの形式は、データベースURI構文を満たす必要があります。一部の一般的なデータベースのURI構文については、[Oracle](https://docs.oracle.com/en/database/oracle/oracle-database/21/jjdbc/data-sources-and-URLs.html#GUID-6D8EFA50-AB0F-4A2B-88A0-45B4A67C361E)、[PostgreSQL](https://jdbc.postgresql.org/documentation/head/connect.html)、[SQL Server](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver16)の公式ウェブサイトを参照してください。
+* `jdbc_uri`: JDBCドライバーがターゲットデータベースに接続するために使用するURI。URIの形式はデータベースのURI構文を満たしている必要があります。一部の一般的なデータベースのURI構文については、[Oracle](https://docs.oracle.com/en/database/oracle/oracle-database/21/jjdbc/data-sources-and-URLs.html#GUID-6D8EFA50-AB0F-4A2B-88A0-45B4A67C361E)、[PostgreSQL](https://jdbc.postgresql.org/documentation/head/connect.html)、[SQL Server](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver16)の公式ウェブサイトを参照してください。
 
-> 注意: URIには対象データベースの名前を含める必要があります。例えば、前のコード例では、`jdbc_test` は接続したい対象データベースの名前です。
+> 注意: URIにはターゲットデータベースの名前を含める必要があります。たとえば、前述のコード例では、`jdbc_test`が接続したいターゲットデータベースの名前です。
 
-* `driver_url`: JDBCドライバのJARパッケージのダウンロードURL。HTTP URLまたはファイルURLがサポートされています。例: `https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.3/postgresql-42.3.3.jar` や `file:///home/disk1/postgresql-42.3.3.jar`。
+* `driver_url`: JDBCドライバーJARパッケージのダウンロードURL。HTTP URLまたはファイルURLがサポートされています。たとえば、`https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.3/postgresql-42.3.3.jar`または`file:///home/disk1/postgresql-42.3.3.jar`のようなURLがあります。
 
-* `driver_class`: JDBCドライバのクラス名。一般的なデータベースのJDBCドライバクラス名は次のとおりです:
-  * MySQL: com.mysql.jdbc.Driver (MySQL 5.x 以前), com.mysql.cj.jdbc.Driver (MySQL 6.x 以降)
+* `driver_class`: JDBCドライバーのクラス名。一般的なデータベースのJDBCドライバークラス名は次のとおりです：
+  * MySQL: com.mysql.jdbc.Driver (MySQL 5.x およびそれ以前), com.mysql.cj.jdbc.Driver (MySQL 6.x およびそれ以降)
   * SQL Server: com.microsoft.sqlserver.jdbc.SQLServerDriver
   * Oracle: oracle.jdbc.driver.OracleDriver
   * PostgreSQL: org.postgresql.Driver
 
-リソースが作成されると、FEは`driver_url`パラメータで指定されたURLを使用してJDBCドライバJARパッケージをダウンロードし、チェックサムを生成し、BEによってダウンロードされたJDBCドライバのチェックサムを検証します。
+リソースが作成される際に、FEは`driver_url`パラメータで指定されたURLを使用してJDBCドライバーJARパッケージをダウンロードし、チェックサムを生成し、BEによってダウンロードされたJDBCドライバーを検証するためにチェックサムを使用します。
+> ノート：JDBCドライバのJARパッケージのダウンロードに失敗した場合、リソースの作成も失敗します。
 
-> 注：JDBCドライバーJARパッケージのダウンロードが失敗すると、リソースの作成も失敗します。
+BEが初めてJDBC外部テーブルをクエリし、対応するJDBCドライバのJARパッケージが自分たちのマシンに存在しないことを見つけた場合、BEは「driver_url」パラメータで指定されたURLを使用してJDBCドライバのJARパッケージをダウンロードし、「${STARROCKS_HOME}/lib/jdbc_drivers」ディレクトリにすべてのJDBCドライバのJARパッケージを保存します。
 
-BE(Business Entity)が初めてJDBC外部テーブルをクエリし、対応するJDBCドライバーJARパッケージが自分たちのマシンに存在しないことを発見した場合、BEは`driver_url`パラメータで指定されたURLを使用してJDBCドライバーJARパッケージをダウンロードし、すべてのJDBCドライバーJARパッケージは`${STARROCKS_HOME}/lib/jdbc_drivers`ディレクトリに保存されます。
+#### JDBCリソースの表示
 
-#### JDBCリソースを表示
-
-次のステートメントを実行して、StarRocksのすべてのJDBCリソースを表示します:
+次のステートメントを実行して、StarRocksのすべてのJDBCリソースを表示します。
 
 ~~~SQL
 SHOW RESOURCES;
 ~~~
 
-> 注：`ResourceType`列は`jdbc`です。
+> ノート：`ResourceType`列は`jdbc`です。
 
-#### JDBCリソースを削除
+#### JDBCリソースの削除
 
-次のステートメントを実行して、`jdbc0`という名前のJDBCリソースを削除します:
+次のステートメントを実行して、`jdbc0`という名前のJDBCリソースを削除します。
 
 ~~~SQL
 DROP RESOURCE "jdbc0";
 ~~~
 
-> 注：JDBCリソースが削除されると、そのJDBCリソースを使用して作成されたすべてのJDBC外部テーブルが利用できなくなります。ただし、対象データベースのデータは失われません。対象データベースのデータを引き続きStarRocksを使用してクエリする必要がある場合は、JDBCリソースおよびJDBC外部テーブルを再作成できます。
+> ノート：JDBCリソースが削除されると、そのJDBCリソースを使用して作成されたすべてのJDBC外部テーブルが利用できなくなります。ただし、対象データベースのデータは失われません。対象データベースのデータを引き続きStarRocksでクエリする必要がある場合は、JDBCリソースとJDBC外部テーブルを再作成できます。
 
 ### データベースの作成
 
-次のステートメントを実行して、StarRocksに`jdbc_test`という名前のデータベースを作成してアクセスします:
+次のステートメントを実行して、StarRocksの`jdbc_test`という名前のデータベースを作成しアクセスします。
 
 ~~~SQL
 CREATE DATABASE jdbc_test; 
 USE jdbc_test; 
 ~~~
 
-> 注：前述のステートメントで指定するデータベース名は、対象データベースの名前と同じである必要はありません。
+> ノート：前述のステートメントで指定するデータベース名は、対象のデータベースの名前と同じである必要はありません。
 
 ### JDBC外部テーブルの作成
 
-次のステートメントを実行して、データベース`jdbc_test`に`jdbc_tbl`という名前のJDBC外部テーブルを作成します:
+次のステートメントを実行して、データベース`jdbc_test`に`jdbc_tbl`という名前のJDBC外部テーブルを作成します。
 
 ~~~SQL
 create external table jdbc_tbl (
@@ -190,28 +189,28 @@ properties (
 );
 ~~~
 
-`properties`の必須パラメータは次のとおりです:
+`properties`で必要なパラメータは次の通りです。
 
-* `resource`: 外部テーブルを作成するために使用されるJDBCリソースの名前。
+* `resource`：外部テーブルを作成するために使用されるJDBCリソースの名前。
 
-* `table`: データベース内の対象表の名前。
+* `table`：データベース内の対象テーブルの名前。
 
-StarRocksと対象データベース間のサポートされるデータ型とデータ型のマッピングについては、[データ型のマッピング](External_table.md#Data type mapping)を参照してください。
+サポートされるデータ型とStarRocksと対象データベース間のデータ型マッピングについては、「[データ型マッピング](External_table.md#データ型マッピング)」を参照してください。
 
-> 注：
+> ノート：
 >
 > * インデックスはサポートされていません。
-> * PARTITION BYまたはDISTRIBUTED BYを使用してデータの分散ルールを指定することはできません。
+> * PARTITION BYやDISTRIBUTED BYを使用してデータ分配規則を指定することはできません。
 
 ### JDBC外部テーブルのクエリ
 
-JDBC外部テーブルをクエリする前に、次のステートメントを実行してパイプラインエンジンを有効にする必要があります:
+JDBC外部テーブルをクエリする前に、次のステートメントを実行してPipelineエンジンを有効にする必要があります。
 
 ~~~SQL
 set enable_pipeline_engine=true;
 ~~~
 
-> 注：パイプラインエンジンがすでに有効になっている場合は、このステップをスキップできます。
+> ノート：Pipelineエンジンがすでに有効になっている場合は、このステップをスキップできます。
 
 次のステートメントを実行して、JDBC外部テーブルを使用して対象データベースのデータをクエリします。
 
@@ -219,13 +218,13 @@ set enable_pipeline_engine=true;
 select * from JDBC_tbl;
 ~~~
 
-StarRocksは、フィルタ条件を対象表にプッシュダウンして述語プッシュダウンをサポートしています。データソースにできるだけ近いところでフィルタ条件を実行することで、クエリのパフォーマンスを向上させることができます。現時点で、StarRocksはバイナリ比較演算子 (`>`, `>=`, `=`, `<`, および `<=`), `IN`, `IS NULL`, `BETWEEN ... AND ...` を含む演算子をプッシュダウンできます。ただし、StarRocksは関数をプッシュダウンできません。
+StarRocksは、フィルタ条件を対象テーブルにプッシュダウンすることにより、述語のプッシュダウンをサポートします。データソースにできるだけ近い場所でフィルタ条件を実行することで、クエリのパフォーマンスを向上させることができます。現在、StarRocksはバイナリ比較演算子（`>`、`>=`、`=`, `<`, and `<=`）、`IN`、`IS NULL`、および`BETWEEN ... AND ...`を含む演算子をプッシュダウンすることができます。ただし、StarRocksは関数をプッシュダウンすることはできません。
 
-### データ型のマッピング
+### データ型マッピング
 
-現時点で、StarRocksはNUMBER、STRING、TIME、およびDATEのような対象データベースの基本的な型のデータのみクエリできます。対象データベースのデータ値の範囲がStarRocksでサポートされていない場合、クエリはエラーを報告します。
+現在、StarRocksは対象データベースの基本的なデータ型（NUMBER、STRING、TIME、DATEなど）のデータのみをクエリできます。対象データベースのデータ値の範囲がStarRocksでサポートされていない場合、クエリでエラーが発生します。
 
-対象データベースとStarRocks間のマッピングは、対象データベースのタイプに基づいて異なります。
+対象データベースとStarRocksとの間のマッピングは、対象データベースのタイプに基づいて異なります。
 
 #### **MySQLとStarRocks**
 
@@ -295,15 +294,15 @@ StarRocksは、フィルタ条件を対象表にプッシュダウンして述�
 
 ### 制限
 
-* JDBC外部テーブルを作成する際、テーブルにインデックスを作成したり、PARTITION BYやDISTRIBUTED BYを使用してテーブルのデータ分散ルールを指定したりすることはできません。
+* JDBC外部テーブルを作成する際、テーブルにインデックスを作成したり、PARTITION BYやDISTRIBUTED BYを使用してテーブルのデータ分配規則を指定することはできません。
 
-* JDBC外部テーブルをクエリする際、StarRocksは関数をテーブルにプッシュダウンすることはできません。
+* JDBC外部テーブルをクエリする際、StarRocksは関数をテーブルにプッシュダウンすることができません。
 
-## (非推奨) Elasticsearch外部テーブル
+## （非推奨）Elasticsearch外部テーブル
 
-StarRocksとElasticsearchは2つの人気のある分析システムです。StarRocksは大規模分散コンピューティングに優れており、Elasticsearchはフルテキスト検索に適しています。StarRocksはElasticsearchと組み合わせることで、より完全なOLAPソリューションを提供できます。
+StarRocksとElasticsearchは2つの人気のある分析システムです。StarRocksは大規模な分散コンピューティングに効果的です。Elasticsearchは全文検索に理想的です。StarRocksとElasticsearchを組み合わせることで、より完全なOLAPソリューションを提供できます。
 
-### Elasticsearch外部テーブルの作成例
+### Elasticsearch外部テーブルを作成する例
 
 #### 構文
 
@@ -327,35 +326,35 @@ PROPERTIES (
 );
 ~~~
 
-以下の表はパラメータを説明します。
+以下の表はパラメータを説明しています。
 
-| **パラメータ**     | **必須** | **デフォルト値** | **説明**                                                   |
-| ----------------- | -------- | ---------------- | ----------------------------------------------------------- |
-| hosts             | はい     | なし             | Elasticsearchクラスターの接続アドレス。1つまたは複数のアドレスを指定できます。StarRocksはこのアドレスからElasticsearchのバージョンとインデックスのシャード割り当てを解析できます。 StarRocksは`GET /_nodes/http` API操作から返されたアドレスに基づいてElasticsearchクラスターと通信します。したがって、`host`パラメータの値は `GET /_nodes/http` API操作から返されたアドレスと同じでなければなりません。そうでないと、BEはElasticsearchクラスターと通信できない場合があります。 |
-| index             | はい     | なし             | StarRocksで作成されたElasticsearchテーブルのElasticsearchインデックスの名前。名前はエイリアスにすることができます。このパラメータはワイルドカード(\*)をサポートします。たとえば、`index`を <code class="language-text">hello*</code>に設定した場合、StarRocksは`hello`で始まるすべてのインデックスを取得します。 |
-| user              | いいえ   | 空               | 基本認証が有効になっているElasticsearchクラスターにログインするためのユーザー名。`/*cluster/state/*nodes/http`およびインデックスにアクセスできることを確認してください。 |
-| password          | いいえ   | 空               | Elasticsearchクラスターにログインするためのパスワード。 |
-| type              | いいえ   | `_doc`           | インデックスのタイプ。デフォルト値:`_doc`。Elasticsearch 8以降のバージョンでデータをクエリしたい場合は、このパラメータを構成する必要はありません。なぜなら、Elasticsearch 8以降のバージョンではマッピングタイプが削除されているからです。 |
-| es.nodes.wan.only    | No           | `false`           | Elasticsearchクラスターにアクセスしてデータを取得する際に、StarRocksが`hosts`で指定されたアドレスのみを使用するかどうかを指定します。<ul><li>`true`: StarRocksは`hosts`で指定されたアドレスのみを使用してElasticsearchクラスターにアクセスし、データを取得し、Elasticsearchインデックスのシャードが存在するデータノードをスニッフィングしません。StarRocksがElasticsearchクラスター内のデータノードのアドレスにアクセスできない場合は、このパラメータを`true`に設定する必要があります。</li><li>`false`: StarRocksは、Elasticsearchクラスターのインデックスのシャードが存在するデータノードをスニッフィングするために`host`で指定されたアドレスを使用します。StarRocksがクエリ実行プランを生成した後、関連するBEは直接Elasticsearchクラスター内のデータノードにアクセスして、インデックスのシャードからデータを取得します。StarRocksがElasticsearchクラスター内のデータノードのアドレスにアクセスできる場合は、デフォルト値である`false`を維持することをお勧めします。</li></ul> |
-| es.net.ssl           | No           | `false`           | Elasticsearchクラスターにアクセスする際にHTTPSプロトコルを使用できるかどうかを指定します。StarRocksのバージョン2.4以降のみがこのパラメータを構成することをサポートしています。<ul><li>`true`: HTTPSプロトコルおよびHTTPプロトコルの両方を使用してElasticsearchクラスターにアクセスできます。</li><li>`false`: HTTPプロトコルのみを使用してElasticsearchクラスターにアクセスできます。</li></ul> |
-| enable_docvalue_scan | No           | `true`            | Elasticsearchのカラムストレージから対象フィールドの値を取得するかどうかを指定します。ほとんどの場合、カラムストレージからデータを読み取る方がローストレージからデータを読み取るよりもパフォーマンスが向上します。 |
-| enable_keyword_sniff | No           | `true`            | KEYWORD型フィールドに基づいてElasticsearchのTEXT型フィールドをスニッフィングするかどうかを指定します。このパラメータを`false`に設定すると、StarRocksはトークン化後に一致を行います。 |
+| **パラメータ**       | **必須** | **デフォルト値** | **説明**                                                     |
+| -------------------- | -------- | ---------------- | ------------------------------------------------------------ |
+| hosts                | Yes      | なし             | Elasticsearchクラスタの接続アドレス。1つまたは複数のアドレスを指定できます。StarRocksはこのアドレスからElasticsearchのバージョンおよびインデックスのシャード割り当てを解析できます。StarRocksは`GET /_nodes/http`API操作の応答に基づいてElasticsearchクラスタと通信します。したがって、`host`パラメータの値は、`GET /_nodes/http`API操作の応答と同じである必要があります。さもないと、BEはElasticsearchクラスタと通信できなくなる可能性があります。 |
+| index                | Yes      | なし             | StarRocksのテーブルで作成されたElasticsearchインデックスの名前。名前はエイリアスにすることができます。このパラメータはワイルドカード（\*）をサポートします。たとえば、`index`を`hello*`に設定すると、StarRocksは`hello`で始まるすべてのインデックスを取得します。 |
+| user                 | No       | 空               | 基本認証が有効になっているElasticsearchクラスタにログインするためのユーザ名。`/*cluster/state/*nodes/http`およびインデックスへのアクセス権があることを確認してください。 |
+| password             | No       | 空               | Elasticsearchクラスタにログインするためのパスワード。 |
+| type                 | No       | `_doc`           | インデックスのタイプ。デフォルト値：`_doc`。Elasticsearch 8以降のバージョンでデータをクエリする場合は、このパラメータを構成する必要はありません。なぜなら、Elasticsearch 8以降のバージョンではマッピングのタイプが取り除かれているためです。|
+| es.nodes.wan.only    | いいえ           | `false`           | StarRocksがElasticsearchクラスタにアクセスし、データを取得するために`hosts`で指定されたアドレスのみを使用するかどうかを指定します。<ul><li>`true`: StarRocksは`hosts`で指定されたアドレスのみを使用してElasticsearchクラスタにアクセスし、データを取得し、Elasticsearchインデックスのシャードが存在するデータノードをスニッフィングしません。StarRocksがElasticsearchクラスタ内のデータノードのアドレスにアクセスできない場合、このパラメータを`true`に設定する必要があります。</li><li>`false`: StarRocksは`hosts`で指定されたアドレスを使用してElasticsearchクラスタ内のインデックスのシャードが存在するデータノードをスニッフィングします。StarRocksがElasticsearchクラスタ内のデータノードのアドレスにアクセスできる場合は、デフォルト値の`false`を保持することをお勧めします。</li></ul> |
+| es.net.ssl           | いいえ           | `false`           | ElasticsearchクラスタにアクセスするためにHTTPSプロトコルを使用できるかどうかを指定します。このパラメータを構成するのは、StarRocks 2.4以降のバージョンのみです。<ul><li>`true`: HTTPSプロトコルとHTTPプロトコルの両方を使用してElasticsearchクラスタにアクセスできます。</li><li>`false`: HTTPプロトコルのみを使用してElasticsearchクラスタにアクセスできます。</li></ul> |
+| enable_docvalue_scan | いいえ           | `true`            | Elasticsearchのカラム型ストレージから対象フィールドの値を取得するかどうかを指定します。ほとんどの場合、カラム型ストレージからデータを読み取る方が行型ストレージからデータを読み取るよりもパフォーマンスが向上します。 |
+| enable_keyword_sniff | いいえ           | `true`            | KEYWORD型フィールドに基づいてElasticsearchのTEXT型フィールドをスニッフィングするかどうかを指定します。このパラメータを`false`に設定すると、StarRocksはトークン化後に一致を実行します。 |
 
 ##### より高速なクエリのためのカラムスキャン
 
 `enable_docvalue_scan`を`true`に設定すると、StarRocksはElasticsearchからデータを取得する際に次のルールに従います。
 
-* **トライアンドシー**: StarRocksは自動的に対象フィールドについてカラムストレージが有効かどうかをチェックします。もし有効であれば、StarRocksはすべての値をカラムストレージから取得します。
-* **自動ダウングレード**: もし対象フィールドのいずれかがカラムストレージで利用できない場合、StarRocksは対象フィールドのすべての値をローストレージ（`_source`）からパースして取得します。
+* **試してみる**: StarRocksは自動的に対象フィールドに対してカラム型ストレージが有効かどうかをチェックします。有効な場合、StarRocksは対象フィールドのすべての値をカラム型ストレージから取得します。
+* **自動ダウングレード**: 対象フィールドのいずれか1つがカラム型ストレージで利用できない場合、StarRocksは対象フィールドのすべての値を行型ストレージ（`_source`）から解析および取得します。
 
 > **注意**
 >
-> * ElasticsearchではTEXT型フィールドにはカラムストレージが利用できません。したがって、TEXT型の値を含むフィールドをクエリする場合、StarRocksはフィールドの値を`_source`から取得します。
-> * 多くのフィールド（25以上）をクエリする場合、`docvalue`からフィールドの値を読み取ることは、`_source`からフィールドの値を読み取る場合と比較して目立った利点を示しません。
+> * Elasticsearchでは、TEXT型フィールドにはカラム型ストレージが利用できません。そのため、TEXT型の値を含むフィールドをクエリする場合、StarRocksはフィールドの値を`_source`から取得します。
+> * フィールドの値を`docvalue`から読み取る場合、フィールドの値を`_source`から読み取る場合と比較して顕著なメリットはありません。
 
 ##### KEYWORD型フィールドのスニッフィング
 
-`enable_keyword_sniff`を`true`に設定すると、Elasticsearchはインデックスを自動的に作成するため、インデックスなしでの直接的なデータ取り込みが可能となります。STRING型フィールドに対して、ElasticsearchはTEXT型とKEYWORD型の両方を持つフィールドを作成します。これがElasticsearchのMulti-Field機能が機能する仕組みです。マッピングは以下のようになります：
+`enable_keyword_sniff`を`true`に設定すると、Elasticsearchはインデックスを自動的に作成するため、インデックスなしで直接データを取り込むことが可能になります。STRING型フィールドの場合、ElasticsearchはTEXT型とKEYWORD型の両方を持つフィールドを作成します。これがElasticsearchのMulti-Field機能の動作方法です。マッピングは次のようになります:
 
 ~~~SQL
 "k4": {
@@ -369,23 +368,24 @@ PROPERTIES (
 }
 ~~~
 
-例えば、`k4`に対して"="フィルタリングを行う場合、Elasticsearch上のStarRocksはフィルタリング操作をElasticsearch TermQueryに変換します。
+例えば、`k4`で`=`フィルタリングを実行する場合、Elasticsearch上のStarRocksはElasticsearchのTermQueryにフィルタリング操作を変換します。
 
-元のSQLフィルタは以下のようになります：
+元のSQLフィルタは次のようになります:
 
 ~~~SQL
 k4 = "StarRocks On Elasticsearch"
 ~~~
 
-変換されたElasticsearchクエリDSLは以下のようになります：
+変換されたElasticsearchクエリDSLは次のようになります:
 
 ~~~SQL
 "term" : {
     "k4": "StarRocks On Elasticsearch"
+
 }
 ~~~
 
-`k4`の最初のフィールドはTEXT型であり、データ取り込み後に`k4`の構成されたアナライザによってトークン化されます（もしくは`k4`の構成されたアナライザが存在しない場合は標準アナライザによって）。その結果、最初のフィールドは`StarRocks`、`On`、`Elasticsearch`の3つの用語にトークン化されます。詳細は以下のようになります：
+`k4`の最初のフィールドはTEXT型であり、データ取り込み後に`k4`に構成されたアナライザー（または`k4`に構成されたアナライザーがない場合は標準アナライザー）でトークン化されます。その結果、最初のフィールドは`StarRocks`、`On`、`Elasticsearch` の3つの用語にトークン化されます。詳細は次の通りです:
 
 ~~~SQL
 POST /_analyze
@@ -395,7 +395,7 @@ POST /_analyze
 }
 ~~~
 
-トークン化の結果は以下のようになります：
+トークン化の結果は次のようになります:
 
 ~~~SQL
 {
@@ -425,7 +425,7 @@ POST /_analyze
 }
 ~~~
 
-以下のようにクエリを実行するとします：
+以下のようにクエリを実行すると:
 
 ~~~SQL
 "term" : {
@@ -433,9 +433,9 @@ POST /_analyze
 }
 ~~~
 
-辞書に一致する用語がないため、用語`StarRocks On Elasticsearch`に対して結果は返されません。
+辞書に一致する用語がないため、`StarRocks On Elasticsearch`という用語に一致する結果は返されません。
 
-しかし、`enable_keyword_sniff`を`true`に設定した場合、StarRocksは`k4 = "StarRocks On Elasticsearch"`を`k4.keyword = "StarRocks On Elasticsearch"`に変換してSQLセマンティクスに一致させます。変換された`StarRocks On Elasticsearch`クエリDSLは以下のようになります：
+しかし、`enable_keyword_sniff`を`true`に設定している場合、StarRocksは`k4 = "StarRocks On Elasticsearch"` を `k4.keyword = "StarRocks On Elasticsearch"`に変換し、SQLの意味に一致させるため、変換された`StarRocks On Elasticsearch` クエリDSLは次のようになります:
 
 ~~~SQL
 "term" : {
@@ -443,11 +443,11 @@ POST /_analyze
 }
 ~~~
 
-`k4.keyword`はKEYWORD型です。したがって、データが完全な用語としてElasticsearchに書き込まれ、成功した一致が可能となります。
+`k4.keyword`はKEYWORD型です。そのため、データは完全な用語としてElasticsearchに書き込まれ、成功した一致が可能になります。
 
 #### カラムデータ型のマッピング
 
-外部テーブルを作成する際、Elasticsearchテーブルのカラムデータ型に基づいて外部テーブルのカラムデータ型を指定する必要があります。以下の表はカラムデータ型のマッピングを示しています。
+外部テーブルを作成する際に、Elasticsearchテーブルのカラムのデータ型に基づいて外部テーブルのカラムのデータ型を指定する必要があります。次の表はカラムデータ型のマッピングを示しています。
 
 | **Elasticsearch** | **StarRocks**               |
 | ----------------- | --------------------------- |
@@ -467,12 +467,12 @@ POST /_analyze
 
 > **注意**
 >
-> * StarRocksはNESTED型のデータをJSON関連の関数を使用して読み取ります。
-> * Elasticsearchは自動的に多次元配列を一次元配列にフラット化します。StarRocksも同様に行います。**ElasticsearchからのARRAYデータのクエリサポートはv2.5から追加されました。**
+> * StarRocksはNESTED型データをJSON関連の関数を使用して読み取ります。
+> * Elasticsearchは多次元配列を一次元配列に自動的にフラット化します。StarRocksも同様です。 **ElasticsearchからARRAYデータをクエリするサポートはv2.5から追加されています。**
 
-### プレディケートプッシュダウン
+### プレディケートのプッシュダウン
 
-StarRocksはプレディケートプッシュダウンをサポートしています。フィルタはElasticsearchにプッシュダウンされて実行され、クエリのパフォーマンスが向上します。次の表にはプレディケートプッシュダウンをサポートする演算子がリストされています。
+StarRocksはプレディケートのプッシュダウンをサポートしています。フィルタは実行のためにElasticsearchにプッシュダウンされ、クエリのパフォーマンスが向上します。次の表はプレディケートのプッシュダウンをサポートする演算子を示しています。
 
 |   SQL構文  |   ES構文  |
 | :---: | :---: |
@@ -483,11 +483,11 @@ StarRocksはプレディケートプッシュダウンをサポートしてい�
 |  `or`   |  bool.should   |
 |  `not`   |  bool.must_not   |
 |  `not in`   |  bool.must_not + terms   |
-|  `esquery`   |  ES Query DSL  |
+|  `esquery`   |  ESクエリDSL  |
 
 ### 例
 
-**esquery function**は、SQLで表現できないクエリ（例: matchやgeoshape）をElasticsearchにフィルタリングするために使用されます。esquery関数の第1パラメータはインデックスを関連付けるために使用されます。第2パラメータは基本的なQuery DSLのJSON式であり、{}で囲まれている必要があります。**JSON式には1つのルートキーのみ**を持っていなければなりません。例: match、geo_shape、またはboolです。
+**esquery関数**を使用して、SQLで表現できないクエリ（matchやgeoshapeなど）をElasticsearchにフィルタリングするために使用します。esquery関数の最初のパラメーターはインデックスの関連付けに使用されます。2番目のパラメータは基本的なクエリDSLのJSON式であり、{}で囲まれています。**JSON式は1つのルートキーのみを持っている必要があります**。例えば、match、geo_shape、またはboolなどです。
 
 * matchクエリ
 
@@ -499,7 +499,7 @@ select * from es_table where esquery(k4, '{
 }');
 ~~~
 
-* ジオ関連クエリ
+* 地理関連のクエリ
 
 ~~~sql
 select * from es_table where esquery(k4, '{
@@ -551,19 +551,19 @@ select * from es_table where esquery(k4, ' {
 ~~~
 
 ### 使用上の注意
-* Elasticsearch 5.xより前のバージョンは、5.x以降と異なる方法でデータをスキャンします。現在、**5.x以降のバージョン**のみがサポートされています。
-* HTTP基本認証が有効になっているElasticsearchクラスターはサポートされています。
-* StarRocksからデータをクエリする場合、Elasticsearchから直接データをクエリするよりも遅くなることがあります。これは、Elasticsearchが実際のデータをフィルタリングする必要なく、対象ドキュメントのメタデータを直接読み取るため、カウントクエリが高速化されるためです。
+* Elasticsearch の 5.x より前のバージョンは、5.x より後のバージョンとは異なる方法でデータをスキャンします。現在、**5.x より後のバージョンのみ**がサポートされています。
+* HTTP 基本認証が有効になっている Elasticsearch クラスターはサポートされています。
+* StarRocks からデータを問い合わせる際、Elasticsearch から直接データを問い合わせるよりも速くない場合があります。その理由は、Elasticsearch は実際のデータをフィルタする必要がなく、対象ドキュメントのメタデータを直接読み取るため、カウントクエリが高速化されることです。
 
-## (非推奨) Hive外部テーブル
+## (非推奨) Hive 外部テーブル
 
-Hive外部テーブルを使用する前に、サーバーにJDK 1.8がインストールされていることを確認してください。
+Hive 外部テーブルを使用する前に、サーバーに JDK 1.8 がインストールされていることを確認してください。
 
-### Hiveリソースの作成
+### Hive リソースの作成
 
-HiveリソースはHiveクラスターに対応します。StarRocksで使用されるHiveクラスターを構成する必要があります。Hive外部テーブルで使用されるHiveリソースを指定する必要があります。
+Hive リソースは Hive クラスターに対応します。StarRocks で使用される Hive クラスターを構成する必要があります。Hive 外部テーブルで使用される Hive リソースを指定する必要があります。
 
-* `hive0`という名前のHiveリソースを作成します。
+* hive0 という名前の Hive リソースを作成します。
 
 ~~~sql
 CREATE EXTERNAL RESOURCE "hive0"
@@ -573,19 +573,19 @@ PROPERTIES (
 );
 ~~~
 
-* StarRocksで作成されたリソースを表示します。
+* StarRocks で作成されたリソースを表示します。
 
 ~~~sql
 SHOW RESOURCES;
 ~~~
 
-* `hive0`という名前のリソースを削除します。
+* `hive0` という名前のリソースを削除します。
 
 ~~~sql
 DROP RESOURCE "hive0";
 ~~~
 
-StarRocks 2.3以降では、Hiveリソースの`hive.metastore.uris`を変更できます。詳細については、[ALTER RESOURCE](../sql-reference/sql-statements/data-definition/ALTER_RESOURCE.md)を参照してください。
+Hive リソースの `hive.metastore.uris` を StarRocks 2.3 以降のバージョンで変更できます。詳細については、[ALTER RESOURCE](../sql-reference/sql-statements/data-definition/ALTER_RESOURCE.md) を参照してください。
 
 ### データベースの作成
 
@@ -594,7 +594,7 @@ CREATE DATABASE hive_test;
 USE hive_test;
 ~~~
 
-### Hive外部テーブルの作成
+### Hive 外部テーブルの作成
 
 構文
 
@@ -607,7 +607,7 @@ PROPERTIES (
 );
 ~~~
 
-例: `hive0`リソースに対応するHiveクラスターの`rawdata`データベースの下に外部テーブル`profile_parquet_p7`を作成します。
+例：`hive0` リソースに対応する Hive クラスターの `rawdata` データベース内に、外部テーブル `profile_parquet_p7` を作成します。
 
 ~~~sql
 CREATE EXTERNAL TABLE `profile_wos_p7` (
@@ -635,22 +635,22 @@ PROPERTIES (
 説明:
 
 * 外部テーブルの列
-  * 列名はHiveテーブル内の列名と同じである必要があります。
-  * 列の順序は、Hiveテーブルの列順と**同じである必要はありません**。
-  * Hiveテーブルの**一部の列のみを選択**できますが、すべての**パーティションキー列**を選択する必要があります。
-  * 外部テーブルのパーティションキー列は`partition by`を使用して指定する必要はありません。他の列と同じ記述リストで定義する必要があります。パーティション情報を指定する必要はありません。StarRocksは自動的にこの情報をHiveテーブルから同期します。
-  * `ENGINE`をHIVEに設定します。
+  * 列名は、Hive テーブル内の列名と同じである必要があります。
+  * 列の順序は、Hive テーブル内の列の順序と**同じである必要はありません**。
+  * Hive テーブルの**一部の列のみを選択**することができますが、**すべての** **パーティションキー列**を選択する必要があります。
+  * 外部テーブルのパーティションキー列は `partition by` を使用して指定する必要はありません。他の列と同じ記述リストで定義する必要があります。パーティション情報は指定する必要はありません。StarRocks は、これらの情報を自動的に Hive テーブルから同期します。
+  * `ENGINE` を HIVE に設定します。
 * PROPERTIES:
-  * **hive.resource**: 使用されるHiveリソース。
-  * **database**: Hiveデータベース。
-  * **table**: Hive内のテーブル。**ビュー**はサポートされていません。
-* 次の表は、HiveとStarRocksの列データ型のマッピングを記載しています。
+  * **hive.resource**: 使用される Hive リソース。
+  * **database**: Hive データベース。
+  * **table**: Hive 内のテーブル。**view** はサポートされていません。
+* 次の表は、Hive と StarRocks の列データ型のマッピングを示しています。
 
-    |  Hiveの列データ型   |  StarRocksの列データ型   | 説明 |
+    |  Hive の列データ型  |  StarRocks の列データ型   | 説明 |
     | --- | --- | ---|
     |   INT/INTEGER  | INT    |
     |   BIGINT  | BIGINT    |
-    |   TIMESTAMP  | DATETIME    | TIMESTAMPデータをDATETIMEデータに変換する際、精度およびタイムゾーン情報が失われます。タイムゾーンオフセットを持たないDATETIMEデータにTIMESTAMPデータを変換する必要がありますが、セッション変数のタイムゾーンに基づいて行う必要があります。 |
+    |   TIMESTAMP  | DATETIME    | TIMESTAMP データを DATETIME データに変換する際、精度とタイムゾーン情報が失われます。タイムゾーン オフセットを持たない DATETIME データに TIMESTAMP データを変換する必要があります。 |
     |  STRING  | VARCHAR   |
     |  VARCHAR  | VARCHAR   |
     |  CHAR  | CHAR   |
@@ -661,41 +661,41 @@ PROPERTIES (
 
 > 注意:
 >
-> * 現在、サポートされているHiveストレージ形式はParquet、ORC、CSVです。
-ストレージ形式がCSVの場合、エスケープ文字として引用符を使用することはできません。
-> * SNAPPYおよびLZ4圧縮形式がサポートされています。
-> * クエリ可能なHive文字列列の最大長は1 MBです。文字列列が1 MBを超えると、ヌル列として処理されます。
+> * 現在、サポートされている Hive ストレージ形式は、Parquet、ORC、CSV です。
+CSV 形式の場合、エスケープ文字として引用符を使用することはできません。
+> * SNAPPY および LZ4 圧縮形式がサポートされています。
+> * クエリ可能な Hive 文字列列の最大長は 1 MB です。文字列列が 1 MB を超える場合、それは null 列として処理されます。
 
-### Hive外部テーブルの使用
+### Hive 外部テーブルの使用
 
-`profile_wos_p7`の総行数をクエリします。
+`profile_wos_p7` の合計行数をクエリします。
 
 ~~~sql
 select count(*) from profile_wos_p7;
 ~~~
 
-### キャッシュされたHiveテーブルのメタデータを更新
+### キャッシュされた Hive テーブルのメタデータを更新する
 
-* Hiveパーティション情報および関連ファイル情報はStarRocksでキャッシュされています。キャッシュは`hive_meta_cache_refresh_interval_s`で指定された間隔で更新されます。デフォルト値は7200です。`hive_meta_cache_ttl_s`はキャッシュのタイムアウト期間を指定し、デフォルト値は86400です。
-  * キャッシュされたデータを手動で更新することもできます。
-    1. Hiveのテーブルにパーティションが追加または削除された場合、StarRocksでキャッシュされたテーブルメタデータを更新するために`REFRESH EXTERNAL TABLE hive_t`コマンドを実行する必要があります。`hive_t`はStarRocks内のHive外部テーブルの名前です。
-    2. 一部のHiveパーティションのデータが更新された場合、`REFRESH EXTERNAL TABLE hive_t PARTITION ('k1=01/k2=02', 'k1=03/k2=04')`コマンドを実行して、StarRocksでキャッシュされたデータを更新する必要があります。`hive_t`はStarRocks内のHive外部テーブルの名前です。`'k1=01/k2=02'`および`'k1=03/k2=04'`はデータが更新されたHiveパーティションの名前です。
-    3. `REFRESH EXTERNAL TABLE hive_t`を実行すると、StarRocksはまずHive外部テーブルの列情報がHiveメタストアから返されるHiveテーブルの列情報と同じかどうかを確認します。Hiveテーブルのスキーマが変更された場合（列の追加や削除など）、StarRocksは変更をHive外部テーブルに同期させます。同期後、Hive外部テーブルの列順はHiveテーブルの列順と同じままで、パーティション列が最後の列となります。
-* HiveデータがParquet、ORC、およびCSV形式で格納されている場合、Hiveテーブルのスキーマ変更（COLUMNの追加やREPLACE COLUMNなど）をStarRocks 2.3およびそれ以降のバージョンでHive外部テーブルに同期できます。
+* Hive のパーティション情報と関連するファイル情報は StarRocks でキャッシュされます。キャッシュは `hive_meta_cache_refresh_interval_s` で指定された間隔で更新されます。デフォルト値は 7200 です。 `hive_meta_cache_ttl_s` は、キャッシュのタイムアウト期間を指定し、デフォルト値は 86400 です。
+  * キャッシュされたデータは、手動で更新することもできます。
+    1. Hive のテーブルにパーティションが追加または削除された場合、StarRocks にキャッシュされたテーブルのメタデータを更新するには、`REFRESH EXTERNAL TABLE hive_t` コマンドを実行する必要があります。`hive_t` は StarRocks の Hive 外部テーブルの名前です。
+    2. いくつかの Hive パーティションのデータが更新された場合、`REFRESH EXTERNAL TABLE hive_t PARTITION ('k1=01/k2=02', 'k1=03/k2=04')` コマンドを実行して StarRocks のキャッシュデータを更新する必要があります。`hive_t` は StarRocks の Hive 外部テーブルの名前です。`'k1=01/k2=02'` および `'k1=03/k2=04'` はデータが更新された Hive パーティションの名前です。
+    3. `REFRESH EXTERNAL TABLE hive_t` を実行すると、StarRocks はまず、Hive Metastore で返される Hive テーブルの列情報が Hive 外部テーブルの列情報と同じかどうかをチェックします。Hive テーブルのスキーマが変更された場合、列の追加や削除など、StarRocks は変更を Hive 外部テーブルに同期します。同期後、Hive 外部テーブルの列順序は引き続き Hive テーブルの列順序と同じであり、パーティション列が最後の列となります。
+* Hive データが Parquet、ORC、および CSV 形式で保存されている場合、StarRocks 2.3 以降のバージョンで、Hive テーブルのスキーマ変更（列の追加や置換など）を Hive 外部テーブルに同期することができます。
 
-### オブジェクトストレージのアクセス
+### オブジェクトストレージへのアクセス
 
-   * FE設定ファイルのパスは`fe/conf`です。Hadoopクラスターをカスタマイズする必要がある場合は、設定ファイルを追加できます。例: HDFSクラスターが高可用性名前サービスを使用している場合は、`fe/conf`配下に`hdfs-site.xml`を配置する必要があります。HDFSがViewFsで構成されている場合は、`fe/conf`に`core-site.xml`を配置する必要があります。
-   * BE設定ファイルのパスは`be/conf`です。Hadoopクラスターをカスタマイズする必要がある場合は、設定ファイルを追加できます。例: HDFSクラスターが高可用性名前サービスを使用している場合は、`be/conf`配下に`hdfs-site.xml`を配置する必要があります。HDFSがViewFsで構成されている場合は、`be/conf`に`core-site.xml`を配置する必要があります。
-   * BEが配置されているマシンで、BE **起動スクリプト** `bin/start_be.sh`の中でJAVA_HOMEをJDK環境として設定します。例: `export JAVA_HOME = <JDKのパス>`。この設定をスクリプトの先頭に追加し、設定が有効になるようにBEを再起動する必要があります。
-   * Kerberosサポートの設定:
-      1. `kinit -kt keytab_path principal`を使用してすべてのFE/BEマシンにログインするには、HiveとHDFSにアクセスできる必要があります。`kinit`コマンドのログインは一定期間有効であり、定期的に実行するためにcrontabに配置する必要があります。
-      2. `fe/conf`に`hive-site.xml/core-site.xml/hdfs-site.xml`を配置し、`be/conf`に`core-site.xml/hdfs-site.xml`を配置します。
-      3. **$FE_HOME/conf/fe.conf**ファイルの`JAVA_OPTS`オプションの値に`-Djava.security.krb5.conf=/etc/krb5.conf`を追加します。**/etc/krb5.conf**は**krb5.conf**ファイルの保存パスです。このパスはOSに基づいて変更できます。
-4. **$BE_HOME/conf/be.conf**ファイルに直接`JAVA_OPTS="-Djava.security.krb5.conf=/etc/krb5.conf"`を追加してください。**/etc/krb5.conf**は**krb5.conf**ファイルの保存パスです。お使いのオペレーティング システムに合わせてパスを変更できます。
-5. Hiveリソースを追加する場合は、`hive.metastore.uris`にドメイン名を渡す必要があります。また、Hive/HDFSドメイン名とIPアドレスのマッピングを**/etc/hosts**ファイルに追加する必要があります。
+FE 設定ファイルのパスは `fe/conf` であり、Hadoop クラスターをカスタマイズする必要がある場合、設定ファイルを追加できます。例: HDFS クラスターが高可用性のネームサービスを使用する場合、`hdfs-site.xml` を `fe/conf` に配置する必要があります。HDFS が ViewFs で構成されている場合、`core-site.xml` を `fe/conf` に配置する必要があります。
+BE 設定ファイルのパスは `be/conf` であり、Hadoop クラスターをカスタマイズする必要がある場合、設定ファイルを追加できます。例: HDFS クラスターが高可用性のネームサービスを使用する場合、`hdfs-site.xml` を `be/conf` に配置する必要があります。HDFS が ViewFs で構成されている場合、`core-site.xml` を `be/conf` に配置する必要があります。
+BE があるマシンで、BE **起動スクリプト** `bin/start_be.sh` に JAVA_HOME を JRE 環境ではなく JDK 環境として構成します。例: `export JAVA_HOME = <JDK パス>`。この構成をスクリプトの最初に追加し、構成が有効になるように BE を再起動する必要があります。
+Kerberos サポートの設定:
+1. `kinit -kt キータブ_パス principal` で FE/BE マシン全体にログインするには、Hive と HDFS へのアクセス権が必要です。kinit コマンドのログインは一定期間有効であり、定期的に実行されるよう crontab に追加する必要があります。
+2. `fe/conf` に `hive-site.xml/core-site.xml/hdfs-site.xml` を配置し、`be/conf` に `core-site.xml/hdfs-site.xml` を配置します。
+3. **$FE_HOME/conf/fe.conf** ファイルの `JAVA_OPTS` オプションの値に `-Djava.security.krb5.conf=/etc/krb5.conf` を追加します。**/etc/krb5.conf** は **krb5.conf** ファイルの保存パスです。これはオペレーティング システムに基づいてパスを変更できます。
+4. **$BE_HOME/conf/be.conf**ファイルに `JAVA_OPTS="-Djava.security.krb5.conf=/etc/krb5.conf"` を直接追加します。 **/etc/krb5.conf** は**krb5.conf**ファイルの保存パスです。操作システムに基づいてパスを変更できます。
+   5. Hiveリソースを追加する場合、`hive.metastore.uris`にドメイン名を渡さなければなりません。さらに、Hive/HDFSのドメイン名とIPアドレスのマッピングを**/etc/hosts**ファイルに追加する必要があります。
 
-AWS S3のサポートを構成する場合: `fe/conf/core-site.xml`および`be/conf/core-site.xml`に次の構成を追加してください。
+* AWS S3のサポートを構成します：`fe/conf/core-site.xml`および`be/conf/core-site.xml`に以下の構成を追加します。
 
    ~~~XML
    <configuration>
@@ -718,41 +718,41 @@ AWS S3のサポートを構成する場合: `fe/conf/core-site.xml`および`be/
    </configuration>
    ~~~
 
-   1. `fs.s3a.access.key`: AWSアクセスキーIDです。
-   2. `fs.s3a.secret.key`: AWSシークレットキーです。
-   3. `fs.s3a.endpoint`: 接続するAWS S3のエンドポイントです。
-   4. `fs.s3a.connection.maximum`: StarRocksからS3への並行接続の最大数です。クエリ中に`Timeout waiting for connection from poll`のエラーが発生した場合は、このパラメータを大きな値に設定できます。
+   1. `fs.s3a.access.key`: AWSアクセスキーID。
+   2. `fs.s3a.secret.key`: AWSシークレットキー。
+   3. `fs.s3a.endpoint`: 接続先のAWS S3エンドポイント。
+   4. `fs.s3a.connection.m``aximum`: StarRocksからS3への同時接続の最大数。クエリ実行中にエラー`Timeout waiting for connection from poll`が発生した場合は、このパラメーターをより大きな値に設定できます。
 
-## (非推奨) Iceberg外部テーブル
+## (廃止) Iceberg外部テーブル
 
-v2.1.0以降、StarRocksでは外部テーブルを使用してApache Icebergからデータをクエリできます。Icebergのデータをクエリするには、StarRocksでIceberg外部テーブルを作成する必要があります。テーブルを作成する際は、外部テーブルとクエリしたいIcebergテーブルとの間でマッピングを確立する必要があります。
+v2.1.0以降、StarRocksでは外部テーブルを使用してApache Icebergのデータを問い合わせることができます。Icebergデータを問い合わせるには、StarRocksにIceberg外部テーブルを作成する必要があります。テーブルを作成する際は、外部テーブルと問い合わせたいIcebergテーブルとの間のマッピングを確立する必要があります。
 
 ### 開始する前に
 
-StarRocksがApache Icebergで使用するメタデータサービス（Hiveメタストアなど）、ファイルシステム（HDFSなど）、およびオブジェクトストレージシステム（Amazon S3およびAlibaba Cloudオブジェクトストレージサービス）にアクセスする権限があることを確認してください。
+StarRocksがApache Icebergで使用するメタデータサービス（Hiveメタストアなど）、ファイルシステム（HDFSなど）、およびオブジェクトストレージシステム（Amazon S3およびAlibaba Cloud Object Storage Serviceなど）にアクセスする権限があることを確認してください。
 
 ### 注意事項
 
-* StarRocksのIceberg外部テーブルは、次のタイプのデータのみをクエリできます。
-  * Iceberg v1テーブル（分析データテーブル）。Iceberg v2（行レベルの削除）のORC形式テーブルはv3.0以降、およびIceberg v2のParquet形式テーブルはv3.1以降でサポートされます。Iceberg v1テーブルとIceberg v2テーブルの違いについては、[Iceberg Table Spec](https://iceberg.apache.org/spec/)を参照してください。
-  * gzip（デフォルトフォーマット）、Zstd、LZ4、またはSnappy形式で圧縮されたテーブル。
+* StarRocks 2.3およびそれ以降のバージョンでは、Iceberg外部テーブルは次の種類のデータのみを問い合わせるために使用できます：
+  * Iceberg v1テーブル（解析データテーブル）。ORC形式のIceberg v2（行レベル削除）テーブルはv3.0以降でサポートされ、Parquet形式のIceberg v2テーブルはv3.1以降でサポートされます。Iceberg v1テーブルとIceberg v2テーブルの違いについては、[Iceberg Table Spec](https://iceberg.apache.org/spec/)を参照してください。
+  * gzip（デフォルト形式）、Zstd、LZ4、またはSnappy形式で圧縮されたテーブル。
   * ParquetまたはORC形式で保存されたファイル。
 
-* StarRocksの2.3およびそれ以降のバージョンのIceberg外部テーブルでは、Icebergテーブルのスキーマ変更を同期できます。ただし、StarRocksの2.3より古いバージョンのIceberg外部テーブルでは同期できません。Icebergテーブルのスキーマが変更された場合は、対応する外部テーブルを削除し、新しい外部テーブルを作成する必要があります。
+* StarRocks 2.3およびそれ以降のバージョンでは、Iceberg外部テーブルはIcebergテーブルのスキーマ変更を同期でサポートしますが、それ以前のバージョンではサポートしません。Icebergテーブルのスキーマが変更された場合は、対応する外部テーブルを削除して新しいテーブルを作成する必要があります。
 
 ### 手順
 
-#### ステップ 1: Icebergリソースを作成
+#### 手順 1: Icebergリソースを作成
 
-Iceberg外部テーブルを作成する前に、StarRocksでIcebergリソースを作成する必要があります。このリソースはIcebergアクセス情報を管理するために使用されます。さらに、このリソースを、外部テーブルを作成する文で指定する必要があります。ビジネス要件に合わせてリソースを作成できます。
+Iceberg外部テーブルを作成する前に、StarRocksでIcebergリソースを作成する必要があります。このリソースはIcebergへのアクセス情報を管理するために使用されます。また、このリソースをIceberg外部テーブルを作成する際に指定する必要があります。ビジネス要件に基づいてリソースを作成できます：
 
-* IcebergテーブルのメタデータがHiveメタストアから取得される場合は、リソースを作成し、カタログタイプを`HIVE`に設定できます。
+* IcebergテーブルのメタデータがHiveメタストアから取得される場合は、リソースを作成し、カタログタイプを`HIVE`に設定することができます。
 
-* Icebergテーブルのメタデータが他のサービスから取得される場合は、カスタムカタログを作成する必要があります。その後、リソースを作成し、カタログタイプを`CUSTOM`に設定できます。
+* Icebergテーブルのメタデータが他のサービスから取得される場合は、カスタムカタログを作成する必要があります。その後、リソースを作成し、カタログタイプを`CUSTOM`に設定する必要があります。
 
-##### カタログタイプが`HIVE`のリソースを作成
+##### カタログタイプが`HIVE`であるリソースを作成
 
-例えば、`iceberg0`という名前のリソースを作成し、カタログタイプを`HIVE`に設定してください。
+例えば、名前を`iceberg0`として、カタログタイプを`HIVE`に設定したリソースを作成します。
 
 ~~~SQL
 CREATE EXTERNAL RESOURCE "iceberg0" 
@@ -763,19 +763,19 @@ PROPERTIES (
 );
 ~~~
 
-以下の表に、関連するパラメータを示します。
+以下の表は、関連するパラメータについて説明しています。
 
-| **パラメータ**                     | **説明**                                                     |
+| **Parameter**                       | **Description**                                              |
 | ----------------------------------- | ------------------------------------------------------------ |
-| type                                | リソースのタイプ。値を`iceberg`に設定してください。         |
-| iceberg.catalog.type                | リソースのカタログのタイプ。Hiveカタログとカスタムカタログの両方がサポートされています。Hiveカタログを指定する場合は、値を`HIVE`に設定してください。カスタムカタログを指定する場合は、値を `CUSTOM`に設定してください。 |
-| iceberg.catalog.hive.metastore.uris | HiveメタストアのURIです。パラメータ値は、次の形式にしてください： `thrift://<IcebergメタデータのIPアドレス>:<ポート番号>`。ポート番号のデフォルト値は9083です。Apache Icebergは、Hiveカタログを使用してHiveメタストアにアクセスし、その後Icebergテーブルのメタデータをクエリします。 |
+| type                                | リソースのタイプ。値を`iceberg`に設定します。               |
+| iceberg.catalog.type              | リソースのカタログタイプ。Hiveカタログとカスタムカタログの両方がサポートされています。Hiveカタログを指定する場合は、値を`HIVE`に設定します。カスタムカタログを指定する場合は、値を`CUSTOM`に設定します。 |
+| iceberg.catalog.hive.metastore.uris | HiveメタストアのURI。パラメータの値は次の形式です： `thrift://<IcebergメタデータのIPアドレス>:<ポート番号>`。ポート番号はデフォルトで9083になります。Apache IcebergはHiveカタログを使用してHiveメタストアにアクセスし、その後Icebergテーブルのメタデータを問い合わせます。 |
 
-##### カタログタイプが`CUSTOM`のリソースを作成
+##### カタログタイプが`CUSTOM`であるリソースを作成
 
-カスタムカタログは、抽象クラスBaseMetastoreCatalogを継承する必要があり、IcebergCatalogインターフェースを実装する必要があります。さらに、カスタムカタログのクラス名は、StarRocksにすでに存在するクラス名と重複してはいけません。カタログが作成されたら、カタログと関連ファイルをパッケージ化し、それらを各フロントエンド（FE）の**fe/lib**パスに配置し、各FEを再起動してください。これらの操作を完了した後、カスタムカタログのリソースを作成できます。
+カスタムカタログは、BaseMetastoreCatalog抽象クラスを継承する必要があり、IcebergCatalogインターフェースを実装する必要があります。また、カスタムカタログのクラス名はStarRockにすでに存在するクラスの名前と重複しないようにする必要があります。カタログが作成されたら、カタログとそれに関連するファイルをパッケージ化し、それぞれのフロントエンド（FE）の**fe/lib**パスに配置し、それぞれのFEを再起動してください。これらの操作を完了した後に、カスタムカタログであるリソースを作成することができます。
 
-例えば、`iceberg1`という名前のリソースを作成し、カタログタイプを`CUSTOM`に設定してください。
+例えば、名前を`iceberg1`として、カタログタイプを`CUSTOM`に設定したリソースを作成します。
 
 ~~~SQL
 CREATE EXTERNAL RESOURCE "iceberg1" 
@@ -786,15 +786,15 @@ PROPERTIES (
 );
 ~~~
 
-以下の表に、関連するパラメータを示します。
+以下の表は、関連するパラメータについて説明しています。
 
-| **パラメータ**            | **説明**                                                     |
+| **Parameter**          | **Description**                                              |
 | ---------------------- | ------------------------------------------------------------ |
-| type                   | リソースのタイプ。値を`iceberg`に設定してください。         |
-| iceberg.catalog.type | リソースのカタログのタイプ。Hiveカタログとカスタムカタログの両方がサポートされています。Hiveカタログを指定する場合は、値を`HIVE`に設定してください。カスタムカタログを指定する場合は、値を `CUSTOM`に設定してください。 |
-| iceberg.catalog-impl   | カスタムカタログの完全修飾クラス名です。FEはこの名前に基づいてカタログを検索します。カタログにカスタム設定項目がある場合は、Iceberg外部テーブルを作成する際に`PROPERTIES`パラメータにキーと値のペアとして追加する必要があります。 |
+| type                   | リソースのタイプ。値を`iceberg`に設定します。               |
+| iceberg.catalog.type | リソースのカタログタイプ。Hiveカタログとカスタムカタログの両方がサポートされています。Hiveカタログを指定する場合は、値を`HIVE`に設定します。カスタムカタログを指定する場合は、値を`CUSTOM`に設定します。 |
+| iceberg.catalog-impl   | カスタムカタログの完全修飾クラス名。FEはこの名前を基にカタログを検索します。カタログにカスタム構成項目が含まれている場合は、Iceberg外部テーブルを作成する際に`PROPERTIES`パラメータにそれらをキーと値のペアで追加する必要があります。 |
 
-Icebergリソースの`hive.metastore.uris`および`iceberg.catalog-impl`パラメータは、StarRocksの2.3およびそれ以降のバージョンで変更できます。詳細については、[ALTER RESOURCE](../sql-reference/sql-statements/data-definition/ALTER_RESOURCE.md)を参照してください。
+Icebergリソースの`hive.metastore.uris`および`iceberg.catalog-impl`をStarRocks 2.3およびそれ以降のバージョンで変更できます。詳細については、[ALTER RESOURCE](../sql-reference/sql-statements/data-definition/ALTER_RESOURCE.md)を参照してください。
 
 ##### Icebergリソースを表示
 
@@ -802,30 +802,30 @@ Icebergリソースの`hive.metastore.uris`および`iceberg.catalog-impl`パラ
 SHOW RESOURCES;
 ~~~
 
-##### Icebergリソースの削除
+##### Icebergリソースを削除
 
-例えば、`iceberg0`という名前のリソースを削除してください。
+例えば、`iceberg0`という名前のリソースを削除します。
 
 ~~~SQL
 DROP RESOURCE "iceberg0";
 ~~~
 
-Icebergリソースを削除すると、このリソースを参照するすべての外部テーブルが利用できなくなります。ただし、Apache Icebergの対応するデータは削除されません。Apache Icebergでデータを引き続きクエリする必要がある場合は、新しいリソースと新しい外部テーブルを作成してください。
+Icebergリソースを削除すると、このリソースを参照するすべての外部テーブルが利用できなくなります。ただし、Apache Iceberg内の対応するデータは削除されません。Apache Icebergのデータを引き続き問い合わせる必要がある場合は、新しいリソースと新しい外部テーブルを作成してください。
 
-#### ステップ 2: (オプション) データベースを作成
+#### 手順 2:（オプション）データベースを作成
 
-例えば、StarRocksで`iceberg_test`という名前のデータベースを作成してください。
+例えば、StarRocksで`iceberg_test`という名前のデータベースを作成します。
 
 ~~~SQL
 CREATE DATABASE iceberg_test; 
 USE iceberg_test; 
 ~~~
 
-> 注意: StarRocksのデータベース名は、Apache Icebergのデータベース名と異なる場合があります。
+> 注意: StarRocksのデータベースの名前は、Apache Icebergのデータベースの名前と異なる場合があります。
 
-#### ステップ 3: Iceberg外部テーブルを作成
+#### 手順 3: Iceberg外部テーブルを作成
 
-例えば、データベース`iceberg_test`に`iceberg_tbl`という名前のIceberg外部テーブルを作成してください。
+例えば、データベース`iceberg_test`で`iceberg_tbl`という名前のIceberg外部テーブルを作成します。
 
 ~~~SQL
 CREATE EXTERNAL TABLE `iceberg_tbl` ( 
@@ -839,21 +839,21 @@ PROPERTIES (
 ); 
 ~~~
 
-以下の表に、関連するパラメータを示します。
+以下の表は、関連するパラメータについて説明しています。
 
-| **パラメータ** | **説明**                                              |
+| **Parameter** | **Description**                                              |
 | ------------- | ------------------------------------------------------------ |
-| ENGINE        | エンジン名。値を`ICEBERG`に設定してください。                 |
-| resource      | 外部テーブルが参照するIcebergリソースの名前です。 |
-| database      | Icebergテーブルが属するデータベースの名前です。 |
-| table         | Icebergテーブルの名前です。                               |
+| ENGINE        | エンジンの名前。値を`ICEBERG`に設定します。               |
+| resource      | 外部テーブルが参照するIcebergリソースの名前。             |
+| database      | Icebergテーブルが属するデータベースの名前。                 |
+| table         | Icebergテーブルの名前。                                     |
 
 > 注意:
    >
    > * 外部テーブルの名前は、Icebergテーブルの名前と異なる場合があります。
-* 外部テーブルの列名は、Icebergテーブルと同じでなければなりません。 2つのテーブルの列順序は異なる場合があります。
+* 外部テーブルの列名はIcebergテーブルの列名と同じでなければなりません。2つのテーブルの列順は異なっていてもかまいません。
 
-クエリデータ時にカスタムカタログに構成項目を定義し、構成項目を有効にしたい場合は、外部テーブルを作成する際に`PROPERTIES`パラメータにキー値ペアとして構成項目を追加できます。 例えば、カスタムカタログで `custom-catalog.properties` という構成項目を定義した場合、次のコマンドを実行して外部テーブルを作成できます。
+カスタムカタログで構成アイテムを定義し、クエリデータを取得する際に構成アイテムを外部テーブルの作成時に`PROPERTIES`パラメータにキーと値のペアとして追加することができます。たとえば、カスタムカタログの`custom-catalog.properties`で構成アイテムを定義した場合、次のコマンドを実行して外部テーブルを作成できます。
 
 ~~~SQL
 CREATE EXTERNAL TABLE `iceberg_tbl` ( 
@@ -868,7 +868,7 @@ PROPERTIES (
 ); 
 ~~~
 
-外部テーブルを作成する際は、Icebergテーブルの列のデータ型に基づいて外部テーブルの列のデータ型を指定する必要があります。次の表は、列のデータ型のマッピングを示しています。
+外部テーブルを作成する際には、Icebergテーブルの列のデータ型に基づいて外部テーブルの列のデータ型を指定する必要があります。以下の表は列のデータ型のマッピングを示しています。
 
 | **Icebergテーブル** | **Iceberg外部テーブル** |
 | ----------------- | -------------------------- |
@@ -887,9 +887,9 @@ PROPERTIES (
 | BINARY            | VARCHAR                    |
 | LIST              | ARRAY                      |
 
-StarRocksは、TIMESTAMPTZ、STRUCT、およびMAPのデータ型を持つIcebergデータをクエリすることをサポートしていません。
+StarRocksは、TIMESTAMPTZ、STRUCT、MAPのデータ型を持つIcebergデータのクエリをサポートしていません。
 
-#### ステップ4: Apache Icebergでデータをクエリする
+#### Step 4: Apache Icebergでデータをクエリする
 
 外部テーブルが作成されたら、外部テーブルを使用してApache Icebergのデータをクエリできます。
 
@@ -897,31 +897,31 @@ StarRocksは、TIMESTAMPTZ、STRUCT、およびMAPのデータ型を持つIceber
 select count(*) from iceberg_tbl;
 ~~~
 
-## (非推奨) Hudi外部テーブル
+## (廃止予定) Hudi外部テーブル
 
-v2.2.0から、StarRocksではHudi外部テーブルを使用してHudiデータレイクからデータをクエリすることができます。これにより、高速なデータレイク分析が可能となります。このトピックでは、StarRocksクラスターにHudi外部テーブルを作成し、Hudi外部テーブルを使用してHudiデータレイクからデータをクエリする方法について説明します。
+v2.2.0以降、StarRocksではHudi外部テーブルを使用してHudiデータレイクからデータをクエリすることができます。これにより、データレイク分析を高速化できます。このトピックでは、StarRocksクラスターでHudi外部テーブルを作成し、Hudi外部テーブルを使用してHudiデータレイクからデータをクエリする方法について説明します。
 
 ### 開始する前に
 
-StarRocksクラスターがHiveメタストア、HDFSクラスター、またはHudiテーブルを登録できるバケットへのアクセスを許可されていることを確認してください。
+StarRocksクラスターがHiveメタストア、HDFSクラスター、またはHudiテーブルを登録できるバケットへのアクセス権限を許可されていることを確認してください。
 
 ### 注意事項
 
-* Hudiの外部テーブルは読み取り専用であり、クエリのみに使用できます。
-* StarRocksはCopy on WriteおよびMerge On Readテーブル（MORテーブルはv2.5からサポートされています）のクエリをサポートしています。これら2種類のテーブルの違いについては、[Table & Query Types](https://hudi.apache.org/docs/table_types/)を参照してください。
-* StarRocksはHudiの次の2つのクエリタイプをサポートしています: Snapshot QueriesおよびRead Optimized Queries（HudiはMerge On ReadテーブルでのRead Optimized Queriesのみを実行できます）。Incremental Queriesはサポートされていません。Hudiのクエリタイプについての詳細については、[Table & Query Types](https://hudi.apache.org/docs/next/table_types/#query-types)を参照してください。
-* StarRocksはHudiファイルの圧縮形式としてgzip、zstd、LZ4、およびSnappyをサポートしています。Hudiファイルのデフォルト圧縮形式はgzipです。
-* StarRocksは、Hudi管理テーブルからのスキーマ変更を同期することができません。詳細については、[Schema Evolution](https://hudi.apache.org/docs/schema_evolution/)を参照してください。Hudi管理テーブルのスキーマが変更された場合は、関連するHudi外部テーブルをStarRocksクラスターから削除し、その外部テーブルを再作成する必要があります。
+* HudiのHudi外部テーブルは読み取り専用であり、クエリにのみ使用できます。
+* StarRocksはCopy on WriteおよびMerge On Readテーブルをサポートしています（MORテーブルのサポートはv2.5からです）。これら2つのテーブルの違いについては、[Table & Query Types](https://hudi.apache.org/docs/table_types/)を参照してください。
+* StarRocksはHudiの次の2つのクエリタイプをサポートしています：SnapshotクエリおよびRead Optimizedクエリ（HudiはMerge On ReadテーブルでのRead Optimizedクエリのみをサポートしています）。Incrementalクエリはサポートされていません。Hudiのクエリタイプについての詳細については、[Table & Query Types](https://hudi.apache.org/docs/next/table_types/#query-types)を参照してください。
+* StarRocksはHudiファイルの圧縮形式としてgzip、zstd、LZ4、およびSnappyをサポートしています。Hudiファイルのデフォルトの圧縮形式はgzipです。
+* StarRocksはHudi管理テーブルからスキーマ変更を同期できません。詳細については[Schema Evolution](https://hudi.apache.org/docs/schema_evolution/)を参照してください。Hudi管理テーブルのスキーマが変更された場合、関連するHudi外部テーブルをStarRocksクラスターから削除し、その外部テーブルを再作成する必要があります。
 
 ### 手順
 
-#### ステップ1: Hudiリソースを作成および管理する
+#### Step 1: Hudiリソースの作成と管理
 
-StarRocksクラスターにHudiリソースを作成する必要があります。Hudiリソースは、StarRocksクラスターに作成するHudiデータベースおよび外部テーブルを管理するために使用されます。
+StarRocksクラスターでHudiリソースを作成する必要があります。Hudiリソースは、StarRocksクラスターで作成するHudiデータベースおよび外部テーブルを管理するために使用されます。
 
-##### Hudiリソースを作成する
+##### Hudiリソースの作成
 
-次の文を実行して、`hudi0`という名前のHudiリソースを作成します:
+次のステートメントを実行して`hudi0`という名前のHudiリソースを作成します：
 
 ~~~SQL
 CREATE EXTERNAL RESOURCE "hudi0" 
@@ -931,51 +931,51 @@ PROPERTIES (
 );
 ~~~
 
-次の表にパラメータの詳細を示します。
+次の表はパラメータを示しています。
 
-| パラメータ            | 説明                                           |
-| ------------------- | --------------------------------------------- |
-| type                | Hudiリソースのタイプ。値を`hudi`に設定します。 |
-| hive.metastore.uris | Hudiリソースが接続するHiveメタストアのThrift URI。HudiリソースをHiveに接続した後、Hiveを使用してHudiテーブルを作成および管理できます。Thrift URIは`<HiveメタストアのIPアドレス>:<Hiveメタストアのポート番号>`の形式です。デフォルトのポート番号は9083です。 |
+| パラメータ             | 説明                                                         |
+| ---------------------- | ------------------------------------------------------------ |
+| type                   | Hudiリソースのタイプ。値を`hudi`に設定します。               |
+| hive.metastore.uris    | Hudiリソースが接続するHiveメタストアのThrift URI。HudiリソースをHiveに接続した後、Hiveを使用してHudiテーブルを作成および管理できます。Thrift URI は`<HiveメタストアのIPアドレス>:<Hiveメタストアのポート番号>`の形式です。デフォルトのポート番号は9083です。 |
 
-v2.3以降、StarRocksではHudiリソースの`hive.metastore.uris`の値を変更することができます。詳細については、[ALTER RESOURCE](../sql-reference/sql-statements/data-definition/ALTER_RESOURCE.md)を参照してください。
+v2.3以降、StarRocksはHudiリソースの`hive.metastore.uris`の値を変更できます。詳細については[ALTER RESOURCE](../sql-reference/sql-statements/data-definition/ALTER_RESOURCE.md)を参照してください。
 
-##### Hudiリソースを表示する
+##### Hudiリソースの表示
 
-次の文を実行して、StarRocksクラスターに作成されたすべてのHudiリソースを表示します:
+次のステートメントを実行して、StarRocksクラスターで作成されたすべてのHudiリソースを表示します：
 
 ~~~SQL
 SHOW RESOURCES;
 ~~~
 
-##### Hudiリソースを削除する
+##### Hudiリソースの削除
 
-次の文を実行して、`hudi0`という名前のHudiリソースを削除します:
+次のステートメントを実行して、`hudi0`という名前のHudiリソースを削除します：
 
 ~~~SQL
 DROP RESOURCE "hudi0";
 ~~~
 
-> 注意:
+> 注意：
 >
-> Hudiリソースを削除すると、そのHudiリソースを使用して作成されたすべてのHudi外部テーブルは利用できなくなりますが、Hudiに格納されているデータには影響しません。StarRocksから引き続きHudiのデータをクエリする場合は、Hudiリソース、Hudiデータベース、およびHudi外部テーブルを再作成する必要があります。
+> Hudiリソースを削除すると、そのHudiリソースを使用して作成されたすべてのHudi外部テーブルが使用できなくなります。ただし、削除はHudiに保存されているデータに影響を与えません。StarRocksを使用して引き続きHudiからデータをクエリする場合は、Hudiリソース、Hudiデータベース、およびHudi外部テーブルをStarRocksクラスターで再作成する必要があります。
 
-#### ステップ2: Hudiデータベースを作成する
+#### Step 2: Hudiデータベースの作成
 
-次の文を実行して、StarRocksクラスターに`hudi_test`という名前のHudiデータベースを作成およびオープンします:
+次のステートメントを実行して、StarRocksクラスター内の`hudi_test`という名前のHudiデータベースを作成およびオープンします：
 
 ~~~SQL
 CREATE DATABASE hudi_test; 
 USE hudi_test; 
 ~~~
 
-> 注意:
+> 注意：
 >
-> StarRocksクラスターにおけるHudiデータベースの名前は、関連するHudi内部データベースと同じである必要はありません。
+> StarRocksクラスター内のHudiデータベースに指定する名前は、関連するHudi内のデータベースと同じである必要はありません。
 
-#### ステップ3: Hudi外部テーブルを作成する
+#### Step 3: Hudi外部テーブルの作成
 
-次の文を実行して、`hudi_test`のHudiデータベースに`hudi_tbl`という名前のHudi外部テーブルを作成します:
+次のステートメントを実行して、`hudi_test` Hudiデータベース内の`hudi_tbl`という名前のHudi外部テーブルを作成します：
 
 ~~~SQL
 CREATE EXTERNAL TABLE `hudi_tbl` ( 
@@ -989,24 +989,24 @@ PROPERTIES (
 ); 
 ~~~
 
-次の表にパラメータの詳細を示します。
+次の表はパラメータを示しています。
 
-| パラメータ | 説明                                           |
-| --------- | --------------------------------------------- |
-| ENGINE    | Hudi外部テーブルのクエリエンジン。値を`HUDI`に設定します。 |
-| resource  | StarRocksクラスター内のHudiリソースの名前。   |
+| パラメータ | 説明                                                     |
+| --------- | -------------------------------------------------------- |
+| ENGINE    | Hudi外部テーブルのクエリエンジン。値を `HUDI` に設定します。       |
+| resource  | StarRocksクラスター内のHudiリソースの名前。                     |
 | database  | StarRocksクラスター内のHudi外部テーブルが属するHudiデータベースの名前。 |
-| table     | Hudi外部テーブルが関連付けられているHudi管理テーブル。 |
+| table     | Hudi外部テーブルが関連付けられているHudi管理テーブル。             |
 
-> 注意:
+> 注意：
 >
-> * Hudi外部テーブルの名前は、関連するHudi管理テーブルと同じである必要はありません。
+> * Hudi外部テーブルに指定する名前は、関連するHudi管理テーブルと同じである必要はありません。
 >
-> * Hudi外部テーブルの列は、それに関連するHudi管理テーブルの列と同じ名前である必要がありますが、別の順序である場合があります。
+> * Hudi外部テーブルの列は、関連するHudi管理テーブルの対応する列と同じ名前でなければなりませんが、異なる順序であってもかまいません。
 >
-> * 関連するHudi管理テーブルから一部またはすべての列を選択し、Hudi外部テーブルにのみ選択した列を作成することができます。次の表には、Hudiでサポートされているデータ型とStarRocksでサポートされているデータ型のマッピングがリストされています。
+> * 関連するHudi管理テーブルからいくつかまたはすべての列を選択して、Hudi外部テーブルにのみ選択された列を作成することができます。次の表は、Hudiがサポートするデータ型とStarRocksがサポートするデータ型のマッピングを示しています。
 
-| Hudiでサポートされているデータ型   | StarRocksでサポートされているデータ型 |
+| Hudiがサポートするデータ型   | StarRocksがサポートするデータ型 |
 | ----------------------------   | --------------------------------- |
 | BOOLEAN                        | BOOLEAN                           |
 | INT                            | TINYINT/SMALLINT/INT              |
@@ -1022,17 +1022,17 @@ PROPERTIES (
 
 > **注意**
 >
-> StarRocksは、STRUCTまたはMAP型のデータのクエリをサポートしておらず、Merge On ReadテーブルでのARRAY型のデータのクエリもサポートしていません。
+> StarRocksは、STRUCTまたはMAPタイプのデータ、およびMerge On ReadテーブルのARRAYタイプのデータのクエリをサポートしていません。
 
-#### ステップ4: Hudi外部テーブルからデータをクエリする
+#### Step 4: Hudi外部テーブルからデータをクエリする
 
-特定のHudi管理テーブルに関連付けられたHudi外部テーブルを作成したら、Hudi外部テーブルにデータをロードする必要はありません。Hudiからデータをクエリするためには、次の文を実行します:
+特定のHudi管理テーブルに関連付けられたHudi外部テーブルが作成されたら、Hudi外部テーブルにデータをロードする必要はありません。Hudiからデータをクエリするには、次のステートメントを実行します：
 
 ~~~SQL
 SELECT COUNT(*) FROM hudi_tbl;
 ~~~
 
-## (非推奨) MySQL外部テーブル
+## (廃止予定) MySQL外部テーブル
 ```markdown
 + In the star schema, data is generally divided into dimension tables and fact tables. Dimension tables have less data but involve UPDATE operations. Currently, StarRocks does not support direct UPDATE operations (update can be implemented by using the Unique Key table). In some scenarios, you can store dimension tables in MySQL for direct data read.
 
@@ -1069,9 +1069,9 @@ Parameters:
 * **table**: the name of the table in the MySQL database
 ```
 ```markdown
-+ スタースキーマでは、データは一般的にディメンジョンテーブルとファクトテーブルに分割されます。ディメンジョンテーブルはデータが少ないですが、UPDATE操作が関わります。現時点で、StarRocksは直接のUPDATE操作をサポートしていません（Unique Keyテーブルを使用して実装することができます）。一部のシナリオでは、ディメンジョンテーブルをMySQLに保存して直接データを読むことができます。
++ スター・スキーマでは、データは一般的にディメンションテーブルとファクトテーブルに分割されます。ディメンションテーブルはデータが少ないが、UPDATE操作が含まれます。現時点で、StarRocksは直接のUPDATE操作をサポートしていません（UPDATEはユニークキーテーブルを使用して実装することができます）。一部のシナリオでは、ディメンションテーブルをMySQLに格納し、直接データを読むことができます。
 
-MySQLのデータをクエリするには、StarRocksで外部テーブルを作成し、MySQLデータベースのテーブルにマップする必要があります。テーブルを作成する際には、MySQL接続情報を指定する必要があります。
+MySQLのデータをクエリするには、StarRocksで外部テーブルを作成し、MySQLデータベースのテーブルにマッピングする必要があります。テーブルを作成する際にMySQL接続情報を指定する必要があります。
 
 ~~~sql
 CREATE EXTERNAL TABLE mysql_external_table
@@ -1101,5 +1101,5 @@ PROPERTIES
 * **user**: MySQLにログインするユーザー名
 * **password**: MySQLにログインするパスワード
 * **database**: MySQLデータベースの名前
-* **table**: MySQLデータベースのテーブルの名前
+* **table**: MySQLデータベースのテーブル名
 ```

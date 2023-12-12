@@ -4,25 +4,25 @@ displayed_sidebar: "Japanese"
 
 # リソースグループの削除
 
-## 説明
+## Description
 
 指定されたリソースグループを削除します。
 
-## 構文
+## Syntax
 
 ```SQL
 DROP RESOURCE GROUP <resource_group_name>
 ```
 
-## パラメータ
+## Parameters
 
-| **パラメータ**       | **説明**                           |
+| **Parameter**       | **Description**                           |
 | ------------------- | ----------------------------------------- |
-| resource_group_name | 削除するリソースグループの名前。 |
+| resource_group_name | 削除するリソースグループの名前。          |
 
-## 例
+## Example
 
-例1：リソースグループ `rg1` を削除する。
+Example 1: リソースグループ `rg1` を削除します。
 
 ```SQL
 DROP RESOURCE GROUP rg1;

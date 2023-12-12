@@ -4,17 +4,17 @@ displayed_sidebar: "Japanese"
 
 # ST_X
 
-## 説明
+## Description
 
-ポイントが有効なポイントタイプである場合、対応するX座標値を返します。
+ポイントが有効なポイントタイプの場合、対応するX座標値を返します。
 
-## 構文
+## Syntax
 
 ```Haskell
 DOUBLE ST_X(POINT point)
 ```
 
-## 例
+## Examples
 
 ```Plain Text
 MySQL > SELECT ST_X(ST_Point(24.7, 56.7));
@@ -25,6 +25,6 @@ MySQL > SELECT ST_X(ST_Point(24.7, 56.7));
 +----------------------------+
 ```
 
-## キーワード
+## keyword
 
 ST_X,ST,X

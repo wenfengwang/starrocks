@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-0000-01-01からの日付を返します。
+0000-01-01から日付を返します。
 
 ## 構文
 
@@ -27,4 +27,4 @@ MySQL > select from_days(730669);
 
 ## キーワード
 
-FROM_DAYS,FROM,DAYS
+FROM_DAYS, FROM, DAYS

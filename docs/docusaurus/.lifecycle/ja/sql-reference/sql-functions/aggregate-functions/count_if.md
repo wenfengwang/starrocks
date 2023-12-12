@@ -2,6 +2,7 @@
 displayed_sidebar: "英語"
 ---
 
+
 # count_if
 
 ## 説明
@@ -10,7 +11,7 @@ displayed_sidebar: "英語"
 
 この関数は `DISTINCT` をサポートしていません。例えば、`count_if(DISTINCT x)` は無効です。
 
-この関数は内部で `COUNT` + `IF` に変換されます:
+この関数は内部的に `COUNT` + `IF` に変換されます：
 
 変換前: `COUNT_IF(x)`  
 変換後: `COUNT(IF(x, 1, NULL))`
@@ -23,11 +24,11 @@ COUNT_IF(expr)
 
 ## パラメータ
 
-`expr`: `count_if()` を実行するために基づく列または式です。`expr` が列名の場合、その列のデータ型は何でもかまいません。
+`expr`: `count_if()` の実行に基づく列または式。`expr` が列名の場合、その列は任意のデータタイプにすることができます。
 
 ## 戻り値
 
-数値を返します。行が見つからない場合は 0 が返されます。この関数は NULL 値を無視します。
+数値を返します。該当する行が見つからない場合は 0 を返します。この関数は NULL 値を無視します。
 
 ## 例
 
@@ -49,7 +50,7 @@ select * from test_count_if;
 +------+------+---------------------+------+
 ~~~
 
-例 1: テーブル `test_count_if` で `v2` が null の行数をカウントします。
+例 1: `test_count_if` テーブルで `v2` が null の行数をカウントします。
 
 ~~~Plain
 select count_if(v2 is null) from test_count_if;
@@ -60,7 +61,7 @@ select count_if(v2 is null) from test_count_if;
 +----------------------+
 ~~~
 
-例 2: `v1 >= v2 または v4 = 1` の条件を満たす行数をカウントします
+例 2: `v1 >= v2 または v4 = 1` の条件を満たす行数をカウントします。
 
 ~~~Plain
 select count_if(v1 >= v2 or v4 = 1)from test_count_if;

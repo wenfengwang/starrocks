@@ -1,22 +1,21 @@
-```yaml
 ---
-displayed_sidebar: "Japanese"
+表示されるサイドバー: "日本語"
 ---
 
-# データエクスポート
+# データのエクスポート
 
-## Alibaba Cloud OSS バックアップとリストア
+## Alibaba Cloud OSS バックアップおよびリストア
 
-StarRocks は、alibaba cloud OSS/AWS S3 (またはS3プロトコルに準拠したオブジェクトストレージ) へのデータバックアップをサポートしています。DB1 クラスタおよび DB2 クラスタという2つの StarRocks クラスタがあると仮定します。DB1 のデータを alibaba cloud OSS にバックアップし、必要に応じて DB2 にリストアする必要があります。バックアップおよびリストアの一般的な手順は次のとおりです。
+StarRocksは、データをalicloud OSS / AWS S3（またはS3プロトコルに準拠したオブジェクトストレージ）にバックアップすることをサポートしています。DB1クラスターとDB2クラスターという2つのStarRocksクラスターがあると仮定します。DB1のデータをalicloud OSSにバックアップし、必要に応じてDB2にリストアする必要があります。バックアップおよびリカバリの一般的なプロセスは次のとおりです:
 
 ### クラウドリポジトリの作成
 
-それぞれの DB1 および DB2 で以下の SQL を実行します。
+それぞれDB1およびDB2でSQLを実行します:
 
 ```sql
 CREATE REPOSITORY `リポジトリ名`
 WITH BROKER `ブローカー名`
-ON LOCATION "oss://bucket名/パス"
+ON LOCATION "oss://バケット名/パス"
 PROPERTIES
 (
 "fs.oss.accessKeyId" = "xxx",
@@ -25,27 +24,27 @@ PROPERTIES
 );
 ```
 
-a. DB1 および DB2 の両方を作成する必要があり、作成したリポジトリ名は同じでなければなりません。リポジトリを表示:
+a. DB1およびDB2の両方を作成する必要があり、作成されたREPOSITORY名は同じである必要があります。リポジトリを表示:
 
 ```sql
 SHOW REPOSITORIES;
 ```
 
-b. broker_ name には、クラスタのブローカー名を記入する必要があります。BrokerName を表示:
+b. broker_名は、クラスター内のブローカー名を記入する必要があります。BrokerNameを表示:
 
 ```sql
 SHOW BROKER;
 ```
 
-c. fs.oss.endpoint の後のパスにはバケット名が必要ありません。
+c. fs.oss.endpointの後のパスには、バケット名が含まれる必要はありません。
 
 ### バックアップデータテーブル
 
-バックアップするテーブルを DB1 のクラウドリポジトリにバックアップします。DB1 で以下の SQL を実行します:
+DB1でクラウドリポジトリへバックアップするテーブルをバックアップします。DB1で以下のSQLを実行します:
 
 ```sql
-バックアップ SNAPSHOT [db_name].{snapshot_name}
-TO `repositori_name`
+BACKUP SNAPSHOT [db_name].{スナップショット名}
+TO `リポジトリ名`
 ON (
 `table_name` [PARTITION (`p1`, ...)],
 ...
@@ -54,32 +53,32 @@ PROPERTIES ("key"="value", ...);
 ```
 
 ```plain text
-現在、PROPERTIES は以下のプロパティをサポートしています:
-"type" = "full": これがフルアップデートであることを示します（デフォルト値）。
+PROPERTIESで現在サポートされているプロパティは次のとおりです:
+"type" = "full": これがフルアップデートを示します（デフォルト）。
 "timeout" = "3600": タスクのタイムアウト。デフォルトは1日です。単位は秒です。
 ```
 
-現在、StarRocks はフルデータベースのバックアップはサポートしていません。バックアップするテーブルまたはパーティションを明示する必要があります（ON (...)）、そしてこれらのテーブルまたはパーティションは並列にバックアップされます。
+現時点ではStarRocksはフルデータベースバックアップをサポートしていません。バックアップを実行するテーブルまたはパーティションをON(...)で指定する必要があり、これらのテーブルまたはパーティションは並列にバックアップされます。
 
-進行中のバックアップタスクを表示します（注意: 同時に実行できるバックアップタスクは1つだけです）:
+進行中のバックアップタスクを表示します（同時に1つのバックアップタスクのみが実行できることに注意してください）:
 
 ```sql
 SHOW BACKUP FROM db_name;
 ```
 
-バックアップが完了したら、OSS にバックアップデータが既に存在しているかどうかを確認できます（不要なバックアップは OSS で削除する必要があります）:
+バックアップが完了したら、OSS内のバックアップデータが既に存在するかどうかを確認できます（不要なバックアップはOSSで削除する必要があります）:
 
 ```sql
 SHOW SNAPSHOT ON OSS repository name; 
 ```
 
-### データリストア
+### データのリストア
 
-DB2 でのデータリストアにおいて、DB2 でリストアするテーブル構造を作成する必要はありません。リストア操作中に自動的に作成されます。リストア SQL を実行します:
+DB2でのデータリストアにおいて、DB2でリストアするテーブル構造を作成する必要はありません。リストア操作中に自動的に作成されます。リストアSQLを実行します:
 
 ```sql
-RESTORE SNAPSHOT [db_name].{snapshot_name}
-FROM repository_name
+RESTORE SNAPSHOT [db_name].{スナップショット名}
+FROMrepository_name``
 ON (
     'table_name' [PARTITION ('p1', ...)] [AS 'tbl_alias'],
     ...
@@ -87,7 +86,7 @@ ON (
 PROPERTIES ("key"="value", ...);
 ```
 
-リストアの進行状況を表示:
+リストアの進行状況を表示します:
 
 ```sql
 SHOW RESTORE;

@@ -4,11 +4,11 @@ displayed_sidebar: "Japanese"
 
 # ビットマップ
 
-以下は、ビットマップで複数の集計関数の使用例を示す簡単な例です。関数の詳細な定義や他のビットマップ関数については、bitmap-functions を参照してください。
+これは、ビットマップ内で複数の集計関数の使用方法を説明するシンプルな例です。詳細な機能の定義や他のビットマップ関数については、bitmap-functionsを参照してください。
 
 ## テーブルの作成
 
-テーブルを作成する際には、集計モデルが必要です。データ型はビットマップであり、集計関数は `bitmap_union` です。
+テーブルを作成する際には集計モデルが必要です。データ型はビットマップであり、集計関数はbitmap_unionです。
 
 ```SQL
 CREATE TABLE `pv_bitmap` (
@@ -21,7 +21,7 @@ COMMENT "OLAP"
 DISTRIBUTED BY HASH(`dt`);
 ```
 
-注：データ量が多い場合、頻繁に使用される `bitmap_union` に対応したロールアップテーブルを作成すると良いでしょう。
+注意：大量のデータがある場合は、高頻度のbitmap_unionに対応するロールアップテーブルを作成することをお勧めします。
 
 ```SQL
 ALTER TABLE pv_bitmap ADD ROLLUP pv (page, user_id);
@@ -29,15 +29,15 @@ ALTER TABLE pv_bitmap ADD ROLLUP pv (page, user_id);
 
 ## データのロード
 
-`TO_BITMAP (expr)`: 0 〜 18446744073709551615 の符号なしbigintをビットマップに変換します。
+`TO_BITMAP (expr)`: 0 〜 18446744073709551615の符号なしbigintをビットマップに変換します。
 
-`BITMAP_EMPTY ()`: 空のビットマップ列を生成し、挿入や入力時にデフォルト値として使用されます。
+`BITMAP_EMPTY ()`: 空のビットマップ列を生成し、挿入または入力時のデフォルト値に使用されます。
 
-`BITMAP_HASH (expr)`: 任意の型の列をハッシュ化してビットマップに変換します。
+`BITMAP_HASH (expr)`: 任意の型の列をハッシングしてビットマップに変換します。
 
-### ストリームロード
+### ストリームのロード
 
-Stream Load を使用してデータを入力する際には、以下のようにデータをビットマップフィールドに変換できます：
+ストリームロードを使用してデータを入力する場合、次のようにデータをビットマップフィールドに変換できます。
 
 ``` bash
 cat data | curl --location-trusted -u user:passwd -T - \
@@ -59,16 +59,16 @@ cat data | curl --location-trusted -u user:passwd -T - \
 
 ### Insert Into
 
-Insert Into を使用してデータを入力する際には、ソーステーブルの列のタイプに応じて対応するモードを選択する必要があります。
+Insert Intoを使用してデータを入力する場合、ソーステーブルの列の種類に基づいて対応するモードを選択する必要があります。
 
-* ソーステーブルのid2列のタイプがビットマップの場合
+* ソーステーブルのid2の列の種類はビットマップです
 
 ```SQL
 insert into bitmap_table1
 select id, id2 from bitmap_table2;
 ```
 
-* ターゲットテーブルのid2列のタイプがビットマップの場合
+* ターゲットテーブルのid2の列の種類はビットマップです
 
 ```SQL
 insert into bitmap_table1 (id, id2)
@@ -76,21 +76,21 @@ values (1001, to_bitmap(1000))
 , (1001, to_bitmap(2000));
 ```
 
-* ソーステーブルのid2列のタイプがビットマップであり、 `bit_map_union()` を使用して集計された結果である場合
+* ソーステーブルのid2の列の種類はビットマップであり、bit_map_union()を使用した集計の結果です。
 
 ```SQL
 insert into bitmap_table1
 select id, bitmap_union(id2) from bitmap_table2 group by id;
 ```
 
-* ソーステーブルのid2列のタイプがINTであり、ビットマップタイプが `to_bitmap()` によって生成された場合
+* ソーステーブルのid2の列の種類はINTであり、ビットマップ型はto_bitmap()で生成されます。
 
 ```SQL
 insert into bitmap_table1
 select id, to_bitmap(id2) from table;
 ```
 
-* ソーステーブルのid2列のタイプがSTRINGであり、ビットマップタイプが `bitmap_hash()` によって生成された場合
+* ソーステーブルのid2の列の種類はSTRINGであり、ビットマップ型はbitmap_hash()で生成されます。
 
 ```SQL
 insert into bitmap_table1
@@ -101,21 +101,21 @@ select id, bitmap_hash(id2) from table;
 
 ### 構文
 
-``BITMAP_UNION (expr)`: 入力ビットマップの合わせを計算し、新しいビットマップを返します。
+``BITMAP_UNION (expr)`: 入力ビットマップの和集合を計算し、新しいビットマップを返します。
 
-`BITMAP_UNION_COUNT (expr)`: 入力ビットマップの合わせを計算し、その枚数を返します。これは、BITMAP_COUNT (BITMAP_UNION (expr)) と同等であり、性能が BITMAP_COUNT (BITMAP_UNION (expr)) よりも優れているため、まず BITMAP_UNION_COUNT 関数を使用することをお勧めします。
+`BITMAP_UNION_COUNT (expr)`: 入力ビットマップの和集合を計算し、その要素数を返し、BITMAP_COUNT (BITMAP_UNION (expr))と同じです。性能がBITMAP_COUNT (BITMAP_UNION (expr))よりも優れているため、最初にBITMAP_UNION_COUNT関数を使用することが推奨されます。
 
-`BITMAP_UNION_INT (expr)`: TINYINT、SMALLINT、INT形式の列の異なる値の数を計算し、COUNT (DISTINCT expr) と同じ値を返します。
+`BITMAP_UNION_INT (expr)`: TINYINT、SMALLINT、INTの列の異なる値の数を計算し、COUNT (DISTINCT expr)と同じ値を返します。
 
-`INTERSECT_COUNT (bitmap_column_to_count, filter_column, filter_values ...)`: filter_column 条件を満たす複数のビットマップの共通部分の枚数を計算します。bitmap_column_to_count はビットマップ型の列であり、filter_column は異なる次元の列であり、filter_values は次元値のリストです。
+`INTERSECT_COUNT (bitmap_column_to_count, filter_column, filter_values ...)`: filter_column条件を満たす複数のビットマップの積集合の要素数を計算します。bitmap_column_to_countはビットマップ型の列であり、filter_columnは可変次元の列で、filter_valuesは次元値のリストです。
 
-`BITMAP_INTERSECT(expr)`: このグループのビットマップ値の共通部分を計算し、新しいビットマップを返します。
+`BITMAP_INTERSECT(expr)`: このグループのビットマップ値の積集合を計算し、新しいビットマップを返します。
 
 ### 例
 
-以下のSQLは上記の `pv_bitmap` テーブルを使用しています：
+以下のSQLは、前述の`pv_bitmap`テーブルを例にしています。
 
-`user_id` の重複値を計算します：
+`user_id`の重複値を計算します：
 
 ```SQL
 select bitmap_union_count(user_id)
@@ -125,23 +125,23 @@ select bitmap_count(bitmap_union(user_id))
 from pv_bitmap;
 ```
 
-`id` の重複値を計算します：
+`id`の重複値を計算します：
 
 ```SQL
 select bitmap_union_int(id)
 from pv_bitmap;
 ```
 
-`user_id` のリテンションを計算します：
+`user_id`の保持率を計算します：
 
 ```SQL
 select intersect_count(user_id, page, 'game') as game_uv,
     intersect_count(user_id, page, 'shopping') as shopping_uv,
-    intersect_count(user_id, page, 'game', 'shopping') as retention -- 'game' と 'shopping' ページの両方にアクセスしたユーザーの数
+    intersect_count(user_id, page, 'game', 'shopping') as retention -- 'game'と'shopping'ページの両方にアクセスするユーザーの数
 from pv_bitmap
 where page in ('game', 'shopping');
 ```
 
 ## キーワード
 
-ビットマップ, ビットマップカウント, 空のビットマップ, ビットマップの合わせ, ビットマップの合わせの枚数, TO_BITMAP, ビットマップの共通部分の枚数, ビットマップの共通部分
+ビットマップ、BITMAP_COUNT、BITMAP_EMPTY、BITMAP_UNION、BITMAP_UNION_INT、TO_BITMAP、BITMAP_UNION_COUNT、INTERSECT_COUNT、BITMAP_INTERSECT

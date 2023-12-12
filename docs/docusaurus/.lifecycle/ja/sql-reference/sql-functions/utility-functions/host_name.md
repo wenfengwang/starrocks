@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# host_name
+# ホスト名
 
 ## 説明
 
-計算が実行されているノードのホスト名を取得します。
+計算が実行されるノードのホスト名を取得します。
 
 ## 構文
 
@@ -14,7 +14,7 @@ displayed_sidebar: "Japanese"
 host_name();
 ```
 
-## パラメーター
+## パラメータ
 
 なし
 
@@ -31,5 +31,5 @@ select host_name();
 +-------------+
 | sandbox-sql |
 +-------------+
-1 行が選択されました (0.01 秒)
+1 row in set (0.01 sec)
 ```

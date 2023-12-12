@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-array2のすべての要素がarray1内で同じ順序で出現するかどうかをチェックします。したがって、array1 = prefix + array2 + suffix の場合にのみ、関数は1を返します。 
+array2のすべての要素がarray1内の同じ順序で現れるかどうかを確認します。したがって、array1 = prefix + array2 + suffixの場合にのみ、関数は1を返します。
 
 ## 構文
 
@@ -14,19 +14,19 @@ array2のすべての要素がarray1内で同じ順序で出現するかどう�
 BOOLEAN array_contains_all(arr1, arr2)
 ~~~
 
-## パラメータ
+## パラメーター
 
-`arr`: 比較する2つの配列。この構文は`arr2`が`arr1`の部分集合であり、同じ順序であるかどうかをチェックします。
+`arr`: 比較する2つの配列。この構文は、`arr2`が`arr1`の部分集合であり、同じ順序であるかどうかをチェックします。
 
-2つの配列内の要素のデータ型は同じでなければなりません。StarRocksでサポートされている配列要素のデータ型については、[ARRAY](../../../sql-reference/sql-statements/data-types/Array.md)を参照してください。
+2つの配列の要素のデータ型は同じでなければなりません。StarRocksがサポートする配列要素のデータ型については、[ARRAY](../../../sql-reference/sql-statements/data-types/Array.md)を参照してください。
 
 ## 戻り値
 
 BOOLEAN型の値を返します。
 
-`arr2`が`arr1`の部分集合の場合、1が返されます。それ以外の場合、0が返されます。
-値としてNullが処理されます。言い換えると、array_contains_seq([1, 2, NULL, 3, 4], [2,3]) は0を返します。しかし、array_contains_seq([1, 2, NULL, 3, 4], [2,NULL,3]) は1を返します。
-両方の配列内の値の順序は重要です。
+`arr2`が`arr1`の部分集合である場合は1が返されます。それ以外の場合は0が返されます。
+値としてNullが処理されます。言い換えれば、array_contains_seq([1, 2, NULL, 3, 4], [2,3])は0を返します。しかし、array_contains_seq([1, 2, NULL, 3, 4], [2,NULL,3])は1を返します。
+両方の配列の値の順序が重要です。
 
 ## 例
 

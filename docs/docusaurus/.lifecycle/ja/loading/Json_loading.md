@@ -4,16 +4,16 @@ displayed_sidebar: "Japanese"
 
 # はじめに
 
-半構造化データ（例：JSON）をストリームロードまたはルーチンロードを使用してインポートできます。
+ストリームロードまたはルーチンロードを使用して、半構造化データ（たとえばJSON）をインポートすることができます。
 
 ## 使用シナリオ
 
-* ストリームロード：テキストファイルに保存されたJSONデータをインポートするには、ストリームロードを使用します。
-* ルーチンロード：KafkaにあるJSONデータをインポートするには、ルーチンロードを使用します。
+* ストリームロード: テキストファイルに格納されたJSONデータの場合は、ストリームロードを使用してインポートします。
+* ルーチンロード: KafkaのJSONデータの場合は、ルーチンロードを使用してインポートします。
 
 ### ストリームロードのインポート
 
-サンプルデータ:
+サンプルデータ：
 
 ~~~json
 { "id": 123, "city" : "beijing"},
@@ -21,45 +21,45 @@ displayed_sidebar: "Japanese"
     ...
 ~~~
 
-例:
+例：
 
 ~~~shell
-curl -v --location-trusted -u <ユーザー名>:<パスワード> \
+curl -v --location-trusted -u <username>:<password> \
     -H "format: json" -H "jsonpaths: [\"$.id\", \"$.city\"]" \
     -T example.json \
     http://FE_HOST:HTTP_PORT/api/DATABASE/TABLE/_stream_load
 ~~~
 
-`format: json`パラメータは、インポートされるデータの形式を実行することができます。`jsonpaths`は、対応するデータのインポートパスを実行するために使用されます。
+`format: json`パラメータは、インポートされたデータの形式を実行できるようにします。`jsonpaths`は対応するデータインポートパスを実行するために使用されます。
 
-関連パラメータ:
+関連するパラメータ：
 
 * jsonpaths: 各列のJSONパスを選択します
-* json\_root: JSONの開始列を選択します
+* json\_root: JSONのパースが開始される列を選択します
 * strip\_outer\_array: 最も外側の配列フィールドを切り取ります
-* strict\_mode: インポート中の列型変換に厳密にフィルタリングします
+* strict\_mode: インポート中に列型変換の厳密なフィルタリングを行います
 
 JSONデータのスキーマとStarRocksデータのスキーマが完全に一致しない場合は、`Jsonpath`を変更します。
 
-サンプルデータ:
+サンプルデータ：
 
 ~~~json
 {"k1": 1, "k2": 2}
 ~~~
 
-インポート例:
+インポート例：
 
 ~~~bash
-curl -v --location-trusted -u <ユーザー名>:<パスワード> \
+curl -v --location-trusted -u <username>:<password> \
     -H "format: json" -H "jsonpaths: [\"$.k2\", \"$.k1\"]" \
     -H "columns: k2, tmp_k1, k1 = tmp_k1 * 100" \
     -T example.json \
     http://127.0.0.1:8030/api/db1/tbl1/_stream_load
 ~~~
 
-インポート時にk1を100倍にするETL操作を実行し、`Jsonpath`によって元のデータと列が一致します。
+インポート中にk1を100倍するETL操作が実行され、`Jsonpath`によって列が元のデータと一致します。
 
-インポート結果は以下の通りです:
+インポート結果は以下の通りです：
 
 ~~~plain text
 +------+------+
@@ -69,9 +69,9 @@ curl -v --location-trusted -u <ユーザー名>:<パスワード> \
 +------+------+
 ~~~
 
-欠落している列について、列の定義がヌル可能であれば、`NULL`が追加されます。または、`ifnull`によってデフォルト値を追加できます。
+欠落している列について、列定義がnullableである場合、`NULL`が追加されるか、`ifnull`によってデフォルト値が追加されます。
 
-サンプルデータ:
+サンプルデータ：
 
 ~~~json
 [
@@ -81,16 +81,16 @@ curl -v --location-trusted -u <ユーザー名>:<パスワード> \
 ]
 ~~~
 
-インポート例-1:
+インポート例-1：
 
 ~~~shell
-curl -v --location-trusted -u <ユーザー名>:<パスワード> \
+curl -v --location-trusted -u <username>:<password> \
     -H "format: json" -H "strip_outer_array: true" \
     -T example.json \
     http://127.0.0.1:8030/api/db1/tbl1/_stream_load
 ~~~
 
-インポート結果は以下の通りです:
+インポート結果は以下の通りです：
 
 ~~~plain text
 +------+------+
@@ -104,10 +104,10 @@ curl -v --location-trusted -u <ユーザー名>:<パスワード> \
 +------+------+
 ~~~
 
-インポート例-2:
+インポート例-2：
 
 ~~~shell
-curl -v --location-trusted -u <ユーザー名>:<パスワード> \
+curl -v --location-trusted -u <username>:<password> \
     -H "format: json" -H "strip_outer_array: true" \
     -H "jsonpaths: [\"$.k1\", \"$.k2\"]" \
     -H "columns: k1, tmp_k2, k2 = ifnull(tmp_k2, 'x')" \
@@ -115,7 +115,7 @@ curl -v --location-trusted -u <ユーザー名>:<パスワード> \
     http://127.0.0.1:8030/api/db1/tbl1/_stream_load
 ~~~
 
-インポート結果は以下の通りです:
+インポート結果は以下の通りです：
 
 ~~~plain text
 +------+------+
@@ -133,14 +133,14 @@ curl -v --location-trusted -u <ユーザー名>:<パスワード> \
 
 ストリームロードと同様に、Kafkaデータソースのメッセージコンテンツは完全なJSONデータとして扱われます。
 
-1. メッセージが配列形式で複数のデータ行を含む場合、すべての行がインポートされ、Kafkaのオフセットは1だけ増加します。
-2. 配列形式のJSONが複数のデータ行を表しているが、JSONの解析がJSON形式エラーのために失敗した場合、エラー行は1だけ増加します（解析が失敗したため、StarRocksは実際にどのくらいのデータ行が含まれているかを決定することができず、エラーデータを1行として記録することしかできません）。
+1. メッセージに複数の行のデータが配列形式で含まれる場合、すべての行がインポートされ、Kafkaのオフセットは1つだけ増加します。
+2. 配列形式のJSONが複数の行のデータを表している場合、JSONの解析がJSON形式のエラーのために失敗すると、エラー行は1つだけ増加します（解析に失敗したため、実際にどのくらいの数のデータが含まれているかをStarRocksが判断できないため、エラーデータを1行として記録するだけです）。
 
-### Canalを使用してMySQLからStarRocksにインクリメンタル同期ビンログをインポートする
+### MySQLからのインクリメンタル同期バイナリログでStarRocksをインポートするためのCanalの使用
 
-[Canal](https://github.com/alibaba/canal)は、アリババのオープンソースMySQL binlog同期ツールで、MySQLデータをKafkaに同期することができます。データはKafkaでJSON形式で生成されます。ここでは、MySQLのインクリメンタルデータ同期のためにルーチンロードを使用してKafkaでデータを同期する方法を示します。
+[Canal](https://github.com/alibaba/canal)は、アリババから提供されているオープンソースのMySQLバイナリログ同期ツールであり、MySQLデータをKafkaに同期させることができます。データはKafkaでJSON形式で生成されます。ここでは、MySQLのインクリメンタルデータ同期のために、Kafkaのデータをルーチンロードを使用して同期する方法のデモンストレーションを示します。
 
-* MySQLには以下のテーブル作成文があるデータテーブルがあります。
+* MySQLには、次の表作成ステートメントを持つデータテーブルがあります。
 
 ~~~sql
 CREATE TABLE `query_record` (
@@ -150,25 +150,108 @@ CREATE TABLE `query_record` (
   `user` varchar(32) DEFAULT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime DEFAULT NULL,
-  ...
-```markdown
-# Canalのバッチサイズはデフォルトで50Kです。Kafkaの最大メッセージサイズ制限（900K未満）を超えないでください。
+  `time_used` double DEFAULT NULL,
+  `state` varchar(16) NOT NULL,
+  `error_message` text,
+  `sql` text NOT NULL,
+  `database` varchar(128) NOT NULL,
+  `profile` longtext,
+  `plan` longtext,
+  PRIMARY KEY (`query_id`),
+  KEY `idx_start_time` (`start_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+~~~
+
+* 前提条件：MySQLにbinlogが有効になっており、フォーマットがROWになっていることを確認してください。
+
+~~~bash
+[mysqld]
+log-bin=mysql-bin # binlogを有効にする
+binlog-format=ROW # ROWモードを選択する
+server_id=1 # MySQL複製が定義されている必要があり、canalのslaveIdを重複させないようにします
+~~~
+
+* アカウントを作成し、2番目のMySQLサーバーに特権を付与してください。
+
+~~~sql
+CREATE USER canal IDENTIFIED BY 'canal';
+GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%';
+-- GRANT ALL PRIVILEGES ON *.* TO 'canal'@'%';
+FLUSH PRIVILEGES;
+~~~
+
+* 次に、Canalをダウンロードしてインストールします。
+
+~~~bash
+wget https://github.com/alibaba/canal/releases/download/canal-1.0.17/canal.deployer-1.0.17.tar.gz
+
+mkdir /tmp/canal
+tar zxvf canal.deployer-$version.tar.gz -C /tmp/canal
+~~~
+
+* 構成を変更します（MySQL関連）。
+
+`$ vi conf/example/instance.properties`
+
+~~~bash
+## mysql serverId
+canal.instance.mysql.slaveId = 1234
+#position info, need to change to your own database information
+canal.instance.master.address = 127.0.0.1:3306
+canal.instance.master.journal.name =
+canal.instance.master.position =
+canal.instance.master.timestamp =
+#canal.instance.standby.address =
+#canal.instance.standby.journal.name =
+#canal.instance.standby.position =
+#canal.instance.standby.timestamp =
+#username/password, need to change to your own database information
+canal.instance.dbUsername = canal  
+canal.instance.dbPassword = canal
+canal.instance.defaultDatabaseName =
+canal.instance.connectionCharset = UTF-8
+#table regex
+canal.instance.filter.regex = .\*\\\\..\*
+# 同期するテーブルの名前とkafkaのターゲットのパーティション名を選択します。
+canal.mq.dynamicTopic=databasename.query_record
+canal.mq.partitionHash= databasename.query_record:query_id
+~~~
+
+* 構成を変更します（Kafka関連）。
+
+`$ vi /usr/local/canal/conf/canal.properties`
+
+~~~bash
+# 使用可能なオプション: tcp(デフォルト), kafka, RocketMQ
+canal.serverMode = kafka
+# ...
+# kafka/rocketmq Cluster Configuration: 192.168.1.117:9092,192.168.1.118:9092,192.168.1.119:9092
+canal.mq.servers = 127.0.0.1:6667
+canal.mq.retries = 0
+# この値は、flagMessageモードで増やすことができますが、MQメッセージの最大サイズを超えないようにしてください。
+canal.mq.batchSize = 16384
+canal.mq.maxRequestSize = 1048576
+# flatMessageモードでは、この値を大きな値に変更してください。50-200が推奨されます。
+canal.mq.lingerMs = 1
+canal.mq.bufferMemory = 33554432
+```yaml
+# Canalのバッチサイズのデフォルト値は50Kです。Kafkaの最大メッセージサイズ制限（900K未満）を超えないでください。
 canal.mq.canalBatchSize = 50
-# `Canal get`のタイムアウトはミリ秒単位です。空の場合はタイムアウトが無制限を表します。
+# `Canal get`のタイムアウト、ミリ秒単位。空の場合は無制限を示します。
 canal.mq.canalGetTimeout = 100
-# オブジェクトがフラットなJSON形式にあるかどうか
+# オブジェクトがフラットなJSON形式であるかどうか
 canal.mq.flatMessage = false
 canal.mq.compressionType = none
 canal.mq.acks = all
-# Kafkaメッセージの配信にトランザクションを使用するかどうか
-canal.mq.transaction  = false
+# Kafkaメッセージ配信がトランザクションを使用しているかどうか
+canal.mq.transaction = false
 ~~~
 
 * 初期化
 
 `bin/startup.sh`
 
-対応する同期ログは `logs/example/example.log` およびKafkaに、以下の形式で表示されます：
+対応する同期ログは `logs/example/example.log` およびKafkaに次の形式で表示されます:
 
 ~~~json
 {
@@ -210,7 +293,7 @@ canal.mq.transaction  = false
         "time_used": "-1.0",
         "state": "RUNNING",
         "error_message": "",
-        "sql": "SELECT SUM(length(lo_custkey)), SUM(length(c_custkey)) FROM lineorder_str INNER JOIN customer_str ON lo_custkey=c_custkey;",
+        "sql": " SELECT SUM(length(lo_custkey)), SUM(length(c_custkey)) FROM lineorder_str INNER JOIN customer_str ON lo_custkey=c_custkey;",
         "database": "ssb",
         "profile": "",
         "plan": ""
@@ -258,7 +341,7 @@ canal.mq.transaction  = false
 }
 ~~~
 
-`json_root` および  `strip_outer_array = true` を追加してデータを `data` からインポートします。
+`json_root` および `strip_outer_array = true` を追加して、`data` からデータをインポートします。
 
 ~~~sql
 create routine load manual.query_job on query_record   
@@ -276,6 +359,6 @@ FROM KAFKA (
 );
 ~~~
 
-これでMySQLからStarRocksへのほぼリアルタイムのデータ同期が完了しました。
+これでMySQLからStarRocksへのデータのほぼリアルタイム同期が完了しました。
 
-インポートジョブのステータスとエラーメッセージは `show routine load` で表示できます。
+`show routine load` でインポートジョブの状態とエラーメッセージを表示します。

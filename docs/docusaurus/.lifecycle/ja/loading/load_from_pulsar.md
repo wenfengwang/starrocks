@@ -1,54 +1,54 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
+# [プレビュー] Apache® Pulsar™ からデータを連続して読み込む
 
-# [プレビュー] Apache® Pulsar™ からのデータの連続ロード
+StarRocksのバージョン2.5では、Routine Load はApache® Pulsar™ からデータを連続して読み込むことをサポートしています。Pulsarは、分散型のオープンソースのパブサブメッセージングおよびストリーミングプラットフォームであり、ストアコンピュート分離アーキテクチャを持っています。Routine Loadを使用してPulsarからデータを読み込む方法は、Apache Kafka からデータを読み込むのと類似しています。このトピックでは、CSV形式のデータを例に挙げ、Apache PulsarからデータをRoutine Loadを介して読み込む方法を紹介します。
 
-StarRocks バージョン 2.5 から、Routine Load は Apache® Pulsar™ からのデータの連続ロードをサポートしています。Pulsar は、ストア・コンピュート分離アーキテクチャを持つ分散型のオープンソースのパブサブメッセージングおよびストリーミングプラットフォームです。Routine Load を使用して Pulsar からデータをロードする方法は、Apache Kafka からデータをロードする方法と似ています。このトピックでは、CSV 形式のデータを例に挙げ、Apache Pulsar から Routine Load を使用してデータをロードする方法を紹介します。
+## サポートされているデータファイル形式
 
-## サポートされているデータファイルフォーマット
+Routine Load は、PulsarクラスタからCSVおよびJSON形式のデータを消費することをサポートしています。
 
-Routine Load は、Pulsar クラスタから CSV および JSON フォーマットのデータを消費することをサポートしています。
-
-> 注記
+> 注意
 >
-> CSV 形式のデータに関して、StarRocks は、50 バイト以内の UTF-8 エンコードされた文字列をカラムの区切り文字としてサポートしています。一般的に使用される区切り文字には、カンマ(,)、タブ、およびパイプ(|) が含まれます。
+> CSV形式のデータの場合、StarRocksでは、列の区切りとして50バイト以内のUTF-8エンコード文字列がサポートされています。一般的に使用される列の区切り文字には、カンマ(,)、タブ、およびパイプ(|)があります。
 
-## Pulsar 関連の概念
+## Pulsarに関連する概念
 
 **[トピック](https://pulsar.apache.org/docs/2.10.x/concepts-messaging/#topics)**
 
-Pulsar のトピックは、プロデューサーからコンシューマーへメッセージを転送するための名前付きのチャンネルです。Pulsar のトピックは、パーティション化されたトピックと非パーティション化されたトピックに分けられます。
+Pulsarのトピックは、プロデューサーからコンシューマーへのメッセージ送信用の名前付きチャンネルです。Pulsarのトピックは、パーティション化されたトピックと非パーティション化されたトピックに分かれています。
 
-- **[パーティション化されたトピック](https://pulsar.apache.org/docs/2.10.x/concepts-messaging/#partitioned-topics)** は、複数のブローカーによって処理される特別なタイプのトピックであり、これによりスループットが高くなります。パーティション化されたトピックは実際には N 個の内部トピックとして実装されます。ここで、N はパーティションの数です。
-- **非パーティション化されたトピック** は、単一のブローカーによってのみ提供される通常のタイプのトピックであり、それによりトピックの最大スループットが制限されます。
+- **[パーティション化されたトピック](https://pulsar.apache.org/docs/2.10.x/concepts-messaging/#partitioned-topics)** は、複数のブローカーによって処理される特別なタイプのトピックであり、それによりより高いスループットが可能となります。パーティション化されたトピックは、実際にはN個の内部トピックとして実装されており、Nはパーティションの数です。
+- **非パーティション化されたトピック** は、単一のブローカーによってのみ処理される通常のタイプのトピックであり、トピックの最大スループットが制限されます。
 
-**[メッセージ ID](https://pulsar.apache.org/docs/2.10.x/concepts-messaging/#messages)**
+**[メッセージID](https://pulsar.apache.org/docs/2.10.x/concepts-messaging/#messages)**
 
-メッセージのメッセージ ID は、メッセージが永続的に保存されるとすぐに [BookKeeper インスタンス](https://pulsar.apache.org/docs/2.10.x/concepts-architecture-overview/#apache-bookkeeper) によって割り当てられます。メッセージ ID は、メッセージが特定の位置にあることを示し、Pulsar クラスタ内で一意です。
+メッセージのメッセージIDは、メッセージが永続的に保存されるとすぐに[BookKeeperインスタンス](https://pulsar.apache.org/docs/2.10.x/concepts-architecture-overview/#apache-bookkeeper)によって割り当てられます。メッセージIDは、メッセージがレジャー内の特定の位置を示し、Pulsarクラスタ内でユニークです。
 
-Pulsar は、コンシューマーが consumer.*seek*(*messageId*) を使用して初期位置を指定することをサポートしています。ただし、Kafka コンシューマーオフセットが長整数値であるのに対し、メッセージ ID は「ledgerId:entryID:partition-index:batch-index」という 4 つのパートで構成されています。
+Pulsarは、消費者がconsumer.*seek*(*messageId*)を使用して初期位置を指定することをサポートしています。ただし、Kafkaの消費者オフセットが長整数値であるのに対し、メッセージIDは"ledgerId:entryID:partition-index:batch-index"の4つの部分で構成されています。
 
-そのため、メッセージ ID をメッセージから直接取得することはできません。その結果、現在のところ、**Routine Load は Pulsar からデータをロードする際に初期位置の指定をサポートしておらず、パーティションの先頭または末尾からのデータ消費のみをサポートしています。**
+したがって、メッセージIDをメッセージから直接取得することはできません。その結果、現時点では、Routine LoadはPulsarからデータを読み込む際に初期位置を指定することをサポートしておらず、パーティションの先頭または末尾からのデータの消費のみをサポートしています。
 
 **[サブスクリプション](https://pulsar.apache.org/docs/2.10.x/concepts-messaging/#subscriptions)**
 
-サブスクリプションは、メッセージがコンシューマーに配信される方法を決定する名前付きの構成ルールです。Pulsar はまた、コンシューマーが複数のトピックに同時にサブスクライブすることをサポートしています。1 つのトピックには複数のサブスクリプションが存在できます。
+サブスクリプションは、メッセージがどのようにコンシューマーに配信されるかを決定する名前付きの構成ルールです。Pulsarでは、複数のトピックを同時に購読するコンシューマーもサポートされています。1つのトピックには複数のサブスクリプションを持つことができます。
 
-サブスクリプションのタイプは、コンシューマーがそれに接続する際に定義され、そのタイプは異なる構成で再起動することで変更できます。Pulsar では、4 つのサブスクリプションタイプが利用可能です。
+サブスクリプションのタイプは、コンシューマーが接続する際に定義され、そのタイプは異なる構成で全てのコンシューマーを再起動させることで変更することができます。Pulsarでは、以下の4つのサブスクリプションタイプが利用可能です：
 
-- `exclusive` (デフォルト)*:* 単一のコンシューマーのみがサブスクリプションにアタッチできます。メッセージの消費は 1 人の顧客のみが許可されます。
-- `shared`：複数のコンシューマーが同じサブスクリプションにアタッチできます。メッセージはラウンドロビン分配でコンシューマーに配信され、特定のメッセージは 1 人のコンシューマーにのみ配信されます。
-- `failover`：複数のコンシューマーが同じサブスクリプションにアタッチできます。非パーティション化されたトピックの場合、マスターコンシューマーが選択され、メッセージはマスターコンシューマーに配信されます。マスターコンシューマーが切断されると、(未確認および以降の)メッセージは次のコンシューマーに配信されます。
-- `key_shared`：複数のコンシューマーが同じサブスクリプションにアタッチできます。メッセージはコンシューマー間で分配され、同じキーまたは同じ順序キーを持つメッセージは 1 人のコンシューマーにのみ配信されます。
+- `exclusive`(デフォルト): 1つのコンシューマーのみがサブスクリプションに接続することができます。メッセージは1つのカスタマーにのみ配信されます。
+- `shared`: 複数のコンシューマーが同じサブスクリプションに接続することができます。メッセージはコンシューマー間でラウンドロビン配信され、特定のメッセージは1つのコンシューマーにのみ配信されます。
+- `failover`: 複数のコンシューマーが同じサブスクリプションに接続することができます。パーティション化されていないトピックの場合、またはパーティション化されたトピックの各パーティションの場合、マスターコンシューマーが選択され、メッセージを受信します。マスターコンシューマーが切断されると、全ての（未確認のおよびその後の）メッセージは次の順番のコンシューマーに配信されます。
+- `key_shared`: 複数のコンシューマーが同じサブスクリプションに接続することができます。メッセージはコンシューマー間で分散され、同じキーまたは同じ順序キーを持つメッセージは1つのコンシューマーにのみ配信されます。
 
-> 注記：
+> 注：
 >
-> 現在、Routine Load は exclusive タイプを使用しています。
+> 現在、Routine Loadはexclusiveタイプを使用しています。
 
-## Routine Load ジョブの作成
+## Routine Loadジョブの作成
 
-次の例では、Pulsar で CSV 形式のメッセージを消費し、Routine Load ジョブを作成して StarRocks にデータをロードする方法について説明します。詳しい手順と参照については、[CREATE ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/CREATE_ROUTINE_LOAD.md) を参照してください。
+以下の例は、PulsarでCSV形式のメッセージを消費し、Routine Loadジョブを作成してStarRocksにデータをロードする方法を説明しています。詳細な手順と参照については、[CREATE ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/CREATE_ROUTINE_LOAD.md)を参照してください。
 
 ```SQL
 CREATE ROUTINE LOAD load_test.routine_wiki_edit_1 ON routine_wiki_edit
@@ -73,31 +73,35 @@ FROM PULSAR
 );
 ```
 
-Pulsar からデータを消費するように Routine Load を作成する場合、`data_source_properties` を除くほとんどの入力パラメータは、Kafka からデータを消費する場合と同じです。`data_source_properties` を除くパラメータについての説明は、[CREATE ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/CREATE_ROUTINE_LOAD.md) を参照してください。
+Pulsarからデータを消費するためにRoutine Loadを作成する際、`data_source_properties`以外のほとんどの入力パラメータは、Kafkaからデータを消費する場合と同じです。`data_source_properties`を除くパラメータの説明については、[CREATE ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/CREATE_ROUTINE_LOAD.md)を参照してください。
 
-`data_source_properties` に関連するパラメータとその説明は次の通りです：
+`data_source_properties`に関連するパラメータとその説明は以下の通りです：
 
-| **パラメータ**                       | **必須** | **説明**                                                      |
-| ----------------------------------- | -------- | ------------------------------------------------------------ |
-| pulsar_service_url                  | Yes      | Pulsar クラスタに接続するために使用される URL です。書式： `"pulsar://ip:port"` または `"pulsar://service:port"` 。例： `"pulsar_service_url" = "pulsar://``localhost:6650``"` |
-| pulsar_topic                        | Yes      | 購読されるトピックです。例： "pulsar_topic" = "persistent://tenant/namespace/topic-name" |
-| pulsar_subscription                 | Yes      | トピックに対して構成されたサブスクリプションです。例： `"pulsar_subscription" = "my_subscription"` |
-| pulsar_partitions, pulsar_initial_positions | No       | `pulsar_partitions`：トピック内の購読されるパーティションです。 `pulsar_initial_positions`：`pulsar_partitions` によって指定されたパーティションの初期位置。 初期位置は、 `pulsar_partitions` のパーティションに対応する必要があります。有効な値： `POSITION_EARLIEST`（デフォルト値）：パーティション内で最も古い利用可能なメッセージから購読を開始します。 `POSITION_LATEST`：パーティション内で最新の利用可能なメッセージから購読を開始します。 注記： `pulsar_partitions` が指定されていない場合、トピックのすべてのパーティションが購読されます。`pulsar_partitions` および `property.pulsar_default_initial_position` の両方が指定されている場合、`pulsar_partitions` の値が `property.pulsar_default_initial_position` の値を上書きします。`pulsar_partitions` および `property.pulsar_default_initial_position` がどちらも指定されていない場合、パーティション内で最新の利用可能なメッセージから購読が開始されます。例：`"pulsar_partitions" = "my-partition-0,my-partition-1,my-partition-2,my-partition-3", "pulsar_initial_positions" = "POSITION_EARLIEST,POSITION_EARLIEST,POSITION_LATEST,POSITION_LATEST"` |
+| **パラメータ**                               | **必須** | **説明**                                              |
+| ------------------------------------------ | -------- | ----------------------------------------------------- |
+| pulsar_service_url                          | はい      | Pulsarクラスタに接続するために使用されるURL。形式：`"pulsar://ip:port"`または`"pulsar://service:port"`。例：`"pulsar_service_url" = "pulsar://localhost:6650"` |
+| pulsar_topic                                | はい      | 購読するトピック。例："pulsar_topic" = "persistent://tenant/namespace/topic-name" |
+| pulsar_subscription                         | はい      | トピックに構成されたサブスクリプション。例："pulsar_subscription" = "my_subscription" |
+| pulsar_partitions, pulsar_initial_positions | いいえ    | `pulsar_partitions`：トピックのサブスクライブされたパーティション。 `pulsar_initial_positions`：`pulsar_partitions`で指定されたパーティションの初期位置。初期位置は、`pulsar_partitions`に相当する必要があります。有効な値：`POSITION_EARLIEST`（デフォルト値）：パーティション内の最初の利用可能なメッセージからのサブスクリプションが開始されます。 `POSITION_LATEST`：パーティション内の最新の利用可能なメッセージからのサブスクリプションが開始されます。注意：`pulsar_partitions`が指定されていない場合、トピックのすべてのパーティションが購読されます。`pulsar_partitions`と`property.pulsar_default_initial_position`の両方が指定されている場合、`pulsar_partitions`の値が`property.pulsar_default_initial_position`の値を上書きします。`pulsar_partitions`または`property.pulsar_default_initial_position`のいずれもが指定されていない場合、サブスクリプションが最新の利用可能なメッセージから開始されます。例：`"pulsar_partitions" = "my-partition-0,my-partition-1,my-partition-2,my-partition-3", "pulsar_initial_positions" = "POSITION_EARLIEST,POSITION_EARLIEST,POSITION_LATEST,POSITION_LATEST"` |
 
-Routine Load は、Pulsar のために以下のカスタムパラメータをサポートしています。
+Routine Loadは、Pulsarのための以下のカスタムパラメータをサポートしています。
 
-| パラメータ                            | 必須     | 説明                                                         |
-| -------------------------------------- | -------- | ------------------------------------------------------------ |
-| property.pulsar_default_initial_position | No       | トピックのパーティションが購読される際のデフォルトの初期位置です。`pulsar_initial_positions` が指定されていない場合、このパラメータが有効になります。有効な値は、`pulsar_initial_positions` の有効な値と同じです。例：`"``property.pulsar_default_initial_position" = "POSITION_EARLIEST"` |
-| property.auth.token                    | No       | Pulsar がセキュリティトークンを使用してクライアントの認証を有効にしている場合、トークン文字列が必要です。 例：`"p``roperty.auth.token" = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUJzdWIiOiJqaXV0aWFuY2hlbiJ9.lulGngOC72vE70OW54zcbyw7XdKSOxET94WT_hIqD"` |
+| パラメータ                                  | 必須 | 説明                                                   |
+| ---------------------------------------- | ---- | ------------------------------------------------------ |
+| property.pulsar_default_initial_position | いいえ | トピックのパーティションが購読されている際のデフォルトの初期位置。 `pulsar_initial_positions`が指定されていない場合、このパラメータが効果を発揮します。有効な値は、`pulsar_initial_positions`の有効な値と同じです。例：`"property.pulsar_default_initial_position" = "POSITION_EARLIEST"` |
+| property.auth.token                      | いいえ | Pulsarがセキュリティトークンを使用してクライアントの認証を有効にしている場合、トークン文字列が必要です。例：`"property.auth.token" = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUJzdWIiOiJqaXV0aWFuY2hlbiJ9.lulGngOC72vE70OW54zcbyw7XdKSOxET94WT_hIqD"` |
 
-## ロード ジョブおよびタスクを確認する
+## ロードジョブおよびタスクの確認
 
-### ロード ジョブを確認する
+### ロードジョブのチェック
 
-[SHOW ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation//SHOW_ROUTINE_LOAD.md) ステートメントを実行して、ロード ジョブ `routine_wiki_edit_1` の状態を確認します。StarRocks は、実行状態 `State`、統計情報（消費された合計行数およびロードされた合計行数） `Statistics`、およびロード ジョブの進行状況 `progress` を返します。
-```plaintext
-SHOW ROUTINE LOAD for routine_wiki_edit_1 \G
+[SHOW ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation//SHOW_ROUTINE_LOAD.md)ステートメントを実行して、ロードジョブ`routine_wiki_edit_1`のステータスを確認します。StarRocksは、実行状態`State`、統計情報（消費された合計行数およびロードされた合計行数）`Statistics`、およびロードジョブの進行状況`progress`を返します。
+```
+```Plaintext
+SHOW ROUTINE LOADを実行してPulsarからデータを消費するルーチンロードジョブを確認すると、 `progress` を除く多くの返されるパラメーターはKafkaからデータを消費する場合と同じです。`progress` はバックログを指し、つまりパーティション内のアンアックされたメッセージの数です。
+
+```MySQL
+MySQL [load_test] > SHOW ROUTINE LOAD for routine_wiki_edit_1 \G
 *************************** 1. row ***************************
                   Id: 10142
                 Name: routine_wiki_edit_1
@@ -120,15 +124,23 @@ ReasonOfStateChanged:
 1 row in set (0.00 sec)
 ```
 
-```sql
-SHOW ROUTINE LOAD TASK WHERE JobName = "routine_wiki_edit_1" \G
+### ロードタスクを確認する
+
+`routine_wiki_edit_1` のロードタスクをチェックするために、 [SHOW ROUTINE LOAD TASK](../sql-reference/sql-statements/data-manipulation/SHOW_ROUTINE_LOAD_TASK.md) ステートメントを実行して、実行中のタスクの数、消費されるKafkaトピックパーティション、および消費進捗 `DataSourceProperties` 、対応するコーディネータBEノード `BeId` をチェックします。
+
+```SQL
+MySQL [example_db]> SHOW ROUTINE LOAD TASK WHERE JobName = "routine_wiki_edit_1" \G
 ```
 
-PAUSE ROUTINE LOAD statementを使ってルーティンロードジョブを停止してから、ALTER ROUTINE LOADステートメントを実行して、変更を加えます。変更後は、RESUME ROUTINE LOADステートメントを実行して再開し、SHOW ROUTINE LOADステートメントを使用してそのステータスを確認します。
+## ロードジョブを変更する
 
-Pulsarからデータを消費するとき、`data_source_properties`以外のほとんどの返されるパラメーターは、Kafkaからデータを消費する場合と同じです。
+ロードジョブを変更する前に、[PAUSE ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/PAUSE_ROUTINE_LOAD.md) ステートメントを使用して一時停止する必要があります。その後、[ALTER ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/ALTER_ROUTINE_LOAD.md) を実行することができます。変更した後は、[RESUME ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/RESUME_ROUTINE_LOAD.md) ステートメントを実行して再開し、[SHOW ROUTINE LOAD](../sql-reference/sql-statements/data-manipulation/SHOW_ROUTINE_LOAD.md) ステートメントを使用してそのステータスを確認できます。
 
-次のポイントに注意してください：
-- `data_source_properties`関連のパラメーターの中で、現在変更がサポートされているのは、`pulsar_partitions`、`pulsar_initial_positions`、およびカスタムPulsarパラメーターの`property.pulsar_default_initial_position`と`property.auth.token`のみです。パラメーター`pulsar_service_url`、`pulsar_topic`、`pulsar_subscription`は変更できません。
-- 消費されるパーティションと一致する初期位置を変更する必要がある場合は、ルーティンロードジョブを作成する際に`pulsar_partitions`を使用してパーティションを指定し、指定されたパーティションの初期位置`pulsar_initial_positions`のみを変更できるようにする必要があります。
-- ルーティンロードジョブを作成する際にトピック`pulsar_topic`のみを指定し、パーティション`pulsar_partitions`を指定しない場合、すべてのトピック内のパーティションの開始位置を`pulsar_default_initial_position`を介して変更できます。
+Pulsarからデータを消費するためにRoutine Loadを使用する場合、`data_source_properties` を除く多くの返されるパラメーターはKafkaからデータを消費する場合と同じです。
+
+**次の点に注意してください**：
+
+- `data_source_properties` 関連のパラメーターの中で、現在は`pulsar_partitions`、`pulsar_initial_positions`、およびカスタムPulsarパラメーター`property.pulsar_default_initial_position`、`property.auth.token` のみを変更することができます。 `pulsar_service_url`、`pulsar_topic`、`pulsar_subscription` のパラメーターは変更できません。
+- 消費するパーティションと一致する初期位置を変更する必要がある場合は、ルーチンロードジョブを作成する際に `pulsar_partitions` を使用してパーティションを指定し、指定されたパーティションの初期位置のみを変更できることを確認する必要があります。
+- ルーチンロードジョブを作成する際にTopicである `pulsar_topic` のみを指定し、パーティションを指定しなかった場合は、`pulsar_default_initial_position` を通じてトピック下のすべてのパーティションの開始位置を変更できます。
+```

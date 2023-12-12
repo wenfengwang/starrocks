@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# repeat（繰り返し）
+# 繰り返し
 
 ## 説明
 
-この関数は、`count`に従って`str`を繰り返します。`count`が1未満の場合、空の文字列を返します。`str`または`count`がNULLの場合、NULLを返します。
+この関数は、`count`に応じて`str`を繰り返します。`count`が1未満の場合、空の文字列を返します。`str`または`count`がNULLの場合、NULLを返します。
 
 ## 構文
 

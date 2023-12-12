@@ -4,16 +4,16 @@ displayed_sidebar: "Japanese"
 
 # SPARK LOAD
 
-## Description
+## 説明
 
-Sparkの読み込みは、外部のSparkリソースを介してインポートされたデータを前処理し、大量のStarRocksデータのインポートパフォーマンスを向上させ、StarRocksクラスタの計算リソースを保存します。これは、初期移行のシナリオやStarRocksへの大量のデータインポートに主に使用されます。
+Spark loadは、外部のsparkリソースを介してインポートされたデータを前処理し、大量のStarRocksデータのインポートパフォーマンスを向上させ、StarRocksクラスタの計算リソースを節約します。主に初期移行および大量のデータをStarRocksにインポートするシナリオで使用されます。
 
-Sparkの読み込みは非同期のインポート方法です。ユーザーはMySQLプロトコルを通じてSparkタイプのインポートタスクを作成し、`SHOW LOAD`を使ってインポート結果を表示する必要があります。
+Spark loadは非同期のインポート方法です。ユーザーはMySQLプロトコルを介してSparkタイプのインポートタスクを作成し、`SHOW LOAD`を通じてインポート結果を表示する必要があります。
 
 > **注意**
 >
-> - StarRocksテーブルにデータをロードできるのは、それらのStarRocksテーブルにINSERT権限を持っているユーザーのみです。INSERT権限がない場合は、[GRANT](../account-management/GRANT.md) で接続するStarRocksクラスタに権限を付与するよう指示されます。
-> - Spark Loadを使用してStarRocksテーブルにデータをロードする場合、StarRocksテーブルのバケティング列はDATE、DATETIME、またはDECIMALタイプであってはなりません。
+> - スターロックステーブルにデータをインポートすることができるのは、それらのスターロックステーブルにINSERT権限を持つユーザーのみです。INSERT権限がない場合は、[GRANT](../account-management/GRANT.md)で指示された手順に従って、スターロックスクラスタに接続するユーザーにINSERT権限を付与する必要があります。
+> - Spark Loadを使用してStarRocksテーブルにデータをロードする場合、StarRocksテーブルのバケット列はDATE、DATETIME、またはDECIMALタイプであってはなりません。
 
 構文
 
@@ -27,9 +27,9 @@ WITH RESOURCE resource_name
 [opt_properties]
 ```
 
-1.load_label
+1. load_label
 
-現在インポートされているバッチのラベル。データベース内で一意です。
+現在インポートされたバッチのラベル。データベース内で一意です。
 
 構文:
 
@@ -37,7 +37,7 @@ WITH RESOURCE resource_name
 [database_name.]your_label
 ```
 
-2.data_desc
+2. data_desc
 
 インポートされたデータのバッチを記述するために使用されます。
 
@@ -75,90 +75,89 @@ file_path:
 
 hive_external_tbl:
 
-Hive外部テーブルの名前です。
-インポートされたstarrocksテーブルの列がhive外部テーブル内に存在していることが必要です。
-各ロードタスクは、1つのHive外部テーブルからのみの読み込みをサポートします。
-file_ pathモードと同時に使用することはできません。
+hive外部テーブル名。
+インポートされたstarrocksテーブルの列がhive外部テーブルに存在することが必要です。
+各ロードタスクは1つのHive外部テーブルからのみロードをサポートします。
+同時にfile_pathモードとは使用できません。
 
 PARTITION:
 
-このパラメータが指定されている場合、指定されたパーティションのみがインポートされ、インポートされたパーティションの外のデータはフィルタリングされます。
-指定されていない場合、デフォルトでテーブルのすべてのパーティションがインポートされます。
+このパラメータが指定されている場合、指定されたパーティションのみがインポートされ、インポートされたパーティションの外のデータはフィルタされます。
+指定されていない場合、テーブルのすべてのパーティションがデフォルトでインポートされます。
 
 NEGATIVE:
 
-このパラメータが指定されている場合、これは以前にインポートされたデータのバッチを "負の" データとしてロードすることと等価です。
-このパラメータは、値の列が存在し、値の列の集計タイプがSUMのみの場合にのみ適用されます。
+このパラメータが指定されている場合、これは以前にインポートされたデータと同じバッチの"ネガティブ"データのロードと同等です。値の列が存在し、値の列の集計タイプがSUMの場合にのみ適用されます。
 
 column_separator:
 
-インポートファイル内の列の区切り記号を指定します。デフォルトは\ tです。
-不可視文字の場合は、\ \ xを接頭辞として使用して16進数で区切り記号を表す必要があります。
-例えば、hiveファイル\ x01のセパレータは "\ \ x01" と指定されます。
+インポートファイル内の列区切り記号を指定します。デフォルトは \ t です。
+不可視文字の場合は \ \ xを接頭辞に付けて16進数で区切り記号を表す必要があります。
+例えば、hiveファイル \ x01 の区切り記号は "\ \ x01" と指定します。
 
 file_type:
 
-インポートされたファイルのタイプを指定するために使用されます。現在、サポートされるファイルタイプはcsv、orc、およびparquetです。
+インポートファイルのタイプを指定するために使用されます。現在、サポートされているファイルタイプはcsv、orc、およびparquetです。
 
 column_list:
 
-インポートファイル内の列とテーブル内の列との対応を指定するために使用されます。
-インポートファイル内の列をスキップする必要がある場合は、テーブルに存在しない列名を指定してください。
+インポートファイル内の列とテーブル内の列との対応関係を指定するために使用されます。
+インポートファイル内の列をスキップする場合は、テーブルに存在しない列名として列を指定します。
 
 構文:
 (col_name1, col_name2, ...)
 
 SET:
 
-このパラメータを指定すると、ソースファイルの列を関数に従って変換し、変換された結果をテーブルにインポートすることができます。構文はcolumn_name = expressionです。
-Spark SQLのビルドイン関数のみがサポートされています。https://spark.apache.org/docs/2.4.6/api/sql/index.html を参照してください。
-理解を助けるためにいくつかの例を挙げます。
-例1: テーブルには「c1、c2、c3」という3つの列があり、ソースファイルの最初の2つの列が（c1、c2）に対応し、最後の2つの列の合計がC3に対応しているとします。
-その場合は、列（c1、c2、tmp_c3、tmp_c4）を指定してset(c3 = tmp_c3 + tmp_c4)が指定される必要があります。
-例2: テーブルには「year、month、day」という3つの列があり、ソースファイルには「2018-06-01 01:02:03」の形式で1つの時刻列だけがあります。
-この場合は、カラム(tmp_time) set(year = year(tmp_time), month = month(tmp_time), day = day(tmp_time)) を指定してインポートを完了します。
+このパラメータを指定する場合、ソースファイルの列を関数に従って変換し、変換された結果をテーブルにインポートできます。構文はcolumn_name = expressionです。
+Spark SQLビルトイン関数のみがサポートされます。 詳細は https://spark.apache.org/docs/2.4.6/api/sql/index.html を参照してください。
+理解を助けるためにいくつかの例を示します。
+例1: テーブルには3つの列 "c1、c2、c3" があり、ソースファイルの最初の2つの列が (c1、c2) に対応し、最後の2つの列の合計がC3に対応している場合、列 (c1、c2、tmp_c3、tmp_c4) を指定した(set (c3 = tmp_c3 + tmp_c4)) が必要です。
+例2: テーブルには3つの列 "年、月、日" があり、ソースファイルには "2018-06-01 01:02:03" 形式の時間列しかない場合。
+その場合、(tmp_time)に対して (year = year(tmp_time), month = month(tmp_time), day = day(tmp_time)) を指定してインポートを完了させることができます。
 
 WHERE:
 
-変換されたデータをフィルタリングし、where条件を満たすデータのみをインポートできます。WHEREステートメントではテーブル内の列名のみを参照できます
+変換されたデータをフィルタリングし、WHERE条件を満たすデータのみがインポートできます。 WHEREステートメントではテーブル内の列名のみを参照できます
 ```
 
-3.resource_name
+3. resource_name
 
-使用されるSparkリソースの名前は、`SHOW RESOURCES`コマンドを通じて表示できます。
+使用されるsparkリソースの名前は、`SHOW RESOURCES`コマンドを介して確認できます。
 
-4.resource_properties
+4. resource_properties
 
-SparkやHDFSの設定を変更するなどの一時的な必要がある場合に、ここでパラメータを設定することができます。これはこの特定のSparkローディングジョブにのみ影響し、StarRocksクラスタ内の既存の構成に影響を与えることはありません。
+SparkやHDFSの設定を変更するなどの一時的な必要性がある場合、ここでパラメータを設定できます。これにより、この特定のsparkロードジョブにのみ効果があり、StarRocksクラスタの既存の設定に影響を与えません。
 
-5.opt_properties
+5. opt_properties
 
 いくつかの特別なパラメータを指定するために使用されます。
 
 構文:
 
 ```sql
-[PROPERTIES ("key" = "value", ...)]
+[PROPERTIES ("key"="value", ...)]
 ```
 
-以下のパラメータを指定することができます:
-timeout: インポート操作のタイムアウトを指定します。デフォルトのタイムアウトは4時間です。単位は秒です。
-max_filter_ratio:（非標準のデータなどの理由で）フィルタリングできる最大のデータ割合を指定します。デフォルトはゼロ許容です。
-strict mode: データを厳密に制限するかどうかを指定します。デフォルトはfalseです。
-timezone: strftime / alignment_timestamp / from_unixtimeなど、タイムゾーンの影響を受ける関数のタイムゾーンを指定します。詳細については[タイムゾーン]ドキュメントを参照してください。指定されていない場合は、「Asia / Shanghai」タイムゾーンが使用されます。
+以下のパラメータを指定できます:
+timeout:         インポート操作のタイムアウトを指定します。デフォルトのタイムアウトは4時間です。秒単位で指定します。
+max_filter_ratio:フィルタリングできる最大許容データの割合を指定します（非標準データなどによる）。デフォルトはゼロ許容です。
+strict mode:     データを厳密に制限するかどうかを指定します。デフォルトはfalseです。
+timezone:         時間帯が影響を受けるいくつかの関数のタイムゾーンを指定します（strftime / alignment_timestamp/from_unixtimeなど）。詳細については、[time zone] ドキュメントを参照してください。指定されていない場合、 "Asia / Shanghai" タイムゾーンが使用されます。
 
-6.データのインポート形式の例
+6. インポートデータのフォーマット例
 
 int (TINYINT/SMALLINT/INT/BIGINT/LARGEINT): 1, 1000, 1234
 float (FLOAT/DOUBLE/DECIMAL): 1.1, 0.23, .356
 date (DATE/DATETIME) :2017-10-03, 2017-06-13 12:34:03.
-（注意：他の日付形式については、インポートコマンドで変換するためにstrftimeやtime_format関数を使用できます）文字列クラス (CHAR/VARCHAR): "私は学生です"、"a"
+（注: 他の日付形式では、Importコマンドでstrftimeまたはtime_format関数を使用して変換できます）
+文字列クラス（CHAR/VARCHAR）: "I am a student", "a"
 
 NULL値: \ N
 
 ## 例
 
-1. HDFSからデータのバッチをインポートし、タイムアウト時間とフィルタリング比率を指定します。Sparkの名前をmy_ spark resourcesとして使用します。
+1. HDFSからバッチのデータをインポートし、タイムアウト時間とフィルタリング比率を指定します。sparkのリソース名を `my_spark` として使用します。
 
     ```sql
     LOAD LABEL example_db.label1
@@ -174,9 +173,9 @@ NULL値: \ N
     );
     ```
 
-    ここで、hdfs_hostはnamenodeのホストであり、hdfs_portはfs.defaultfsポート（デフォルトは9000）です。
+    ここで、hdfs_hostはnamenodeのホストであり、hdfs_portはfs.defaultfsポート（デフォルト9000）です。
 
-2. HDFSから "負の" データのバッチをインポートし、セパレータをカンマに指定し、ディレクトリ内のすべてのファイルを指定するためにワイルドカード*を使用し、sparkリソースの一時的なパラメータを指定します。
+2. HDFSから "ネガティブ" データのバッチをインポートし、セパレータをカンマに指定し、ワイルドカードを使用してディレクトリ内のすべてのファイルを指定し、sparkリソースの一時的なパラメータを指定します。
 
     ```sql
     LOAD LABEL example_db.label3
@@ -194,25 +193,25 @@ NULL値: \ N
     );
     ```
 
-3. HDFSからデータのバッチをインポートし、パーティションを指定し、インポートされたファイルの列に変換を行います。以下のようにします:
+3. HDFSからバッチのデータをインポートし、パーティションを指定し、インポートされたファイルの列に変換を行います。以下のようになります:
 
     ```plain text
-    テーブル構造は次のとおりです:
+    テーブル構造:
     k1 varchar(20)
     k2 int
     
-    データファイルにはデータ行が1行だけ含まれていると仮定します:
+    データファイルには1行のデータしかないとします:
     
     Adele,1,1
     
-    データファイル内の各列は、インポートステートメントで指定された各列に対応します:
+    データファイルの各列が、インポートステートメントで指定された各列に対応しているとします:
     k1,tmp_k2,tmp_k3
     
     変換は以下のようになります:
     
     1. k1: 変換なし
-    2. k2: tmp_ k2とtmp_k3の合計
-    
+    2. k2: tmp_k2とtmp_k3の合計
+
     LOAD LABEL example_db.label6
     (
     DATA INFILE("hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/file")
@@ -229,49 +228,50 @@ NULL値: \ N
 
 4. ファイルパスからパーティションフィールドを抽出
 ```sql
-ファイルパス内のパーティションされたフィールドが必要に応じて、テーブルで定義されたフィールドタイプに従って解決され、Sparkのパーティション検出の機能と類似した動作になります。
+    必要であれば、ファイルパス内の分割されたフィールドは、SparkのPartition Discoveryの機能に類似して、テーブルで定義されたフィールドタイプに従って解決されます。
 
-```sql
-LOAD LABEL example_db.label10
-(
-DATA INFILE("hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing/*/*")
-INTO TABLE `my_table`
-(k1, k2, k3)
-COLUMNS FROM PATH AS (city, utc_date)
-SET (uniq_id = md5sum(k1, city))
-)
-WITH RESOURCE 'my_spark';
-```
+    ```sql
+    LOAD LABEL example_db.label10
+    (
+    DATA INFILE("hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing/*/*")
+    INTO TABLE `my_table`
+    (k1, k2, k3)
+    COLUMNS FROM PATH AS (city, utc_date)
+    SET (uniq_id = md5sum(k1, city))
+    )
+    WITH RESOURCE 'my_spark';
+    ```
 
-`hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing` のディレクトリには、以下のファイルが含まれています:
+    `hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing`ディレクトリには、以下のファイルが含まれています:
 
-`[hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing/utc_date=2019-06-26/0000.csv, hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing/utc_date=2019-06-26/0001.csv, ...]`
+    `[hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing/utc_date=2019-06-26/0000.csv, hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/dir/city=beijing/utc_date=2019-06-26/0001.csv, ...]`
 
-ファイルパス内のcityおよびutc_dateフィールドが抽出されます。
+    ファイルパス内のcityとutc_dateフィールドが抽出されます。
 
-5. インポートするデータをフィルタリングします。k1の値が10より大きい列のみがインポートされます。
+5. インポートするデータをフィルタリングします。k1の値が10より大きい列のみがインポートできます。
 
-```sql
-LOAD LABEL example_db.label10
-(
-DATA INFILE("hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/file")
-INTO TABLE `my_table`
-WHERE k1 > 10
-)
-WITH RESOURCE 'my_spark';
-```
+    ```sql
+    LOAD LABEL example_db.label10
+    (
+    DATA INFILE("hdfs://hdfs_host:hdfs_port/user/starRocks/data/input/file")
+    INTO TABLE `my_table`
+    WHERE k1 > 10
+    )
+    WITH RESOURCE 'my_spark';
+    ```
 
-6. Hive外部テーブルからインポートし、ソーステーブルのuuid列をグローバル辞書を利用してビットマップタイプに変換します。
+6. hive外部テーブルからのインポートし、ソーステーブル内のuuid列をグローバル辞書を介してbitmapタイプに変換します。
 
-```sql
-LOAD LABEL db1.label1
-(
-DATA FROM TABLE hive_t1
-INTO TABLE tbl1
-SET
-(
-uuid=bitmap_dict(uuid)
-)
-)
-WITH RESOURCE 'my_spark';
+    ```sql
+    LOAD LABEL db1.label1
+    (
+    DATA FROM TABLE hive_t1
+    INTO TABLE tbl1
+    SET
+    (
+    uuid=bitmap_dict(uuid)
+    )
+    )
+    WITH RESOURCE 'my_spark';
+    ```
 ```

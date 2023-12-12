@@ -4,17 +4,17 @@ displayed_sidebar: "Japanese"
 
 # char_length
 
-## Description
+## 説明
 
-この関数は文字列の長さを返します。マルチバイト文字の場合、文字の数を返します。現在、utf8コーディングのみをサポートしています。注意：この関数はcharacter_lengthとしても名前が付けられています。
+この関数は文字列の長さを返します。マルチバイト文字の場合、文字数を返します。現在、utf8コーディングのみをサポートしています。注意：この関数はcharacter_lengthとしても呼び出すことができます。
 
-## Syntax
+## 構文
 
 ```Haskell
 INT char_length(VARCHAR str)
 ```
 
-## Examples
+## 例
 
 ```Plain Text
 MySQL > select char_length("abc");
@@ -25,6 +25,6 @@ MySQL > select char_length("abc");
 +--------------------+
 ```
 
-## keyword
+## キーワード
 
 CHAR_LENGTH, CHARACTER_LENGTH

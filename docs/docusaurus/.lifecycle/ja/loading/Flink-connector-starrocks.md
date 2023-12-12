@@ -1,14 +1,16 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
-# Apache Flink®からデータを連続して読み込む
 
-StarRocksでは、Apache Flink®（以下、Flinkコネクタ）のための自社開発コネクタであるFlinkコネクタを使用して、データを蓄積し、それをすべて[STREAM LOAD](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を介してStarRocksにロードすることができます。FlinkコネクタはDataStream API、Table API & SQL、Python APIをサポートしており、Apache Flink®が提供する[flink-connector-jdbc](https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/)よりも高い安定性とパフォーマンスがあります。
+# Apache Flink®からデータを連続的に読み込む
+
+StarRocksでは、Apache Flink®向けにFlink connector（Flink connectorとも呼ばれます）という自己開発のコネクタを提供しており、これを使用してFlinkを利用してStarRocksテーブルにデータを読み込むことができます。基本的な原則は、データを蓄積してから、[STREAM LOAD](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を通じて一度にすべてStarRocksに読み込むことです。
+
+Flink connectorはDataStream API、Table API & SQL、およびPython APIをサポートしています。これは、Apache Flink®が提供する[flink-connector-jdbc](https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/)よりも高速かつ安定したパフォーマンスを持っています。
 
 > **注意**
 >
-> Flinkコネクタを使用してStarRocksテーブルにデータをロードするには、SELECTおよびINSERTの権限が必要です。これらの権限がない場合は、[GRANT](../sql-reference/sql-statements/account-management/GRANT.md)に記載されている手順に従い、StarRocksクラスタに接続するために使用するユーザーにこれらの権限を付与してください。
+> Flink connectorを使用してStarRocksテーブルにデータを読み込むには、SELECTおよびINSERT権限が必要です。これらの権限がない場合は、[GRANT](../sql-reference/sql-statements/account-management/GRANT.md)で指示されている手順に従って、接続するStarRocksクラスタのユーザーにこれらの権限を付与してください。
 
 ## バージョン要件
 
@@ -17,31 +19,31 @@ StarRocksでは、Apache Flink®（以下、Flinkコネクタ）のための自�
 | 1.2.8     | 1.13,1.14,1.15,1.16,1.17 | 2.1 以降     | 8    | 2.11,2.12 |
 | 1.2.7     | 1.11,1.12,1.13,1.14,1.15 | 2.1 以降     | 8    | 2.11,2.12 |
 
-## Flinkコネクタの取得
+## Flink connectorの取得方法
 
-FlinkコネクタのJARファイルを以下の方法で取得できます。
+以下の方法でFlink connectorのJARファイルを取得することができます。
 
-- コンパイルされたFlinkコネクタのJARファイルを直接ダウンロードします。
-- FlinkコネクタをMavenプロジェクトの依存関係として追加し、その後JARファイルをダウンロードします。
-- Flinkコネクタのソースコードを自分でコンパイルしてJARファイルを作成します。
+- コンパイルされたFlink connectorのJARファイルを直接ダウンロードします。
+- MavenプロジェクトにFlink connectorを依存関係として追加し、その後JARファイルをダウンロードします。
+- Flink connectorのソースコードを自分でコンパイルしてJARファイルを作成します。
 
-FlinkコネクタのJARファイルの命名形式は以下の通りです。
+Flink connectorのJARファイルの命名形式は次のとおりです。
 
-- Flink 1.15以降では、`flink-connector-starrocks-${connector_version}_flink-${flink_version}.jar` です。例えば、Flink 1.15をインストールし、Flinkコネクタ1.2.7を使用したい場合は`flink-connector-starrocks-1.2.7_flink-1.15.jar`を使用できます。
+- Flink 1.15以降は、`flink-connector-starrocks-${connector_version}_flink-${flink_version}.jar`です。例えば、Flink 1.15をインストールし、Flink connector 1.2.7を使用したい場合は、`flink-connector-starrocks-1.2.7_flink-1.15.jar`を使用できます。
 
-- Flink 1.15より前では、`flink-connector-starrocks-${connector_version}_flink-${flink_version}_${scala_version}.jar` です。例えば、環境にFlink 1.14とScala 2.12をインストールしており、Flinkコネクタ1.2.7を使用したい場合は`flink-connector-starrocks-1.2.7_flink-1.14_2.12.jar`を使用できます。
+- Flink 1.15より前は、`flink-connector-starrocks-${connector_version}_flink-${flink_version}_${scala_version}.jar`です。例えば、環境にFlink 1.14とScala 2.12をインストールしており、Flink connector 1.2.7を使用したい場合は、`flink-connector-starrocks-1.2.7_flink-1.14_2.12.jar`を使用できます。
 
 > **注意**
 >
-> 一般的に、Flinkコネクタの最新バージョンは、Flinkの最新3バージョンとの互換性を維持します。
+> 一般的に、Flink connectorの最新バージョンは、Flinkの最新の3つのバージョンと互換性があります。
 
-### コンパイルされたJarファイルをダウンロード
+### コンパイルされたJarファイルのダウンロード
 
-[Maven Central Repository](https://repo1.maven.org/maven2/com/starrocks) から対応するFlinkコネクタのJarファイルを直接ダウンロードしてください。
+[Maven Central Repository](https://repo1.maven.org/maven2/com/starrocks)から、対応するバージョンのFlink connector Jarファイルを直接ダウンロードします。
 
 ### Mavenの依存関係
 
-Mavenプロジェクトの`pom.xml`ファイルに、以下の形式に従ってFlinkコネクタを依存関係として追加してください。`flink_version`、`scala_version`、`connector_version`をそれぞれのバージョンに置き換えてください。
+Mavenプロジェクトの`pom.xml`ファイルで、次の形式に従ってFlink connectorを依存関係として追加します。それぞれのバージョンに対応する`flink_version`、`scala_version`、`connector_version`に置き換えてください。
 
 - Flink 1.15以降
 
@@ -63,57 +65,57 @@ Mavenプロジェクトの`pom.xml`ファイルに、以下の形式に従って
     </dependency>
     ```
 
-### 自分でコンパイル
+### 自分でコンパイルする
 
-1. [Flinkコネクタパッケージ](https://github.com/StarRocks/starrocks-connector-for-apache-flink)をダウンロードします。
-2. 次のコマンドを実行して、FlinkコネクタのソースコードをJARファイルにコンパイルします。`flink_version`は対応するFlinkバージョンに置き換えることに注意してください。
+1. [Flink connector package](https://github.com/StarRocks/starrocks-connector-for-apache-flink)をダウンロードします。
+2. 次のコマンドを実行してFlink connectorのソースコードをJARファイルにコンパイルします。`flink_version`は対応するFlinkバージョンに置き換えてください。
 
       ```bash
       sh build.sh <flink_version>
       ```
 
-   例えば、環境のFlinkバージョンが1.15である場合は、次のコマンドを実行する必要があります。
+   例えば、環境のFlinkバージョンが1.15の場合、次のコマンドを実行する必要があります。
 
       ```bash
       sh build.sh 1.15
       ```
 
-3. `target/`ディレクトリに移動し、コンパイル後に生成された`flink-connector-starrocks-1.2.7_flink-1.15-SNAPSHOT.jar`などのFlinkコネクタのJARファイルを見つけてください。
+3. コンパイル後、`target/`ディレクトリに移動して、コンパイル中に生成された`flink-connector-starrocks-1.2.7_flink-1.15-SNAPSHOT.jar`などのFlink connector JARファイルを見つけます。
 
 > **注意**
 >
-> 正式にリリースされていないFlinkコネクタの名前には、`SNAPSHOT`接尾辞が含まれます。
+> 正式にリリースされていないFlink connectorの名前には、`SNAPSHOT`接尾辞が含まれています。
 
 ## オプション
 
-| **Option**                        | **Required** | **Default value** | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-|-----------------------------------|--------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| connector                         | はい          | NONE              | 使用するコネクタ。値は「starrocks」である必要があります。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| jdbc-url                          | はい          | NONE              | FEのMySQLサーバに接続するために使用されるアドレスです。複数のアドレスを指定することができ、コンマ（,）で区切られている必要があります。形式：`jdbc:mysql://<fe_host1>:<fe_query_port1>,<fe_host2>:<fe_query_port2>,<fe_host3>:<fe_query_port3>`。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| load-url                          | はい          | NONE              | StarRocksクラスタ内のFEのHTTP URLです。複数のURLを指定することができ、セミコロン（;）で区切られている必要があります。形式：`<fe_host1>:<fe_http_port1>;<fe_host2>:<fe_http_port2>`。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| database-name                     | はい          | NONE              | データをロードするStarRocksデータベースの名前です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| table-name                        | はい          | NONE              | StarRocksにデータをロードするテーブルの名前です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| username                          | はい          | NONE              | StarRocksにデータをロードするために使用するアカウントのユーザー名。アカウントには[SELECTおよびINSERTの権限](../sql-reference/sql-statements/account-management/GRANT.md)が必要です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| password                          | はい          | NONE              | 前述のアカウントのパスワード。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| sink.semantic                     | いいえ           | at-least-once     | シンクによって保証されるセマンティック。有効な値：**at-least-once**および**exactly-once**。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| sink.version                      | いいえ           | AUTO              | データをロードするために使用されるインタフェース。このパラメータはFlinkコネクタのバージョン1.2.4以降でサポートされています。<ul><li>`V1`: [Stream Load](../loading/StreamLoad.md) インタフェースを使用してデータをロードします。1.2.4より前のコネクタはこのモードのみをサポートしています。 </li> <li>`V2`: [Stream Load transaction](../loading/Stream_Load_transaction_interface.md) インタフェースを使用してデータをロードします。StarRocksがバージョン2.4以上である必要があります。メモリ使用量を最適化し、より安定したexactly-onceの実装を提供しますので、`V2`を推奨します。 </li> <li>`AUTO`: StarRocksのバージョンがトランザクションStream Loadをサポートしている場合は自動的に`V2`を選択し、それ以外の場合は`V1`を選択します </li></ul> |
-| sink.label-prefix | いいえ | NONE | Stream Loadで使用されるラベルの接頭辞。コネクタ1.2.8以降をexactly-onceで使用する場合には、この設定を推奨します。 [exactly-onceの使用に関する注意事項](#exactly-once)をご覧ください。 |
-| sink.buffer-flush.max-bytes       | いいえ           | 94371840(90M)     | StarRocksに送信される前にメモリに蓄積されるデータの最大サイズ。最大値は64 MBから10 GBまでです。このパラメータをより大きな値に設定すると、ロードのパフォーマンスが向上するが、ロードの遅延が増加する可能性があります。                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| sink.buffer-flush.max-rows        | いいえ           | 500000            | 一度にStarRocksに送信される前にメモリに蓄積される行の最大数。このパラメータは、`sink.version`を`V1`に、`sink.semantic`を`at-least-once`に設定した場合にのみ使用できます。有効な値：64000から5000000。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| sink.buffer-flush.interval-ms     | いいえ           | 300000            | データをフラッシュする間隔。このパラメータは、`sink.semantic`を`at-least-once`に設定した場合にのみ使用できます。有効な値: 1000 ～ 3600000。単位: ミリ秒。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| sink.max-retries                  | いいえ           | 3                 | システムがストリームロードジョブを実行し直す回数。このパラメータは、`sink.version`を`V1`に設定した場合にのみ使用できます。有効な値: 0 ～ 10。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| sink.connect.timeout-ms           | いいえ           | 1000              | HTTP接続を確立するためのタイムアウト。有効な値: 100 ～ 60000。単位: ミリ秒。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| sink.wait-for-continue.timeout-ms | いいえ           | 10000             | 1.2.7以降でサポートされています。FEからHTTP 100-continueのレスポンスを待機するためのタイムアウト。有効な値: `3000` ～ `60000`。単位: ミリ秒                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| sink.ignore.update-before         | いいえ           | true              | 1.2.8以降でサポートされています。主キーテーブルにデータをロードする際に、Flinkからの`UPDATE_BEFORE`レコードを無視するかどうか。このパラメータがfalseに設定されている場合、レコードはStarRocksテーブルに対する削除操作として扱われます。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| sink.properties.*                 | いいえ           | NONE              | ストリームロードの動作を制御するために使用されるパラメータ。たとえば、パラメータ`sink.properties.format`は、ストリームロードに使用する形式（CSVまたはJSONなど）を指定します。サポートされているパラメータとその説明のリストについては、[STREAM LOAD](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を参照してください。                                                                                                                                                                                                                                                                                                                                 |
-| sink.properties.format            | いいえ           | csv               | ストリームロードに使用する形式。Flinkコネクタは、データの各バッチをStarRocksに送信する前にその形式に変換します。有効な値: `csv` および `json`。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| sink.properties.row_delimiter     | いいえ           | \n                | CSV形式のデータの行区切り文字。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| sink.properties.column_separator  | いいえ           | \t                | CSV形式のデータの列区切り文字。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| sink.properties.max_filter_ratio  | いいえ           | 0                 | ストリームロードの最大エラートレランス。不適切なデータ品質のためにフィルタリングされるデータレコードの最大パーセンテージ。有効な値: `0` ～ `1`。デフォルト値: `0`。詳細については[Stream Load](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を参照してください。                                                                                                                                                                                                                                                                                                                                                                      |
-| sink.parallelism                  | いいえ           | NONE              | コネクタの並列性。Flink SQL専用の機能です。設定しない場合、Flinkプランナーが並列性を決定します。複数の並列性のシナリオでは、データが正しい順序で書き込まれることを保証する必要があります。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| sink.properties.strict_mode | いいえ | false | ストリームロードの厳密モードを有効にするかどうかを指定します。不適格な行（一貫性のある列値など）がある場合のロード動作に影響します。有効な値: `true` および `false`。デフォルト値: `false`。詳細については[Stream Load](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を参照してください。 |
+| **オプション**                    | **必須** | **デフォルト値** | **説明**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|-----------------------------------|----------|-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| connector                         | Yes      | NONE              | 使用するコネクタ。値は「starrocks」でなければなりません。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| jdbc-url                          | Yes      | NONE              | FEのMySQLサーバに接続するためのアドレス。複数のアドレスを指定することができ、コンマ（,）で区切られていなければなりません。形式: `jdbc:mysql://<fe_host1>:<fe_query_port1>,<fe_host2>:<fe_query_port2>,<fe_host3>:<fe_query_port3>`。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| load-url                          | Yes      | NONE              | StarRocksクラスタ内のFEのHTTP URL。複数のURLを指定することができ、セミコロン（;）で区切られていなければなりません。形式: `<fe_host1>:<fe_http_port1>;<fe_host2>:<fe_http_port2>`。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| database-name                     | Yes      | NONE              | データを読み込むStarRocksデータベースの名前。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| table-name                        | Yes      | NONE              | StarRocksにデータを読み込むために使用するテーブルの名前。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| username                          | Yes      | NONE              | StarRocksにデータを読み込むために使用するアカウントのユーザー名。アカウントには[SELECTおよびINSERT権限](../sql-reference/sql-statements/account-management/GRANT.md)が必要です。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| password                          | Yes      | NONE              | 前述のアカウントのパスワード。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| sink.semantic                     | No       | at-least-once     | Sinkによって保証される意味。有効な値：**at-least-once**および**exactly-once**。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| sink.version                      | No       | AUTO              | データを読み込むために使用されるインタフェース。このパラメータは、Flink connectorバージョン1.2.4以降でサポートされています。<ul><li>`V1`: [Stream Load](../loading/StreamLoad.md)インタフェースを使用してデータを読み込む。1.2.4以前のコネクタはこのモードのみをサポートしています。 </li> <li>`V2`: [Stream Load transaction](../loading/Stream_Load_transaction_interface.md)インタフェースを使用してデータを読み込む。StarRocksは少なくともバージョン2.4である必要があります。メモリ使用量を最適化し、より安定したexactly-once実装を提供するため、`V2`を推奨します。 </li> <li>`AUTO`: StarRocksのバージョンがトランザクションStream Loadをサポートしている場合は自動的に`V2`を選択し、それ以外の場合は`V1`を選択します</li></ul> |
+| sink.label-prefix | No | NONE | Stream Loadで使用するラベルの接頭辞。コネクタ1.2.8以降でexactly-onceを使用している場合は、構成することを推奨します。[exactly-onceの使用注意事項](#exactly-once)を参照してください。 |
+| sink.buffer-flush.max-bytes       | No       | 94371840(90M)     | StarRocksに一度に送信される前にメモリに蓄積できるデータの最大サイズ。最大値は64MBから10GBまでです。このパラメータを大きな値に設定することで読み込みパフォーマンスを向上させることができますが、読み込みの遅延が発生する可能性があります。                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| sink.buffer-flush.max-rows        | No       | 500000            | StarRocksに一度に送信される前にメモリに蓄積できる行の最大数。このパラメータは、`sink.version`を`V1`に設定し、`sink.semantic`を`at-least-once`に設定している場合にのみ利用可能です。有効な値：64000～5000000。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| sink.buffer-flush.interval-ms     | No           | 300,000            | データがフラッシュされる間隔。このパラメータは`sink.semantic`が`at-least-once`に設定されている場合のみ利用可能です。有効な値: 1000 ～ 3600000。単位: ms。|
+| sink.max-retries                  | No           | 3                 | システムがストリームロードジョブを実行し直す回数。このパラメータは`sink.version`が`V1`に設定されている場合のみ利用可能です。有効な値: 0 ～ 10。|
+| sink.connect.timeout-ms           | No           | 1,000              | HTTP接続を確立するためのタイムアウト。有効な値: 100 ～ 60,000。単位: ms。|
+| sink.wait-for-continue.timeout-ms | No           | 10,000             | バージョン1.2.7からサポートされています。FEからHTTP 100-continueの応答を待機するタイムアウト。有効な値: `3000` ～ `60000`。単位: ms。|
+| sink.ignore.update-before         | No           | true              | バージョン1.2.8からサポートされています。Flinkからプライマリキーテーブルにデータをロードする際に`UPDATE_BEFORE`レコードを無視するかどうか。このパラメータが`false`に設定されている場合、そのレコードはStarRocksテーブルにおいて削除操作として扱われます。|
+| sink.properties.*                 | No           | NONE              | ストリームロードの動作を制御するために使用されるパラメータ。例えば、パラメータ`sink.properties.format`は、CSVやJSONなどのストリームロードに使用するフォーマットを指定します。サポートされているパラメータとその説明については、[STREAM LOAD](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を参照してください。|
+| sink.properties.format            | No           | csv               | ストリームロードに使用されるフォーマット。Flinkコネクタはデータの各バッチをStarRocksに送信する前に、それらを指定のフォーマットに変換します。有効な値: `csv` および `json`。|
+| sink.properties.row_delimiter     | No           | \n                | CSV形式のデータの行区切り文字。|
+| sink.properties.column_separator  | No           | \t                | CSV形式のデータの列区切り文字。|
+| sink.properties.max_filter_ratio  | No           | 0                 | ストリームロードの最大エラートレランス。データ品質が不十分なためにフィルタリングされるデータレコードの最大パーセンテージ。有効な値: `0` ～ `1`。デフォルト値: `0`。詳細については[Stream Load](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を参照してください。|
+| sink.parallelism                  | No           | NONE              | コネクタの並列処理。Flink SQL専用です。未設定の場合、Flinkプランナーが並列処理を決定します。マルチ並列処理のシナリオでは、ユーザーはデータが正しい順序で書き込まれることを保証する必要があります。|
+| sink.properties.strict_mode | No | false | ストリームロードの厳密モードを有効にするかどうかを指定します。これは一貫性のない列値などの資格のない行が存在する場合のロード動作に影響します。有効な値: `true` および `false`。デフォルト値: `false`。詳細については[Stream Load](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を参照してください。|
 
-## FlinkとStarRocks間のデータ型マッピング
+## FlinkとStarRocksのデータ型マッピング
 
 | Flinkのデータ型                   | StarRocksのデータ型   |
 |-----------------------------------|-----------------------|
@@ -138,32 +140,32 @@ Mavenプロジェクトの`pom.xml`ファイルに、以下の形式に従って
 
 ## 使用上の注意
 
-### 正確一度
+### 正確に一度だけ
 
-- シンクが正確に一度のセマンティクスを保証する場合は、StarRocksを2.5以上にアップグレードし、Flinkコネクタを1.2.4以上にアップグレードすることをお勧めします。
-  - Flinkコネクタ1.2.4以降は、StarRocksが2.4以降で提供する[Stream Loadトランザクションインターフェース](https://docs.starrocks.io/en-us/latest/loading/Stream_Load_transaction_interface)に基づいて正確一度を再設計しました。非トランザクショナルインターフェースに基づく以前の実装と比較して、新しい実装はメモリ使用量とチェックポイントのオーバーヘッドを削減し、リアルタイム性能と安定性を向上させています。
+- シンクが正確に一度だけのセマンティクスを保証する場合は、StarRocksをバージョン2.5以上にアップグレードし、Flinkコネクタをバージョン1.2.4以上にアップグレードすることをお勧めします
+  - Flinkコネクタ1.2.4以降では、正確な一度だけは、StarRocksの2.4以降で提供されている[Stream Loadトランザクションインターフェース](https://docs.starrocks.io/en-us/latest/loading/Stream_Load_transaction_interface)に基づいて再設計されています。非トランザクショナルインターフェースに基づいた以前の実装と比較して、新しい実装はメモリ使用量とチェックポイントのオーバーヘッドを削減し、リアルタイム性能と安定性を向上させています。
 
-  - StarRocksのバージョンが2.4未満であるか、Flinkコネクタのバージョンが1.2.4未満である場合、シンクは自動的に非トランザクショナルなインターフェースに基づく実装を選択します。
+  - StarRocksのバージョンが2.4よりも古い場合やFlinkコネクタのバージョンが1.2.4よりも古い場合は、シンクは自動的に非トランザクショナルインターフェースに基づいた実装を選択します。
 
-- 正確一度を保証するための設定
+- 正確な一度だけを保証するための設定
 
-  - `sink.semantic`の値を`exactly-once`にする必要があります。
+  - `sink.semantic`の値は`exactly-once`である必要があります。
 
-  - Flinkコネクタのバージョンが1.2.8以上の場合、`sink.label-prefix`の値を指定することをお勧めします。ラベルプレフィックスはStarRocksでのすべてのタイプのロード（Flinkジョブ、ルーチンロード、ブローカーロードなど）の間で一意である必要があります。
+  - Flinkコネクタのバージョンが1.2.8以降の場合、`sink.label-prefix`の値を指定することが推奨されます。ただし、ラベルプレフィックスはFlinkジョブ、Routine Load、Broker LoadなどStarRocksのあらゆるロードタイプでユニークである必要があります。
 
-    - ラベルプレフィックスが指定されている場合、Flinkコネクタは、Flinkジョブのチェックポイントが進行中で失敗した場合などのいくつかのFlinkの障害シナリオで生成される残留トランザクションをクリーンアップするためにラベルプレフィックスを使用します。これらの残留トランザクションは、通常`PREPARED`の状態にあります。Flinkジョブがチェックポイントから復元されると、Flinkコネクタはこれらの残留トランザクションをラベルプレフィックスとチェックポイント内のいくつかの情報に基づいて見つけ、取り消します。 Flinkジョブが正常に終了した後は、Flinkコネクタは2相コミットメカニズムを介して正確に一度を実現するため、これらのトランザクションを中止することができません。Flinkジョブが終了すると、Flinkコネクタはまだトランザクションコーディネーターから成功したチェックポイントに含めるべきトランザクションかどうかの通知を受け取っていない可能性があり、これらのトランザクションを中止してもデータの損失につながる可能性があります。Flinkでエンドツーエンドの正確一度を実現する方法について詳細は、この[ブログポスト](https://flink.apache.org/2018/02/28/an-overview-of-end-to-end-exactly-once-processing-in-apache-flink-with-apache-kafka-too/)を参照してください。
+    - ラベルプレフィックスが指定されている場合、Flinkコネクタは、いくつかのFlinkの障害シナリオで発生する可能性がある残存トランザクションをクリーンアップするためにラベルプレフィックスを使用します。これらの残存トランザクションは通常、`PREPARED`の状態にあります。Flinkジョブがチェックポイントが進行中の際にFlinkジョブが失敗した場合などのFlinkジョブが回復する際、Flinkコネクタはこれらの残存トランザクションをチェックポイント内のラベルプレフィックスと一部の情報に基づいて見つけ、中止します。Flinkジョブが終了すると、Flinkコネクタは正確な一度だけを実現するための二段階コミットメカニズムによって、これらのトランザクションを中止できません。Flinkジョブが終了すると、Flinkチェックポイントコーディネータからトランザクションを正常なチェックポイントに含めるかどうかの通知をまだ受信していないため、これらのトランザクションを中止してしまう可能性があります。そのため、Flinkにおけるエンドツーエンドの正確に一度だけを実現する方法については、この[ブログポスト](https://flink.apache.org/2018/02/28/an-overview-of-end-to-end-exactly-once-processing-in-apache-flink-with-apache-kafka-too/)を参照してください。
 
-    - ラベルプレフィックスが指定されていない場合、残留トランザクションはStarRocksによってタイムアウト後にクリーンアップされます。ただし、Flinkジョブが頻繁に失敗する場合、実行中のトランザクション数がStarRocksの`max_running_txn_num_per_db`の制限に達する可能性があります。タイムアウトの長さは、StarRocks FEの構成`prepared_transaction_default_timeout_second`によって制御され、デフォルト値は`86400`（1日）です。ラベルプレフィックスが指定されていない場合にトランザクションをより速く期限切れにするためにこの設定に小さい値を設定できます。
+    - ラベルプレフィックスが指定されていない場合、残存トランザクションはStarRocksによってタイムアウト後にクリーンアップされます。ただし、Flinkジョブが頻繁に失敗すると、残存トランザクションの数がStarRocks `max_running_txn_num_per_db`の制限に達する可能性があります。タイムアウトの長さは、StarRocks FE構成の`prepared_transaction_default_timeout_second`によって制御されます。デフォルト値は`86400`（1日）です。これをより小さな値に設定することで、ラベルプレフィックスが指定されていない場合にトランザクションをより早く期限切れにすることができます。
 
-- 長時間のダウンタイムの後、Flinkジョブが最終的にチェックポイントまたはセーブポイントから回復することを確信している場合は、以下のStarRocks構成を調整して、データ損失を回避してください。
+- Flinkジョブが長時間停止することによる停止または継続的なフェイルオーバーのため、最終的にチェックポイントまたはセーブポイントからのFlinkジョブの回復が保証されている場合は、データ損失を防ぐために次のStarRocksの構成を調整してください。
 
-  - `prepared_transaction_default_timeout_second`：StarRocks FEの構成で、デフォルト値は`86400`です。この構成の値は、Flinkジョブのダウンタイムよりも大きくする必要があります。そうしないと、実際のチェックポイントに含まれる残留トランザクションが再起動する前にタイムアウトによって中止される可能性があり、これによりデータが失われることになります。
+  - `prepared_transaction_default_timeout_second`：StarRocks FEの構成。デフォルト値は `86400`です。この構成の値は、Flinkジョブのダウンタイムよりも大きくする必要があります。そうでないと、成功したチェックポイントに含まれている残存トランザクションは、Flinkジョブを再起動する前にタイムアウトのため中止される可能性があります。
 
-    この構成に大きな値を設定する場合は、ラベルプレフィックスの値を指定することをお勧めします。なぜなら、残留トランザクションについての情報を検索し、それらを中止するために、StarRocksはチェックポイント内のラベルプレフィックスといくつかの情報を使用します。
+    この構成に大きな値を設定する場合、ラベルプレフィックスの値を指定して、チェックポイント内のトランザクションラベルを使用してStarRocks内のトランザクションの状態を確認し、これらのトランザクションがコミットされたかどうかを判別できるようにした方が良いでしょう。
 
-  - `label_keep_max_second`および`label_keep_max_num`：StarRocks FEの構成で、デフォルト値はそれぞれ`259200`および`1000`です。詳細については、[FE configurations](../loading/Loading_intro.md#fe-configurations)を参照してください。`label_keep_max_second`の値は、Flinkジョブのダウンタイムよりも大きくする必要があります。そうしないと、FlinkコネクタはFlinkのセーブポイントまたはチェックポイントに保存されたトランザクションラベルを使用してStarRocksでトランザクションの状態をチェックし、これらのトランザクションがコミットされているかどうかを確認することができません。その結果、最終的にデータ損失を招く可能性があります。
+  - `label_keep_max_second` および `label_keep_max_num`：StarRocks FE構成。デフォルト値はそれぞれ `259200` および `1000` です。詳細については、[FE configurations](../loading/Loading_intro.md#fe-configurations)をご覧ください。 `label_keep_max_second`の値は、Flinkジョブのダウンタイムよりも大きくする必要があります。そうでないと、FlinkコネクタはFlinkのセーブポイントまたはチェックポイントに保存されたトランザクションラベルを使用してStarRocks内のトランザクションの状態を確認し、これらのトランザクションがコミットされたかどうかを判断できません。
 
-  これらの構成は変更可能で、`ADMIN SET FRONTEND CONFIG`を使用して変更できます：
+  これらの構成は変更可能であり、`ADMIN SET FRONTEND CONFIG`を使用して変更できます。
 
   ```SQL
     ADMIN SET FRONTEND CONFIG ("prepared_transaction_default_timeout_second" = "3600");
@@ -172,38 +174,38 @@ Mavenプロジェクトの`pom.xml`ファイルに、以下の形式に従って
   ```
 
 ### フラッシュポリシー
-Flinkコネクタはデータをメモリにバッファリングし、それらをバッチでStarRocksにStream Load経由でフラッシュします。フラッシュがトリガーされる方法は、少なくとも一度はおおよそ一度であるのとまさに一度で異なります。
+フリンク・コネクタはデータをメモリ内にバッファし、それをバッチでStarRocksにStream Loadを通じてフラッシュします。フラッシュがトリガーされる方法は、少なくとも一度とまさに一度の間で異なります。
 
-少なくとも一度の場合、フラッシュは次の条件のいずれかが満たされた時にトリガーされます。
+少なくとも一度の場合、以下のいずれかの条件が満たされたときにフラッシュがトリガーされます。
 
-- バッファリングされた行のバイト数が`sink.buffer-flush.max-bytes`の制限に達した場合
-- バッファリングされた行の数が`sink.buffer-flush.max-rows`の制限に達した場合（SinkバージョンV1のみ有効）
-- 最後にフラッシュしてからの経過時間が`sink.buffer-flush.interval-ms`の制限に達した場合
+- バッファリングされた行のバイトが`sink.buffer-flush.max-bytes`の制限に達した場合
+- バッファリングされた行の数が`sink.buffer-flush.max-rows`の制限に達した場合（シンクバージョンV1にのみ有効）
+- 最後のフラッシュ以降の経過時間が`sink.buffer-flush.interval-ms`の制限に達した場合
 - チェックポイントがトリガーされた場合
 
 まさに一度の場合、フラッシュはチェックポイントがトリガーされたときのみ発生します。
 
 ### ロードメトリクスのモニタリング
 
-Flinkコネクタは、以下のメトリクスを提供してロードをモニタリングします。
+フリンクコネクタは、以下のメトリクスを提供してローディングを監視します。
 
-| メトリクス             | タイプ    | 説明                             |
-|------------------------|---------|--------------------------------|
-| totalFlushBytes        | カウンタ  | フラッシュされたバイト数             |
-| totalFlushRows         | カウンタ  | 正常にフラッシュされた行数                 |
-| totalFlushSucceededTimes | カウンタ  | データが正常にフラッシュされた回数  |
-| totalFlushFailedTimes  | カウンタ  | データがフラッシュに失敗した回数       |
-| totalFilteredRows      | カウンタ  | フィルタリングされた行数。totalFlushRowsにも含まれます。         |
+| メトリクス                 | タイプ    | 説明                                                     |
+|--------------------------|---------|-----------------------------------------------------------------|
+| totalFlushBytes          | カウンター | 成功したフラッシュバイト数                                     |
+| totalFlushRows           | カウンター | 成功した行の数                                      |
+| totalFlushSucceededTimes | カウンター | データが成功してフラッシュされた回数  |
+| totalFlushFailedTimes    | カウンター | データのフラッシュに失敗した回数                |
+| totalFilteredRows        | カウンター | フィルタリングされた行の数。これはtotalFlushRowsにも含まれます。  |
 
 ## 例
 
-次の例は、Flinkコネクタを使用してFlink SQLまたはFlink DataStreamを使用してデータをStarRocksテーブルにロードする方法を示しています。
+以下の例では、Flinkコネクタを使用してFlink SQLまたはFlink DataStreamを使用してStarRocksテーブルにデータをロードする方法を示しています。
 
 ### 準備
 
 #### StarRocksテーブルの作成
 
-データベース`test`を作成し、プライマリキーのテーブル`score_board`を作成します。
+データベース`test`を作成し、プライマリーキーテーブル`score_board`を作成します。
 
 ```sql
 CREATE DATABASE `test`;
@@ -222,9 +224,9 @@ DISTRIBUTED BY HASH(`id`);
 
 #### Flink環境のセットアップ
 
-- [Flink 1.15.2](https://archive.apache.org/dist/flink/flink-1.15.2/flink-1.15.2-bin-scala_2.12.tgz)のバイナリをダウンロードし、それをディレクトリ`flink-1.15.2`に展開します。
-- [Flink connector 1.2.7](https://repo1.maven.org/maven2/com/starrocks/flink-connector-starrocks/1.2.7_flink-1.15/flink-connector-starrocks-1.2.7_flink-1.15.jar)をダウンロードし、それをディレクトリ`flink-1.15.2/lib`に配置します。
-- 次のコマンドを実行して、Flinkクラスタを起動します。
+- Flinkのバイナリ[Flink 1.15.2](https://archive.apache.org/dist/flink/flink-1.15.2/flink-1.15.2-bin-scala_2.12.tgz)をダウンロードし、`flink-1.15.2`ディレクトリに展開します。
+- [Flink connector 1.2.7](https://repo1.maven.org/maven2/com/starrocks/flink-connector-starrocks/1.2.7_flink-1.15/flink-connector-starrocks-1.2.7_flink-1.15.jar)をダウンロードし、`flink-1.15.2/lib`ディレクトリに配置します。
+- 次のコマンドを実行してFlinkクラスターを起動します。
 
     ```shell
     cd flink-1.15.2
@@ -233,14 +235,13 @@ DISTRIBUTED BY HASH(`id`);
 
 ### Flink SQLで実行
 
-- 次のコマンドを実行して、Flink SQLクライアントを起動します。
+- 次のコマンドを実行してFlink SQLクライアントを起動します。
 
     ```shell
     ./bin/sql-client.sh
     ```
 
-- Flinkテーブル`score_board`を作成し、Flink SQLクライアントを介してテーブルに値を挿入します。
-StarRocksのプライマリキーのテーブルにデータをロードする場合は、Flink DDLでプライマリキーを定義する必要があります。他のタイプのStarRocksテーブルにデータをロードする場合は任意です。
+- Flinkテーブル`score_board`を作成し、Flink SQLクライアントを介してテーブルに値を挿入します。StarRocksのプライマリーキーテーブルにデータをロードする場合は、Flink DDLでプライマリーキーを定義する必要があります。その他の種類のStarRocksテーブルの場合はオプショナルです。
 
     ```SQL
     CREATE TABLE `score_board` (
@@ -264,14 +265,14 @@ StarRocksのプライマリキーのテーブルにデータをロードする�
 
 ### Flink DataStreamで実行
 
-入力レコードのタイプに応じて、CSV Javaの`String`、JSON Javaの`String`、またはカスタムJavaオブジェクトを使用してFlink DataStreamジョブを実装する方法がいくつかあります。
+入力レコードのタイプに応じて、CSV Java `String`、JSON Java `String`、またはカスタムJavaオブジェクトのFlink DataStreamジョブを実装する方法がいくつかあります。
 
-- 入力レコードはCSV形式の`String`です。完全な例については、[LoadCsvRecords](https://github.com/StarRocks/starrocks-connector-for-apache-flink/tree/main/examples/src/main/java/com/starrocks/connector/flink/examples/datastream/LoadCsvRecords.java)を参照してください。
+- 入力レコードがCSV形式の`String`の場合は、完全な例については[LoadCsvRecords](https://github.com/StarRocks/starrocks-connector-for-apache-flink/tree/main/examples/src/main/java/com/starrocks/connector/flink/examples/datastream/LoadCsvRecords.java)を参照してください。
 
     ```java
     /**
-     * CSV形式のレコードを生成します。各レコードは"\t"で区切られた3つの値を持っています。 
-     * これらの値は、StarRocksテーブルの列`id`、`name`、`score`にロードされます。
+     * CSV形式のレコードを生成します。各レコードは"\t"で区切られた3つの値を持ちます。
+     * これらの値はStarRocksテーブルの`id`、`name`、および`score`にロードされます。
      */
     String[] records = new String[]{
             "1\tstarrocks-csv\t100",
@@ -281,9 +282,8 @@ StarRocksのプライマリキーのテーブルにデータをロードする�
 
     /**
      * 必要なプロパティでコネクタを構成します。
-     * コネクタにプロパティ"dashboard.properties.format"と"dashborad.properties.column_separator"を追加する必要があります。 
-     * これによって、入力レコードがCSV形式であること、および列の区切りが"\t"であることをコネクタに伝えます。
-     * CSV形式のレコードで他の列区切りを使用することもできますが、"dashborad.properties.column_separator"を適切に変更する必要があります。
+     * また、プロパティ"sink.properties.format"および"sink.properties.column_separator"を追加する必要があります。
+     * これにより、入力レコードがCSV形式であること、および列の区切り記号が"\t"であることをコネクタに伝えることができます。
      */
     StarRocksSinkOptions options = StarRocksSinkOptions.builder()
             .withProperty("jdbc-url", jdbcUrl)
@@ -300,12 +300,12 @@ StarRocksのプライマリキーのテーブルにデータをロードする�
     source.addSink(starRockSink);
     ```
 
-- 入力レコードはJSON形式の`String`です。完全な例については、[LoadJsonRecords](https://github.com/StarRocks/starrocks-connector-for-apache-flink/tree/main/examples/src/main/java/com/starrocks/connector/flink/examples/datastream/LoadJsonRecords.java)を参照してください。
+- 入力レコードがJSON形式の`String`の場合は、完全な例については[LoadJsonRecords](https://github.com/StarRocks/starrocks-connector-for-apache-flink/tree/main/examples/src/main/java/com/starrocks/connector/flink/examples/datastream/LoadJsonRecords.java)を参照してください。
 
     ```java
     /**
-     * JSON形式のレコードを生成します。 
-     * 各レコードは、StarRocksテーブルの列`id`、`name`、`score`に対応する3つのキーと値のペアを持っています。
+     * JSON形式のレコードを生成します。
+     * 各レコードにはStarRocksテーブルの`id`、`name`、`score`に対応する3つのキーバリューペアがあります。
      */
     String[] records = new String[]{
             "{\"id\":1, \"name\":\"starrocks-json\", \"score\":100}",
@@ -315,8 +315,8 @@ StarRocksのプライマリキーのテーブルにデータをロードする�
 
     /** 
      * 必要なプロパティでコネクタを構成します。
-     * コネクタにプロパティ"dashborad.properties.format"と"dashborad.properties.strip_outer_array"を追加する必要があります。 
-     * これによって、入力レコードがJSON形式であり、最外の配列構造を削除する必要があることをコネクタに伝えます。
+     * また、プロパティ"sink.properties.format"と"sink.properties.strip_outer_array"を追加する必要があります。
+     * これにより、入力レコードがJSON形式であり、最も外側の配列構造を剥がすことをコネクタに伝えることができます。
      */
     StarRocksSinkOptions options = StarRocksSinkOptions.builder()
             .withProperty("jdbc-url", jdbcUrl)
@@ -333,96 +333,60 @@ StarRocksのプライマリキーのテーブルにデータをロードする�
     source.addSink(starRockSink);
     ```
 
-- 入力レコードはカスタムJavaオブジェクトです。完全な例については、[LoadCustomJavaRecords](https://github.com/StarRocks/starrocks-connector-for-apache-flink/tree/main/examples/src/main/java/com/starrocks/connector/flink/examples/datastream/LoadCustomJavaRecords.java)を参照してください。
-
-  - この例では、入力レコードは単純なPOJO `RowData`です。
-
-      ```java
-      public static class RowData {
-              public int id;
-              public String name;
-              public int score;
-    
-              public RowData() {}
-    
-              public RowData(int id, String name, int score) {
-                  this.id = id;
-                  this.name = name;
-                  this.score = score;
-              }
-          }
-      ```
-
-  - メインプログラムは次のようになります:
-
-    ```java
-    // RowDataをコンテナとして使用するレコードを生成します。
-    RowData[] records = new RowData[]{
-            new RowData(1, "starrocks-rowdata", 100),
-            new RowData(2, "flink-rowdata", 100),
-        };
-    DataStream<RowData> source = env.fromElements(records);
-
-    // 必要なプロパティでコネクタを構成します。
-    StarRocksSinkOptions options = StarRocksSinkOptions.builder()
-            .withProperty("jdbc-url", jdbcUrl)
-            .withProperty("load-url", loadUrl)
-            .withProperty("database-name", "test")
-            .withProperty("table-name", "score_board")
-            .withProperty("username", "root")
-            .withProperty("password", "")
+- 入力レコードがカスタムJavaオブジェクトの場合は、[LoadCustomJavaRecords](https://github.com/StarRocks/starrocks-connector-for-apache-flink/tree/main/examples/src/main/java/com/starrocks/connector/flink/examples/datastream/LoadCustomJavaRecords.java)の完全な例を参照してください。
 ```java
-      .build();
-
-/**
- * Flinkコネクターは、StarRocksテーブルにロードされる行を表すためにJavaオブジェクト配列（Object[]）を使用し、各要素は列の値です。
- * StarRocksテーブルと一致するObject[]のスキーマを定義する必要があります。
- */
-TableSchema schema = TableSchema.builder()
-        .field("id", DataTypes.INT().notNull())
-        .field("name", DataTypes.STRING())
-        .field("score", DataTypes.INT())
-        // StarRocksテーブルがプライマリキーテーブルの場合、例えば、プライマリキー `id` に対して DataTypes.INT().notNull() のように、notNull() を指定する必要があります。
-        .primaryKey("id")
-        .build();
-// RowDataをスキーマに従ってObject[]に変換します。
-RowDataTransformer transformer = new RowDataTransformer();
-// スキーマ、オプション、およびトランスフォーマを使用してシンクを作成します。
-SinkFunction<RowData> starRockSink = StarRocksSink.sink(schema, options, transformer);
-source.addSink(starRockSink);
-```
-
-- メインプログラム内の `RowDataTransformer` は次のように定義されます。
-
-```java
-private static class RowDataTransformer implements StarRocksSinkRowBuilder<RowData> {
+          .build();
 
     /**
-     * 入力されたRowDataに応じて、オブジェクト配列の各要素を設定します。
-     * 配列のスキーマはStarRocksテーブルと一致します。
+     * The Flink connector will use a Java object array (Object[]) to represent a row to be loaded into the StarRocks table,
+     * and each element is the value for a column.
+     * You need to define the schema of the Object[] which matches that of the StarRocks table.
      */
-    @Override
-    public void accept(Object[] internalRow, RowData rowData) {
-        internalRow[0] = rowData.id;
-        internalRow[1] = rowData.name;
-        internalRow[2] = rowData.score;
-        // StarRocksテーブルがプライマリキーテーブルの場合、最後の要素を設定して、データのロードがUPSERTまたはDELETE操作なのかを示す必要があります。
-        internalRow[internalRow.length - 1] = StarRocksSinkOP.UPSERT.ordinal();
-    }
-}
-```
+    TableSchema schema = TableSchema.builder()
+            .field("id", DataTypes.INT().notNull())
+            .field("name", DataTypes.STRING())
+            .field("score", DataTypes.INT())
+            // When the StarRocks table is a Primary Key table, you must specify notNull(), for example, DataTypes.INT().notNull(), for the primary key `id`.
+            .primaryKey("id")
+            .build();
+    // Transform the RowData to the Object[] according to the schema.
+    RowDataTransformer transformer = new RowDataTransformer();
+    // Create the sink with the schema, options, and transformer.
+    SinkFunction<RowData> starRockSink = StarRocksSink.sink(schema, options, transformer);
+    source.addSink(starRockSink);
+    ```
 
-## ベストプラクティス
+  - The `RowDataTransformer` in the main program is defined as follows:
 
-### プライマリキーテーブルへのデータのロード
+    ```java
+    private static class RowDataTransformer implements StarRocksSinkRowBuilder<RowData> {
+    
+        /**
+         * Set each element of the object array according to the input RowData.
+         * The schema of the array matches that of the StarRocks table.
+         */
+        @Override
+        public void accept(Object[] internalRow, RowData rowData) {
+            internalRow[0] = rowData.id;
+            internalRow[1] = rowData.name;
+            internalRow[2] = rowData.score;
+            // When the StarRocks table is a Primary Key table, you need to set the last element to indicate whether the data loading is an UPSERT or DELETE operation.
+            internalRow[internalRow.length - 1] = StarRocksSinkOP.UPSERT.ordinal();
+        }
+    }  
+    ```
 
-このセクションでは、部分的な更新と条件付き更新を実現するために、StarRocksのプライマリキーテーブルにデータをロードする方法を示します。
-これらの機能の紹介については、[データのロードを通じた変更](https://docs.starrocks.io/en-us/latest/loading/Load_to_Primary_Key_tables)をご覧ください。
-これらの例では、Flink SQLを使用します。
+## Best practices
 
-#### 準備
+### Load data to a Primary Key table
 
-StarRocksでデータベース `test` を作成し、プライマリキーテーブル `score_board` を作成します。
+This section will show how to load data to a StarRocks Primary Key table to achieve partial updates and conditional updates.
+You can see [Change data through loading](https://docs.starrocks.io/en-us/latest/loading/Load_to_Primary_Key_tables) for the introduction of those features.
+These examples use Flink SQL.
+
+#### Preparations
+
+Create a database `test` and create a Primary Key table `score_board` in StarRocks.
 
 ```SQL
 CREATE DATABASE `test`;
@@ -439,11 +403,11 @@ COMMENT "OLAP"
 DISTRIBUTED BY HASH(`id`);
 ```
 
-#### 部分的な更新
+#### Partial update
 
-この例では、データを列 `id` と `name` にのみロードする方法を示します。
+This example will show how to load data only to columns `id` and `name`.
 
-1. MySQLクライアントで、二つのデータ行をStarRocksテーブル `score_board` に挿入します。
+1. Insert two data rows into the StarRocks table `score_board` in MySQL client.
 
     ```SQL
     mysql> INSERT INTO `score_board` VALUES (1, 'starrocks', 100), (2, 'flink', 100);
@@ -458,11 +422,11 @@ DISTRIBUTED BY HASH(`id`);
     2 rows in set (0.02 sec)
     ```
 
-2. Flink SQLクライアントで `score_board` というFlinkテーブルを作成します。
+2. Create a Flink table `score_board` in Flink SQL client.
 
-   - 列 `id` と `name` のみを含むDDLを定義します。
-   - 部分的な更新を実行するために、Flinkコネクターに `sink.properties.partial_update` オプションを `true` に設定します。
-   - Flinkコネクターのバージョンが `<=` 1.2.7 の場合、`sink.properties.columns` オプションを `id,name,__op` に設定する必要があります。これにより、更新する必要のある列をFlinkコネクターに伝えることができます。`__op` フィールドを末尾に追加する必要があります。 `__op` フィールドは、データのロードがUPSERTまたはDELETE操作なのかを示し、その値はコネクターによって自動的に設定されます。
+   - Define the DDL which only includes the columns `id` and `name`.
+   - Set the option `sink.properties.partial_update` to `true` which tells the Flink connector to perform partial updates.
+   - If the Flink connector version `<=` 1.2.7, you also need to set the option `sink.properties.columns` to `id,name,__op` to tells the Flink connector which columns need to be updated. Note that you need to append the field `__op` at the end. The field `__op` indicates that the data loading is an UPSERT or DELETE operation, and its values are set by the connector automatically.
 
     ```SQL
     CREATE TABLE `score_board` (
@@ -478,18 +442,18 @@ DISTRIBUTED BY HASH(`id`);
         'username' = 'root',
         'password' = '',
         'sink.properties.partial_update' = 'true',
-        -- Flinkコネクターのバージョンが <= 1.2.7 の場合のみ
+        -- only for Flink connector version <= 1.2.7
         'sink.properties.columns' = 'id,name,__op'
     ); 
     ```
 
-3. Flinkテーブルに二つのデータ行を挿入します。データ行のプライマリキーはStarRocksテーブルの行と同じですが、列 `name` の値が変更されています。
+3. Insert two data rows into the Flink table. The primary keys of the data rows are as same as these of rows in the StarRocks table. but the values in the column `name` are modified.
 
     ```SQL
     INSERT INTO `score_board` VALUES (1, 'starrocks-update'), (2, 'flink-update');
     ```
 
-4. MySQLクライアントでStarRocksテーブルをクエリします。
+4. Query the StarRocks table in MySQL client.
   
     ```SQL
     mysql> select * from score_board;
@@ -502,13 +466,14 @@ DISTRIBUTED BY HASH(`id`);
     2 rows in set (0.02 sec)
     ```
 
-    列 `name` の値のみが変更され、列 `score` の値は変更されていないことがわかります。
+    You can see that only values for `name` change, and the values for `score` do not change.
 
-#### 条件付き更新
+#### Conditional update
 
-この例では、列 `score` の値に応じて条件付き更新を行う方法を示します。新しい `score` の値が古い値以上の場合のみ、 `id` の更新が有効となります。
+This example will show how to do conditional update according to the value of column `score`. The update for an `id`
+takes effect only when the new value for `score` is has a greater or equal to the old value.
 
-1. MySQLクライアントで、二つのデータ行をStarRocksテーブルに挿入します。
+1. Insert two data rows into the StarRocks table in MySQL client.
 
     ```SQL
     mysql> INSERT INTO `score_board` VALUES (1, 'starrocks', 100), (2, 'flink', 100);
@@ -523,11 +488,12 @@ DISTRIBUTED BY HASH(`id`);
     2 rows in set (0.02 sec)
     ```
 
-2. 次の方法で `score_board` というFlinkテーブルを作成します。
+2. Create a Flink table `score_board` in the following ways:
   
-    - すべての列を含むDDLを定義します。
-    - 更新条件として列 `score` を使用するために、`sink.properties.merge_condition` オプションを `score` に設定します。
-    - ストリームロードを使用することをコネクタに伝えるために、`sink.version` オプションを `V1` に設定します。
+    - Define the DDL including all of columns.
+    - Set the option `sink.properties.merge_condition` to `score` to tell the connector to use the column `score`
+    as the condition.
+    - Set the option `sink.version` to `V1` which tells the connector to use Stream Load.
 
     ```SQL
     CREATE TABLE `score_board` (
@@ -548,13 +514,13 @@ DISTRIBUTED BY HASH(`id`);
         );
     ```
 
-3. Flinkテーブルに二つのデータ行を挿入します。データ行のプライマリキーはStarRocksテーブルの行と同じです。最初のデータ行は列 `score` で小さい値を持ち、二つめのデータ行は列 `score` で大きい値を持ちます。
+3. Insert two data rows into the Flink table. The primary keys of the data rows are as same as these of rows in the StarRocks table. The first data row has a smaller value in the column `score`, and the second data row has a larger  value in the column `score`.
 
     ```SQL
     INSERT INTO `score_board` VALUES (1, 'starrocks-update', 99), (2, 'flink-update', 101);
     ```
 
-4. MySQLクライアントでStarRocksテーブルをクエリします。
+4. Query the StarRocks table in MySQL client.
 
     ```SQL
     mysql> select * from score_board;
@@ -567,20 +533,20 @@ DISTRIBUTED BY HASH(`id`);
     2 rows in set (0.03 sec)
     ```
 
-   二つ目のデータ行のみが変更され、一つ目のデータ行は変更されていないことがわかります。
+   You can see that only the values of the second data row change, and the values of the first data row do not change.
 
-### BITMAPタイプの列にデータをロード
+### Load data into columns of BITMAP type
 
-[`BITMAP`](https://docs.starrocks.io/en-us/latest/sql-reference/sql-statements/data-types/BITMAP)は、UVの計算など、正確なCount Distinctの加速によく使用されます。詳細については、[Use Bitmap for exact Count Distinct](https://docs.starrocks.io/en-us/latest/using_starrocks/Using_bitmap)をご覧ください。
+[`BITMAP`](https://docs.starrocks.io/en-us/latest/sql-reference/sql-statements/data-types/BITMAP) is often used to accelerate count distinct, such as counting UV, see [Use Bitmap for exact Count Distinct](https://docs.starrocks.io/en-us/latest/using_starrocks/Using_bitmap).
 ```SQL
-      + {T}
-      + {T}
-    + {T}
-  + {T}
+      + 
+      + 
+    + 
+  + 
 ```
 ```SQL
-      + {T}
-      + {T}
-    + {T}
-  + {T}
+      + 
+      + 
+    + 
+  + 
 ```

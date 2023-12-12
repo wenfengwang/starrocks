@@ -2,32 +2,32 @@
 displayed_sidebar: "Japanese"
 ---
 
-# sqrt, dsqrt（ルート算出）
+# sqrt, dsqrt
 
-## Description（概要）
+## 説明
 
-値の平方根を計算します。dsqrtはsqrtと同じです。
+値の平方根を計算します。 dsqrtはsqrtと同じです。
 
-## Syntax（構文）
+## 構文
 
 ```Haskell
 DOUBLE SQRT(DOUBLE x);
 DOUBLE DSQRT(DOUBLE x);
 ```
 
-## Parameters（パラメータ）
+## パラメータ
 
 `x`: 数値のみを指定できます。この関数は計算前に数値をDOUBLE値に変換します。
 
-## Return value（戻り値）
+## 戻り値
 
 DOUBLEデータ型の値を返します。
 
-## Usage notes（使用上の注意）
+## 使用上の注意
 
-数値以外を指定すると、この関数は `NULL` を返します。
+非数値を指定した場合、この関数は`NULL`を返します。
 
-## Examples（例）
+## 例
 
 ```Plain
 mysql> select sqrt(3.14);

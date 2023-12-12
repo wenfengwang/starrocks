@@ -2,15 +2,15 @@
 displayed_sidebar: "Japanese"
 ---
 
-# row
+# 行
 
 ## 説明
 
-指定された値から名前付きのSTRUCTまたはROW値を作成します。無名のstructをサポートします。フィールド名を指定する必要はありません。StarRocksは自動的に列名を生成します。たとえば、`col1, col2,...`のような列名です。
+指定された値から名前付きのSTRUCTまたはROW値を作成します。無名のstructもサポートします。フィールド名を指定する必要はありません。StarRocksは自動的に列名を生成します。「col1、col2...」のような列名です。
 
-この関数は、v3.1からサポートされています。
+この機能はv3.1以降でサポートされています。
 
-struct()はrow()の別名です。
+struct()はrow()のエイリアスです。
 
 ## 構文
 
@@ -20,29 +20,29 @@ STRUCT row(ANY val, ...)
 
 ## パラメータ
 
-`val`: サポートされている任意の型の式です。
+`val`: サポートされている任意の型の式。
 
-この関数は可変引数関数です。少なくとも1つの引数を渡す必要があります。`value`はnull可能です。複数の値をカンマ(`,`)で区切ります。
+この関数は可変引数関数です。少なくとも1つの引数を渡す必要があります。`value`はnull値にすることができます。複数の値をカンマ(`,`)で区切ります。
 
 ## 戻り値
 
-入力値から構成されるSTRUCT値を返します。
+入力値からなるSTRUCT値を返します。
 
 ## 例
 
 ```Plaintext
-select row(1,"Apple","Pear");
+select row(1,"りんご","梨");
 +-----------------------------------------+
-| row(1, 'Apple', 'Pear')                 |
+| row(1, 'りんご', '梨')                   |
 +-----------------------------------------+
-| {"col1":1,"col2":"Apple","col3":"Pear"} |
+| {"col1":1,"col2":"りんご","col3":"梨"}  |
 +-----------------------------------------+
 
-select row("Apple", NULL);
+select row("りんご", NULL);
 +------------------------------+
-| row('Apple', NULL)           |
+| row('りんご', NULL)           |
 +------------------------------+
-| {"col1":"Apple","col2":null} |
+| {"col1":"りんご","col2":null} |
 +------------------------------+
 
 select struct(1,2,3);
@@ -55,5 +55,5 @@ select struct(1,2,3);
 
 ## 参照
 
-- [STRUCTデータ型](../../sql-statements/data-types/STRUCT.md)
-- [named_struct（名前付きSTRUCT)](named_struct.md)
+- [STRUCT データ型](../../sql-statements/data-types/STRUCT.md)
+- [named_struct](named_struct.md)

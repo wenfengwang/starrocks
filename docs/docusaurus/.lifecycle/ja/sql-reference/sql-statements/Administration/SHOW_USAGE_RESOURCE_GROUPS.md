@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# リソースグループの使用状況を表示
+# リソースグループの使用状況を表示する
 
 ## 説明
 
-リソースグループの使用状況情報を表示します。この機能はv3.1.4以降でサポートされています。
+リソースグループの使用情報を表示します。この機能はv3.1.4以降でサポートされています。
 
 ## 構文
 
@@ -14,19 +14,19 @@ displayed_sidebar: "Japanese"
 SHOW USAGE RESOURCE GROUPS
 ```
 
-## 戻り値
+## 返り値
 
-- `Name`: リソースグループの名前
-- `Id`: リソースグループのID
-- `Backend`: BEのIPまたはFQDN
-- `BEInUseCpuCores`: このリソースグループがこのBEで現在使用しているCPUコア数。この値はおおよその推定値です。
-- `BEInUseMemBytes`: このリソースグループがこのBEで現在使用しているメモリバイト数
-- `BERunningQueries`: このリソースグループからこのBEで実行中のクエリ数
+- `Name`: リソースグループの名前。
+- `Id`: リソースグループのID。
+- `Backend`: BEのIPまたはFQDN。
+- `BEInUseCpuCores`: このリソースグループがこのBEで現在使用しているCPUコアの数。この値はおおよその推定値です。
+- `BEInUseMemBytes`: このリソースグループがこのBEで現在使用しているメモリバイト数。
+- `BERunningQueries`: このリソースグループからこのBEでまだ実行中のクエリの数。
 
 ## 使用上の注意
 
-- BEは`report_resource_usage_interval_ms`で指定された間隔でリーダーFEにこのリソース使用状況情報を定期的に報告します。これはデフォルトで1秒に設定されています。
-- 結果には、`BEInUseCpuCores`/`BEInUseMemBytes`/`BERunningQueries`のいずれかが正の数である行のみが表示されます。つまり、リソースグループがBEでリソースをアクティブに使用している場合にのみ情報が表示されます。
+- BEは、デフォルトで1秒間隔で指定された間隔で、このリソース使用状況情報をリーダーFEに定期的に報告します。
+- 結果には、`BEInUseCpuCores`/`BEInUseMemBytes`/`BERunningQueries`の少なくとも1つが正の数である行のみ表示されます。言い換えると、リソースグループがBEで何らかのリソースをアクティブに使用している場合にのみ情報が表示されます。
 
 ## 例
 

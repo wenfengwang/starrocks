@@ -1,35 +1,35 @@
-```yaml
+```markdown
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# マテリアライズド・ビュー表示
+# マテリアライズド・ビューを表示
 
 ## 説明
 
 すべてまたは特定の非同期マテリアライズド・ビューを表示します。
 
-v3.0から、このステートメントの名前が「SHOW MATERIALIZED VIEW」から「SHOW MATERIALIZED VIEWS」に変更されました。
+v3.0以降、このステートメントの名前はSHOW MATERIALIZED VIEWからSHOW MATERIALIZED VIEWSに変更されています。
 
 ## 構文
 
 ```SQL
 SHOW MATERIALIZED VIEWS
-[FROM db_name]
+[FROM データベース名]
 [
 WHERE NAME { = "mv_name" | LIKE "mv_name_matcher"}
 ]
 ```
 
-角かっこ[ ]内のパラメータはオプションです。
+角かっこ[]内のパラメータは任意です。
 
 ## パラメータ
 
-| **パラメータ**     | **必須** | **説明**                                              |
+| **パラメータ**   | **必須** | **説明**                                              |
 | --------------- | ------------ | ------------------------------------------------------------ |
-| db_name         | いいえ           | マテリアライズド・ビューが存在するデータベースの名前です。このパラメータが指定されていない場合、デフォルトで現在のデータベースが使用されます。 |
-| mv_name         | いいえ           | 表示するマテリアライズド・ビューの名前です。                   |
-| mv_name_matcher | いいえ           | マテリアライズド・ビューをフィルタリングするために使用されるマッチャーです。               |
+| db_name         | いいえ           | マテリアライズド・ビューが存在するデータベースの名前。このパラメータが指定されていない場合、デフォルトで現在のデータベースが使用されます。 |
+| mv_name         | いいえ           | 表示するマテリアライズド・ビューの名前。                   |
+| mv_name_matcher | いいえ           | マテリアライズド・ビューをフィルタリングするために使用されるマッチャー。               |
 
 ## 戻り値
 
@@ -38,31 +38,31 @@ WHERE NAME { = "mv_name" | LIKE "mv_name_matcher"}
 | id                         | マテリアライズド・ビューのID。                             |
 | database_name              | マテリアライズド・ビューが存在するデータベースの名前。 |
 | name                       | マテリアライズド・ビューの名前。                           |
-| refresh_type               | マテリアライズド・ビューのリフレッシュタイプ（ROLLUP、MANUAL、ASYNC、INCREMENTALを含む）。 |
-| is_active                  | マテリアライズド・ビューの状態がアクティブであるかどうか。有効な値：`true`および`false`。 |
-| partition_type             | マテリアライズド・ビューのパーティションタイプ（RANGEおよびUNPARTITIONEDを含む）。                |
-| task_id                    | マテリアライズド・ビューのリフレッシュタスクのID。                  |
-| task_name                  | マテリアライズド・ビューのリフレッシュタスクの名前。                |
-| last_refresh_start_time    | マテリアライズド・ビューの最終リフレッシュの開始時刻。 |
-| last_refresh_finished_time | マテリアライズド・ビューの最終リフレッシュの終了時刻。   |
-| last_refresh_duration      | 最終リフレッシュにかかった時間。単位：秒。           |
-| last_refresh_state         | 最終リフレッシュのステータス（PENDING、RUNNING、FAILED、SUCCESSを含む）。 |
-| last_refresh_force_refresh | 最終リフレッシュがFORCEリフレッシュであるかどうか。                 |
-| last_refresh_start_partition | マテリアライズド・ビューの最終リフレッシュの開始パーティション。 |
-| last_refresh_end_partition | マテリアライズド・ビューの最終リフレッシュの終了パーティション。 |
-| last_refresh_base_refresh_partitions | 最終リフレッシュでリフレッシュされたベーステーブルのパーティション。 |
-| last_refresh_mv_refresh_partitions | 最終リフレッシュでリフレッシュされたマテリアライズド・ビューのパーティション。 |
-| last_refresh_error_code    | マテリアライズド・ビューの最後のリフレッシュが失敗した場合のエラーコード（マテリアライズド・ビューの状態がアクティブでない場合）。 |
+| refresh_type               | ROLLUP、MANUAL、ASYNC、INCREMENTALを含むマテリアライズド・ビューのリフレッシュタイプ。 |
+| is_active                  | マテリアライズド・ビューの状態がアクティブかどうか。有効な値：`true` と `false` 。 |
+| partition_type             | RANGEおよびUNPARTITIONEDを含むマテリアライズド・ビューのパーティションタイプ。                |
+| task_id                    | マテリアライズド・ビューリフレッシュタスクのID。                  |
+| task_name                  | マテリアライズド・ビューリフレッシュタスク名。                |
+| last_refresh_start_time    | マテリアライズド・ビューの最終リフレッシュの開始時間。 |
+| last_refresh_finished_time | マテリアライズド・ビューの最終リフレッシュの終了時間。   |
+| last_refresh_duration      | 最後のリフレッシュにかかった時間。単位：秒。           |
+| last_refresh_state         | 最後のリフレッシュのステータス。PENDING、RUNNING、FAILED、SUCCESSを含む。 |
+| last_refresh_force_refresh | 最後のリフレッシュがFORCEリフレッシュかどうか。                 |
+| last_refresh_start_partition | マテリアライズド・ビューの最後のリフレッシュの開始パーティション。 |
+| last_refresh_end_partition | マテリアライズド・ビューの最後のリフレッシュの終了パーティション。 |
+| last_refresh_base_refresh_partitions | 最後のリフレッシュでリフレッシュされたベーステーブルのパーティション。 |
+| last_refresh_mv_refresh_partitions | 最後のリフレッシュでリフレッシュされたマテリアライズド・ビューのパーティション。 |
+| last_refresh_error_code    | マテリアライズド・ビューの最後の失敗したリフレッシュのエラーコード（マテリアライズド・ビューの状態がアクティブでない場合）。 |
 | last_refresh_error_message | マテリアライズド・ビューの最後のリフレッシュが失敗した理由（マテリアライズド・ビューの状態がアクティブでない場合）。 |
-| rows                       | マテリアライズド・ビュー内のデータ行数。            |
+| rows                       | マテリアライズド・ビュー内のデータ行数。           |
 | text                       | マテリアライズド・ビューを作成するために使用されるステートメント。          |
 
 ## 例
 
-次の例は、次のビジネスシナリオに基づいています。
+以下の例は、このビジネスシナリオに基づいています。
 
 ```Plain
--- テーブルを作成：customer
+-- テーブルの作成：customer
 CREATE TABLE customer ( C_CUSTKEY     INTEGER NOT NULL,
                         C_NAME        VARCHAR(25) NOT NULL,
                         C_ADDRESS     VARCHAR(40) NOT NULL,
@@ -81,7 +81,7 @@ PROPERTIES (
 "storage_format" = "DEFAULT"
 );
 
--- マテリアライズド・ビューを作成：customer_mv
+-- マテリアライズド・ビューの作成：customer_mv
 CREATE MATERIALIZED VIEW customer_mv
 DISTRIBUTED BY HASH(c_custkey)
 REFRESH MANUAL
@@ -94,11 +94,11 @@ AS SELECT
               customer
    GROUP BY c_custkey, c_phone, c_acctbal;
 
--- マテリアライズド・ビューをリフレッシュ
+-- マテリアライズド・ビューのリフレッシュ
 REFRESH MATERIALIZED VIEW customer_mv;
 ```
 
-例1: 特定のマテリアライズド・ビューを表示する。
+例1：特定のマテリアライズド・ビューを表示。
 
 ```Plain
 mysql> SHOW MATERIALIZED VIEWS WHERE NAME='customer_mv'\G;
@@ -129,7 +129,7 @@ GROUP BY `customer`.`c_custkey`, `customer`.`c_phone`, `customer`.`c_acctbal`;
 1 row in set (0.11 sec)
 ```
 
-例2: 名前に一致するマテリアライズド・ビューを表示する。
+例2：名前に一致するマテリアライズド・ビューを表示。
 
 ```Plain
 mysql> SHOW MATERIALIZED VIEWS WHERE NAME LIKE 'customer_mv'\G;

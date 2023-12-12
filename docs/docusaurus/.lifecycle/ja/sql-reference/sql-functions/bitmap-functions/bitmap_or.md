@@ -1,6 +1,5 @@
-```yaml
 ---
-displayed_sidebar: "English"
+displayed_sidebar: "Japanese"
 ---
 
 # bitmap_or
@@ -36,4 +35,3 @@ MySQL > select bitmap_count(bitmap_or(to_bitmap(1), to_bitmap(1))) cnt;
 ## キーワード
 
 BITMAP_OR, BITMAP
-```

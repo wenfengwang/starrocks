@@ -2,15 +2,15 @@
 displayed_sidebar: "Japanese"
 ---
 
-# BITMAP（ビットマップ）
+# ビットマップ
 
-BITMAPは、頻繁なカウントの高速化によく使用されます。HLL（HyperLogLog）よりも、カウントの高速化においてより正確です。BITMAPは、HLLよりも多くのメモリとディスクリソースを消費します。INTデータの集約のみをサポートしています。文字列データにBITMAPを適用する場合は、低基数辞書を使用してデータをマップする必要があります。
+ビットマップは、カウントの重複を加速するためによく使用されます。これはHyperLogLog（HLL）よりも正確なカウントの重複を持っていますが、より多くのメモリとディスクリソースを消費します。ビットマップはINTデータの集約のみをサポートしています。文字列データにビットマップを適用したい場合は、低基数辞書を使用してデータをマップする必要があります。
 
-このトピックでは、BITMAP列の作成とその列のデータを集約するためのビットマップ関数の使用例を示します。詳細な関数定義や他のビットマップ関数については、「ビットマップ関数」を参照してください。
+このトピックでは、ビットマップカラムを作成し、そのカラムのデータを集約するためのビットマップ関数を使用する簡単な例を提供します。詳細な関数の定義やその他のビットマップ関数については、「ビットマップ関数」を参照してください。
 
 ## テーブルの作成
 
-- ビットマップ(BITMAP)データ型の`user_id`列を持ち、bitmap_union()関数がデータを集約するために使用される、集約テーブルを作成します。
+- ビットマップ型の`user_id`カラムを持ち、bitmap_union()関数を使用してデータを集約する集約テーブルを作成します。
 
     ```SQL
     CREATE TABLE `pv_bitmap` (
@@ -23,19 +23,19 @@ BITMAPは、頻繁なカウントの高速化によく使用されます。HLL�
     DISTRIBUTED BY HASH(`dt`);
     ```
 
-- ビットマップ(BITMAP)データ型の`userid`列を持つ、Primaru Keyテーブルを作成します。
+- プライマリキーとしてビットマップ型の`userid`カラムを持つテーブルを作成します。
 
     ```SQL
     CREATE TABLE primary_bitmap (
-    `tagname` varchar(65533) NOT NULL COMMENT "Tag name",
-    `tagvalue` varchar(65533) NOT NULL COMMENT "Tag value",
-    `userid` bitmap NOT NULL COMMENT "User ID")
+    `tagname` varchar(65533) NOT NULL COMMENT "タグ名",
+    `tagvalue` varchar(65533) NOT NULL COMMENT "タグ値",
+    `userid` bitmap NOT NULL COMMENT "ユーザーID")
     ENGINE=OLAP
     PRIMARY KEY(`tagname`, `tagvalue`)
     COMMENT "OLAP"
     DISTRIBUTED BY HASH(`tagname`);
     ```
 
-BITMAP列にデータを挿入する前に、まずto_bitmap()関数でデータを変換する必要があります。
+ビットマップカラムにデータを挿入する前に、まずto_bitmap()関数を使用してデータを変換する必要があります。
 
-BITMAPの使用方法の詳細については、BITMAPデータをテーブルにロードする方法などを参照してください[bitmap](../../sql-functions/aggregate-functions/bitmap.md)。
+ビットマップの使用方法の詳細については、たとえば、ビットマップデータをテーブルにロードする方法などについては、[bitmap](../../sql-functions/aggregate-functions/bitmap.md)を参照してください。

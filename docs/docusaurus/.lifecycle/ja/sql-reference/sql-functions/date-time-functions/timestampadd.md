@@ -7,11 +7,11 @@ displayed_sidebar: "日本語"
 
 ## 説明
 
-整数式の間隔を日付または日時式 `datetime_expr` に追加します。
+整数式インターバルを日付または日時式 `datetime_expr` に追加します。
 
-間隔の単位は、以下のいずれかである必要があります:
+インターバルの単位は、以下のいずれかでなければなりません：
 
-SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, または YEAR.
+SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, または YEAR。
 
 ## 構文
 

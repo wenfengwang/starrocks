@@ -2,17 +2,17 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ケース
+# CASE（ケース）
 
 ## 説明
 
-ケースは条件式です。WHEN句の条件がtrueに評価される場合、THEN句の結果を返します。条件がtrueに評価できない場合は、オプションのELSE句の結果を返します。ELSEが存在しない場合、NULLが返されます。
+CASEは条件式です。WHEN句の条件がtrueに評価される場合、THEN句で結果を返します。条件がどれもtrueに評価されない場合、オプションのELSE句で結果を返します。ELSEが存在しない場合、NULLが返されます。
 
 ## 構文
 
-ケース式には2つの形式があります。
+CASE式には2つの形式があります。
 
-- シンプルケース
+- シンプルCASE
 
 ```SQL
 CASE expression
@@ -24,9 +24,9 @@ CASE expression
 END
 ```
 
-この構文では、`式`はWHEN句の各式と比較されます。等しい式が見つかると、THEN句の結果が返されます。等しい式が見つからない場合は、ELSEが存在する場合はELSE句の結果が返されます。
+この構文では、`expression`はWHEN句の各式と比較されます。等しい式が見つかった場合、THEN句の結果が返されます。等しい式が見つからない場合、ELSEが存在する場合はELSE句の結果が返されます。
 
-- 検索されたケース
+- サーチドCASE
 
 ```SQL
 CASE WHEN condition1 THEN result1
@@ -37,9 +37,9 @@ CASE WHEN condition1 THEN result1
 END
 ```
 
-この構文では、WHEN句の各条件が評価され、真となる条件が見つかった場合、対応するTHEN句の結果が返されます。条件がtrueに評価できない場合は、ELSE句の結果が返されます。
+この構文では、WHEN句の各条件が評価され、trueになった場合、対応するTHEN句の結果が返されます。条件がtrueに評価されない場合、ELSEが存在する場合はELSE句の結果が返されます。
 
-最初のCASEは次のように等しい:
+最初のCASE式は次のように2番目のものと等しいです：
 
 ```SQL
 CASE WHEN expression = expression1 THEN result1
@@ -52,19 +52,19 @@ END
 
 ## パラメータ
 
-- `expressionN`: 比較する式。複数の式はデータ型と互換性が必要です。
+- `expressionN`: 比較する式。複数の式はデータ型で互換性が必要です。
 
-- `conditionN`: BOOLEAN値に評価できる条件。
+- `conditionN`: BOOLEAN値に評価できる条件です。
 
-- `resultN`: データ型と互換性が必要です。
+- `resultN`はデータ型で互換性が必要です。
 
-## 返り値
+## 戻り値
 
-返り値はTHEN句のすべての型の共通の型です。
+戻り値はTHEN句のすべての型の共通型です。
 
 ## 例
 
-テーブル`test_case`に以下のデータがあるとします:
+テーブル`test_case`に次のデータがあるとします：
 
 ```SQL
 CREATE TABLE test_case(
@@ -89,9 +89,9 @@ SELECT * FROM test_case;
 +-------+--------+-------+
 ```
 
-### シンプルケースの使用
+### シンプルCASEの使用
 
-- ELSEが指定され、等しい式が見つからない場合はELSEの結果が返されます。
+- ELSEが指定され、等しい式が見つからない場合はELSEで指定された結果が返されます。
 
 ```plain
 mysql> select gender, case gender 
@@ -110,7 +110,7 @@ from test_case;
 +--------+------------+
 ```
 
-- ELSEが指定されず、条件がtrueに評価できない場合はNULLが返されます。
+- ELSEが指定されず、条件がtrueに評価されない場合はNULLが返されます。
 
 ```plain
 select gender, case gender 
@@ -128,7 +128,7 @@ from test_case;
 +--------+------------+
 ```
 
-### ELSEが指定されていない検索されたケースの使用
+### ELSEが指定されていないサーチドCASEの使用
 
 ```plain
 mysql> select gender, case when gender = 1 then 'male'
@@ -147,4 +147,4 @@ from test_case;
 
 ## キーワード
 
-case when, case, case_when, case...when
+case when、case、case_when、case...when

@@ -6,9 +6,9 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定されたロードジョブをキャンセルします：[ブローカーロード](../data-manipulation/BROKER_LOAD.md)、[スパークロード](../data-manipulation/SPARK_LOAD.md)、または[INSERT](./INSERT.md)。 `PREPARED`、`CANCELLED`、または`FINISHED`の状態のロードジョブはキャンセルできません。
+指定されたロードジョブ：[ブローカーロード](../data-manipulation/BROKER_LOAD.md)、 [Sparkロード](../data-manipulation/SPARK_LOAD.md)、または [INSERT](./INSERT.md) をキャンセルします。`PREPARED`、`CANCELLED`、または`FINISHED`の状態にあるロードジョブはキャンセルできません。
 
-ロードジョブのキャンセルは非同期プロセスです。[SHOW LOAD](../data-manipulation/SHOW_LOAD.md)ステートメントを使用して、ロードジョブが正常にキャンセルされたかどうかを確認できます。 `State`の値が`CANCELLED`であり、`ErrorMsg`に表示される`type`の値が`USER_CANCEL`である場合、ロードジョブは正常にキャンセルされます。
+ロードジョブのキャンセルは非同期プロセスです。[SHOW LOAD](../data-manipulation/SHOW_LOAD.md) ステートメントを使用して、ロードジョブが正常にキャンセルされたかどうかを確認できます。`State`の値が`CANCELLED`であり、`type`（`ErrorMsg`で表示）の値が`USER_CANCEL`である場合、ロードジョブは正常にキャンセルされています。
 
 ## 構文
 
@@ -20,21 +20,21 @@ WHERE LABEL = "label_name"
 
 ## パラメータ
 
-| **パラメータ** | **必須** | **説明**                                                    |
-| ------------- | ---------- | ------------------------------------------------------------ |
-| db_name       | いいえ     | ロードジョブが属するデータベースの名前。このパラメータが指定されていない場合、デフォルトで現在のデータベースのロードジョブがキャンセルされます。 |
-| label_name    | はい       | ロードジョブのラベル。                                      |
+| **Parameter** | **Required** | **Description**                                              |
+| ------------- | ------------ | ------------------------------------------------------------ |
+| db_name       | いいえ        | ロードジョブが属するデータベースの名前。このパラメータが指定されていない場合、デフォルトで現在のデータベースのロードジョブがキャンセルされます。 |
+| label_name    | はい         | ロードジョブのラベル。                                         |
 
 ## 例
 
-例1：現在のデータベースでラベルが`example_label`のロードジョブをキャンセルする。
+例1: 現在のデータベースでラベルが`example_label`であるロードジョブをキャンセルします。
 
 ```SQL
 CANCEL LOAD
 WHERE LABEL = "example_label";
 ```
 
-例2：`example_db`データベースでラベルが`example_label`のロードジョブをキャンセルする。
+例2: `example_db`データベースでラベルが`example_label`であるロードジョブをキャンセルします。
 
 ```SQL
 CANCEL LOAD

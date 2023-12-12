@@ -1,13 +1,12 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# hll_empty（HLL_EMPTY）
+# hll_empty
 
 ## 説明
 
-データを挿入またはロードする際に、デフォルトの値を補完するために空の HLL 列を生成します。
+データの挿入や読み込み時にデフォルト値を補完するために空のHLLカラムを生成します。
 
 ## 構文
 
@@ -17,17 +16,17 @@ HLL_EMPTY()
 
 ## 戻り値
 
-空の HLL を返します。
+空のHLLを返します。
 
 ## 例
 
-データを挿入する際にデフォルトの値を補完します。
+データの挿入時にデフォルト値を補完します。
 
 ```plain text
 insert into hllDemo(k1,v1) values(10,hll_empty());
 ```
 
-データをロードする際にデフォルトの値を補完します。
+データの読み込み時にデフォルト値を補完します。
 
 ```plain text
 curl --location-trusted -u <username>:<password> \

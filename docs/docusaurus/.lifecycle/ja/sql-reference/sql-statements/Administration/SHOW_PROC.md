@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-StarRocksクラスタの特定の指標を表示します。
+StarRocks クラスタの特定の指標を表示します。
 
 ## 構文
 
@@ -21,30 +21,30 @@ SHOW PROC { '/backends' | '/compute_nodes' | '/dbs'
 
 ## パラメータ
 
-| **パラメータ**                | **説明**                                                    |
+| **パラメータ**                | **説明**                                              |
 | ---------------------------- | ------------------------------------------------------------ |
-| '/backends'                  | クラスタ内のBEノードの情報を表示します。                    |
-| '/compute_nodes'             | クラスタ内のCNノードの情報を表示します。                    |
-| '/dbs'                       | クラスタ内のデータベースの情報を表示します。               |
-| '/jobs'                      | クラスタ内のジョブの情報を表示します。                       |
-| '/statistic'                 | クラスタ内の各データベースの統計情報を表示します。          |
-| '/tasks'                     | クラスタ内のすべての一般タスクと失敗したタスクの合計数を表示します。 |
-| '/frontends'                 | クラスタ内のFEノードの情報を表示します。                    |
-| '/brokers'                   | クラスタ内のブローカーノードの情報を表示します。            |
-| '/resources'                 | クラスタ内のリソースの情報を表示します。                   |
-| '/load_error_hub'            | クラスタのロードエラーハブの構成を表示します。これはロードジョブのエラーメッセージを管理するために使用されます。 |
-| '/transactions'              | クラスタ内のトランザクションの情報を表示します。            |
-| '/monitor'                   | クラスタの監視情報を表示します。                            |
-| '/current_queries'           | 現在のFEノードで実行中のクエリの情報を表示します。          |
-| '/current_backend_instances' | クラスタでリクエストを処理しているBEノードを表示します。    |
-| '/cluster_balance'           | クラスタ内の負荷分散情報を表示します。                     |
-| '/routine_loads'             | クラスタ内のRoutine Loadの情報を表示します。                |
-| '/colocation_group'          | クラスタ内のColocate Joinグループの情報を表示します。       |
-| '/catalog'                   | クラスタ内のカタログの情報を表示します。                    |
+| '/backends'                  | クラスタ内のBEノードの情報を表示します。            |
+| '/compute_nodes'             | クラスタ内のCNノードの情報を表示します。            |
+| '/dbs'                       | クラスタ内のデータベースの情報を表示します。           |
+| '/jobs'                      | クラスタ内のジョブの情報を表示します。                |
+| '/statistic'                 | クラスタ内の各データベースの統計情報を表示します。        |
+| '/tasks'                     | クラスタ内の全ての一般的なタスクの総数と失敗したタスクを表示します。 |
+| '/frontends'                 | クラスタ内のFEノードの情報を表示します。            |
+| '/brokers'                   | クラスタ内のBrokerノードの情報を表示します。        |
+| '/resources'                 | クラスタ内のリソースの情報を表示します。           |
+| '/load_error_hub'            | クラスタのロードエラーハブの構成を表示します。これはローディングジョブのエラーメッセージを管理するために使用されます。 |
+| '/transactions'              | クラスタ内のトランザクションの情報を表示します。        |
+| '/monitor'                   | クラスタ内の監視情報を表示します。             |
+| '/current_queries'           | 現在のFEノードで実行中のクエリの情報を表示します。 |
+| '/current_backend_instances' | クラスタ内でリクエストを処理しているBEノードを表示します。 |
+| '/cluster_balance'           | クラスタ内の負荷分散情報を表示します。           |
+| '/routine_loads'             | クラスタ内のRoutine Loadの情報を表示します。        |
+| '/colocation_group'          | クラスタ内のColocate Joinグループの情報を表示します。 |
+| '/catalog'                   | クラスタ内のカタログの情報を表示します。            |
 
 ## 例
 
-例1：クラスタ内のBEノードの情報を表示します。
+Example 1: クラスタ内のBEノードの情報を表示します。
 
 ```Plain
 mysql> SHOW PROC '/backends'\G
@@ -77,36 +77,36 @@ ClusterDecommissioned: false
            CpuUsedPct: 0.0 %
 ```
 
-| **戻り値**           | **説明**                                        |
-| -------------------- | ------------------------------------------------ |
-| BackendId            | BEノードのID。                                   |
-| IP                   | BEノードのIPアドレス。                           |
-| HeartbeatPort        | BEノードのハートビートサービスポート。            |
-| BePort               | BEノードのThriftサーバーポート。                 |
-| HttpPort             | BEノードのHTTPサーバーポート。                    |
-| BrpcPort             | BEノードのbRPCポート。                           |
-| LastStartTime        | BEノードの最終起動時間。                         |
-| LastHeartbeat        | BEノードが最後にハートビートを受信した時間。     |
-| Alive                | BEノードが生存しているかどうか。                |
-| SystemDecommissioned | BEノードが停止されているかどうか。              |
-| ClusterDecommissioned| BEノードがクラスタ内で停止されているかどうか。 |
-| TabletNum            | BEノードのタブレット数。                         |
-| DataUsedCapacity     | BEノードでデータに使用されるストレージ容量。    |
-| AvailCapacity        | BEノードの利用可能なストレージ容量。            |
-| TotalCapacity        | BEノードの総ストレージ容量。                     |
-| UsedPct              | BEノードで使用されているストレージ容量の割合。 |
-| MaxDiskUsedPct       | BEノードで使用されているストレージ容量の最大割合。 |
-| ErrMsg               | BEノードのエラーメッセージ。                       |
-| Version              | BEノードのStarRocksバージョン。                   |
-| Status               | BEノードのステータス情報、最後にBEノードがタブレットを報告した時間を含む。 |
-| DataTotalCapacity    | 使用中と利用可能なデータストレージ容量の合計。`DataUsedCapacity`と`AvailCapacity`の合計です。 |
-| DataUsedPct          | データストレージが全体データ容量の割合(DataUsedCapacity/DataTotalCapacity)。 |
-| CpuCores             | BEノードのCPUコア数。                             |
-| NumRunningQueries    | クラスタで現在実行中のクエリの数。               |
-| MemUsedPct           | 現在のメモリ使用率の割合。                                |
-| CpuUsedPct           | 現在のCPU使用率の割合。                                      |
+| **リターン**            | **説明**                                              |
+| --------------------- | ------------------------------------------------------------ |
+| BackendId             | BEノードのID                                             |
+| IP                    | BEノードのIPアドレス                                       |
+| HeartbeatPort         | BEノードのハートビートサービスポート                              |
+| BePort                | BEノードのThrift Serverポート                                     |
+| HttpPort              | BEノードのHTTPサーバーポート                                  |
+| BrpcPort              | BEノードのbRPCポート                                           |
+| LastStartTime         | BEノードが最後に起動した時間                                  |
+| LastHeartbeat         | BEノードが最後にハートビートを受信した時間                         |
+| Alive                 | BEノードが稼働しているかどうか                                     |
+| SystemDecommissioned  | BEノードが運用停止中かどうか                                      |
+| ClusterDecommissioned | クラスタ内でBEノードが運用停止中かどうか                             |
+| TabletNum             | BEノードでのタブレットの数                                       |
+| DataUsedCapacity      | BEノードでデータに使用されるストレージ容量                              |
+| AvailCapacity         | BEノードの利用可能なストレージ容量                                 |
+| TotalCapacity         | BEノードの総ストレージ容量                                       |
+| UsedPct               | BEノードで使用されているストレージ容量の割合                           |
+| MaxDiskUsedPct        | BEノードで使用されているストレージ容量の最大割合                        |
+| ErrMsg                | BEノード内のエラーメッセージ                                      |
+| Version               | BEノードのStarRocksバージョン                              |
+| Status                | BEノードのステータス情報。最後にBEノードがタブレットをレポートした時間などを含む。 |
+| DataTotalCapacity     | 使用中および利用可能なデータストレージ容量の合計。 `DataUsedCapacity` と `AvailCapacity` の合計。 |
+| DataUsedPct           | データストレージが合計データ容量を占める割合（DataUsedCapacity/DataTotalCapacity）。 |
+| CpuCores              | BEノードのCPUコア数                                         |
+| NumRunningQueries     | クラスタ内で現在実行中のクエリの数                               |
+| MemUsedPct            | 現在のメモリ使用率の割合                                     |
+| CpuUsedPct            | 現在のCPU使用率の割合                                       |
 
-例2：クラスタ内のデータベースの情報を表示します。
+Example 2: クラスタ内のデータベースの情報を表示します。
 
 ```Plain
 mysql> SHOW PROC '/dbs';
@@ -122,16 +122,16 @@ mysql> SHOW PROC '/dbs';
 +---------+------------------------+----------+----------------+--------------------------+---------------------+
 ```
 
-| **戻り値**                | **説明**                       |
-| ------------------------- | --------------------------------- |
-| DbId                      | データベースID。                   |
-| DbName                    | データベース名。                   |
-| TableNum                  | データベース内のテーブル数。        |
-| Quota                     | データベースのストレージクォータ。   |
-| LastConsistencyCheckTime  | 最後に整合性チェックが実行された時間。 |
-| ReplicaQuota              | データのレプリカクォータ。              |
+| **リターン**               | **説明**                                   |
+| ------------------------ | ------------------------------------------------- |
+| DbId                     | データベースID                                      |
+| DbName                   | データベース名                                    |
+| TableNum                 | データベース内のテーブルの数                            |
+| Quota                    | データベースのストレージクォータ                     |
+| LastConsistencyCheckTime | 最後に整合性チェックが実行された時間                          |
+| ReplicaQuota             | データベースのデータレプリカクォータ                |
 
-例3：クラスタ内のジョブの情報を表示します。
+Example 3: クラスタ内のジョブの情報を表示します。
 
 ```Plain
 mysql> SHOW PROC '/jobs';
@@ -156,22 +156,16 @@ mysql> SHOW PROC '/jobs/10005';
 4 rows in set (0.00 sec)
 ```
 
-| **戻り値** | **説明**                           |
-| ---------- | -------------------------------------- |
-| JobType    | ジョブの種類。                         |
-| Pending    | 保留中のジョブ数。                       |
-| Running    | 実行中のジョブ数。                       |
-| Finished   | 終了したジョブ数。                       |
-| Cancelled  | キャンセルされたジョブ数。                 |
-| Total      | ジョブの合計数。                         |
-| DbId              | Database ID.        |
-| DbName            | Database name.      |
-| JobType           | Job type.           |
-| Pending           | Number of jobs that are pending. |
-| Running           | Number of jobs that are running. |
-| Finished          | Number of jobs that are finished. |
-| Cancelled         | Number of jobs that are cancelled. |
-| Total             | Total number of jobs. |
+| **リターン** | **説明**                    |
+| ---------- | ---------------------------------- |
+| DbId       | Database ID.                       |
+| DbName     | Database name.                     |
+| JobType    | Job type.                          |
+| Pending    | Number of jobs that are pending.   |
+| Running    | Number of jobs that are running.   |
+| Finished   | Number of jobs that are finished.  |
+| Cancelled  | Number of jobs that are cancelled. |
+| Total      | Total number of jobs.              |
 
 Example 4: クラスタ内の各データベースの統計を示します。
 
@@ -188,7 +182,7 @@ mysql> SHOW PROC '/statistic';
 | 10002  | zq_test                                                  | 8        | 8            | 8        | 5043      | 7063       | 0                  | 0                     | 0                | 2                   |
 | Total  | 6                                                        | 12       | 12           | 12       | 5076      | 7126       | 0                  | 0                     | 0                | 2                   |
 +--------+----------------------------------------------------------+----------+--------------+----------+-----------+------------+--------------------+-----------------------+------------------+---------------------+
-7 rows in set (0.01 sec)
+7 行がセットされています (0.01 秒)
 
 mysql> show proc '/statistic/10002';
 +------------------+---------------------+----------------+-------------------+
@@ -200,20 +194,20 @@ mysql> show proc '/statistic/10002';
 
 | **Return**            | **Description**                                              |
 | --------------------- | ------------------------------------------------------------ |
-| DbId                  | データベースID。                                               |
+| DbId                  | データベースのID。                                             |
 | DbName                | データベース名。                                               |
 | TableNum              | データベース内のテーブルの数。                                 |
-| PartitionNum          | データベース内のパーティションの数。                           |
-| IndexNum              | データベース内のインデックスの数。                             |
-| TabletNum             | データベース内のタブレットの数。                               |
-| ReplicaNum            | データベース内のレプリカの数。                                 |
-| UnhealthyTabletNum    | データ再分配中に未完成（不健康）なタブレットの数。            |
-| InconsistentTabletNum | データベース内の不整合なタブレットの数。                      |
-| CloningTabletNum      | データベース内でクローンされているタブレットの数。            |
-| ErrorStateTabletNum   | プライマリキー型テーブルで、エラー状態のタブレットの数。       |
-| ErrorStateTablets     | プライマリキー型テーブルで、エラー状態のタブレットのID。     |
+| PartitionNum          | データベース内のパーティションの数。                         |
+| IndexNum              | データベース内のインデックスの数。                           |
+| TabletNum             | データベース内のタブレットの数。                             |
+| ReplicaNum            | データベース内のレプリカの数。                                |
+| UnhealthyTabletNum    | データ再構築中に未完成（不健康）なタブレットの数。            |
+| InconsistentTabletNum | データベースの不整合なタブレットの数。                       |
+| CloningTabletNum      | データベース内でクローンされているタブレットの数。           |
+| ErrorStateTabletNum   | プライマリキー型のテーブルで、エラー状態のタブレットの数。   |
+| ErrorStateTablets     | プライマリキー型のテーブルで、エラー状態のタブレットのID。 |
 
-Example 5: クラスタ内のすべての一般的なタスクの合計数と失敗したタスクを示します。
+Example 5: クラスタ内のすべての汎用タスクと失敗したタスクの総数を表示します。
 
 ```Plain
 mysql> SHOW PROC '/tasks';
@@ -252,9 +246,9 @@ mysql> SHOW PROC '/tasks';
 
 | **Return** | **Description**         |
 | ---------- | ----------------------- |
-| TaskType   | タスクタイプ。          |
-| FailedNum  | 失敗したタスクの数。   |
-| TotalNum   | タスクの合計数。        |
+| TaskType   | タスクの種類。          |
+| FailedNum  | 失敗したタスクの数。    |
+| TotalNum   | タスクの総数。          |
 
 Example 6: クラスタ内のFEノードの情報を表示します。
 
@@ -269,22 +263,22 @@ mysql> SHOW PROC '/frontends';
 
 | **Return**        | **Description**                                        |
 | ----------------- | ------------------------------------------------------ |
-| Name              | FEノード名。                                           |
+| Name              | FEノードの名前。                                       |
 | IP                | FEノードのIPアドレス。                                 |
 | EditLogPort       | FEノード間の通信用ポート。                             |
 | HttpPort          | FEノードのHTTPサーバーポート。                         |
-| QueryPort         | FEノードのMySQLサーバーポート。                       |
+| QueryPort         | FEノードのMySQLサーバーポート。                        |
 | RpcPort           | FEノードのRPCポート。                                  |
 | Role              | FEノードの役割（リーダー、フォロワー、またはオブザーバー）。|
 | ClusterId         | クラスタID。                                           |
-| Join              | FEノードがクラスタに参加しているかどうか。            |
+| Join              | FEノードがクラスタに参加しているかどうか。             |
 | Alive             | FEノードが稼働しているかどうか。                       |
-| ReplayedJournalId | FEノードが再生したメタデータIDの最大値。              |
-| LastHeartbeat     | FEノードが最後にハートビートを送信した時刻。        |
-| IsHelper          | FEノードがBDBJEヘルパーノードであるかどうか。        |
+| ReplayedJournalId | FEノードがリプレイした最大のメタデータID。             |
+| LastHeartbeat     | FEノードが最後にハートビートを送信した時刻。         |
+| IsHelper          | FEノードがBDBJEヘルパーノードであるかどうか。         |
 | ErrMsg            | FEノードのエラーメッセージ。                           |
 | StartTime         | FEノードが起動した時刻。                              |
-| Version           | FEノードのStarRocksバージョン。                        |
+| Version           | FEノードのStarRocksバージョン。                         |
 
 Example 7: クラスタ内のブローカーノードの情報を表示します。
 
@@ -294,23 +288,15 @@ mysql> SHOW PROC '/brokers';
 | Name        | IP            | Port | Alive | LastStartTime | LastUpdateTime      | ErrMsg |
 +-------------+---------------+------+-------+---------------+---------------------+--------+
 | hdfs_broker | xxx.xx.xx.xxx | 8500 | true  | NULL          | 2022-10-10 16:37:59 |        |
-```markdown
-| hdfs_broker | xxx.xx.xx.xxx | 8500 | true  | NULL          | 2022-10-10 16:37:59 |        |
-| hdfs_broker | xxx.xx.xx.xxx | 8500 | true  | NULL          | 2022-10-10 16:37:59 |        |
-+-------------+---------------+------+-------+---------------+---------------------+--------+
-```
-```markdown
-| Return       | Description                                                 |
-| ------------ | ------------------------------------------------------------ |
-| Name         | Broker node name.                                           |
-| IP           | IP address of the broker node.                              |
-| Port         | Thrift Server port of the broker node. The port is used to receive requests. |
-| Alive        | If the broker node is alive.                                |
-| LastStartTime| The last time when the broker node was started.             |
-| LastUpdateTime| The last time when the broker node was updated.             |
-| ErrMsg       | Error message in the broker node.                           |
+| Name           | Broker node name.                                            |
+| IP             | IP address of the broker node.                               |
+| Port           | Thrift Server port of the broker node. The port is used to receive requests. |
+| Alive          | If the broker node is alive.                                 |
+| LastStartTime  | The last time when the broker node was started.              |
+| LastUpdateTime | The last time when the broker node was updated.              |
+| ErrMsg         | Error message in the broker node.                            |
 
-Example 8: この例は、クラスター内のリソースの情報を示しています。
+Example 8: Shows the information of resources in the cluster.
 
 ```Plain
 mysql> SHOW PROC '/resources';
@@ -322,14 +308,12 @@ mysql> SHOW PROC '/resources';
 +-------------------------+--------------+---------------------+------------------------------+
 ```
 
-| Return       | Description |
-| ------------ | ----------- |
-| Name         | リソース名。  |
-| ResourceType | リソースタイプ。  |
-| Key          | リソースキー。   |
-| Value        | リソース値。   |
+| Name         | Resource name.  |
+| ResourceType | Resource type.  |
+| Key          | Resource key.   |
+| Value        | Resource value. |
 
-Example 9: この例は、クラスター内のトランザクションの情報を示しています。
+Example 9: Shows the information of transactions in the cluster.
 
 ```Plain
 mysql> SHOW PROC '/transactions';
@@ -351,14 +335,12 @@ mysql> SHOW PROC '/transactions/10005';
 2 rows in set (0.00 sec)
 ```
 
-| Return       | Description               |
-| ------------ | ------------------------- |
-| DbId         | データベースID。            |
-| DbName       | データベース名。            |
-| State        | トランザクションの状態。    |
-| Number       | トランザクションの数。     |
+| DbId       | Database ID.                  |
+| DbName     | Database name.                |
+| State      | The state of the transaction. |
+| Number     | Number of transactions.       |
 
-Example 10: この例は、クラスター内の監視情報を示しています。
+Example 10: Shows the monitoring information in the cluster.
 
 ```Plain
 mysql> SHOW PROC '/monitor';
@@ -369,12 +351,10 @@ mysql> SHOW PROC '/monitor';
 +------+------+
 ```
 
-| Return       | Description  |
-| ------------ | ------------ |
-| Name         | JVM名。       |
-| Info         | JVM情報。    |
+| Name       | JVM name.        |
+| Info       | JVM information. |
 
-Example 11: この例は、クラスター内の負荷分散情報を示しています。
+Example 11: Shows the load balance information in the cluster.
 
 ```Plain
 mysql> SHOW PROC '/cluster_balance';
@@ -391,12 +371,10 @@ mysql> SHOW PROC '/cluster_balance';
 +-------------------+--------+
 ```
 
-| Return       | Description                                  |
-| ------------ | -------------------------------------------- |
-| Item         | `cluster_balance`内のサブコマンドアイテム。     |
-| Number       | `cluster_balance`内の各サブコマンドの数。  |
+| Item       | Sub-command item in `cluster_balance `.          |
+| Number     | Number of each sub-command in `cluster_balance`. |
 
-Example 12: この例は、クラスター内のColocate Joinグループの情報を示しています。
+Example 12: Shows the information of Colocate Join groups in the cluster.
 
 ```Plain
 mysql> SHOW PROC '/colocation_group';
@@ -415,17 +393,15 @@ mysql> SHOW PROC '/colocation_group';
 +-----------------+----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+------------+----------------+-------------+----------+
 ```
 
-| Return       | Description                 |
-| ------------ | --------------------------- |
-| GroupId      | Colocate Join Group ID.     |
-| GroupName    | Colocate Join Group name.   |
-| TableIds     | Colocate Join Group内のテーブルのID。  |
-| BucketsNum   | Colocate Join Group内のバケット数。        |
-| ReplicationNum | Colocate Join Group内のレプリケーション数。  |
-| DistCols     | Colocate Join Groupのディストリビューション列。  |
-| IsStable     | Colocate Join Groupが安定しているかどうか。  |
+| GroupId        | Colocate Join Group ID.                         |
+| GroupName      | Colocate Join Group name.                       |
+| TableIds       | IDs of tables in the Colocate Join Group.       |
+| BucketsNum     | Buckets in the Colocate Join Group.             |
+| ReplicationNum | Replications in the Colocate Join Group.        |
+| DistCols       | Distribution column of the Colocate Join Group. |
+| IsStable       | If the Colocate Join Group is stable.           |
 
-Example 13: この例は、クラスター内のカタログの情報を示しています。
+Example 13: Shows the information of catalogs in the cluster.
 
 ```Plain
 mysql> SHOW PROC '/catalog';
@@ -438,9 +414,6 @@ mysql> SHOW PROC '/catalog';
 +--------------------------------------------------------------+----------+----------------------+
 ```
 
-| Return       | Description             |
-| ------------ | ----------------------- |
-| Catalog      | カタログ名。             |
-| Type         | カタログタイプ。          |
-| Comment      | カタログのコメント。       |
-```
+| Catalog    | Catalog name.             |
+| Type       | Catalog type.             |
+| Comment    | Comments for the catalog. |

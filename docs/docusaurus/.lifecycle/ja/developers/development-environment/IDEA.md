@@ -2,22 +2,22 @@
 displayed_sidebar: "Japanese"
 ---
 
-# IDEA で StarRocks FE 開発環境をセットアップする
+# IDEAでStarRocks FE開発環境をセットアップする
 
-このチュートリアルは macOS を対象としており、Apple Chip(M1, M2) でテストされています。
-macOS を使用していなくても、このチュートリアルを参照することができます。
+このチュートリアルはmacOSをベースにしており、Apple Chip(M1、M2)でテストされています。
+macOSを使用していなくても、このチュートリアルを参照することができます。
 
-## 必要条件
+## 必要なもの
 
 ### Thrift 0.13
 
-公式の brew リポジトリに 0.13 バージョンの Thrift がありません。私たちのコミッターの1人が、インストールするためにこのリポジトリ内のバージョンを作成しました。
+公式のbrewリポジトリには0.13のThriftのバージョンはありません。当社のコミッターの1人が彼らのリポジトリでバージョンを作成してインストールしました。
 
 ```bash
 brew install alberttwong/thrift/thrift@0.13
 ```
 
-Thrift を正常にインストールした後は、次のコマンドを実行して確認できます：
+Thriftのインストールが成功したら、次のコマンドを実行して確認できます。
 
 ```bash
 $ thrift -version
@@ -26,7 +26,7 @@ Thrift version 0.13.0
 
 ### Protobuf
 
-StarRocks で使用されている Protobuf の v2 バージョンと互換性のあるため、最新バージョン v3 を使用してください。
+StarRocksで使用されているProtobufのv2バージョンと互換性のある最新バージョンv3を使用してください。
 
 ```bash
 brew install protobuf
@@ -38,7 +38,7 @@ brew install protobuf
 brew install maven
 ```
 
-### Openjdk 1.8 または 11
+### Openjdk 1.8または11
 
 ```bash
 brew install openjdk@11
@@ -46,32 +46,32 @@ brew install openjdk@11
 
 ### Python3
 
-MacOS にはデフォルトでインストールされています。
+MacOSにはデフォルトでインストールされています。
 
-各自の Thrift および Protobuf のインストールディレクトリは異なる場合があります。brew list コマンドを使用して調査できます：
+ThriftとProtobufのインストールディレクトリはそれぞれ異なる場合があります。brew listコマンドを使用して調査できます。
 
 ```bash
 brew list thrift@0.13.0
 brew list protobuf
 ```
 
-## StarRocks を設定する
+## StarRocksを構成する
 
-### StarRocks をダウンロードする
+### StarRocksをダウンロードする
 
 ```
 git clone https://github.com/StarRocks/starrocks.git
 ```
 
-### thirdparty ディレクトリをセットアップする
+### thirdpartyディレクトリをセットアップする
 
-`thirdparty` 内に `installed/bin` ディレクトリを作成します。
+`thirdparty`内に`installed/bin`ディレクトリを作成します。
 
 ```bash
 cd starrocks && mkdir -p thirdparty/installed/bin
 ```
 
-次に、それぞれのために Thrift と Protobuf のシンボリックリンクを作成します。
+その後、それぞれThriftとProtobufのためのシンボリックリンクを作成します。
 
 ```bash
 ln -s /opt/homebrew/bin/thrift thirdparty/installed/bin/thrift
@@ -81,16 +81,14 @@ ln -s /opt/homebrew/bin/protoc thirdparty/installed/bin/protoc
 ### 環境変数を設定する
 
 ```bash
-export JAVA_HOME="/opt/homebrew/Cellar/openjdk@11/11.0.15" # 注意: jdk のバージョンはデスクトップによって異なる場合があります
+export JAVA_HOME="/opt/homebrew/Cellar/openjdk@11/11.0.15" # 注意: あなたのデスクトップでのJDKのバージョンは異なる場合があります
 export PYTHON=/usr/bin/python3
-export STARROCKS_THIRDPARTY=$(pwd)/thirdparty # 注意: starrocks ディレクトリ内にいることを確認してください
+export STARROCKS_THIRDPARTY=$(pwd)/thirdparty # 注意: starrocksディレクトリ内にいることを確認してください
 ```
 
 ## ソースコードを生成する
 
-FE 内の多くのソースファイルは手動で生成する必要があります。手動で生成しないと、IDEA がファイルが見つからないため、エラーが報告されます。
-
-以下のコマンドを実行して自動的に生成します：
+FE内の多くのソースファイルは手動で生成する必要があります。そうしないと、IDEAがファイルがないためエラーを報告します。次のコマンドを実行して自動的に生成します。
 
 ```bash
 cd gensrc
@@ -98,32 +96,32 @@ make clean
 make
 ```
 
-## FE をコンパイルする
+## FEをコンパイルする
 
-`fe` ディレクトリに移動し、Maven を使用してコンパイルします：
+`fe`ディレクトリに移動して、Mavenを使用してコンパイルします。
 
 ```bash
 cd fe
 mvn install -DskipTests
 ```
 
-## IDEA で StarRocks を開く
+## IDEAでStarRocksを開く
 
-1. IDEA で `StarRocks` ディレクトリを開きます。
+1. IDEAで`StarRocks`ディレクトリを開きます。
 
-2. コーディングスタイル設定を追加する
-    コーディングスタイルを標準化するために、IDEA で `fe/starrocks_intellij_style.xml` コードスタイルファイルをインポートする必要があります。
-![image-20220701193938856](../../assets/IDEA-2.png)
+2. コーディングスタイルの設定を追加する
+   コーディングスタイルを標準化するために、IDEAで`fe/starrocks_intellij_style.xml`コードスタイルファイルをインポートする必要があります。
+   ![image-20220701193938856](../../assets/IDEA-2.png)
 
-## macOS で StarRocks FE を実行する
+## MacOSでStarRocks FEを実行する
 
-IDEA を使用して `fe` ディレクトリを開きます。
+IDEAを使用して`fe`ディレクトリを開きます。
 
-`StarRocksFE.java` の Main 関数を直接実行すると、いくつかのエラーが報告されます。スムーズに実行するためには、いくつかの簡単な設定のみが必要です。
+`StarRocksFE.java`でMain関数を直接実行すると、いくつかのエラーが報告されます。スムーズに実行するために、いくつかの簡単な設定を行うだけです。
 
-**注意:** `StarRocksFE.java` は `fe/fe-core/src/main/java/com/starrocks` ディレクトリにあります。
+**注意:** `StarRocksFE.java`は`fe/fe-core/src/main/java/com/starrocks`ディレクトリ内にあります。
 
-1. StarRocks ディレクトリから `conf`、`bin` 、`webroot` ディレクトリを `fe` ディレクトリにコピーします：
+1. `conf`、`bin`、`webroot`ディレクトリをStarRocksディレクトリから`fe`ディレクトリにコピーします。
 
 ```bash
 cp -r conf fe/conf
@@ -131,7 +129,7 @@ cp -r bin fe/bin
 cp -r webroot fe/webroot
 ```
 
-2. `fe` ディレクトリに移動し、`fe` ディレクトリの下に log と meta フォルダを作成します：
+2. `fe`ディレクトリに移動し、`fe`ディレクトリの下にlogとmetaフォルダを作成します。
 
 ```bash
 cd fe
@@ -139,7 +137,7 @@ mkdir log
 mkdir meta
 ```
 
-3. 次の図に示すように、環境変数を設定します：
+3. 次の図に示すように、環境変数を設定します。
 
 ![image-20220701193938856](../../assets/IDEA-1.png)
 
@@ -149,13 +147,13 @@ export STARROCKS_HOME=/Users/smith/Code/starrocks/fe
 export LOG_DIR=/Users/smith/Code/starrocks/fe/log
 ```
 
-4. `fe/conf/fe.conf` 内の `priority_networks` を `127.0.0.1/24` に変更して、FE が現在のコンピュータの LAN IP を使用してポートが正常にバインドされないようにします。
+4. `fe/conf/fe.conf`の`priority_networks`を`127.0.0.1/24`に変更して、FEが現在のコンピューターのLAN IPを使用してポートのバインドに失敗するのを防ぎます。
 
-5. 以上で、StarRocks FE を正常に実行できます。
+5. これで、StarRocks FEを成功裏に実行することができます。
 
-## macOS で StarRocks FE をデバッグする
+## MacOSでStarRocks FEをデバッグする
 
-デバッグオプションで FE を起動した場合、IDEA デバッガを FE プロセスにアタッチできます。
+デバッグオプションでFEを起動した場合、IDEAデバッガをFEプロセスにアタッチすることができます。
 
 ```
 ./start_fe.sh --debug

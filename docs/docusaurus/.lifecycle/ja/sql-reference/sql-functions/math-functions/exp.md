@@ -4,27 +4,27 @@ displayed_sidebar: "Japanese"
 
 # exp,dexp
 
-## 説明
+## Description
 
-`x`の累乗のeの値を返します。この関数は自然対数関数と呼ばれます。
+`x`のべき乗のeの値を返します。この関数は自然対数関数と呼ばれます。
 
-## 構文
+## Syntax
 
 ```SQL
 EXP(x);
 ```
 
-## パラメータ
+## Parameters
 
-`x`: 累乗の数。DOUBLE がサポートされています。
+`x`: べき乗の数。DOUBLEがサポートされています。
 
-## 戻り値
+## Return value
 
 DOUBLEデータ型の値を返します。
 
-## 例
+## Examples
 
-3.14のeの累乗を返す：
+3.14のeのべき乗を返します。
 
 ```Plaintext
 mysql> select exp(3.14);

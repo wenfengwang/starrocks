@@ -4,25 +4,25 @@ displayed_sidebar: "Japanese"
 
 # any_value
 
-## Description
+## 説明
 
-各集計グループから任意の行を取得します。この関数は、`GROUP BY` 句を持つクエリを最適化するために使用できます。
+各集計グループから任意の行を取得します。この関数は、`GROUP BY`句を持つクエリを最適化するために使用できます。
 
-## Syntax
+## 構文
 
 ```Haskell
 ANY_VALUE(expr)
 ```
 
-## Parameters
+## パラメータ
 
 `expr`: 集計される式。
 
-## Return value
+## 戻り値
 
-各集計グループから任意の行を返します。返り値は非決定的です。
+各集計グループから任意の行を返します。戻り値は不確定です。
 
-## Examples
+## 例
 
 ```plaintext
 // 元のデータ
@@ -36,9 +36,9 @@ mysql> select * from any_value_test;
 |    2 |    2 |    2 |
 |    3 |    1 |    1 |
 +------+------+------+
-5 rows in set (0.01 sec)
+5 行が選択されました (0.01 秒)
 
-// ANY_VALUE の使用後
+// ANY_VALUE を使用した後
 mysql> select a,any_value(b),sum(c) from any_value_test group by a;
 +------+----------------+----------+
 | a    | any_value(`b`) | sum(`c`) |
@@ -47,7 +47,7 @@ mysql> select a,any_value(b),sum(c) from any_value_test group by a;
 |    2 |              1 |        3 |
 |    3 |              1 |        1 |
 +------+----------------+----------+
-3 rows in set (0.01 sec)
+3 行が選択されました (0.01 秒)
 
 mysql> select c,any_value(a),sum(b) from any_value_test group by c;
 +------+----------------+----------+
@@ -56,9 +56,9 @@ mysql> select c,any_value(a),sum(b) from any_value_test group by c;
 |    1 |              1 |        5 |
 |    2 |              2 |        2 |
 +------+----------------+----------+
-2 rows in set (0.01 sec)
+2 行が選択されました (0.01 秒)
 ```
 
-## Keywords
+## キーワード
 
 ANY_VALUE

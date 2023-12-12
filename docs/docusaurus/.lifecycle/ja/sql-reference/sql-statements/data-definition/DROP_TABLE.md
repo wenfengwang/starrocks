@@ -1,12 +1,13 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# DROP TABLE
+# DROP TABLE（テーブルの削除）
 
 ## 説明
 
-このステートメントは、テーブルを削除するために使用されます。
+この文は、テーブルを削除するために使用されます。
 
 ## 構文
 
@@ -16,8 +17,8 @@ DROP TABLE [IF EXISTS] [db_name.]table_name [FORCE]
 
 注意：
 
-- DROP TABLE ステートメントを使用して24時間以内にテーブルが削除された場合、[RECOVER](../data-definition/RECOVER.md) ステートメントを使用してテーブルを復元できます。
-- DROP TABLE FORCE が実行された場合、テーブルは直接削除され、データベース内に未完了のアクティビティがあるかどうかを確認せずに復旧することはできません。一般的に、この操作は推奨されません。
+- DROP TABLE 文を使用してテーブルを削除した場合、24時間以内であれば[RECOVER](../data-definition/RECOVER.md) 文を使用してテーブルを復元できます。
+- DROP TABLE FORCE を実行した場合、テーブルは直接削除され、データベース内に未完了のアクティビティがあるかどうかを確認せずには復元できません。一般的にこの操作は推奨されません。
 
 ## 例
 
@@ -27,7 +28,7 @@ DROP TABLE [IF EXISTS] [db_name.]table_name [FORCE]
     DROP TABLE my_table;
     ```
 
-2. 存在する場合は、指定されたデータベース上のテーブルを削除します。
+2. 存在する場合は、指定されたデータベースのテーブルを削除します。
 
     ```sql
     DROP TABLE IF EXISTS example_db.my_table;
@@ -46,3 +47,4 @@ DROP TABLE [IF EXISTS] [db_name.]table_name [FORCE]
 - [SHOW CREATE TABLE](../data-manipulation/SHOW_CREATE_TABLE.md)
 - [ALTER TABLE](ALTER_TABLE.md)
 - [SHOW ALTER TABLE](../data-manipulation/SHOW_ALTER.md)
+```

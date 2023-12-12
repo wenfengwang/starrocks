@@ -4,19 +4,19 @@ displayed_sidebar: "Japanese"
 
 # approx_count_distinct
 
-## 説明
+## Description
 
 COUNT(DISTINCT col)の結果に類似した集計関数の近似値を返します。
 
-COUNTとDISTINCTの組み合わせよりも高速で、固定サイズのメモリを使用するため、高基数の列に対して少ないメモリが使用されます。
+COUNTとDISTINCTの組み合わせよりも速く、固定サイズのメモリを使用するため、高い基数の列のためにより少ないメモリを使用します。
 
-## 構文
+## Syntax
 
 ```Haskell
 APPROX_COUNT_DISTINCT(expr)
 ```
 
-## 例
+## Examples
 
 ```plain text
 MySQL > select approx_count_distinct(query_id) from log_statis group by datetime;
@@ -27,6 +27,6 @@ MySQL > select approx_count_distinct(query_id) from log_statis group by datetime
 +-----------------------------------+
 ```
 
-## キーワード
+## keyword
 
 APPROX_COUNT_DISTINCT

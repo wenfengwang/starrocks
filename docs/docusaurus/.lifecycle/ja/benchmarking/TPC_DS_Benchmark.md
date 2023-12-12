@@ -2,49 +2,49 @@
 displayed_sidebar: "Japanese"
 ---
 
-# TPC-DSベンチマーキング
+# TPC-DS ベンチマーク
 
-TPC-DSは、Transaction Processing Performance Council（TPC）によって開発された意思決定支援ベンチマークです。これは、TPC-Hよりも包括的なテストデータセットと複雑なSQLクエリを使用しています。
+TPC-DS は Transaction Processing Performance Council (TPC) によって開発された意思決定サポートのベンチマークです。TPC-H よりも包括的なテストデータセットと複雑な SQL クエリを使用しています。
 
-TPC-DSは、意思決定支援システムの一般的に適用可能な側面を複数モデル化しており、クエリやデータ保守を含んでいます。TPC-DSは、小売環境におけるデータベースシステムのパフォーマンスをテストおよび評価するための包括的かつ現実的なワークロードを提供することを目指しています。TPC-DSベンチマークは、小売企業の3つの販売チャンネル（店舗、インターネット、カタログ）の販売および返品データをシミュレートしています。販売および返品データモデルのためのテーブルを作成するだけでなく、簡易在庫システムとプロモーションシステムも含まれています。
+TPC-DS は意思決定サポートシステムの一般的に適用可能な側面をいくつかモデル化しており、クエリやデータのメンテナンスを含んでいます。TPC-DS は小売業のデータベースシステムの性能をテストし評価するための包括的で現実的なワークロードを提供することを目指しています。TPC-DS ベンチマークは小売企業における 3 つの販売チャネル (店舗、インターネット、カタログ) の販売および返品データをシミュレートしています。販売および返品データモデルのテーブルを作成するだけでなく、それに加えて単純な在庫システムとプロモーションシステムも含まれています。
 
-このベンチマークは、データサイズが1GBから3GBの24のテーブルに対して合計99の複雑なSQLクエリをテストします。主要なパフォーマンスメトリックは各クエリの応答時間であり、つまりクエリが提出されてから結果が返されるまでの時間です。
+このベンチマークは、データサイズが 1 GB から 3 GB の 24 つのテーブルに対して合計 99 の複雑な SQL クエリをテストします。主要なパフォーマンスメトリックは各クエリの応答時間で、それはクエリが提出されてから結果が返されるまでの期間です。
 
 ## 1. テスト結論
 
-私たちは、TPC-DS 100GBのデータセットに対して99のクエリをテストしました。以下の図はテスト結果を示しています。
+TPC-DS 100 GB のデータセットに対して 99 のクエリを実行しました。以下の図はテスト結果を示しています。
 ![tpc-ds](../assets/tpc-ds.png)
 
-テストでは、StarRocksはネイティブストレージとHive外部テーブルの両方からデータをクエリします。StarRocksとTrinoはHive外部テーブルから同じデータコピーをクエリします。データはLZ4圧縮され、Parquet形式で保存されています。
+テストでは、StarRocks は固有のストレージと Hive 外部テーブルの両方からデータをクエリします。StarRocks と Trino は、Hive 外部テーブルから同じデータのコピーをクエリします。データは LZ4 圧縮され、Parquet フォーマットで保存されています。
 
-StarRocksがネイティブストレージからデータをクエリするレイテンシは**174秒**、StarRocksがHive外部テーブルからデータをクエリするレイテンシは**239秒**、StarRocksがデータキャッシュ機能を有効にしたHive外部テーブルからデータをクエリするレイテンシは**176秒**、そしてTrinoがHive外部テーブルからデータをクエリするレイテンシは**892秒**です。
+StarRocks が固有のストレージからデータをクエリするレイテンシは **174s** であり、Hive 外部テーブルからクエリするレイテンシは **239s**、Data Cache 機能を有効にした状態で Hive 外部テーブルからクエリするレイテンシは **176s**、そして Trino が Hive 外部テーブルからクエリするレイテンシは **892s** です。
 
 ## 2. テスト準備
 
 ### 2.1 ハードウェア環境
 
-| マシン       | 4つのクラウドホスト                                 |
-| ------------ | ------------------------------------------------------ |
-| CPU          | 8コア Intel(R) Xeon(R) Platinum 8269CY CPU @ 2.50GHz  |
-| メモリ       | 32 GB                                                  |
-| ネットワーク帯域幅 | 5 Gbit/s                                           |
-| ディスク     | ESSD                                                   |
+| マシン            | 4 クラウドホスト                               |
+| ----------------- | ---------------------------------------------- |
+| CPU               | 8 コア Intel(R) Xeon(R) Platinum 8269CY CPU @ 2.50GHz |
+| メモリ            | 32 GB                                          |
+| ネットワーク帯域幅 | 5 Gbit/s                                       |
+| ディスク          | ESSD                                           |
 
 ### 2.2 ソフトウェア環境
 
-StarRocksとTrinoは、同じ構成のマシンに展開されています。StarRocksには1つのFEと3つのBEが展開されています。Trinoには1つのコーディネーターと3つのワーカーが展開されています。
+StarRocks と Trino は同じ構成のマシンに展開されています。StarRocks は 1 つの FE と 3 つの BE が展開されています。Trino は 1 つのコーディネーターと 3 つのワーカーが展開されています。
 
 - カーネルバージョン: Linux 3.10.0-1127.13.1.el7.x86_64
-- OSバージョン: CentOS Linux released 7.8.2003
+- OS バージョン: CentOS Linux released 7.8.2003
 - ソフトウェアバージョン: StarRocks Community Edition 3.1, Trino-419, Hive-3.1.2
 
-> StarRocks FEは、単独で展開されることもBEとのハイブリッド展開になることもあり、テスト結果に影響しません。
+> StarRocks の FE は独立して展開するか、BE とハイブリッド展開することができます。これはテスト結果に影響しません。
 
 ## 3. テストデータと結果
 
 ### 3.1 テストデータ
 
-| テーブル                | レコード数  |
+| テーブル                  | レコード数   |
 | -------------          | --------- |
 | call_center            | 30        |
 | catalog_page           | 20400     |
@@ -75,9 +75,9 @@ StarRocksとTrinoは、同じ構成のマシンに展開されています。Sta
 
 > **注意**
 >
-> - 以下の表中のクエリレイテンシの単位はミリ秒です。
-> - `StarRocks-3.0.5-native`はStarRocksネイティブストレージを示し、`StarRocks-3.0-Hive external`はStarRocksがHive外部テーブルをHiveカタログを介してクエリすることを示し、`StarRocks-3.0-Hive external-Cache`はStarRocksがHiveカタログを介してデータキャッシュが有効化されたHive外部テーブルをクエリすることを示しています。
-> - StarRocksには集約プッシュダウンが有効になっています(`SET global cbo_push_down_aggregate_mode = 0`)。
+> - 以下の表でクエリのレイテンシの単位は ms です。
+> - `StarRocks-3.0.5-native` は StarRocks 固有のストレージを示し、`StarRocks-3.0-Hive external` は StarRocks が Hive 外部テーブルを Hive カタログを介してクエリすることを示します。`StarRocks-3.0-Hive external-Cache` は Data Cache を有効にした状態で StarRocks が Hive 外部テーブルをクエリすることを示しています。
+> - StarRocks では Aggregate pushdown が有効になっています (`SET global cbo_push_down_aggregate_mode = 0`).
 
 | **クエリ** | **StarRocks-3.0.5-native** | **StarRocks-3.0-Hive external** | **StarRocks-3.0-Hive external-Cache** | **Trino-419** |
 | --------- | -------------------------- | ------------------------------- | ------------------------------------- | ------------- |
@@ -182,13 +182,13 @@ StarRocksとTrinoは、同じ構成のマシンに展開されています。Sta
 | Q98       | 419                        | 486                             | 344                                   | 2090          |
 | Q99       | 755                        | 1070                            | 740                                   | 4332          |
 
-## 4. テスト手順
+## 4. Test Procedure
 
-### 4.1 StarRocks ネイティブテーブルのクエリ
+### 4.1 Query StarRocks Native Table
 
-#### 4.1.1 データの生成
+#### 4.1.1 Generate Data
 
-tpcds-poc ツールキットをダウンロードし、標準の TPC-DS テストデータセット `scale factor=100` を生成します。
+TPC-DSのテストデータセット `スケールファクター=100` を生成するために、tpcds-pocツールキットをダウンロードし、以下のコマンドを実行します。
 
 ```Bash
 wget https://starrocks-public.oss-cn-zhangjiakou.aliyuncs.com/tpcds-poc-1.0.zip
@@ -198,37 +198,41 @@ cd tpcds-poc-1.0
 sh bin/gen_data/gen-tpcds.sh 100 data_100
 ```
 
-#### 4.1.2 テーブルスキーマの作成
+#### 4.1.2 Create Table Schema
 
-`conf/starrocks.conf` 構成ファイルを変更し、クラスターアドレスを指定します。`mysql_host` と `mysql_port` に注意してください。
+`conf/starrocks.conf`の設定ファイルを変更し、クラスターアドレスを指定します。`mysql_host`と`mysql_port`に注意してください。
 
 ```Bash
 sh bin/create_db_table.sh ddl_100
 ```
 
-#### 4.1.3 データのロード
+#### 4.1.3 Load Data
+
+以下のコマンドを使用して、データをロードします。
 
 ```Bash
 sh bin/stream_load.sh data_100
 ```
 
-#### 4.1.4 データのクエリ
+#### 4.1.4 Query Data
+
+以下のコマンドを使用して、データをクエリします。
 
 ```Bash
 sh bin/benchmark.sh -p -d tpcds
 ```
 
-### 4.2 Hive 外部テーブルのクエリ
+### 4.2 Query Hive External Tables
 
-#### 4.2.1 テーブルスキーマの作成
+#### 4.2.1 Create Table Schema
 
-Hive で外部テーブルを作成し、そのストレージ形式を Parquet に、圧縮形式を LZ4 に指定します。詳細な CREATE TABLE 文については、[パーケット Hive 外部テーブルの作成](#53-create-a-hive-external-tableparquet) を参照してください。StarRocks と Trino はこれらの外部テーブルからデータをクエリします。
+Hiveで外部テーブルを作成し、そのストレージ形式をParquet、圧縮形式をLZ4とします。詳細なCREATE TABLEステートメントについては、[Create Parquet Hive external tables](#53-create-a-hive-external-tableparquet)を参照してください。StarRocksとTrinoはこれらの外部テーブルからデータをクエリします。
 
-#### 4.2.2 データのロード
+#### 4.2.2 Load Data
 
-Hive で [4.1.1](#411-generate-data) で生成した CSV データを指定した HDFS パスにロードします。この例では、`/user/tmp/csv/` を HDFS パスとして使用します。Hive で CSV Hive 外部テーブルを作成し、テーブルを `/user/tmp/csv/` に保存します。詳細な CREATE TABLE 文については、[CSV Hive 外部テーブルの作成](#54-create-a-hive-external-tablecsv) を参照してください。
+[4.1.1](#411-generate-data)で生成されたCSVデータをHiveの指定されたHDFSパスにロードします。この例では`/user/tmp/csv/`をHDFSパスとして使用します。HiveでCSV形式の外部テーブルを作成し、テーブルを`/user/tmp/csv/`に保存します。詳細なCREATE TABLEステートメントについては、[Create CSV Hive external tables](#54-create-a-hive-external-tablecsv)を参照してください。
 
-INSERT INTO を使用して、CSV 外部テーブルから Parquet 外部テーブルにデータをロードします。これにより、LZ4 圧縮された Parquet データが生成されます。
+INSERT INTOを使用して、CSV外部テーブルからParquet外部テーブルにデータをロードします。これによりLZ4圧縮されたParquetデータが生成されます。
 
 ```SQL
 use tpcds_100g_parquet_lz4;
@@ -242,7 +246,7 @@ insert into income_band select * from tpcds_100g_csv.income_band order by IB_INC
 insert into item select * from tpcds_100g_csv.item order by I_ITEM_SK;
 insert into promotion select * from tpcds_100g_csv.promotion  order by P_PROMO_SK;
 ```
-```sql
+```
 insert into reason select * from tpcds_100g_csv.reason a order by a.R_REASON_SK;
 insert into ship_mode select * from tpcds_100g_csv.ship_mode order by SM_SHIP_MODE_SK;
 insert into store select * from tpcds_100g_csv.store order by S_STORE_SK;
@@ -261,9 +265,9 @@ insert into store_returns select * from tpcds_100g_csv.store_returns order by SR
 insert into store_sales select * from tpcds_100g_csv.store_sales order by SS_SOLD_DATE_SK, SS_ITEM_SK;
 ```
 
-#### 4.2.3 統計情報の収集
+#### 4.2.3 Collect Statistics
 
-StarRocks v3.0では、外部テーブルから統計情報を収集することはサポートされていません。そのため、Hiveを使用して列レベルの統計情報を収集します。
+StarRocks v3.0は外部テーブルからの統計情報収集をサポートしていません。したがって、Hiveを使用して列レベルの統計情報を収集します。
 
 ```SQL
 use tpcds_100g_parquet_lz4;
@@ -296,9 +300,9 @@ analyze table web_site compute statistics FOR COLUMNS;
 
 #### 4.2.4 データのクエリ
 
-StarRocksは[Hiveカタログ](../data_source/catalog/hive_catalog.md)を使用してHive外部テーブルをクエリします。
+StarRocksは[Hiveカタログ](../data_source/catalog/hive_catalog.md)を使用して、Hive外部テーブルをクエリします。
 
-テスト中にStarRocksの[データキャッシュ](../data_source/data_cache.md)が有効になっている場合、以下の構成がデータキャッシュ機能について推奨されます。
+テスト中にStarRocksの[データキャッシュ](../data_source/data_cache.md)が有効になっている場合、データキャッシュ機能に対して次の設定を推奨します。
 
 ```SQL
 block_cache_mem_size = 5368709120
@@ -443,20 +447,20 @@ create table catalog_sales
     cs_net_paid_inc_tax       decimal(7,2)                  ,
     cs_net_paid_inc_ship      decimal(7,2)                  ,
 ```
-```sql
-    cs_net_paid_inc_ship_tax  decimal(7,2)                  ,
+```markdown
+    cs_net_paid_inc_ship_tax  decimal(7,2)                            ,
     cs_net_profit             decimal(7,2)
 )
-(cs_item_sk, cs_order_number) で重複キーが発生します。
-hash(cs_item_sk) で分散され、バケツ数が 192 です。
-properties(
-    "replication_num" = "1"
+重複キー(cs_item_sk、cs_order_number)
+ハッシュ(cs_item_sk) バケツ192
+プロパティ(
+    "複製数" = "1"
 );
 
-customer_address
+create table customer_address
 (
-    ca_address_sk             integer               not null,
-    ca_address_id             char(16)              not null,
+    ca_address_sk             integer               必ず指定,
+    ca_address_id             char(16)              必ず指定,
     ca_street_number          char(10)                      ,
     ca_street_name            varchar(60)                   ,
     ca_street_type            char(15)                      ,
@@ -469,34 +473,34 @@ customer_address
     ca_gmt_offset             decimal(5,2)                  ,
     ca_location_type          char(20)
 )
-ca_address_sk で重複キーが発生します。
-hash(ca_address_sk) で分散され、バケツ数が 10 です。
-properties(
-    "replication_num" = "1"
+重複キー(ca_address_sk)
+ハッシュ(ca_address_sk) バケツ10
+プロパティ(
+    "複製数" = "1"
 );
 
-customer_demographics
+create table customer_demographics
 (
-    cd_demo_sk                integer  not null,
-    cd_gender                 char(1)  not null,
-    cd_marital_status         char(1)  not null,
-    cd_education_status       char(20) not null,
-    cd_purchase_estimate      integer  not null,
-    cd_credit_rating          char(10) not null,
-    cd_dep_count              integer  not null,
-    cd_dep_employed_count     integer  not null,
-    cd_dep_college_count      integer  not null
+    cd_demo_sk                integer  必ず指定,
+    cd_gender                 char(1)  必ず指定,
+    cd_marital_status         char(1)  必ず指定,
+    cd_education_status       char(20) 必ず指定,
+    cd_purchase_estimate      integer  必ず指定,
+    cd_credit_rating          char(10) 必ず指定,
+    cd_dep_count              integer  必ず指定,
+    cd_dep_employed_count     integer  必ず指定,
+    cd_dep_college_count      integer  必ず指定
 )
-(cd_demo_sk) で重複キーが発生します。
-hash(cd_demo_sk) で分散され、バケツ数が 10 です。
-properties(
-    "replication_num" = "1"
+重複キー(cd_demo_sk)
+ハッシュ(cd_demo_sk) バケツ10
+プロパティ(
+    "複製数" = "1"
 );
 
-customer
+create table customer
 (
-    c_customer_sk             integer               not null,
-    c_customer_id             char(16)              not null,
+    c_customer_sk             integer               必ず指定,
+    c_customer_id             char(16)              必ず指定,
     c_current_cdemo_sk        integer                       ,
     c_current_hdemo_sk        integer                       ,
     c_current_addr_sk         integer                       ,
@@ -514,92 +518,92 @@ customer
     c_email_address           char(50)                      ,
     c_last_review_date        char(10)
 )
-(c_customer_sk) で重複キーが発生します。
-hash(c_customer_sk) で分散され、バケツ数が 10 です。
-properties(
-    "replication_num" = "1"
+重複キー(c_customer_sk)
+ハッシュ(c_customer_sk) バケツ10
+プロパティ(
+    "複製数" = "1"
 );
 
-date_dim
+create table date_dim
 (
-    d_date_sk                 integer   not null,
-    d_date_id                 char(16)  not null,
-    d_date                    date      not null,
-    d_month_seq               integer   not null,
-    d_week_seq                integer   not null,
-    d_quarter_seq             integer   not null,
-    d_year                    integer   not null,
-    d_dow                     integer   not null,
-    d_moy                     integer   not null,
-    d_dom                     integer   not null,
-    d_qoy                     integer   not null,
-    d_fy_year                 integer   not null,
-    d_fy_quarter_seq          integer   not null,
-    d_fy_week_seq             integer   not null,
-    d_day_name                char(9)   not null,
-    d_quarter_name            char(6)   not null,
-    d_holiday                 char(1)   not null,
-    d_weekend                 char(1)   not null,
-    d_following_holiday       char(1)   not null,
-    d_first_dom               integer   not null,
-    d_last_dom                integer   not null,
-    d_same_day_ly             integer   not null,
-    d_same_day_lq             integer   not null,
-    d_current_day             char(1)   not null,
-    d_current_week            char(1)   not null,
-    d_current_month           char(1)   not null,
-    d_current_quarter         char(1)   not null,
-    d_current_year            char(1)   not null
+    d_date_sk                 integer   必ず指定,
+    d_date_id                 char(16)  必ず指定,
+    d_date                    date      必ず指定,
+    d_month_seq               integer   必ず指定,
+    d_week_seq                integer   必ず指定,
+    d_quarter_seq             integer   必ず指定,
+    d_year                    integer   必ず指定,
+    d_dow                     integer   必ず指定,
+    d_moy                     integer   必ず指定,
+    d_dom                     integer   必ず指定,
+    d_qoy                     integer   必ず指定,
+    d_fy_year                 integer   必ず指定,
+    d_fy_quarter_seq          integer   必ず指定,
+    d_fy_week_seq             integer   必ず指定,
+    d_day_name                char(9)   必ず指定,
+    d_quarter_name            char(6)   必ず指定,
+    d_holiday                 char(1)   必ず指定,
+    d_weekend                 char(1)   必ず指定,
+    d_following_holiday       char(1)   必ず指定,
+    d_first_dom               integer   必ず指定,
+    d_last_dom                integer   必ず指定,
+    d_same_day_ly             integer   必ず指定,
+    d_same_day_lq             integer   必ず指定,
+    d_current_day             char(1)   必ず指定,
+    d_current_week            char(1)   必ず指定,
+    d_current_month           char(1)   必ず指定,
+    d_current_quarter         char(1)   必ず指定,
+    d_current_year            char(1)   必ず指定
 )
-(d_date_sk) で重複キーが発生します。
-hash(d_date_sk) で分散され、バケツ数が 5 です。
-properties(
-    "replication_num" = "1"
+重複キー(d_date_sk)
+ハッシュ(d_date_sk) バケツ5
+プロパティ(
+    "複製数" = "1"
 );
 
-household_demographics
+create table household_demographics
 (
-    hd_demo_sk                integer  not null,
-    hd_income_band_sk         integer  not null,
-    hd_buy_potential          char(15) not null,
-    hd_dep_count              integer  not null,
-    hd_vehicle_count          integer  not null
+    hd_demo_sk                integer  必ず指定,
+    hd_income_band_sk         integer  必ず指定,
+    hd_buy_potential          char(15) 必ず指定,
+    hd_dep_count              integer  必ず指定,
+    hd_vehicle_count          integer  必ず指定
 )
-(hd_demo_sk) で重複キーが発生します。
-hash(hd_demo_sk) で分散され、バケツ数が 1 です。
-properties(
-    "replication_num" = "1"
+重複キー(hd_demo_sk)
+ハッシュ(hd_demo_sk) バケツ1
+プロパティ(
+    "複製数" = "1"
 );
 
-income_band
+create table income_band
 (
-    ib_income_band_sk         integer               not null,
+    ib_income_band_sk         integer               必ず指定,
     ib_lower_bound            integer                       ,
     ib_upper_bound            integer
 )
-(ib_income_band_sk) で重複キーが発生します。
-hash(ib_income_band_sk) で分散され、バケツ数が 1 です。
-properties(
-    "replication_num" = "1"
+重複キー(ib_income_band_sk)
+ハッシュ(ib_income_band_sk) バケツ1
+プロパティ(
+    "複製数" = "1"
 );
 
-inventory
+create table inventory
 (
-    inv_item_sk               integer               not null,
-    inv_date_sk               integer               not null,
-    inv_warehouse_sk          integer               not null,
+    inv_item_sk               integer               必ず指定,
+    inv_date_sk               integer               必ず指定,
+    inv_warehouse_sk          integer               必ず指定,
     inv_quantity_on_hand      integer
 )
-(inv_item_sk, inv_date_sk, inv_warehouse_sk) で重複キーが発生します。
-hash(inv_item_sk) で分散され、バケツ数が 32 です。
-properties(
-    "replication_num" = "1"
+重複キー(inv_item_sk, inv_date_sk, inv_warehouse_sk)
+ハッシュ(inv_item_sk) バケツ32
+プロパティ(
+    "複製数" = "1"
 );
 
-item
+create table item
 (
-    i_item_sk                 integer               not null,
-    i_item_id                 char(16)              not null,
+    i_item_sk                 integer               必ず指定,
+    i_item_id                 char(16)              必ず指定,
     i_rec_start_date          date                          ,
     i_rec_end_date            date                          ,
     i_item_desc               varchar(200)                  ,
@@ -620,18 +624,17 @@ item
     i_container               char(10)                      ,
     i_manager_id              integer                       ,
     i_product_name            char(50)
-    i_item_sk                 integer
 )
-(i_item_sk) で重複キーが発生します。
-hash(i_item_sk) で分散され、バケツ数が 10 です。
-properties(
-    "replication_num" = "1"
+重複キー(i_item_sk)
+ハッシュ(i_item_sk) バケツ10
+プロパティ(
+    "複製数" = "1"
 );
 
-promotion
+create table promotion
 (
-    p_promo_sk                integer               not null,
-    p_promo_id                char(16)              not null,
+    p_promo_sk                integer               必ず指定,
+    p_promo_id                char(16)              必ず指定,
     p_start_date_sk           integer                       ,
     p_end_date_sk             integer                       ,
     p_item_sk                 integer                       ,
@@ -650,43 +653,43 @@ promotion
     p_purpose                 char(15)                      ,
     p_discount_active         char(1)
 )
-(p_promo_sk) で重複キーが発生します。
-hash(p_promo_sk) で分散され、バケツ数が 1 です。
-properties(
-    "replication_num" = "1"
+重複キー(p_promo_sk)
+ハッシュ(p_promo_sk) バケツ1
+プロパティ(
+    "複製数" = "1"
 );
 
-reason
+create table reason
 (
-    r_reason_sk               integer               not null,
-    r_reason_id               char(16)              not null,
+    r_reason_sk               integer               必ず指定,
+    r_reason_id               char(16)              必ず指定,
     r_reason_desc             char(100)
 )
-(r_reason_sk) で重複キーが発生します。
-hash(r_reason_sk) で分散され、バケツ数が 1 です。
-properties(
-    "replication_num" = "1"
+重複キー(r_reason_sk)
+ハッシュ(r_reason_sk) バケツ1
+プロパティ(
+    "複製数" = "1"
 );
 
-ship_mode
+create table ship_mode
 (
-    sm_ship_mode_sk           integer               not null,
-    sm_ship_mode_id           char(16)              not null,
+    sm_ship_mode_sk           integer               必ず指定,
+    sm_ship_mode_id           char(16)              必ず指定,
     sm_type                   char(30)                      ,
     sm_code                   char(10)                      ,
     sm_carrier                char(20)                      ,
     sm_contract               char(20)
 )
-(sm_ship_mode_sk) で重複キーが発生します。
-hash(sm_ship_mode_sk) で分散され、バケツ数が 1 です。
-properties(
-    "replication_num" = "1"
+重複キー(sm_ship_mode_sk)
+ハッシュ(sm_ship_mode_sk) バケツ1
+プロパティ(
+    "複製数" = "1"
 );
 
-store_returns
+create table store_returns
 (
-    sr_item_sk                integer               not null,
-    sr_ticket_number          integer               not null,
+    sr_item_sk                integer               必ず指定,
+    sr_ticket_number          integer               必ず指定,
     sr_returned_date_sk       integer                       ,
     sr_return_time_sk         integer                       ,
     sr_customer_sk            integer                       ,
@@ -700,6 +703,7 @@ store_returns
     sr_return_tax             decimal(7,2)                  ,
     sr_return_amt_inc_tax     decimal(7,2)                  ,
 ```
+```
     sr_fee                    decimal(7,2)                  ,
     sr_return_ship_cost       decimal(7,2)                  ,
     sr_refunded_cash          decimal(7,2)                  ,
@@ -707,13 +711,13 @@ store_returns
     sr_store_credit           decimal(7,2)                  ,
     sr_net_loss               decimal(7,2)
 )
-sr_item_sk、sr_ticket_numberで重複キー
-hash(sr_item_sk, sr_ticket_number)で分散された10のバケツ
+(sr_item_sk, sr_ticket_number)の重複キー
+ハッシュ(sr_item_sk, sr_ticket_number)で分散されたバケツ数10
 プロパティ(
     "replication_num" = "1"
 );
 
-store_salesテーブルの作成
+ストア売上テーブルを作成
 (
     ss_item_sk                integer               not null,
     ss_ticket_number          integer               not null,
@@ -739,13 +743,13 @@ store_salesテーブルの作成
     ss_net_paid_inc_tax       decimal(7,2)                  ,
     ss_net_profit             decimal(7,2)
 )
-ss_item_sk、ss_ticket_numberで重複キー
-hash(ss_item_sk)で分散された192のバケツ
+(ss_item_sk, ss_ticket_number)の重複キー
+ハッシュ(ss_item_sk)で分散されたバケツ数192
 プロパティ(
     "replication_num" = "1"
 );
 
-storeテーブルの作成
+ストアテーブルを作成
 (
     s_store_sk                integer               not null,
     s_store_id                char(16)              not null,
@@ -777,13 +781,13 @@ storeテーブルの作成
     s_gmt_offset              decimal(5,2)                  ,
     s_tax_precentage          decimal(5,2)
 )
-s_store_skで重複キー
-hash(s_store_sk)で分散された1のバケツ
+(s_store_sk)の重複キー
+ハッシュ(s_store_sk)で分散されたバケツ数1
 プロパティ(
     "replication_num" = "1"
 );
 
-time_dimテーブルの作成
+時間次元テーブルを作成
 (
     t_time_sk                 integer               not null,
     t_time_id                 char(16)              not null,
@@ -796,13 +800,13 @@ time_dimテーブルの作成
     t_sub_shift               char(20)              not null,
     t_meal_time               char(20)
 )
-t_time_skで重複キー
-hash(t_time_sk)で分散された5のバケツ
+(t_time_sk)の重複キー
+ハッシュ(t_time_sk)で分散されたバケツ数5
 プロパティ(
     "replication_num" = "1"
 );
 
-warehouseテーブルの作成
+倉庫テーブルを作成
 (
     w_warehouse_sk            integer               not null,
     w_warehouse_id            char(16)              not null,
@@ -819,13 +823,13 @@ warehouseテーブルの作成
     w_country                 varchar(20)                   ,
     w_gmt_offset              decimal(5,2)
 )
-w_warehouse_skで重複キー
-hash(w_warehouse_sk)で分散された1のバケツ
+(w_warehouse_sk)の重複キー
+ハッシュ(w_warehouse_sk)で分散されたバケツ数1
 プロパティ(
     "replication_num" = "1"
 );
 
-web_pageテーブルの作成
+Webページテーブルを作成
 (
     wp_web_page_sk            integer               not null,
     wp_web_page_id            char(16)              not null,
@@ -842,13 +846,13 @@ web_pageテーブルの作成
     wp_image_count            integer                       ,
     wp_max_ad_count           integer
 )
-wp_web_page_skで重複キー
-hash(wp_web_page_sk)で分散された1のバケツ
+(wp_web_page_sk)の重複キー
+ハッシュ(wp_web_page_sk)で分散されたバケツ数1
 プロパティ(
     "replication_num" = "1"
 );
 
-web_returnsテーブルの作成
+Web返品テーブルを作成
 (
     wr_item_sk                integer               not null,
     wr_order_number           integer               not null,
@@ -875,13 +879,13 @@ web_returnsテーブルの作成
     wr_account_credit         decimal(7,2)                  ,
     wr_net_loss               decimal(7,2)
 )
-wr_item_sk、wr_order_numberで重複キー
-hash(wr_item_sk, wr_order_number)で分散された10のバケツ
+(wr_item_sk, wr_order_number)の重複キー
+ハッシュ(wr_item_sk, wr_order_number)で分散されたバケツ数10
 プロパティ(
     "replication_num" = "1"
 );
 
-web_salesテーブルの作成
+Web販売テーブルを作成
 (
     ws_item_sk                integer               not null,
     ws_order_number           integer               not null,
@@ -918,41 +922,41 @@ web_salesテーブルの作成
     ws_net_paid_inc_ship_tax  decimal(7,2)                  ,
     ws_net_profit             decimal(7,2)
 )
-ws_item_sk、ws_order_numberで重複キー
-hash(ws_item_sk, ws_order_number)で分散された192のバケツ
+(ws_item_sk, ws_order_number)の重複キー
+ハッシュ(ws_item_sk, ws_order_number)で分散されたバケツ数192
 プロパティ(
     "replication_num" = "1"
 );
 
-web_siteテーブルの作成
+Webサイトテーブルを作成
 (
     web_site_sk               integer               not null,
     web_site_id               char(16)              not null,
-```
-    web_rec_start_date        日付型                          ,
-    web_rec_end_date          日付型                          ,
-    web_name                  varchar(50)                   ,
-    web_open_date_sk          整数型                        ,
-    web_close_date_sk         整数型                        ,
-    web_class                 varchar(50)                   ,
-    web_manager               varchar(40)                   ,
-    web_mkt_id                整数型                        ,
-    web_mkt_class             varchar(50)                   ,
-    web_mkt_desc              varchar(100)                  ,
-    web_market_manager        varchar(40)                   ,
-    web_company_id            整数型                        ,
-    web_company_name          char(50)                      ,
-    web_street_number         char(10)                      ,
-    web_street_name           varchar(60)                   ,
-    web_street_type           char(15)                      ,
-    web_suite_number          char(10)                      ,
-    web_city                  varchar(60)                   ,
-    web_county                varchar(30)                   ,
-    web_state                 char(2)                       ,
-    web_zip                   char(10)                      ,
-    web_country               varchar(20)                   ,
-    web_gmt_offset            decimal(5,2)                  ,
-    web_tax_percentage        decimal(5,2)
+```SQL
+    web_rec_start_date       date                           ,
+    web_rec_end_date         date                           ,
+    web_name                 varchar(50)                    ,
+    web_open_date_sk         integer                        ,
+    web_close_date_sk        integer                        ,
+    web_class                varchar(50)                    ,
+    web_manager              varchar(40)                    ,
+    web_mkt_id               integer                        ,
+    web_mkt_class            varchar(50)                    ,
+    web_mkt_desc             varchar(100)                   ,
+    web_market_manager       varchar(40)                    ,
+    web_company_id           integer                        ,
+    web_company_name         char(50)                       ,
+    web_street_number        char(10)                       ,
+    web_street_name          varchar(60)                    ,
+    web_street_type          char(15)                       ,
+    web_suite_number         char(10)                       ,
+    web_city                 varchar(60)                    ,
+    web_county               varchar(30)                    ,
+    web_state                char(2)                        ,
+    web_zip                  char(10)                       ,
+    web_country              varchar(20)                    ,
+    web_gmt_offset           decimal(5,2)                   ,
+    web_tax_percentage       decimal(5,2)
 )
 duplicate key (web_site_sk)
 distributed by hash(web_site_sk) buckets 1
@@ -960,7 +964,7 @@ properties(
     "replication_num" = "1"
 );
 
-### 5.3 Hive外部テーブルの作成（Parquet)
+### 5.3 ハイヴ外部テーブルの作成（Parquet)
 
 ```SQL
 use tpcds_100g_parquet_lz4;
@@ -1194,7 +1198,6 @@ CREATE EXTERNAL TABLE IF NOT EXISTS call_center
   ,cc_division_name varchar(50)
   ,cc_company int
   ,cc_company_name varchar(50)
-```
 ```
   ,cc_street_number varchar(10)
   ,cc_street_name varchar(60)
@@ -1451,6 +1454,118 @@ tblproperties("parquet.compression"="Lz4");
 CREATE EXTERNAL TABLE IF NOT EXISTS web_sales
 ```
 ```SQL
+  ws_item_sk int
+  ,ws_order_number int
+  ,ws_sold_date_sk int
+  ,ws_sold_time_sk int
+  ,ws_ship_date_sk int
+  ,ws_bill_customer_sk int
+  ,ws_bill_cdemo_sk int
+  ,ws_bill_hdemo_sk int
+  ,ws_bill_addr_sk int
+  ,ws_ship_customer_sk int
+  ,ws_ship_cdemo_sk int
+  ,ws_ship_hdemo_sk int
+  ,ws_ship_addr_sk int
+  ,ws_web_page_sk int
+  ,ws_web_site_sk int
+  ,ws_ship_mode_sk int
+  ,ws_warehouse_sk int
+  ,ws_promo_sk int
+  ,ws_quantity int
+  ,ws_wholesale_cost decimal(7,2)
+  ,ws_list_price decimal(7,2)
+  ,ws_sales_price decimal(7,2)
+  ,ws_ext_discount_amt decimal(7,2)
+  ,ws_ext_sales_price decimal(7,2)
+  ,ws_ext_wholesale_cost decimal(7,2)
+  ,ws_ext_list_price decimal(7,2)
+  ,ws_ext_tax decimal(7,2)
+  ,ws_coupon_amt decimal(7,2)
+  ,ws_ext_ship_cost decimal(7,2)
+  ,ws_net_paid decimal(7,2)
+  ,ws_net_paid_inc_tax  decimal(7,2)
+  ,ws_net_paid_inc_ship  decimal(7,2)
+  ,ws_net_paid_inc_ship_tax  decimal(7,2)
+  ,ws_net_profit decimal(7,2)
+ )
+stored as PARQUET
+LOCATION '/user/tmp/parquet/web_sales/'
+tblproperties("parquet.compression"="Lz4");
+
+CREATE EXTERNAL TABLE IF NOT EXISTS catalog_sales
+ (
+  cs_item_sk int
+  ,cs_order_number int
+  ,cs_sold_date_sk int
+  ,cs_sold_time_sk int
+  ,cs_ship_date_sk int
+  ,cs_bill_customer_sk int
+  ,cs_bill_cdemo_sk int
+  ,cs_bill_hdemo_sk int
+  ,cs_bill_addr_sk int
+  ,cs_ship_customer_sk int
+  ,cs_ship_cdemo_sk int
+  ,cs_ship_hdemo_sk int
+  ,cs_ship_addr_sk int
+  ,cs_call_center_sk int
+  ,cs_catalog_page_sk int
+  ,cs_ship_mode_sk int
+  ,cs_warehouse_sk int
+  ,cs_promo_sk int
+  ,cs_quantity int
+  ,cs_wholesale_cost decimal(7,2)
+  ,cs_list_price decimal(7,2)
+  ,cs_sales_price decimal(7,2)
+  ,cs_ext_discount_amt decimal(7,2)
+  ,cs_ext_sales_price decimal(7,2)
+  ,cs_ext_wholesale_cost decimal(7,2)
+  ,cs_ext_list_price decimal(7,2)
+  ,cs_ext_tax decimal(7,2)
+  ,cs_coupon_amt decimal(7,2)
+  ,cs_ext_ship_cost decimal(7,2)
+  ,cs_net_paid decimal(7,2)
+  ,cs_net_paid_inc_tax  decimal(7,2)
+  ,cs_net_paid_inc_ship  decimal(7,2)
+  ,cs_net_paid_inc_ship_tax decimal(7,2)
+  ,cs_net_profit decimal(7,2)
+ )
+stored as PARQUET
+LOCATION '/user/tmp/parquet/catalog_sales/'
+tblproperties("parquet.compression"="Lz4");
+
+CREATE EXTERNAL TABLE IF NOT EXISTS store_sales
+ (
+  ss_item_sk int
+  ,ss_ticket_number int
+  ,ss_sold_date_sk int
+  ,ss_sold_time_sk int
+  ,ss_customer_sk int
+  ,ss_cdemo_sk int
+  ,ss_hdemo_sk int
+  ,ss_addr_sk int
+  ,ss_store_sk int
+  ,ss_promo_sk int
+  ,ss_quantity int
+  ,ss_wholesale_cost decimal(7,2)
+  ,ss_list_price decimal(7,2)
+  ,ss_sales_price decimal(7,2)
+  ,ss_ext_discount_amt decimal(7,2)
+  ,ss_ext_sales_price decimal(7,2)
+  ,ss_ext_wholesale_cost decimal(7,2)
+  ,ss_ext_list_price decimal(7,2)
+  ,ss_ext_tax decimal(7,2)
+  ,ss_coupon_amt decimal(7,2)
+  ,ss_net_paid decimal(7,2)
+  ,ss_net_paid_inc_tax decimal(7,2)
+  ,ss_net_profit decimal(7,2)
+ )
+stored as PARQUET
+LOCATION '/user/tmp/parquet/store_sales/'
+tblproperties("parquet.compression"="Lz4");
+```
+
+```SQL
 use tpcds_100g_csv;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS customer_address
@@ -1597,11 +1712,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS item
   ,i_current_price decimal(7,2)
   ,i_wholesale_cost decimal(7,2)
   ,i_brand_id int
- )
-stored as PARQUET
-LOCATION '/user/tmp/csv/item/';
 ```
-```sql
 ,i_brand varchar(50)
 ,i_class_id int
 ,i_class varchar(50)
@@ -1699,12 +1810,12 @@ c_customer_sk int
 ,c_current_cdemo_sk int
 ,c_current_hdemo_sk int
 ,c_current_addr_sk int
-,c_first_shipto_date_sk    int
-,c_first_sales_date_sk     int
+,c_first_shipto_date_sk int
+,c_first_sales_date_sk int
 ,c_salutation varchar(10)
 ,c_first_name varchar(20)
 ,c_last_name varchar(30)
-,c_preferred_cust_flag     varchar(1)
+,c_preferred_cust_flag varchar(1)
 ,c_birth_day int
 ,c_birth_month int
 ,c_birth_year int
@@ -1838,7 +1949,7 @@ cp_catalog_page_sk int
 ,cp_end_date_sk int
 ,cp_department varchar(50)
 ,cp_catalog_number int
-,cp_catalog_page_number    int
+,cp_catalog_page_number int
 ,cp_description varchar(100)
 ,cp_type varchar(100)
 )
@@ -1847,9 +1958,9 @@ LOCATION '/user/tmp/csv/catalog_page/';
 
 CREATE EXTERNAL TABLE IF NOT EXISTS inventory
 (
-inv_date_sk integer ,
-inv_item_sk integer ,
-inv_warehouse_sk integer ,
+inv_date_sk integer,
+inv_item_sk integer,
+inv_warehouse_sk integer,
 inv_quantity_on_hand integer
 )
 row format delimited fields terminated by '|'
@@ -1862,19 +1973,19 @@ cr_item_sk int
 ,cr_returned_date_sk int
 ,cr_returned_time_sk int
 ,cr_refunded_customer_sk int
-,cr_refunded_cdemo_sk  int
-,cr_refunded_hdemo_sk  int
+,cr_refunded_cdemo_sk int
+,cr_refunded_hdemo_sk int
 ,cr_refunded_addr_sk int
 ,cr_returning_customer_sk int
-,cr_returning_cdemo_sk     int
-,cr_returning_hdemo_sk     int
-,cr_returning_addr_sk  int
+,cr_returning_cdemo_sk int
+,cr_returning_hdemo_sk int
+,cr_returning_addr_sk int
 ,cr_call_center_sk int
 )
 row format delimited fields terminated by '|'
 LOCATION '/user/tmp/csv/catalog_returns/';
 ```
-```
+```plaintext
   ,cr_catalog_page_sk int
   ,cr_ship_mode_sk int
   ,cr_warehouse_sk int

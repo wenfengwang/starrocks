@@ -1,10 +1,11 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # url_extract_host
 
-## 説明
+## Description
 
 URL文字列からホストを抽出します。
 
@@ -16,7 +17,7 @@ url_extract_host(str)
 
 ## パラメータ
 
-- `str`: ホスト文字列を抽出する文字列。`str` が文字列型でない場合、暗黙的なキャストを試みます。
+- `str`: ホスト文字列を抽出するための文字列です。`str`が文字列型でない場合は、暗黙の型変換を試みます。
 
 ## 戻り値
 

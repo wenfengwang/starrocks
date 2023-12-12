@@ -2,13 +2,13 @@
 displayed_sidebar: "Japanese"
 ---
 
-# transform_keys（キーを変換する）
+# transform_keys（キーの変換）
 
 ## 説明
 
-[ラムダ式](../Lambda_expression.md) を使用して、マップ内の各エントリに新しいキーを生成します。
+[ラムダ式](../Lambda_expression.md)を使用して、マップ内の各エントリに新しいキーを生成します。
 
-この関数はv3.1以降でサポートされています。
+この機能はv3.1以降でサポートされています。
 
 ## 構文
 
@@ -16,7 +16,7 @@ displayed_sidebar: "Japanese"
 MAP transform_keys(lambda_func, any_map)
 ```
 
-`lambda_func` は `any_map` の後に置かれることもあります:
+`lambda_func`は、`any_map`の後に配置することもできます。
 
 ```Haskell
 MAP transform_keys(any_map, lambda_func)
@@ -24,13 +24,13 @@ MAP transform_keys(any_map, lambda_func)
 
 ## パラメータ
 
-- `any_map` : マップ。
+- `any_map`: マップ。
 
-- `lambda_func` : `any_map` に適用したいラムダ式。
+- `lambda_func`: `any_map`に適用したいラムダ式。
 
 ## 戻り値
 
-キーのデータ型はラムダ式の結果によって決定され、値のデータ型は `any_map` の値と同じです。
+キーのデータ型はラムダ式の結果に、値のデータ型は`any_map`の値と同じです。
 
 入力パラメータのいずれかがNULLの場合、NULLが返されます。
 
@@ -40,7 +40,7 @@ MAP transform_keys(any_map, lambda_func)
 
 ## 例
 
-次の例では、[map_from_arrays](map_from_arrays.md) を使用して、マップの値 `{1:"ab",3:"cdd",2:null,null:"abc"}` を生成します。そして、ラムダ式を各キーに適用して、キーを1ずつ増やします。
+次の例では、[map_from_arrays](map_from_arrays.md)を使用して、マップ値 `{1:"ab",3:"cdd",2:null,null:"abc"}` を生成します。その後、ラムダ式を各キーに適用してキーを1つ増やします。
 
 ```SQL
 mysql> select transform_keys((k,v)->(k+1), col_map) from (select map_from_arrays([1,3,null,2,null],['ab','cdd',null,null,'abc']) as col_map)A;

@@ -2,13 +2,13 @@
 displayed_sidebar: "Japanese"
 ---
 
-# curtime,current_time
+# curtime, current_time
 
 ## 説明
 
-現在の時刻を取得し、TIME型の値を返します。
+現在の時間を取得し、TIME型の値を返します。
 
-この関数は、異なるタイムゾーンでは異なる結果を返す可能性があります。詳細については、[タイムゾーンの設定](../../../administration/timezone.md)を参照してください。
+この関数は、異なるタイムゾーンに対して異なる結果を返す場合があります。詳細については、[タイムゾーンの設定](../../../administration/timezone.md)を参照してください。
 
 ## 構文
 
@@ -29,4 +29,4 @@ MySQL > select current_time();
 
 ## キーワード
 
-CURTIME,CURRENT_TIME
+CURTIME, CURRENT_TIME

@@ -1,14 +1,15 @@
+```
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# ロールの設定
+# ロールを設定する
 
 ## 説明
 
-現在のセッションで、関連する権限やネストされたロールを含めてロールをアクティブ化します。 ロールがアクティブ化されると、ユーザーはこのロールを使用して操作を実行できます。
+現在のセッションでロールをアクティブ化し、関連するすべての権限やネストされたロールを有効にします。ロールをアクティブ化した後、ユーザーはこのロールを使用して操作を実行できます。
 
-このコマンドを実行した後、`select is_role_in_session("<role_name>");` を実行して、このロールが現在のセッションでアクティブ化されているかどうかを確認できます。
+このコマンドを実行した後、`select is_role_in_session("<role_name>");` を実行して、このロールが現在のセッションでアクティブ化されているかを確認できます。
 
 このコマンドはv3.0からサポートされています。
 
@@ -17,7 +18,7 @@ displayed_sidebar: "Japanese"
 ```SQL
 -- 特定のロールをアクティブ化し、このロールで操作を実行します。
 SET ROLE <role_name>[,<role_name>,..];
--- 特定のロールを除く、ユーザーのすべてのロールをアクティブ化します。
+-- ユーザーのすべてのロールをアクティブ化し、特定のロールを除外します。
 SET ROLE ALL EXCEPT <role_name>[,<role_name>,..]; 
 -- ユーザーのすべてのロールをアクティブ化します。
 SET ROLE ALL;
@@ -29,11 +30,11 @@ SET ROLE ALL;
 
 ## 使用上の注意
 
-ユーザーは、自分に割り当てられたロールのみをアクティブ化できます。
+ユーザーは割り当てられたロールのみをアクティブ化できます。
 
-[SHOW GRANTS](./SHOW_GRANTS.md) を使用して、ユーザーのロールを問い合わせることができます。
+[SHOW GRANTS](./SHOW_GRANTS.md) を使用してユーザーのロールをクエリできます。
 
-`SELECT CURRENT_ROLE()` を使用して、現在のユーザーのアクティブなロールを問い合わせることができます。詳細については、[current_role](../../sql-functions/utility-functions/current_role.md) を参照してください。
+`SELECT CURRENT_ROLE()` を使用して現在のユーザーのアクティブなロールをクエリできます。詳細については [current_role](../../sql-functions/utility-functions/current_role.md) を参照してください。
 
 ## 例
 
@@ -68,9 +69,10 @@ SELECT CURRENT_ROLE();
 ## 参照
 
 - [CREATE ROLE](CREATE_ROLE.md): ロールを作成します。
-- [GRANT](GRANT.md): ユーザーや他のロールにロールを割り当てます。
+- [GRANT](GRANT.md): ユーザーまたは他のロールにロールを割り当てます。
 - [ALTER USER](ALTER_USER.md): ロールを変更します。
 - [SHOW ROLES](SHOW_ROLES.md): システム内のすべてのロールを表示します。
 - [current_role](../../sql-functions/utility-functions/current_role.md): 現在のユーザーのロールを表示します。
-- [is_role_in_session](../../sql-functions/utility-functions/is_role_in_session.md): 現在のセッションでロール（またはネストされたロール）がアクティブ化されているかどうかを確認します。
+- [is_role_in_session](../../sql-functions/utility-functions/is_role_in_session.md): 現在のセッションでロール（またはネストされたロール）がアクティブ化されているかを確認します。
 - [DROP ROLE](DROP_ROLE.md): ロールを削除します。
+```

@@ -1,32 +1,31 @@
-```yaml
 ---
-displayed_sidebar: "日本語"
+displayed_sidebar: "Japanese"
 ---
 
-# GRANT（権限付与）
+# GRANT（付与）
 
-import UserPrivilegeCase from '../../../assets/commonMarkdown/userPrivilegeCase.md'
+import UserPrivilegeCase from '../../../assets/commonMarkdown/userPrivilegeCase.md'（UserPrivilegeCaseをインポート）
 
 ## 説明
 
-特定のオブジェクトに対する1つ以上の権限をユーザーまたはロールに付与します。
+ユーザーまたはロールに特定のオブジェクトに対する1つ以上の権限を付与します。
 
-ユーザーや他のロールにロールを付与します。
+ユーザーまたは他のロールにロールを付与します。
 
-付与可能な権限の詳細については、[Privilege items](../../../administration/privilege_item.md)を参照してください。
+付与できる権限についての詳細は、[権限アイテム](../../../administration/privilege_item.md)を参照してください。
 
-GRANT 操作を実行した後は、詳細な権限情報を表示するために [SHOW GRANTS](./SHOW_GRANTS.md) を実行したり、権限やロールを取り消すために [REVOKE](REVOKE.md) を実行することができます。
+GRANT 操作を実行した後、[SHOW GRANTS](./SHOW_GRANTS.md)を実行して詳細な権限情報を表示するか、[REVOKE](REVOKE.md)を実行して権限またはロールを取り消すことができます。
 
-GRANT 操作を実行する前に、関連するユーザーまたはロールが作成されていることを確認してください。詳細については、[CREATE USER](./CREATE_USER.md) および [CREATE ROLE](./CREATE_ROLE.md) を参照してください。
+GRANT 操作を実行する前に、関連するユーザーまたはロールが作成されていることを確認してください。詳細については、[CREATE USER](./CREATE_USER.md)および[CREATE ROLE](./CREATE_ROLE.md)を参照してください。
 
-> **注記**
+> **注意**
 >
-> `user_admin` ロールを持つユーザーのみが、他のユーザーやロールに任意の権限を付与できます。
-> その他のユーザーは、他のユーザーやロールに対して GRANT OPTION キーワードを使用して権限を付与できます。
+> `user_admin` ロールを持つユーザーのみ、他のユーザーやロールに任意の権限を付与できます。
+> 他のユーザーは、他のユーザーやロールに WITH GRANT OPTION キーワードを使用して権限を付与することができます。
 
-## 文法
+## 構文
 
-### ロールやユーザーに権限を付与する
+### ロールまたはユーザーに権限を付与する
 
 #### システム
 
@@ -37,7 +36,7 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-#### リソースグループ
+#### リソース グループ
 
 ```SQL
 GRANT
@@ -65,7 +64,7 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-例: `GRANT usage ON GLOBAL FUNCTION a(string) to kevin;`
+例：`GRANT usage ON GLOBAL FUNCTION a(string) to kevin;`
 
 #### インターナルカタログ
 
@@ -94,8 +93,8 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* エクスターナルカタログのデータベースでは、Hive（v3.1 以降）および Iceberg（v3.2 以降）のデータベースに対して CREATE TABLE 権限のみを付与できます。
+* このコマンドを実行する前に、SET CATALOG を実行してください。
+* エクスターナルカタログのデータベースでは、Hive（v3.1以降）およびIceberg（v3.2以降）データベースにのみ CREATE TABLE 権限を付与できます。
 
 #### テーブル
 
@@ -108,9 +107,9 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* テーブル名の代わりに `<db_name>.<table_name>` を使用することもできます。
-* 内部および外部カタログのすべてのテーブルに SELECT 権限を付与してデータを読み取ることができます。Hive および Iceberg カタログのテーブルに対しては、INSERT 権限を付与してデータを書き込むことができます（Iceberg は v3.1 以降、Hive は v3.2 以降でサポート）。
+* このコマンドを実行する前に、SET CATALOG を実行してください。
+* `<db_name>.<table_name>` を使用してテーブルを表すこともできます。
+* インターナルおよびエクスターナルカタログ内のすべてのテーブルに対してデータを読み取るために、SELECT 権限を付与できます。Hive およびIceberg カタログ内のテーブルに対しては、データを書き込むために INSERT 権限を付与できます（Iceberg は v3.1 以降、Hive は v3.2 以降でサポート）。
 
   ```SQL
   GRANT <priv> ON TABLE <db_name>.<table_name> TO {ROLE <role_name> | USER <user_name>}
@@ -127,15 +126,15 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* ビュー名の代わりに `<db_name>.<view_name>` を使用することもできます。
-* エクスターナルカタログのテーブルに対しては、Hive テーブルビューに対してのみ SELECT 権限を付与できます（v3.1 以降）。
+* このコマンドを実行する前に、SET CATALOG を実行してください。
+* `<db_name>.<view_name>` を使用してビューを表すこともできます。
+* エクスターナルカタログ内のテーブルに対しては、Hive テーブルビューに対してのみ SELECT 権限を付与できます（v3.1以降）。
 
   ```SQL
   GRANT <priv> ON VIEW <db_name>.<view_name> TO {ROLE <role_name> | USER <user_name>}
   ```
 
-#### マテリアライズドビュー
+#### マテリアライズド ビュー
 
 ```SQL
 GRANT
@@ -146,8 +145,8 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* `<db_name>.<mv_name>` を使用してマテリアライズドビューを表すこともできます。
+* このコマンドを実行する前に、SET CATALOG を実行してください。
+* `<db_name>.<mv_name>` を使用してmvを表すこともできます。
 
   ```SQL
   GRANT <priv> ON MATERIALIZED VIEW <db_name>.<mv_name> TO {ROLE <role_name> | USER <user_name>}
@@ -164,7 +163,7 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
+* このコマンドを実行する前に、SET CATALOG を実行してください。
 * `<db_name>.<function_name>` を使用して関数を表すこともできます。
 
   ```SQL
@@ -179,7 +178,7 @@ ON USER <user_identity>
 TO USER <user_identity_1> [ WITH GRANT OPTION ]
 ```
 
-#### ストレージボリューム
+#### ストレージ ボリューム
 
 ```SQL
 GRANT  
@@ -188,7 +187,7 @@ GRANT
     TO { ROLE | USER} {<role_name>|<user_identity>} [ WITH GRANT OPTION ]
 ```
 
-### ロールをロールやユーザーに付与する
+### ユーザーまたはロールにロールを付与する
 
 ```SQL
 GRANT <role_name> [,<role_name>, ...] TO ROLE <role_name>
@@ -197,56 +196,55 @@ GRANT <role_name> [,<role_name>, ...] TO USER <user_identity>
 
 ## 例
 
-例 1: すべてのデータベースのすべてのテーブルからデータを読み取る権限をユーザー `jack` に付与します。
+例 1：すべてのデータベースのすべてのテーブルからデータを読み取る権限をユーザー `jack` に付与します。
 
 ```SQL
 GRANT SELECT ON *.* TO 'jack'@'%';
 ```
 
-例 2: データベース `db1` のすべてのテーブルにデータをロードする権限をロール `my_role` に付与します。
+例 2：データベース `db1` のすべてのテーブルにデータをロードする権限をロール `my_role` に付与します。
 
 ```SQL
 GRANT INSERT ON db1.* TO ROLE 'my_role';
 ```
 
-例 3: データベース `db1` のテーブル `tbl1` に対してデータを読み取り、更新、ロードする権限をユーザー `jack` に付与します。
+例 3：データベース `db1` のテーブル `tbl1` に対してデータの読み取り、更新、およびロードの権限をユーザー `jack` に付与します。
 
 ```SQL
 GRANT SELECT,ALTER,INSERT ON db1.tbl1 TO 'jack'@'192.8.%';
 ```
 
-例 4: すべてのリソースを使用する権限をユーザー `jack` に付与します。
+例 4：すべてのリソースを使用する権限をユーザー `jack` に付与します。
 
 ```SQL
 GRANT USAGE ON RESOURCE * TO 'jack'@'%';
 ```
 
-例 5: リソース `spark_resource` を使用する権限をユーザー `jack` に付与します。
+例 5：リソース `spark_resource` を使用する権限をユーザー `jack` に付与します。
 
 ```SQL
 GRANT USAGE ON RESOURCE 'spark_resource' TO 'jack'@'%';
 ```
 
-例 6: リソース `spark_resource` を使用する権限をロール `my_role` に付与します。
+例 6：リソース `spark_resource` を使用する権限をロール `my_role` に付与します。
 
 ```SQL
 GRANT USAGE ON RESOURCE 'spark_resource' TO ROLE 'my_role';
 ```
 ```
-```SQL
-テーブル `sr_member` からデータを読み取る権限をユーザー `jack` に付与し、ユーザー `jack` に他のユーザーやロールにこの権限を付与することを許可します（WITH GRANT OPTION を指定）。
+Example 7: テーブル `sr_member` からデータを読む権限をユーザー `jack` に付与し、ユーザー `jack` に他のユーザーやロールにこの権限を付与することを許可する（WITH GRANT OPTION を指定する）。
 
 ```SQL
 GRANT SELECT ON TABLE sr_member TO USER jack@'172.10.1.10' WITH GRANT OPTION;
 ```
 
-システム定義のロール `db_admin`、`user_admin`、`cluster_admin` をユーザー `user_platform` に付与します。
+Example 8: システム定義のロール `db_admin`、 `user_admin`、`cluster_admin` をユーザー `user_platform` に付与する。
 
 ```SQL
 GRANT db_admin, user_admin, cluster_admin TO USER user_platform;
 ```
 
-ユーザー `jack` にユーザー `rose` として操作を行う権限を付与します。
+Example 9: ユーザー `jack` がユーザー `rose` として操作を実行することを許可する。
 
 ```SQL
 GRANT IMPERSONATE ON 'rose'@'%' TO 'jack'@'%';
@@ -254,9 +252,9 @@ GRANT IMPERSONATE ON 'rose'@'%' TO 'jack'@'%';
 
 ## ベストプラクティス
 
-### シナリオに基づいたカスタマイズロール
+### シナリオに基づいたロールのカスタマイズ
 
-<UserPrivilegeCase />
+<UserPrivilegeCase /> 
 
 マルチサービスアクセス制御のベストプラクティスについては、[マルチサービスアクセス制御](../../../administration/User_privilege.md#multi-service-access-control) を参照してください。
 ```

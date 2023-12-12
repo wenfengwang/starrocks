@@ -16,7 +16,7 @@ STD(expr)
 
 ## パラメータ
 
-`expr`: 式。テーブル列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価されなければなりません。
+`expr`: 式。テーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
 
 ## 戻り値
 

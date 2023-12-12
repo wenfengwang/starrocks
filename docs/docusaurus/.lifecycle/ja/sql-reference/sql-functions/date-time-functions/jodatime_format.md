@@ -14,10 +14,10 @@ displayed_sidebar: "Japanese"
 VARCHAR JODATIME_FORMAT(DATETIME | DATE date, VARCHAR format)
 ```
 
-## パラメータ
+## パラメーター
 
-- `date`: 変換したい日付。有効な日付または日付表現である必要があります。
-- `format`: 返される日付のフォーマットです。使用可能なフォーマットの詳細については、[Joda-Time format](https://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html)を参照してください。
+- `date`: 変換したい日付。有効な日付または日付式でなければなりません。
+- `format`: 返される日付と時刻の形式。使用可能な形式の詳細については、[Joda-Time format](https://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html)を参照してください。
 
 ## 戻り値
 
@@ -25,7 +25,7 @@ VARCHAR JODATIME_FORMAT(DATETIME | DATE date, VARCHAR format)
 
 ## 例
 
-例1: 日付 `2020-06-25 15:58:51` を `yyyy-MM-dd` フォーマットの文字列に変換します。
+例1: 日付 `2020-06-25 15:58:51` を `yyyy-MM-dd` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2020-06-25 15:58:51', 'yyyy-MM-dd');
@@ -36,7 +36,7 @@ MySQL > select jodatime_format('2020-06-25 15:58:51', 'yyyy-MM-dd');
 +------------------------------------------------------+
 ```
 
-例2: 日付 `2020-06-25 15:58:51` を `yyyy-MM-dd HH:mm:ss` フォーマットの文字列に変換します。
+例2: 日付 `2020-06-25 15:58:51` を `yyyy-MM-dd HH:mm:ss` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2020-06-25 15:58:51', 'yyyy-MM-dd HH:mm:ss');
@@ -47,7 +47,7 @@ MySQL > select jodatime_format('2020-06-25 15:58:51', 'yyyy-MM-dd HH:mm:ss');
 +---------------------------------------------------------------+
 ```
 
-例3: 日付 `2020-06-25 15:58:51` を `MM dd ee EE` フォーマットの文字列に変換します。
+例3: 日付 `2020-06-25 15:58:51` を `MM dd ee EE` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2020-06-25 15:58:51', 'MM dd ee EE');
@@ -58,7 +58,7 @@ MySQL > select jodatime_format('2020-06-25 15:58:51', 'MM dd ee EE');
 +-------------------------------------------------------+
 ```
 
-例4: 日付 `2020-06-25 15:58:51` を `MMM dd ee EEE` フォーマットの文字列に変換します。
+例4: 日付 `2020-06-25 15:58:51` を `MMM dd ee EEE` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2020-06-25 15:58:51', 'MMM dd ee EEE');
@@ -69,7 +69,7 @@ MySQL > select jodatime_format('2020-06-25 15:58:51', 'MMM dd ee EEE');
 +---------------------------------------------------------+
 ```
 
-例5: 日付 `2020-06-25 15:58:51` を `MMMM dd ee EEEE` フォーマットの文字列に変換します。
+例5: 日付 `2020-06-25 15:58:51` を `MMMM dd ee EEEE` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2020-06-25 15:58:51', 'MMMM dd ee EEEE');
@@ -80,7 +80,7 @@ MySQL > select jodatime_format('2020-06-25 15:58:51', 'MMMM dd ee EEEE');
 +-----------------------------------------------------------+
 ```
 
-例6: 日付 `2023-06-25 12:00:00` を `KK:mm:ss a` フォーマットの文字列に変換します。
+例6: 日付 `2023-06-25 12:00:00` を `KK:mm:ss a` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2023-06-25 12:00:00', 'KK:mm:ss a');
@@ -91,7 +91,7 @@ MySQL > select jodatime_format('2023-06-25 12:00:00', 'KK:mm:ss a');
 +------------------------------------------------------+
 ```
 
-例7: 日付 `2023-06-25 12:00:00` を `hh:mm:ss a` フォーマットの文字列に変換します。
+例7: 日付 `2023-06-25 12:00:00` を `hh:mm:ss a` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2023-06-25 12:00:00', 'hh:mm:ss a');
@@ -102,7 +102,7 @@ MySQL > select jodatime_format('2023-06-25 12:00:00', 'hh:mm:ss a');
 +------------------------------------------------------+
 ```
 
-例8: 日付 `2023-06-25 00:00:00` を `yyyyMMdd ''starrocks''` フォーマットの文字列に変換します。
+例8: 日付 `2023-06-25 00:00:00` を `yyyyMMdd ''starrocks''` 形式の文字列に変換します。
 
 ```SQL
 MySQL > select jodatime_format('2023-06-25 00:00:00', 'yyyyMMdd ''starrocks''');

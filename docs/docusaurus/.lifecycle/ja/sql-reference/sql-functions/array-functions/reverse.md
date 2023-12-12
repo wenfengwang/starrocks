@@ -1,33 +1,32 @@
-```yaml
 ---
-displayed_sidebar: "English"
+displayed_sidebar: "Japanese"
 ---
 
-# reverse
+# 逆
 
-## Description
+## 説明
 
-文字列または配列を反転します。文字列または配列の要素は逆の順序であり、文字列または配列で返されます。
+指定された文字列や配列を逆順にします。指定した文字列や配列の要素を逆の順番で含む文字列や配列を返します。
 
-## Syntax
+## 構文
 
 ```Haskell
 reverse(param)
 ```
 
-## Parameters
+## パラメータ
 
-`param`: 反転する文字列または配列。VARCHAR、CHAR、またはARRAYタイプであることができます。
+`param`: 逆にする文字列や配列。VARCHAR、CHAR、またはARRAYの型になります。
 
-現時点では、この関数は1次元配列のみをサポートし、配列要素はDECIMALタイプであってはいけません。この関数は次の種類の配列要素をサポートしています：BOOLEAN、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、VARCHAR、DECIMALV2、DATETIME、DATE、およびJSON。**JSONはバージョン2.5からサポートされています。**
+現在、この関数は一次元の配列のみをサポートしており、配列の要素はDECIMAL型であってはなりません。この関数は次の種類の配列の要素をサポートしています: BOOLEAN、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、VARCHAR、DECIMALV2、DATETIME、DATE、およびJSON。**JSONはバージョン2.5からサポートされています。**
 
-## Return value
+## 戻り値
 
 戻り値の型は`param`と同じです。
 
-## Examples
+## 例
 
-例1：文字列を反転する。
+例1: 文字列を逆にする。
 
 ```Plain Text
 MySQL > SELECT REVERSE('hello');
@@ -39,7 +38,7 @@ MySQL > SELECT REVERSE('hello');
 1 row in set (0.00 sec)
 ```
 
-例2：配列を反転する。
+例2: 配列を逆にする。
 
 ```Plain Text
 MYSQL> SELECT REVERSE([4,1,5,8]);

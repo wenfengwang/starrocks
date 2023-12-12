@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# SUM（合計）
+# sum
 
 ## 説明
 
-`expr`の非NULL値の合計を返します。DISTINCTキーワードを使用して、重複のない非NULL値の合計を計算できます。
+`expr`の非NULL値の合計を返します。DISTINCTキーワードを使用して、非NULL値の合計を計算できます。
 
 ## 構文
 
@@ -14,13 +14,13 @@ displayed_sidebar: "Japanese"
 SUM([DISTINCT] expr)
 ```
 
-## パラメーター
+## パラメータ
 
-`expr`：数値の値に評価される式。TINYINT、SMALLINT、INT、FLOAT、DOUBLE、またはDECIMALのサポートされるデータ型です。
+`expr`: 数値値に評価される式。サポートされるデータ型はTINYINT、SMALLINT、INT、FLOAT、DOUBLE、DECIMALです。
 
-## 返り値
+## 戻り値
 
-入力値と返り値の間のデータ型のマッピング：
+入力値と戻り値の間のデータ型のマッピング:
 
 - TINYINT -> BIGINT
 - SMALLINT -> BIGINT
@@ -32,8 +32,8 @@ SUM([DISTINCT] expr)
 ## 使用上の注意
 
 - この関数はNULLを無視します。
-- `expr`が存在しない場合、エラーが返されます。
-- VARCHAR式が渡される場合、この関数は入力を暗黙的にDOUBLE値にキャストします。キャストに失敗した場合、エラーが返されます。
+- `expr`が存在しない場合は、エラーが返されます。
+- VARCHAR式が渡された場合、この関数は入力を暗黙的にDOUBLE値にキャストします。キャストに失敗した場合は、エラーが返されます。
 
 ## 例
 
@@ -41,10 +41,10 @@ SUM([DISTINCT] expr)
 
     ```SQL
     CREATE TABLE IF NOT EXISTS employees (
-        region_num    TINYINT        COMMENT "範囲[-128, 127]",
-        id            BIGINT         COMMENT "範囲[-2^63 + 1〜2^63 - 1]",
-        hobby         STRING         NOT NULL COMMENT "上限値65533バイト",
-        income        DOUBLE         COMMENT "8バイト",
+        region_num    TINYINT        COMMENT "range [-128, 127]",
+        id            BIGINT         COMMENT "range [-2^63 + 1 ~ 2^63 - 1]",
+        hobby         STRING         NOT NULL COMMENT "upper limit value 65533 bytes",
+        income        DOUBLE         COMMENT "8 bytes",
         sales       DECIMAL(12,4)  COMMENT ""
         )
         DISTRIBUTED BY HASH(region_num);
@@ -79,7 +79,7 @@ SUM([DISTINCT] expr)
 
 4. この関数を使用して合計を計算します。
 
-    例1: 各地域の総売上を計算します。
+    例1: 各地域の合計売上を計算します。
 
     ```Plain Text
     MySQL > SELECT region_num, sum(sales) from employees
@@ -96,7 +96,7 @@ SUM([DISTINCT] expr)
     4 rows in set (0.01 sec)
     ```
 
-    例2: 各地域の従業員の合計収入を計算します。この関数はNULLを無視し、従業員ID`777326`の収入は計上されません。
+    例2: 各地域の従業員の合計収入を計算します。この関数はNULLを無視し、従業員IDが`777326`の収入はカウントされません。
 
     ```Plain Text
     MySQL > select region_num, sum(income) from employees
@@ -126,7 +126,7 @@ SUM([DISTINCT] expr)
     1 row in set (0.01 sec)
     ```
 
-    例4: WHERE句を使用して、月収が30000を超える従業員の合計収入を計算するために`sum`を使用します。
+    例4: `WHERE`句とともに`sum`を使用して、月収が30000よりも高い従業員の総収入を計算します。
 
     ```Plain Text
     MySQL > select sum(income) from employees

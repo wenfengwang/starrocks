@@ -2,19 +2,19 @@
 displayed_sidebar: "Japanese"
 ---
 
-# all_match
+# all_match（すべて一致）
 
 ## 説明
 
-配列のすべての要素が指定された述語と一致するかどうかを返します。
+配列のすべての要素が与えられた述語に一致するかどうかを返します。
 
-- 配列のすべての要素が述語と一致する場合は`true` (1) を返します（特別な場合として、配列が空の場合）。
+- 配列のすべての要素が述語に一致する場合は `true` (1) を返します（配列が空の場合もこの特別なケースとして含まれます）。
 
-- 1つ以上の要素が一致しない場合は`false` (0) を返します。
+- 1つ以上の要素が一致しない場合は `false` (0) を返します。
 
-- 1つ以上の要素で述語がNULLを返し、他のすべての要素で`true`を返す場合は、NULLを返します。
+- 1つ以上の要素に対して述語がNULLを返し、他のすべての要素に対して `true` を返す場合はNULLを返します。
 
-この機能は、v3.0.6以降でサポートされています。
+この関数はv3.0.6以降でサポートされています。
 
 ## 構文
 
@@ -22,13 +22,13 @@ displayed_sidebar: "Japanese"
 all_match(lambda_function, arr1, arr2...)
 ```
 
-`arr1`のすべての要素が指定された述語で一致するかどうかを返します。
+`arr1` のすべての要素がラムダ関数内の述語と一致するかどうかを返します。
 
-## パラメーター
+## パラメータ
 
 - `arr1`: 一致させる配列。
 
-- `arrN`: ラムダ関数で使用するオプションの配列。
+- `arrN`: ラムダ関数で使用されるオプションの配列。
 
 - `lambda_function`: 値を一致させるために使用されるラムダ関数。
 
@@ -39,13 +39,13 @@ BOOLEAN値を返します。
 ## 使用上の注意
 
 - ラムダ関数は[array_map()](array_map.md)の使用上の注意に従います。
-- 入力配列がnullであるか、ラムダ関数の結果がnullである場合、nullが返されます。
-- `arr1`が空の場合、`true`が返されます。
-- この関数をMAPに適用するには、`all_match((k,v)->k>v,map)`を`all_match(map_values(transform_values((k,v)->k>v, map)))`のように書き直します。例えば、`select all_match(map_values(transform_values((k,v)->k>v, map{2:1})));`は1を返します。
+- 入力配列がnullであるか、ラムダ関数の結果がnullになると、nullが返されます。
+- `arr1` が空の場合、`true` が返されます。
+- この関数をMAPに適用するには、`all_match((k,v)->k>v,map)` を `all_match(map_values(transform_values((k,v)->k>v, map)))` に書き換えます。たとえば、`select all_match(map_values(transform_values((k,v)->k>v, map{2:1})));` は1を返します。
 
 ## 例
 
-`x`のすべての要素が`y`の要素よりも小さいかどうかを確認します。
+`x` のすべての要素が `y` の要素よりも小さいかどうかを確認します。
 
 ```Plain
 select all_match((x,y) -> x < y, [1,2,-8], [4,5,6]);

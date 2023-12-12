@@ -4,29 +4,29 @@ displayed_sidebar: "Japanese"
 
 # hours_diff
 
-## 説明
+## Description
 
-日時式（`expr1` − `expr2`）の間の時間差を、時間単位で正確に返します。
+2つの日付式（`expr1` − `expr2`）間の時間の差を、時間単位で正確に返します。
 
-## 構文
+## Syntax
 
 ```Haskell
 BIGINT hours_diff(DATETIME expr1, DATETIME expr2);
 ```
 
-## パラメータ
+## Parameters
 
-- `expr1`: 終了時間。DATETIME 型である必要があります。
+- `expr1`: 終了時刻。DATETIME型である必要があります。
 
-- `expr2`: 開始時間。DATETIME 型である必要があります。
+- `expr2`: 開始時刻。DATETIME型である必要があります。
 
-## 戻り値
+## Return value
 
-BIGINT 値を返します。
+BIGINT値を返します。
 
-2022-02-29 など、日付が存在しない場合は NULL が返されます。
+例えば、日付が存在しない場合はNULLが返されます。たとえば、2022-02-29です。
 
-## 例
+## Examples
 
 ```Plain
 select hours_diff('2010-11-30 23:59:59', '2010-11-30 20:58:59');

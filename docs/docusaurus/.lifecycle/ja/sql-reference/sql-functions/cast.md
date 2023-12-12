@@ -2,24 +2,24 @@
 displayed_sidebar: "Japanese"
 ---
 
-# CAST
+# キャスト
 
 ## 説明
 
-入力値を指定された型に変換します。 たとえば、`cast (input as BIGINT)` は入力値をBIGINT値に変換します。
+入力を指定された型に変換します。 例えば、`cast(input as BIGINT)` は入力をBIGINT値に変換します。
 
-v2.4から、StarRocksはARRAY型への変換をサポートしています。
+v2.4以降、StarRocksではARRAY型への変換をサポートしています。
 
 ## 構文
 
 ```Haskell
-cast (input as type)
+cast(input as type)
 ```
 
 ## パラメータ
 
 `input`: 変換したいデータです。
-`type`: 変換後のデータ型です。
+`type`: 変換先のデータ型です。
 
 ## 戻り値
 
@@ -27,9 +27,9 @@ cast (input as type)
 
 ## 例
 
-例1: 一般的なデータ変換
+Example 1: 一般的なデータの変換
 
-```Plain Text
+```プレーンテキスト
     select cast('9.5' as DECIMAL(10,2));
     +--------------------------------+
     | CAST('9.5' AS DECIMAL64(10,2)) |
@@ -59,10 +59,10 @@ cast (input as type)
     +-------------------+
 ```
 
-例2: 入力値を配列に変換する。
+Example 2: 入力を配列に変換する。
 
-```Plain Text
-    -- 文字列をARRAY<ANY>に変換。
+```プレーンテキスト
+    -- 文字列をARRAY<ANY>に変換する。
 
     select cast('[1,2,3]' as array<int>);
     +-------------------------------+
@@ -92,7 +92,7 @@ cast (input as type)
     | ["a","b","c"]                                    |
     +--------------------------------------------------+
 
-    -- JSON配列をARRAY<ANY>に変換。
+    -- JSON配列をARRAY<ANY>に変換する。
 
     select cast(parse_json('[{"a":1}, {"a": 2}]')  as array<json>);
     +----------------------------------------------------------+
@@ -116,7 +116,7 @@ cast (input as type)
     +--------------------------------------------------------------+
 ```
 
-例3: データを読み込み中に変換する。
+Example 3: データをロード時に変換する。
 
 ```bash
     curl --location-trusted -u <username>:<password> -T ~/user_data/bigint \
@@ -126,7 +126,7 @@ cast (input as type)
 
 > **注意**
 >
-> もし元の値が浮動小数点値（たとえば 12.0）の場合、それはNULLに変換されます。 このタイプを強制的にBIGINTに変換したい場合は、次の例を参照してください:
+> もし元の値が浮動小数点値（例：12.0）の場合、それはNULLに変換されます。強制的にこの型をBIGINTに変換したい場合は、下記の例をご覧ください：
 
 ```bash
     curl --location-trusted -u <username>:<password> -T ~/user_data/bigint \

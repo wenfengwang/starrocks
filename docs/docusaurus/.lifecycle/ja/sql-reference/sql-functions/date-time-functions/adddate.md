@@ -1,13 +1,12 @@
-```markdown
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# adddate,days_add
+# adddate,days_add（追加日、日の追加）
 
 ## 説明
 
-指定した時間間隔を日付に追加します。
+指定された時間間隔を日付に追加します。
 
 ## 構文
 
@@ -18,12 +17,12 @@ DATETIME ADDDATE(DATETIME|DATE date,INTERVAL expr type)
 ## パラメータ
 
 - `date`: 有効な日付または日時式でなければなりません。
-- `expr`: 追加したい時間間隔。INT 型でなければなりません。
-- `type`: 時間間隔の単位。以下の値のいずれかに設定できます: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND。
+- `expr`: 追加したい時間間隔です。INT 型である必要があります。
+- `type`: 時間間隔の単位です。次の値のいずれかに設定できます：YEAR, MONTH, DAY, HOUR, MINUTE, SECOND。
 
 ## 戻り値
 
-DATETIME 値を返します。たとえば、`2020-02-30` のような日付が存在しない場合、NULL が返されます。日付が DATE 値の場合、DATETIME 値に変換されます。
+DATETIME 値を返します。例えば、`2020-02-30` のような日付が存在しない場合は、NULL が返されます。DATE 値の場合は、DATETIME 値に変換されます。
 
 ## 例
 

@@ -1,5 +1,6 @@
+```
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "English"
 ---
 
 # pi
@@ -14,7 +15,7 @@ displayed_sidebar: "Japanese"
 pi()
 ```
 
-## パラメータ
+## パラメーター
 
 なし
 

@@ -4,19 +4,19 @@ displayed_sidebar: "Japanese"
 
 # dayofyear
 
-## Description
+## 説明
 
-指定された日付の年内日数を返します。
+指定された日付の年内の日数を返します。
 
-`date`パラメータはDATEまたはDATETIMEタイプである必要があります。
+`date`パラメータはDATEまたはDATETIME型でなければなりません。
 
-## Syntax
+## 構文
 
 ```Haskell
 INT DAYOFYEAR(DATETIME|DATE date)
 ```
 
-## Examples
+## 例
 
 ```Plain Text
 MySQL > select dayofyear('2007-02-03 00:00:00');
@@ -27,6 +27,6 @@ MySQL > select dayofyear('2007-02-03 00:00:00');
 +----------------------------------+
 ```
 
-## keyword
+## キーワード
 
 DAYOFYEAR

@@ -1,4 +1,3 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -7,9 +6,9 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-文字列をBITMAPに変換します。文字列は、コンマで区切られた一連のUINT32番号で構成されています。たとえば、「0, 1, 2」という文字列は、ビット0、1、2が設定されたビットマップに変換されます。入力フィールドが無効な場合、NULLが返されます。
+文字列をBITMAPに変換します。文字列は、カンマで区切られた一連のUINT32番号から構成されています。例えば、文字列 "0, 1, 2" は、ビット 0、1、2 がセットされたビットマップに変換されます。入力フィールドが無効な場合、NULLが返されます。
 
-この関数は、変換中に入力文字列の重複を削除します。[bitmap_to_string](bitmap_to_string.md)などの他の関数と併用する必要があります。
+この機能は、変換中に入力文字列の重複を削除します。他の関数と共に使用する必要があります。例えば、[bitmap_to_string](bitmap_to_string.md) などです。
 
 ## 構文
 
@@ -48,7 +47,7 @@ MySQL > select bitmap_to_string(bitmap_from_string("-1, 0, 1, 2"));
 | NULL                              |
 +-----------------------------------+
 
--- 入力文字列が重複しています。
+-- 入力文字列は重複が削除されます。
 
 MySQL > select bitmap_to_string(bitmap_from_string("0, 1, 1"));
 +-------------------------------------------------+
@@ -61,4 +60,3 @@ MySQL > select bitmap_to_string(bitmap_from_string("0, 1, 1"));
 ## キーワード
 
 BITMAP_FROM_STRING, BITMAP
-```

@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-グループ内の非NULL値を、`sep`引数で指定された``,`（デフォルト）を使用して単一の文字列に連結します。この機能は、複数の行の値を1つの文字列に連結するために使用できます。
+グループ内の非NULL値を、`sep`引数を使用して1つの文字列に連結します。引数が指定されていない場合、デフォルトで`,`(カンマ)が使用されます。この関数は、列の複数の行から値を1つの文字列に連結するために使用できます。
 
 group_concatは、3.0.6より後の3.0バージョンおよび3.1.3より後の3.1バージョンで、DISTINCTおよびORDER BYをサポートしています。
 
@@ -19,31 +19,31 @@ VARCHAR GROUP_CONCAT([DISTINCT] expr [,expr ...]
              [SEPARATOR sep])
 ```
 
-## パラメーター
+## パラメータ
 
-- `expr`: NULL値を無視して連結する値を指定します。VARCHARに評価する必要があります。出力文字列から重複値を除外するには、オプションで`DISTINCT`を指定できます。複数の`expr`を直接連結する場合は、[concat](./concat.md)または[concat_ws](./concat_ws.md)を使用して書式を指定します。
-- ORDER BYのアイテムには、符号なし整数（1から始まる）、列名、または通常の式を指定できます。結果はデフォルトでは昇順で並べ替えられます。ASCキーワードを明示的に指定することもできます。結果を降順でソートする場合は、ソートしている列名にDESCキーワードを追加します。
-- `sep`: 異なる行の非NULL値を連結するために使用するオプションのセパレータです。指定されていない場合は、デフォルトで`,`（カンマ）が使用されます。セパレータを除外するには、空の文字列`''`を指定します。
+- `expr`: 連結する値で、NULL値は無視されます。VARCHARに評価される必要があります。重複する値を出力文字列から排除するには、`DISTINCT`をオプションで指定できます。複数の`expr`を直接連結したい場合は、[concat](./concat.md)または[concat_ws](./concat_ws.md)を使用してフォーマットを指定します。
+- ORDER BYのアイテムには、符号なし整数(1から始まる)、列名、または通常の式を使用できます。結果はデフォルトで昇順でソートされます。結果を降順でソートしたい場合は、ソートする列の名前にDESCキーワードを追加します。結果を降順でソートしたい場合は、ASCキーワードを明示的に指定することもできます。 
+- `sep`: 異なる行の非NULL値を連結するために使用されるオプションのセパレータです。指定されていない場合は、デフォルトで`,`(カンマ)が使用されます。セパレータを除外するには、空の文字列`''`を指定します。
 
-> **注記**
+> **注意**
 >
-> v3.0.6およびv3.1.3以降では、セパレータを指定する際の動作が変更されています。例えば、`select group_concat(name SEPARATOR '-') as res from ss;`のように、セパレータを宣言するために`SEPARATOR`を使用する必要があります。
+> v3.0.6およびv3.1.3以降、セパレータを指定する場合の動作が変更されます。たとえば、`select group_concat(name SEPARATOR '-') as res from ss;`としてセパレータを宣言するために`SEPARATOR`を使用する必要があります。
 
 ## 戻り値
 
 各グループに対する文字列値を返し、非NULL値がない場合はNULLを返します。
 
-group_concatによって返される文字列の長さを、デフォルトで1024のセッション変数`group_concat_max_len`を設定することによって制限できます。最小値: 4、単位: 文字数。
+group_concatによって返される文字列の長さを、デフォルト値が1024の[セッション変数](../../../reference/System_variable.md)`group_concat_max_len`を設定することで制限できます。最小値: 4。単位: 文字。
 
 例:
 
 ```sql
-SET [GLOBAL | SESSION] group_concat_max_len = <value>;
+SET [GLOBAL | SESSION] group_concat_max_len = <値>;
 ```
 
 ## 例
 
-1. 科目の得点を含む`ss`という名前のテーブルを作成します。
+1. 科目の成績が含まれる`ss`という名前のテーブルを作成します。
 
    ```sql
    CREATE TABLE `ss` (
@@ -83,8 +83,8 @@ SET [GLOBAL | SESSION] group_concat_max_len = <value>;
    ```
 
 2. group_concatを使用します。
-  
-  例1: デフォルトのセパレータとNULL値を無視して名前を文字列に連結します。重複した名前は保持されます。
+
+  例1: 名前をデフォルトのセパレータで文字列に連結し、NULL値を無視します。重複する名前は保持されます。
 
   ```sql
    select group_concat(name) as res from ss;
@@ -95,7 +95,7 @@ SET [GLOBAL | SESSION] group_concat_max_len = <value>;
    +---------------------------+
   ```
 
-  例2: デフォルトのセパレータとNULL値を無視して名前を文字列に連結し、セパレータ`-`で接続します。重複した名前は保持されます。
+  例2: 名前を`-`で連結した文字列で、NULL値を無視します。重複する名前は保持されます。
 
   ```sql
    select group_concat(name SEPARATOR '-') as res from ss;
@@ -106,7 +106,7 @@ SET [GLOBAL | SESSION] group_concat_max_len = <value>;
    +---------------------------+
   ```
 
-  例3: デフォルトのセパレータとNULL値を無視して重複しない名前を文字列に連結します。
+  例3: 重複する名前を除去し、デフォルトのセパレータで一意の名前を文字列に連結します。
 
   ```sql
    select group_concat(distinct name) as res from ss;
@@ -117,7 +117,7 @@ SET [GLOBAL | SESSION] group_concat_max_len = <value>;
    +---------------------------+
   ```
 
-  例4: `score`の昇順で同じIDの名前-科目文字列を連結します。例えば、`TomMath`と`TomEnglish`はID 1を共有し、`score`の昇順でカンマで連結されます。
+  例4: `score`の昇順で、同じIDの名前-科目文字列を連結します。たとえば、`TomMath`と`TomEnglish`はID1を共有し、`score`の昇順でカンマで連結されます。
 
   ```sql
    select id, group_concat(distinct name,subject order by score) as res from ss group by id order by id;
@@ -132,7 +132,7 @@ SET [GLOBAL | SESSION] group_concat_max_len = <value>;
    +------+--------------------+
    ```
 
-  例5: group_concatはconcat()とネストされており、`name`、`-`、`subject`を文字列として結合するために使用されます。同じ行の文字列は`score`の昇順で並べ替えられます。
+  例5: group_concatをconcat()とネストして、`name`、`-`、`subject`を文字列として結合します。同じ行の文字列は`score`の昇順でソートされます。
   
   ```sql
    select id, group_concat(distinct concat(name, '-',subject) order by score) as res from ss group by id order by id;

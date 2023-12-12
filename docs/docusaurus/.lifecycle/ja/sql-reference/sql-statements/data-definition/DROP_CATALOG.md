@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# カタログの削除
+# カタログを削除
 
 ## 説明
 
@@ -16,7 +16,7 @@ DROP CATALOG <catalog_name>
 
 ## パラメータ
 
-`<catalog_name>`: 外部カタログの名前。
+`catalog_name`: 外部カタログの名前。
 
 ## 例
 

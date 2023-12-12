@@ -1,13 +1,13 @@
 ```yaml
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "日本語"
 ---
 
 # months_diff
 
 ## 説明
 
-日時式（`expr1` − `expr2`）間の月の差を月単位で正確に返します。
+`expr1` − `expr2`の間の月の差を月単位で正確に返します。
 
 ## 構文
 
@@ -17,15 +17,15 @@ BIGINT months_diff(DATETIME expr1,DATETIME expr2);
 
 ## パラメーター
 
-- `expr1`: 終了時刻。DATETIME または DATE 型である必要があります。
+- `expr1`: 終了時刻。DATETIMEまたはDATE型である必要があります。
 
-- `expr2`: 開始時刻。DATETIME または DATE 型である必要があります。
+- `expr2`: 開始時刻。DATETIMEまたはDATE型である必要があります。
 
 ## 戻り値
 
-BIGINT 値を返します。
+BIGINT値を返します。
 
-たとえば、2022-02-29 のような日付が存在しない場合は、NULL が返されます。
+たとえば、2022-02-29のような日付が存在しない場合、NULLが返されます。
 
 ## 例
 

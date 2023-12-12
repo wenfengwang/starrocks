@@ -2,22 +2,22 @@
 displayed_sidebar: "Japanese"
 ---
 
-# テーブルの作成文を表示
+# SHOW CREATE TABLE（テーブル作成文の表示）
 
-指定されたテーブルを作成した際に使用されたCREATE TABLE文を返します。
+指定されたテーブルを作成するために使用されたCREATE TABLE文を返します。
 
 > **注記**
 >
-> v3.0より前のバージョンでは、SHOW CREATE TABLE文を使用するにはテーブルに対する`SELECT_PRIV`権限が必要です。v3.0以降、SHOW CREATE TABLE文を使用するにはテーブルに対する`SELECT`権限が必要です。
+> v3.0より前のバージョンでは、SHOW CREATE TABLE文を実行するには、テーブルに対する`SELECT_PRIV`権限が必要です。v3.0以降、SHOW CREATE TABLE文を実行するには、テーブルに対する`SELECT`権限が必要です。 
 
-v3.0以降、SHOW CREATE TABLE文を使用して、外部カタログで管理され、Apache Hive™、Apache Iceberg、Apache Hudi、またはDelta Lakeに格納されているテーブルのCREATE TABLE文を表示できます。
+v3.0以降、SHOW CREATE TABLE文を使用して、外部カタログによって管理され、Apache Hive™、Apache Iceberg、Apache Hudi、またはDelta Lakeに保存されているテーブルのCREATE TABLE文を表示できます。
 
-v2.5.7以降、StarRocksはテーブルの作成やパーティションの追加時に自動的にバケット数（BUCKETS）を設定できます。バケット数の手動設定は不要です。詳細については、[バケット数の決定](../../../table_design/Data_distribution.md#determine-the-number-of-buckets)を参照してください。
+v2.5.7以降、StarRocksは、テーブルの作成またはパーティションの追加時にバケツ（BUCKETS）の数を自動的に設定できます。バケツの数を手動で設定する必要はもはやありません。詳細については、[バケツの数を決定する](../../../table_design/Data_distribution.md#determine-the-number-of-buckets)を参照してください。
 
-- テーブル作成時にバケット数を指定した場合、SHOW CREATE TABLEの出力にはバケット数が表示されます。
-- テーブル作成時にバケット数を指定しなかった場合、SHOW CREATE TABLEの出力にはバケット数が表示されません。各パーティションのバケット数を表示するには、[SHOW PARTITIONS](SHOW_PARTITIONS.md)を実行できます。
+- テーブル作成時にバケツの数を指定した場合、SHOW CREATE TABLEの出力にはバケツの数が表示されます。
+- テーブル作成時にバケツの数を指定しなかった場合、SHOW CREATE TABLEの出力にはバケツの数が表示されません。各パーティションのバケツの数を表示するには、[SHOW PARTITIONS](SHOW_PARTITIONS.md)を実行できます。
 
-v2.5.7より前のバージョンでは、テーブル作成時にバケット数を設定する必要があります。そのため、SHOW CREATE TABLEはデフォルトでバケット数を表示します。
+v2.5.7より前のバージョンでは、テーブルを作成する際にバケツの数を設定する必要があります。そのため、SHOW CREATE TABLEではデフォルトでバケツの数が表示されます。
 
 ## 構文
 
@@ -28,30 +28,30 @@ SHOW CREATE TABLE [db_name.]table_name
 ## パラメータ
 
 | **パラメータ** | **必須** | **説明**                                                     |
-| -------------- | ---------- | ------------------------------------------------------------ |
-| db_name         | いいえ      | データベース名。このパラメータを指定しない場合、現在のデータベース内の指定されたテーブルのCREATE TABLE文がデフォルトで返されます。 |
-| table_name     | はい        | テーブル名。                                                  |
+| ------------- | ------------ | ------------------------------------------------------------ |
+| db_name       | No           | データベース名。このパラメータを指定しない場合、デフォルトで現在のデータベース内の指定されたテーブルのCREATE TABLE文が返されます。 |
+| table_name    | Yes          | テーブル名。                                                 |
 
 ## 出力
 
 ```Plain
 +-----------+----------------+
-| テーブル  | Create Table   |                                               
+| テーブル   | Create Table   |                                               
 +-----------+----------------+
 ```
 
-次の表は、この文によって返されるパラメータを記述しています。
+次の表は、この文によって返されるパラメータを説明しています。
 
-| **パラメータ** | **説明**                   |
-| -------------- | -------------------------- |
-| テーブル       | テーブル名。               |
+| **パラメータ** | **説明**                          |
+| ------------- | ---------------------------------------- |
+| テーブル         | テーブル名。                          |
 | Create Table  | テーブルのCREATE TABLE文。 |
 
 ## 例
 
-### バケット数が指定されていない
+### バケツ数が指定されていない場合
 
-DISTRIBUTED BYでバケット数が指定されていない`example_table`というテーブルを作成します。
+DISTRIBUTED BYでバケツ番号が指定されていない`example_table`という名前のテーブルを作成します。
 
 ```SQL
 CREATE TABLE example_table
@@ -67,7 +67,7 @@ COMMENT "my first starrocks table"
 DISTRIBUTED BY HASH(k1);
 ```
 
-SHOW CREATE TABLEを実行して、`example_table` のCREATE TABLE文を表示します。 DISTRIBUTED BYにバケット数は表示されません。テーブル作成時にPROPERTIESを指定しなかった場合、SHOW CREATE TABLEの出力にはデフォルトのプロパティが表示されます。
+SHOW CREATE TABLEを実行して`example_table`のCREATE TABLE文を表示します。DISTRIBUTED BYにバケツの数が表示されません。テーブルを作成する際にPROPERTIESを指定していない場合は、SHOW CREATE TABLEの出力にはデフォルトのプロパティが表示されます。
 
 ```Plain
 SHOW CREATE TABLE example_table\G
@@ -91,9 +91,9 @@ PROPERTIES (
 );
 ```
 
-### バケット数が指定されている
+### バケツ数が指定されている場合
 
-DISTRIBUTED BYでバケット数を10として`example_table1`というテーブルを作成します。
+DISTRIBUTED BYでバケツ番号を10に設定した`example_table1`という名前のテーブルを作成します。
 
 ```SQL
 CREATE TABLE example_table1
@@ -109,7 +109,7 @@ COMMENT "my first starrocks table"
 DISTRIBUTED BY HASH(k1) BUCKETS 10;
 ```
 
-SHOW CREATE TABLEを実行して、`example_table1` のCREATE TABLE文を表示します。 DISTRIBUTED BYにバケット数（`BUCKETS 10`）が表示されます。テーブル作成時にPROPERTIESを指定しなかった場合、SHOW CREATE TABLEの出力にはデフォルトのプロパティが表示されます。
+SHOW CREATE TABLEを実行して`example_table`のCREATE TABLE文を表示します。DISTRIBUTED BYにバケツの数（`BUCKETS 10`）が表示されます。テーブルを作成する際にPROPERTIESを指定していない場合は、SHOW CREATE TABLEの出力にはデフォルトのプロパティが表示されます。
 
 ```plain
 SHOW CREATE TABLE example_table1\G

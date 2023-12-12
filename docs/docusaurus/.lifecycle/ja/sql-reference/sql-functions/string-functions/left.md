@@ -1,13 +1,14 @@
+```sql
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# 左
+# left
 
 ## 説明
 
-この関数は、与えられた文字列の左側から指定された文字数の文字を返します。長さの単位：utf8文字。
-注意：この関数は [strleft](strleft.md) としても知られています。
+この関数は、指定された文字列から左側の指定された数の文字を返します。長さの単位：utf8 文字。
+注意：この関数は [strleft](strleft.md) としても呼び出すことができます。
 
 ## 構文
 
@@ -29,3 +30,4 @@ MySQL > select left("Hello starrocks",5);
 ## キーワード
 
 LEFT
+```

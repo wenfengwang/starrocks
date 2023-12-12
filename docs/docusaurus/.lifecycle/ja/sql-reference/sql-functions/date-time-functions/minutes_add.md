@@ -6,19 +6,19 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定された分数を日付に追加し、分単位で正確です。
+指定された分数を分単位で日付に追加します。
 
 ## 構文
 
 ```Haskell
-DATETIME minutes_add(DATETIME|DATE 日付, INT 分数);
+DATETIME minutes_add(DATETIME|DATE date, INT minutes);
 ```
 
-## パラメーター
+## パラメータ
 
-- `date`: 開始時刻です。DATETIMEまたはDATEタイプである必要があります。
+- `date`: 開始時刻。DATETIMEまたはDATEタイプである必要があります。
 
-- `minutes`: 追加する分数です。INT型で、ゼロ以上、ゼロ、またはゼロ以下である必要があります。
+- `minutes`: 追加する分数。INTタイプであり、ゼロ以上、ゼロ、またはゼロ未満である可能性があります。
 
 ## 戻り値
 

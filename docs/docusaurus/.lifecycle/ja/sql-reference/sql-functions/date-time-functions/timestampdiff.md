@@ -1,16 +1,17 @@
+```yaml
 ---
-displayed_sidebar: "日本語"
+displayed_sidebar: "Japanese"
 ---
 
 # timestampdiff
 
 ## 説明
 
-`datetime_expr2` から `datetime_expr1` までの期間を返します。 `datetime_expr1` と `datetime_expr2` は DATE または DATETIME タイプでなければなりません。
+`datetime_expr2`から`datetime_expr1`までの間隔を返します。 `datetime_expr1`と`datetime_expr2`はDATEまたはDATETIMEタイプでなければなりません。
 
-整数結果とインターバルの単位は次のいずれかでなければなりません:
+整数の結果と間隔の単位は次のいずれかでなければなりません。
 
-SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, または YEAR.
+SECOND、MINUTE、HOUR、DAY、WEEK、MONTH、またはYEAR。
 
 ## 構文
 
@@ -47,3 +48,4 @@ MySQL> SELECT TIMESTAMPDIFF(MINUTE,'2003-02-01','2003-05-01 12:05:55');
 ## キーワード
 
 TIMESTAMPDIFF
+```

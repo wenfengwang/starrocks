@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-JSONオブジェクトをJSON文字列に変換します
+JSONオブジェクトをJSON文字列に変換する
 
 ## 構文
 
@@ -16,7 +16,7 @@ json_string(json_object_expr)
 
 ## パラメータ
 
-- `json_object_expr`: JSONオブジェクトを表す式。オブジェクトはJSONカラムであってもよし、PARSE_JSONなどのJSONコンストラクタ関数によって生成されたJSONオブジェクトであってもよい。
+- `json_object_expr`: JSONオブジェクトを表す式。オブジェクトはJSON列であるか、PARSE_JSONなどのJSONコンストラクタ関数によって生成されたJSONオブジェクトである可能性があります。
 
 ## 戻り値
 
@@ -24,7 +24,7 @@ VARCHAR値を返します。
 
 ## 例
 
-例1: JSONオブジェクトをJSON文字列に変換する
+Example 1: JSONオブジェクトをJSON文字列に変換する
 
 ```Plain
 select json_string('{"Name": "Alice"}');
@@ -35,7 +35,7 @@ select json_string('{"Name": "Alice"}');
 +----------------------------------+
 ```
 
-例2: PARSE_JSONの結果をJSON文字列に変換する
+Example 2: PARSE_JSONの結果をJSON文字列に変換する
 
 ```Plain
 select json_string(parse_json('{"Name": "Alice"}'));

@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-`expr`の総行数を返し、これはcount(distinct expr)と同等です。
+`expr`の総行数を返し、それはcount(distinct expr)に相当します。
 
 ## 構文
 
@@ -14,9 +14,9 @@ displayed_sidebar: "Japanese"
 multi_distinct_count(expr)
 ```
 
-## パラメーター
+## パラメータ
 
-`expr`: `multi_distinct_count()`を実行する基準となる列または式。`expr`が列名である場合、列はどのデータ型でもかまいません。
+`expr`: `multi_distinct_count()`が実行される基になる列または式。`expr`が列名の場合、列はどんなデータ型でもかまいません。
 
 ## 戻り値
 
@@ -24,7 +24,7 @@ multi_distinct_count(expr)
 
 ## 例
 
-`test`というテーブルがあるとします。各注文のカテゴリとサプライヤーを`id`でクエリします。
+`test`というテーブルがあるとします。各注文のカテゴリとサプライヤーをidでクエリします。
 
 ~~~Plain
 select * from test order by id;
@@ -41,7 +41,7 @@ select * from test order by id;
 +------+----------+----------+------------+
 ~~~
 
-例1: `category`列の異なる値の数をカウントします。
+例1: `category`列の重複する値の数を数えます。
 
 ~~~Plain
 select multi_distinct_count(category) from test;
@@ -52,7 +52,7 @@ select multi_distinct_count(category) from test;
 +--------------------------------+
 ~~~
 
-例2: `supplier`列の異なる値の数をカウントします。
+例2: `supplier`列の重複する値の数を数えます。
 
 ~~~Plain
 select multi_distinct_count(supplier) from test;

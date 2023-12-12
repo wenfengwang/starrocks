@@ -6,11 +6,11 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-MAPは、キーと値の組を複数格納する複雑なデータ型です。たとえば、`{a:1, b:2, c:3}`のようになります。MAP内のキーはユニークである必要があります。ネストされたMAPは最大14レベルのネストを含むことができます。
+MAPは、キーと値の組のセットを格納する複雑なデータ型であり、例えば、`{a:1, b:2, c:3}`のようになります。 MAP内のキーはユニークでなければなりません。 ネストされたMAPは、最大14レベルのネストを含めることができます。
 
-MAPデータ型はv3.1以降でサポートされています。v3.1では、MAP列をStarRocksテーブルを作成し、そのテーブルにMAPデータをロードし、MAPデータをクエリできます。
+MAPデータ型はv3.1からサポートされています。 v3.1では、StarRocksテーブルを作成し、そのテーブルにMAPデータをロードし、MAPデータをクエリできます。
 
-v2.5以降、StarRocksはデータレイクからの複雑なデータ型MAPとSTRUCTのクエリをサポートしています。Apache Hive™、Apache Hudi、Apache Icebergから提供される外部カタログを使用して、MAPおよびSTRUCTデータをクエリできます。ORCおよびParquetファイルからのデータのみをクエリできます。外部カタログを使用して外部データソースをクエリする方法の詳細については、[カタログの概要](../../../data_source/catalog/catalog_overview.md)および必要なカタログタイプに関連するトピックをご覧ください。
+v2.5以降、StarRocksはデータレイクからの複雑なデータ型MAPおよびSTRUCTのクエリをサポートしています。 StarRocksが提供する外部カタログを使用して、Apache Hive™、Apache Hudi、およびApache IcebergからMAPおよびSTRUCTデータをクエリできます。 ORCおよびParquetファイルからのデータのみをクエリできます。 外部データソースをクエリする外部カタログの使用方法については、[カタログの概要](../../../data_source/catalog/catalog_overview.md)および必要なカタログタイプに関連するトピックを参照してください。
 
 ## 構文
 
@@ -18,31 +18,31 @@ v2.5以降、StarRocksはデータレイクからの複雑なデータ型MAPとS
 MAP<key_type,value_type>
 ```
 
-- `key_type`: キーのデータ型。キーは、StarRocksでサポートされているプリミティブな型（数値、文字列、日付など）でなければなりません。HLL、JSON、ARRAY、MAP、BITMAP、STRUCT型はキーにできません。
-- `value_type`: 値のデータ型。値はどんなサポートされている型でも構いません。
+- `key_type`: キーのデータ型。 キーは、StarRocksでサポートされているプリミティブ型でなければなりません。 たとえば、数値、文字列、または日付です。 HLL、JSON、ARRAY、MAP、BITMAP、STRUCTタイプではあってはなりません。
+- `value_type`: 値のデータ型。 値は任意のサポートされている型であることができます。
 
-キーと値は**ネイティブにnullable**です。
+キーと値は**ネイティブにヌラブル**です。
 
 ## StarRocksでMAP列を定義する
 
-テーブルを作成し、この列にMAPデータをロードする際に、MAP列を定義することができます。
+この列にMAP型を持つテーブルを作成し、MAPデータをこの列にロードすることができます。
 
 ```SQL
--- 1次元のMAPを定義。
+-- 一次元のMAPを定義する。
 CREATE TABLE t0(
   c0 INT,
   c1 MAP<INT,INT>
 )
 DUPLICATE KEY(c0);
 
--- ネストされたMAPを定義。
+-- ネストされたMAPを定義する。
 CREATE TABLE t1(
   c0 INT,
   c1 MAP<DATE, MAP<VARCHAR(10), INT>>
 )
 DUPLICATE KEY(c0);
 
--- NOT NULLなMAPを定義。
+-- NOT NULL MAPを定義する。
 CREATE TABLE t2(
   c0 INT,
   c1 MAP<INT,DATETIME> NOT NULL
@@ -50,66 +50,65 @@ CREATE TABLE t2(
 DUPLICATE KEY(c0);
 ```
 
-MAP型の列には以下の制限があります：
+MAPのデータ型を持つ列には、次の制限があります。
 
-- テーブルのキーカラムとして使用できません。値列としてのみ使用できます。
-- テーブルのパーティションキーカラム (PARTITION BYに続く列) として使用できません。
-- テーブルのバケティングカラム (DISTRIBUTED BYに続く列) として使用できません。
+- テーブルのキー列として使用することはできません。 値としてのみ使用できます。
+- テーブルのパーティションキー列（PARTITION BYの後に続く列）として使用することはできません。
+- テーブルのバケット列（DISTRIBUTED BYの後に続く列）として使用することはできません。
 
 ## SQLでMAPを構築する
 
-SQLでMAPは以下の2つの構文を使用して構築できます：
+Mapは、次の2つの構文を使用してSQLで構築することができます。
 
-- `map{key_expr:value_expr, ...}`: MAP要素はカンマ(`,`)で区切られ、キーと値はコロン(`:`)で区切られます。たとえば、`map{a:1, b:2, c:3}`。
+- `map{key_expr:value_expr, ...}`: マップの要素はカンマ（`,`）で区切られ、キーと値はコロン（`:`）で区切られます。 例えば、`map{a:1, b:2, c:3}`です。
 
-- `map(key_expr, value_expr ...)`: キーと値の式はペアでなければなりません。たとえば、`map(a,1,b,2,c,3)`。
+- `map(key_expr, value_expr ...)`: キーと値の式はペアでなければならず、 例えば、`map(a,1,b,2,c,3)`です。
 
-StarRocksは、すべての入力キーと値からキーと値のデータ型を導出します。
+StarRocksは、すべての入力のキーと値からキーと値のデータ型を導出することができます。
 
 ```SQL
 select map{1:1, 2:2, 3:3} as numbers;
-select map(1,1,2,2,3,3) as numbers; -- {1:1,2:2,3:3} を返します。
+select map(1,1,2,2,3,3) as numbers; -- Return {1:1,2:2,3:3}.
 select map{1:"apple", 2:"orange", 3:"pear"} as fruit;
-select map(1, "apple", 2, "orange", 3, "pear") as fruit; -- {1:"apple",2:"orange",3:"pear"} を返します。
+select map(1, "apple", 2, "orange", 3, "pear") as fruit; -- Return {1:"apple",2:"orange",3:"pear"}.
 select map{true:map{3.13:"abc"}, false:map{}} as nest;
-select map(true, map(3.13, "abc"), false, map{}) as nest; -- {1:{3.13:"abc"},0:{}} を返します。
+select map(true, map(3.13, "abc"), false, map{}) as nest; -- Return {1:{3.13:"abc"},0:{}}.
 ```
 
-キーまたは値が異なる型の場合、StarRocksは適切な型（サブタイプ）を自動的に導出します。
+キーまたは値が異なる型の場合、StarRocksは適切な型（上位型）を自動的に導出します。
 
 ```SQL
-select map{1:2.2, 1.2:21} as floats_floats; -- {1.0:2.2,1.2:21.0} を返します。
-select map{12:"a", "100":1, NULL:NULL} as string_string; -- {"12":"a","100":"1",null:null} を返します。
+select map{1:2.2, 1.2:21} as floats_floats; -- Return {1.0:2.2,1.2:21.0}.
+select map{12:"a", "100":1, NULL:NULL} as string_string; -- Return {"12":"a","100":"1",null:null}.
 ```
 
-また、マップを構築する際に`<>`を使用してデータ型を定義することもできます。入力キーまたは値は指定された型にキャストできる必要があります。
+マップを構成する場合は、`<>`を使用してデータ型を定義することもできます。 入力のキーまたは値は指定された型にキャストできる必要があります。
 
 ```SQL
-select map<FLOAT,INT>{1:2}; -- {1:2} を返します。
-select map<INT,INT>{"12": "100"}; -- {12:100} を返します。
+select map<FLOAT,INT>{1:2}; -- Return {1:2}.
+select map<INT,INT>{"12": "100"}; -- Return {12:100}.
 ```
 
-キーと値はnullableです。
+キーと値はヌラブルです。
 
 ```SQL
 select map{1:NULL};
 ```
 
-空のMAPを構築することもできます。
+空のマップを構築します。
 
 ```SQL
 select map{} as empty_map;
-select map() as empty_map; -- {} を返します。
+select map() as empty_map; -- Return {}.
 ```
 
 ## MAPデータをStarRocksにロードする
 
-MAPデータをStarRocksに読み込む方法は、[INSERT INTO](../../../loading/InsertInto.md)と[ORC/Parquet loading](../data-manipulation/BROKER_LOAD.md)の2つがあります。
+MAPデータをStarRocksにロードするには、[INSERT INTO](../../../loading/InsertInto.md)および[ORC/Parquet loading](../data-manipulation/BROKER_LOAD.md)の2つのメソッドを使用できます。
 
-StarRocksは、マップ毎の重複するキーを削除します。
+StarRocksは、MAPデータをロードする際に、各マップの重複するキーを削除します。
 
 ### INSERT INTO
-
 ```SQL
   CREATE TABLE t0(
     c0 INT,
@@ -120,9 +119,9 @@ StarRocksは、マップ毎の重複するキーを削除します。
   INSERT INTO t0 VALUES(1, map{1:2,3:NULL});
 ```
 
-### ORCおよびParquetファイルからMAPデータを読み込む
+### ORCおよびParquetファイルからMAPデータをロードする
 
-StarRocksのMAPデータ型はORCやParquetの構造に対応しています。追加の仕様は必要ありません。[ORC/Parquet loading](../data-manipulation/BROKER_LOAD.md)の手順に従って、ORCやParquetファイルからMAPデータを読み込むことができます。
+StarRocksのMAPデータ型は、ORCまたはParquet形式のマップ構造に対応しています。 追加の仕様は必要ありません。 [ORC/Parquet loading](../data-manipulation/BROKER_LOAD.md)の手順に従って、ORCまたはParquetファイルからMAPデータをロードすることができます。
 
 ## MAPデータにアクセスする
 
@@ -137,7 +136,7 @@ mysql> select c1 from t0;
 +--------------+
 ```
 
-例2: `[ ]`演算子または`element_at(any_map, any_key)`関数を使用して、マップからキーに対応する値を取得します。
+例2: `[ ]`演算子を使用してキーによってマップから値を取得するか、`element_at(any_map, any_key)`関数を使用する。
 
 次の例では、キー`1`に対応する値をクエリします。
 
@@ -157,9 +156,9 @@ mysql> select element_at(map{1:2,3:NULL},1);
 +--------------------+
 ```
 
-マップ内にキーが存在しない場合、`NULL`が返されます。
+キーがマップ内に存在しない場合、`NULL`が返されます。
 
-次の例は、存在しないキー2に対応する値をクエリします。
+次の例では、存在しないキーである2に対忋する値をクエリします。
 
 ```Plain Text
 mysql> select map{1:2,3:NULL}[2];
@@ -170,9 +169,9 @@ mysql> select map{1:2,3:NULL}[2];
 +-----------------------+
 ```
 
-例3: マルチディメンショナルマップを**再帰的に**クエリします。
+例3: **再帰的に**多次元マップをクエリします。
 
-次の例では、まずキー`1`に対応する値である`map{2:1}`をクエリし、その後`map{2:1}`内のキー`2`に再帰的にクエリします。
+次の例では、まずキー`1`に対応する値である`map{2:1}`をクエリし、その後、`map{2:1}`内のキー`2`に再帰的にクエリします。
 
 ```Plain Text
 mysql> select map{1:map{2:1},3:NULL}[1][2];
@@ -186,5 +185,5 @@ mysql> select map{1:map{2:1},3:NULL}[1][2];
 
 ## 参照
 
-- [Map関数](../../sql-functions/map-functions/map_values.md)
+- [Map functions](../../sql-functions/map-functions/map_values.md)
 - [element_at](../../sql-functions/array-functions/element_at.md)

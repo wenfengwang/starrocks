@@ -1,3 +1,4 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -8,7 +9,7 @@ displayed_sidebar: "Japanese"
 
 特定の形式でバイナリ文字列をビットマップに変換します。
 
-この機能は、StarRocksにビットマップデータをロードするために使用できます。
+この機能はStarRocksにビットマップデータをロードするために使用できます。
 
 この機能はv3.0からサポートされています。
 
@@ -20,15 +21,15 @@ BITMAP bitmap_from_binary(VARBINARY str)
 
 ## パラメータ
 
-`str`: サポートされるデータ型はVARBINARYです。
+`str`：サポートされているデータ型はVARBINARYです。
 
 ## 戻り値
 
-BITMAPタイプの値を返します。
+BITMAP型の値を返します。
 
 ## 例
 
-例1：この関数を他のBitmap関数と組み合わせて使用します。
+例1： 他のビットマップ機能とともにこの関数を使用します。
 
 ```Plain
 mysql> select bitmap_to_string(bitmap_from_binary(bitmap_to_binary(bitmap_from_string("0,1,2,3"))));
@@ -38,4 +39,5 @@ mysql> select bitmap_to_string(bitmap_from_binary(bitmap_to_binary(bitmap_from_s
 | 0,1,2,3                                                                               |
 +---------------------------------------------------------------------------------------+
 1 row in set (0.01 sec)
+```
 ```

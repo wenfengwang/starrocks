@@ -1,4 +1,3 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -7,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-ビットマップ値の集合の和を返し、その和の要素数を返します。この関数はv2.3からサポートされています。
+ビットマップ値のセットの和集合を返し、その和集合の要素数を返します。この関数はv2.3からサポートされています。
 
 ## 構文
 
@@ -15,17 +14,17 @@ displayed_sidebar: "Japanese"
 BIGINT bitmap_union_count(BITMAP value)
 ```
 
-### パラメーター
+### パラメータ
 
-`value`: ビットマップ値の集合。サポートされているデータ型はBITMAPです。
+`value`: ビットマップ値のセット。サポートされているデータ型はBITMAPです。
 
 ## 戻り値
 
-BIGINTタイプの値を返します。
+BIGINT型の値を返します。
 
 ## 例
 
-ウェブページのユニークビュー（UV）を計算します。もし`user_id`がINT型である場合、下記の2つのクエリは同等です。
+ウェブページのユニークビュー（UV）を計算します。`user_id`がINT型である場合、後の2つのクエリは同等です。
 
 ```Plaintext
 mysql> select * from test

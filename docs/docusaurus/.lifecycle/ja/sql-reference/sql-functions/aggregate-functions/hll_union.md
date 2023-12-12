@@ -7,7 +7,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-HLL値のセットの連結を返します。
+HLL値の集合の連結を返します。
 
 ## 構文
 

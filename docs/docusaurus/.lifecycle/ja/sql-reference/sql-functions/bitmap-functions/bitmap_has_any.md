@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## Description
 
-2つのBitmap列の間に重なる要素があるかどうかを計算し、戻り値はブール値です。
+2つのBitmap列の間に重なる要素があるかどうかを計算し、結果はブール値となります。
 
 ## Syntax
 

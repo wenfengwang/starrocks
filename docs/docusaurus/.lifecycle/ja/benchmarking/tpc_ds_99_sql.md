@@ -1,4 +1,3 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -51,7 +50,7 @@ with wscs as
         sum(case when (d_day_name='Thursday') then sales_price else null end) thu_sales,
         sum(case when (d_day_name='Friday') then sales_price else null end) fri_sales,
         sum(case when (d_day_name='Saturday') then sales_price else null end) sat_sales
- from wscs
+ from wscs 
      ,date_dim
  where d_date_sk = sold_date_sk
  group by d_week_seq)
@@ -223,19 +222,19 @@ union all
            > case when t_w_firstyear.year_total > 0 then t_w_secyear.year_total / t_w_firstyear.year_total else null end
  order by t_s_secyear.customer_id
 ```
-```sql
-         ,t_s_secyear.customer_first_name as 顧客名
-         ,t_s_secyear.customer_last_name as 顧客姓
-         ,t_s_secyear.customer_preferred_cust_flag as 顧客優先顧客フラグ
+```plaintext
+        ,t_s_secyear.customer_first_name
+        ,t_s_secyear.customer_last_name
+        ,t_s_secyear.customer_preferred_cust_flag
 limit 100;
 
 
 -- query 5
 with ssr as
- (select s_store_id, 
-        sum(sales_price) as sales, 
-        sum(profit) as profit, 
-        sum(return_amt) as returns, 
+ (select s_store_id,
+        sum(sales_price) as sales,
+        sum(profit) as profit,
+        sum(return_amt) as returns,
         sum(net_loss) as profit_loss
  from
   ( select  ss_store_sk as store_sk,
@@ -263,10 +262,10 @@ with ssr as
  group by s_store_id)
  ,
  csr as
- (select cp_catalog_page_id, 
-        sum(sales_price) as sales, 
-        sum(profit) as profit, 
-        sum(return_amt) as returns, 
+ (select cp_catalog_page_id,
+        sum(sales_price) as sales,
+        sum(profit) as profit,
+        sum(return_amt) as returns,
         sum(net_loss) as profit_loss
  from
   ( select  cs_catalog_page_sk as page_sk,
@@ -294,10 +293,10 @@ with ssr as
  group by cp_catalog_page_id)
  ,
  wsr as
- (select web_site_id, 
-        sum(sales_price) as sales, 
-        sum(profit) as profit, 
-        sum(return_amt) as returns, 
+ (select web_site_id,
+        sum(sales_price) as sales,
+        sum(profit) as profit,
+        sum(return_amt) as returns,
         sum(net_loss) as profit_loss
  from
   ( select  ws_web_site_sk as wsr_web_site_sk,
@@ -432,38 +431,39 @@ select  s_store_name
         '51649','18270','52867','39972','96976','63792','11376','94898','13595','10516',
         '90225','58943','39371','94945','28587','96576','57855','28488','26105','83933',
         '25858','34322','44438','73171','30122','34102','22685','71256','78451','54364',
+```
 '13354','45375','40558','56458','28286','45266','47305','69399','83921','26233',
-'11101','15371','69913','35942','15882','25631','24610','44165','99076','33786',
-'70738','26653','14328','72305','62496','22152','10144','64147','48425','14663',
-'21076','18799','30450','63089','81019','68893','24996','51200','51211','45692',
-'92712','70466','79994','22437','25280','38935','71791','73134','56571','14060',
-'19505','72425','56575','74351','68786','51650','20004','18383','76614','11634',
-'18906','15765','41368','73241','76698','78567','97189','28545','76231','75691',
-'22246','51061','90578','56691','68014','51103','94167','57047','14867','73520',
-'15734','63435','25733','35474','24676','94627','53535','17879','15559','53268',
-'59166','11928','59402','33282','45721','43933','68101','33515','36634','71286',
-'19736','58058','55253','67473','41918','19515','36495','19430','22351','77191',
-'91393','49156','50298','87501','18652','53179','18767','63193','23968','65164',
-'68880','21286','72823','58470','67301','13394','31016','70372','67030','40604',
-'24317','45748','39127','26065','77721','31029','31880','60576','24671','45549',
-'13376','50016','33123','19769','22927','97789','46081','72151','15723','46136',
-'51949','68100','96888','64528','14171','79777','28709','11489','25103','32213',
-'78668','22245','15798','27156','37930','62971','21337','51622','67853','10567',
-'38415','15455','58263','42029','60279','37125','56240','88190','50308','26859',
-'64457','89091','82136','62377','36233','63837','58078','17043','30010','60099',
-'28810','98025','29178','87343','73273','30469','64034','39516','86057','21309',
-'90257','67875','40162','11356','73650','61810','72013','30431','22461','19512',
-'13375','55307','30625','83849','68908','26689','96451','38193','46820','88885',
-'84935','69035','83144','47537','56616','94983','48033','69952','25486','61547',
-'27385','61860','58048','56910','16807','17871','35258','31387','35458','35576')
+        '11101','15371','69913','35942','15882','25631','24610','44165','99076','33786',
+        '70738','26653','14328','72305','62496','22152','10144','64147','48425','14663',
+        '21076','18799','30450','63089','81019','68893','24996','51200','51211','45692',
+        '92712','70466','79994','22437','25280','38935','71791','73134','56571','14060',
+        '19505','72425','56575','74351','68786','51650','20004','18383','76614','11634',
+        '18906','15765','41368','73241','76698','78567','97189','28545','76231','75691',
+        '22246','51061','90578','56691','68014','51103','94167','57047','14867','73520',
+        '15734','63435','25733','35474','24676','94627','53535','17879','15559','53268',
+        '59166','11928','59402','33282','45721','43933','68101','33515','36634','71286',
+        '19736','58058','55253','67473','41918','19515','36495','19430','22351','77191',
+        '91393','49156','50298','87501','18652','53179','18767','63193','23968','65164',
+        '68880','21286','72823','58470','67301','13394','31016','70372','67030','40604',
+        '24317','45748','39127','26065','77721','31029','31880','60576','24671','45549',
+        '13376','50016','33123','19769','22927','97789','46081','72151','15723','46136',
+        '51949','68100','96888','64528','14171','79777','28709','11489','25103','32213',
+        '78668','22245','15798','27156','37930','62971','21337','51622','67853','10567',
+        '38415','15455','58263','42029','60279','37125','56240','88190','50308','26859',
+        '64457','89091','82136','62377','36233','63837','58078','17043','30010','60099',
+        '28810','98025','29178','87343','73273','30469','64034','39516','86057','21309',
+        '90257','67875','40162','11356','73650','61810','72013','30431','22461','19512',
+        '13375','55307','30625','83849','68908','26689','96451','38193','46820','88885',
+        '84935','69035','83144','47537','56616','94983','48033','69952','25486','61547',
+        '27385','61860','58048','56910','16807','17871','35258','31387','35458','35576')
  intersect
-  select ca_zip
-  from (SELECT substr(ca_zip,1,5) ca_zip,count(*) cnt
-        FROM customer_address, customer
-        WHERE ca_address_sk = c_current_addr_sk and
-              c_preferred_cust_flag='Y'
-        group by ca_zip
-        having count(*) > 10)A1)A2) V1
+      select ca_zip
+      from (SELECT substr(ca_zip,1,5) ca_zip,count(*) cnt
+            FROM customer_address, customer
+            WHERE ca_address_sk = c_current_addr_sk and
+                  c_preferred_cust_flag='Y'
+            group by ca_zip
+            having count(*) > 10)A1)A2) V1
  where ss_store_sk = s_store_sk
   and ss_sold_date_sk = d_date_sk
   and d_qoy = 2 and d_year = 1998
@@ -473,60 +473,59 @@ select  s_store_name
  limit 100;
 
 
--- クエリ9
-選択してください
-    結果としては (select count(*) 
+-- クエリ 9
+select case when (select count(*) 
                   from store_sales 
                   where ss_quantity between 1 and 20) > 74219
-            ならば (select avg(ss_ext_discount_amt) 
+            then (select avg(ss_ext_discount_amt) 
                   from store_sales 
                   where ss_quantity between 1 and 20) 
-            それ以外の場合は (select avg(ss_net_paid)
+            else (select avg(ss_net_paid)
                   from store_sales
-                  where ss_quantity between 1 and 20) バケツ1 ,
-       結果としては (select count(*)
+                  where ss_quantity between 1 and 20) end bucket1 ,
+       case when (select count(*)
                   from store_sales
                   where ss_quantity between 21 and 40) > 122840 
-            ならば (select avg(ss_ext_discount_amt)
+            then (select avg(ss_ext_discount_amt)
                   from store_sales
                   where ss_quantity between 21 and 40) 
-            それ以外の場合は (select avg(ss_net_paid)
+            else (select avg(ss_net_paid)
                   from store_sales
-                  where ss_quantity between 21 and 40) バケツ2,
-       結果としては (select count(*)
+                  where ss_quantity between 21 and 40) end bucket2,
+       case when (select count(*)
                   from store_sales
                   where ss_quantity between 41 and 60) > 56580
-            ならば (select avg(ss_ext_discount_amt)
+            then (select avg(ss_ext_discount_amt)
                   from store_sales
                   where ss_quantity between 41 and 60)
-            それ以外の場合は (select avg(ss_net_paid)
+            else (select avg(ss_net_paid)
                   from store_sales
-                  where ss_quantity between 41 and 60) バケツ3,
-       結果としては (select count(*)
+                  where ss_quantity between 41 and 60) end bucket3,
+       case when (select count(*)
                   from store_sales
                   where ss_quantity between 61 and 80) > 10097
-            ならば (select avg(ss_ext_discount_amt)
+            then (select avg(ss_ext_discount_amt)
                   from store_sales
                   where ss_quantity between 61 and 80)
-            それ以外の場合は (select avg(ss_net_paid)
+            else (select avg(ss_net_paid)
                   from store_sales
-                  where ss_quantity between 61 and 80) バケツ4,
-       結果としては (select count(*)
+                  where ss_quantity between 61 and 80) end bucket4,
+       case when (select count(*)
                   from store_sales
                   where ss_quantity between 81 and 100) > 165306
-            ならば (select avg(ss_ext_discount_amt)
+            then (select avg(ss_ext_discount_amt)
                   from store_sales
                   where ss_quantity between 81 and 100)
-            それ以外の場合は (select avg(ss_net_paid)
+            else (select avg(ss_net_paid)
                   from store_sales
-                  where ss_quantity between 81 and 100) バケツ5
- from reason
+                  where ss_quantity between 81 and 100) end bucket5
+from reason
 where r_reason_sk = 1
 ;
 
 
--- クエリ10
-選択  
+-- クエリ 10
+select  
   cd_gender,
   cd_marital_status,
   cd_education_status,
@@ -541,7 +540,8 @@ where r_reason_sk = 1
   count(*) cnt5,
   cd_dep_college_count,
   count(*) cnt6
- のカスタマー  c,カスタマーアドレス ca,カスタマーデモグラフィック
+ from
+  customer c,customer_address ca,customer_demographics
  where
   c.c_current_addr_sk = ca.ca_address_sk and
   ca_county in ('Rush County','Toole County','Jefferson County','Dona Ana County','La Porte County') and
@@ -584,7 +584,7 @@ where r_reason_sk = 1
 limit 100;
 
 
--- クエリ11
+-- クエリ 11
 with year_total as (
  select c_customer_id customer_id
        ,c_first_name customer_first_name
@@ -843,130 +843,130 @@ with  cross_items as
            ,item
            ,date_dim
        where ws_item_sk in (select ss_item_sk from cross_items)
-```sql
-        and ws_item_sk = i_item_sk
-        and ws_sold_date_sk = d_date_sk
-        and d_year = 1999 + 2
-        and d_moy = 11
-      group by i_brand_id,i_class_id,i_category_id
-      having sum(ws_quantity*ws_list_price) > (select average_sales from avg_sales)
-  ) y
-  group by rollup (channel, i_brand_id,i_class_id,i_category_id)
-  order by channel,i_brand_id,i_class_id,i_category_id
+and ws_item_sk = i_item_sk
+      and ws_sold_date_sk = d_date_sk
+      and d_year = 1999+2
+      and d_moy = 11
+    group by i_brand_id, i_class_id, i_category_id
+    having sum(ws_quantity*ws_list_price) > (select average_sales from avg_sales)) y
+  group by rollup (channel, i_brand_id, i_class_id, i_category_id)
+  order by channel, i_brand_id, i_class_id, i_category_id
   limit 100;
-with  cross_items as
- (select i_item_sk ss_item_sk
- from item,
- (select iss.i_brand_id brand_id
-     ,iss.i_class_id class_id
-     ,iss.i_category_id category_id
- from store_sales
-     ,item iss
-     ,date_dim d1
- where ss_item_sk = iss.i_item_sk
-   and ss_sold_date_sk = d1.d_date_sk
-   and d1.d_year between 1999 AND 1999 + 2
- intersect
- select ics.i_brand_id
-     ,ics.i_class_id
-     ,ics.i_category_id
- from catalog_sales
-     ,item ics
-     ,date_dim d2
- where cs_item_sk = ics.i_item_sk
-   and cs_sold_date_sk = d2.d_date_sk
-   and d2.d_year between 1999 AND 1999 + 2
- intersect
- select iws.i_brand_id
-     ,iws.i_class_id
-     ,iws.i_category_id
- from web_sales
-     ,item iws
-     ,date_dim d3
- where ws_item_sk = iws.i_item_sk
-   and ws_sold_date_sk = d3.d_date_sk
-   and d3.d_year between 1999 AND 1999 + 2) x
- where i_brand_id = brand_id
-      and i_class_id = class_id
-      and i_category_id = category_id
-),
- avg_sales as
-(select avg(quantity*list_price) average_sales
-  from (select ss_quantity quantity
-             ,ss_list_price list_price
-       from store_sales
-           ,date_dim
-       where ss_sold_date_sk = d_date_sk
-         and d_year between 1999 and 1999 + 2
-       union all
-       select cs_quantity quantity
-             ,cs_list_price list_price
-       from catalog_sales
-           ,date_dim
-       where cs_sold_date_sk = d_date_sk
-         and d_year between 1999 and 1999 + 2
-       union all
-       select ws_quantity quantity
-             ,ws_list_price list_price
-       from web_sales
-           ,date_dim
-       where ws_sold_date_sk = d_date_sk
-         and d_year between 1999 and 1999 + 2) x)
-  select  this_year.channel ty_channel
-                           ,this_year.i_brand_id ty_brand
-                           ,this_year.i_class_id ty_class
-                           ,this_year.i_category_id ty_category
-                           ,this_year.sales ty_sales
-                           ,this_year.number_sales ty_number_sales
-                           ,last_year.channel ly_channel
-                           ,last_year.i_brand_id ly_brand
-                           ,last_year.i_class_id ly_class
-                           ,last_year.i_category_id ly_category
-                           ,last_year.sales ly_sales
-                           ,last_year.number_sales ly_number_sales 
+
+with cross_items as
+  (select i_item_sk ss_item_sk
+   from item,
+        (select iss.i_brand_id brand_id,
+                iss.i_class_id class_id,
+                iss.i_category_id category_id
+         from store_sales,
+              item iss,
+              date_dim d1
+         where ss_item_sk = iss.i_item_sk
+           and ss_sold_date_sk = d1.d_date_sk
+           and d1.d_year between 1999 AND 1999 + 2
+         intersect
+         select ics.i_brand_id,
+                ics.i_class_id,
+                ics.i_category_id
+         from catalog_sales,
+              item ics,
+              date_dim d2
+         where cs_item_sk = ics.i_item_sk
+           and cs_sold_date_sk = d2.d_date_sk
+           and d2.d_year between 1999 AND 1999 + 2
+         intersect
+         select iws.i_brand_id,
+                iws.i_class_id,
+                iws.i_category_id
+         from web_sales,
+              item iws,
+              date_dim d3
+         where ws_item_sk = iws.i_item_sk
+           and ws_sold_date_sk = d3.d_date_sk
+           and d3.d_year between 1999 AND 1999 + 2) x
+   where i_brand_id = brand_id
+     and i_class_id = class_id
+     and i_category_id = category_id
+  ),
+  avg_sales as
+  (select avg(quantity*list_price) average_sales
+   from (select ss_quantity quantity,
+                ss_list_price list_price
+         from store_sales,
+              date_dim
+         where ss_sold_date_sk = d_date_sk
+           and d_year between 1999 and 1999 + 2
+         union all
+         select cs_quantity quantity,
+                cs_list_price list_price
+         from catalog_sales,
+              date_dim
+         where cs_sold_date_sk = d_date_sk
+           and d_year between 1999 and 1999 + 2
+         union all
+         select ws_quantity quantity,
+                ws_list_price list_price
+         from web_sales,
+              date_dim
+         where ws_sold_date_sk = d_date_sk
+           and d_year between 1999 and 1999 + 2) x)
+select this_year.channel ty_channel,
+       this_year.i_brand_id ty_brand,
+       this_year.i_class_id ty_class,
+       this_year.i_category_id ty_category,
+       this_year.sales ty_sales,
+       this_year.number_sales ty_number_sales,
+       last_year.channel ly_channel,
+       last_year.i_brand_id ly_brand,
+       last_year.i_class_id ly_class,
+       last_year.i_category_id ly_category,
+       last_year.sales ly_sales,
+       last_year.number_sales ly_number_sales
  from
- (select 'store' channel, i_brand_id,i_class_id,i_category_id
-        ,sum(ss_quantity*ss_list_price) sales, count(*) number_sales
- from store_sales 
-     ,item
-     ,date_dim
- where ss_item_sk in (select ss_item_sk from cross_items)
-   and ss_item_sk = i_item_sk
-   and ss_sold_date_sk = d_date_sk
-   and d_week_seq = (select d_week_seq
-                     from date_dim
-                     where d_year = 1999 + 1
-                       and d_moy = 12
-                       and d_dom = 11)
- group by i_brand_id,i_class_id,i_category_id
- having sum(ss_quantity*ss_list_price) > (select average_sales from avg_sales)) this_year,
- (select 'store' channel, i_brand_id,i_class_id
-        ,i_category_id, sum(ss_quantity*ss_list_price) sales, count(*) number_sales
- from store_sales
-     ,item
-     ,date_dim
- where ss_item_sk in (select ss_item_sk from cross_items)
-   and ss_item_sk = i_item_sk
-   and ss_sold_date_sk = d_date_sk
-   and d_week_seq = (select d_week_seq
-                     from date_dim
-                     where d_year = 1999
-                       and d_moy = 12
-                       and d_dom = 11)
- group by i_brand_id,i_class_id,i_category_id
- having sum(ss_quantity*ss_list_price) > (select average_sales from avg_sales)) last_year
+  (select 'store' channel, i_brand_id, i_class_id, i_category_id,
+          sum(ss_quantity*ss_list_price) sales, count(*) number_sales
+   from store_sales,
+        item,
+        date_dim
+   where ss_item_sk in (select ss_item_sk from cross_items)
+     and ss_item_sk = i_item_sk
+     and ss_sold_date_sk = d_date_sk
+     and d_week_seq = (select d_week_seq
+                       from date_dim
+                       where d_year = 1999 + 1
+                         and d_moy = 12
+                         and d_dom = 11)
+   group by i_brand_id, i_class_id, i_category_id
+   having sum(ss_quantity*ss_list_price) > (select average_sales from avg_sales)) this_year,
+  (select 'store' channel, i_brand_id, i_class_id, i_category_id,
+          sum(ss_quantity*ss_list_price) sales, count(*) number_sales
+   from store_sales,
+        item,
+        date_dim
+   where ss_item_sk in (select ss_item_sk from cross_items)
+     and ss_item_sk = i_item_sk
+     and ss_sold_date_sk = d_date_sk
+     and d_week_seq = (select d_week_seq
+                       from date_dim
+                       where d_year = 1999
+                         and d_moy = 12
+                         and d_dom = 11)
+   group by i_brand_id, i_class_id, i_category_id
+   having sum(ss_quantity*ss_list_price) > (select average_sales from avg_sales)) last_year
  where this_year.i_brand_id= last_year.i_brand_id
    and this_year.i_class_id = last_year.i_class_id
    and this_year.i_category_id = last_year.i_category_id
  order by this_year.channel, this_year.i_brand_id, this_year.i_class_id, this_year.i_category_id
  limit 100;
+  
 -- query 15
-select  ca_zip
-       ,sum(cs_sales_price)
- from catalog_sales
-     ,customer
-     ,customer_address
-     ,date_dim
+select ca_zip,
+       sum(cs_sales_price)
+ from catalog_sales,
+      customer,
+      customer_address,
+      date_dim
  where cs_bill_customer_sk = c_customer_sk
     and c_current_addr_sk = ca_address_sk 
     and ( substr(ca_zip,1,5) in ('85669', '86197','88274','83405','86475',
@@ -979,17 +979,16 @@ select  ca_zip
  order by ca_zip
  limit 100;
 
-
 -- query 16
 select  
-   count(distinct cs_order_number) as "order count"
-  ,sum(cs_ext_ship_cost) as "total shipping cost"
-  ,sum(cs_net_profit) as "total net profit"
+   count(distinct cs_order_number) as "order count",
+  sum(cs_ext_ship_cost) as "total shipping cost",
+  sum(cs_net_profit) as "total net profit"
 from
-   catalog_sales cs1
-  ,date_dim
-  ,customer_address
-  ,call_center
+   catalog_sales cs1,
+  date_dim,
+  customer_address,
+  call_center
 where
     d_date between '2002-2-01' and 
            date_add(cast('2002-2-01' as date), 60)
@@ -1010,30 +1009,29 @@ and not exists(select *
 order by count(distinct cs_order_number)
 limit 100;
 
-
 -- query 17
-select  i_item_id
-       ,i_item_desc
-       ,s_state
-       ,count(ss_quantity) as store_sales_quantitycount
-       ,avg(ss_quantity) as store_sales_quantityave
-       ,stddev_samp(ss_quantity) as store_sales_quantitystdev
-       ,stddev_samp(ss_quantity)/avg(ss_quantity) as store_sales_quantitycov
-       ,count(sr_return_quantity) as store_returns_quantitycount
-       ,avg(sr_return_quantity) as store_returns_quantityave
-       ,stddev_samp(sr_return_quantity) as store_returns_quantitystdev
-       ,stddev_samp(sr_return_quantity)/avg(sr_return_quantity) as store_returns_quantitycov
-       ,count(cs_quantity) as catalog_sales_quantitycount ,avg(cs_quantity) as catalog_sales_quantityave
-       ,stddev_samp(cs_quantity) as catalog_sales_quantitystdev
-       ,stddev_samp(cs_quantity)/avg(cs_quantity) as catalog_sales_quantitycov
- from store_sales
-     ,store_returns
-     ,catalog_sales
-     ,date_dim d1
-     ,date_dim d2
-     ,date_dim d3
-     ,store
-     ,item
+select  i_item_id,
+       i_item_desc,
+       s_state,
+       count(ss_quantity) as store_sales_quantitycount,
+       avg(ss_quantity) as store_sales_quantityave,
+       stddev_samp(ss_quantity) as store_sales_quantitystdev,
+       stddev_samp(ss_quantity)/avg(ss_quantity) as store_sales_quantitycov,
+       count(sr_return_quantity) as store_returns_quantitycount,
+       avg(sr_return_quantity) as store_returns_quantityave,
+       stddev_samp(sr_return_quantity) as store_returns_quantitystdev,
+       stddev_samp(sr_return_quantity)/avg(sr_return_quantity) as store_returns_quantitycov,
+       count(cs_quantity) as catalog_sales_quantitycount ,avg(cs_quantity) as catalog_sales_quantityave,
+       stddev_samp(cs_quantity) as catalog_sales_quantitystdev,
+       stddev_samp(cs_quantity)/avg(cs_quantity) as catalog_sales_quantitycov
+ from store_sales,
+     store_returns,
+     catalog_sales,
+     date_dim d1,
+     date_dim d2,
+     date_dim d3,
+     store,
+     item
  where d1.d_quarter_name = '2001Q1'
    and d1.d_date_sk = ss_sold_date_sk
    and i_item_sk = ss_item_sk
@@ -1048,13 +1046,12 @@ select  i_item_id
    and cs_sold_date_sk = d3.d_date_sk
    and d3.d_quarter_name in ('2001Q1','2001Q2','2001Q3')
  group by i_item_id
-         ,i_item_desc
-         ,s_state
+        ,i_item_desc
+        ,s_state
  order by i_item_id
          ,i_item_desc
          ,s_state
 limit 100;
-
 
 -- query 18
 select  i_item_id,
@@ -1062,8 +1059,7 @@ select  i_item_id,
         ca_state, 
         ca_county,
         avg( cast(cs_quantity as decimal(12,2))) agg1,
-        avg( cast(cs_list_price as decimal(12,2))) agg2,  
-```
+        avg( cast(cs_list_price as decimal(12,2))) agg2,
         avg( cast(cs_coupon_amt as decimal(12,2))) agg3,
         avg( cast(cs_sales_price as decimal(12,2))) agg4,
         avg( cast(cs_net_profit as decimal(12,2))) agg5,
@@ -1091,7 +1087,7 @@ select  i_item_id,
  limit 100;
 
 
--- クエリ19
+-- query 19
 select  i_brand_id brand_id, i_brand brand, i_manufact_id, i_manufact,
     sum(ss_ext_sales_price) ext_price
  from date_dim, store_sales, item,customer,customer_address,store
@@ -1116,7 +1112,7 @@ select  i_brand_id brand_id, i_brand brand, i_manufact_id, i_manufact,
 limit 100 ;
 
 
--- クエリ20
+-- query 20
 select  i_item_id
        ,i_item_desc 
        ,i_category 
@@ -1146,7 +1142,7 @@ select  i_item_id
 limit 100;
 
 
--- クエリ21
+-- query 21
 select  *
  from(select w_warehouse_name
             ,i_item_id
@@ -1176,7 +1172,7 @@ select  *
  limit 100;
 
 
--- クエリ22
+-- query 22
 select  i_product_name
              ,i_brand
              ,i_class
@@ -1196,7 +1192,7 @@ order by qoh, i_product_name, i_brand, i_class, i_category
 limit 100;
 
 
--- クエリ23
+-- query 23
 with frequent_ss_items as 
  (select substr(i_item_desc,1,30) itemdesc,i_item_sk item_sk,d_date solddate,count(*) cnt
   from store_sales
@@ -1284,27 +1280,49 @@ with frequent_ss_items as
          and d_moy = 2 
          and cs_sold_date_sk = d_date_sk 
          and cs_item_sk in (select item_sk from frequent_ss_items)
-```japanese
-         、best_ss_customerからc_customer_sk in (select c_customer_sk)
-         、cs_bill_customer_sk　= c_customer_sk 
-       c_last_name,c_first_nameによるgroup by
+```markdown
+         および cs_bill_customer_sk in (select c_customer_sk from best_ss_customer)
+         および cs_bill_customer_sk = c_customer_sk 
+       c_last_name,c_first_nameによるグループ化
       union all
-       sum(ws_quantity*ws_list_price) sales
-       web_sales
+      c_last_name,c_first_name,sum(ws_quantity*ws_list_price) sales
+       from web_sales
            ,customer
            ,date_dim 
-       d_year = 2000 
-         d_moy = 2 
-         ws_sold_date_sk = d_date_sk 
-         ws_item_sk in (select item_sk from frequent_ss_items)
-         ws_bill_customer_sk in (select c_customer_sk from best_ss_customer)
-         ws_bill_customer_sk = c_customer_sk
-       c_last_name,c_first_nameによるgroup by) t2
-     c_last_name,c_first_name,salesによるorder by
+       where d_year = 2000 
+         および d_moy = 2 
+         および ws_sold_date_sk = d_date_sk 
+         および ws_item_sk in (select item_sk from frequent_ss_items)
+         および ws_bill_customer_sk in (select c_customer_sk from best_ss_customer)
+         および ws_bill_customer_sk = c_customer_sk
+       c_last_name,c_first_nameによるグループ化) t2
+     c_last_name,c_first_name,salesによる順序付け
   limit 100;
--- query 24
-with ssales as
-(select c_last_name
+-- クエリ 24
+ssalesとして
+(以下略)
+      ,i_color
+      ,i_current_price
+      ,i_manager_id
+      ,i_units
+      ,i_size
+      ,sum(ss_net_paid) netpaid
+from store_sales
+    ,store_returns
+    ,store
+    ,item
+    ,customer
+    ,customer_address
+where ss_ticket_number = sr_ticket_number
+  およびss_item_sk = sr_item_sk
+  およびss_customer_sk = c_customer_sk
+  およびss_item_sk = i_item_sk
+  およびss_store_sk = s_store_sk
+  およびc_current_addr_sk = ca_address_sk
+  およびc_birth_country <> upper(ca_country)
+  およびs_zip = ca_zip
+およびs_market_id=8
+c_last_name
       ,c_first_name
       ,s_store_name
       ,ca_state
@@ -1313,456 +1331,302 @@ with ssales as
       ,i_current_price
       ,i_manager_id
       ,i_units
-      ,i_size
-      ,sum(ss_net_paid) netpaid
-store_sales
-    ,store_returns
-    ,store
-    ,item
-    ,customer
-    ,customer_address
-ss_ticket_number = sr_ticket_number
-  ss_item_sk = sr_item_sk
-  ss_customer_sk = c_customer_sk
-  ss_item_sk = i_item_sk
-  ss_store_sk = s_store_sk
-  c_current_addr_sk = ca_address_sk
-  c_birth_country <> upper(ca_country)
-  s_zip = ca_zip
-s_market_id=8によるgroup by c_last_name
-        ,c_first_name
-        ,s_store_name
-        ,ca_state
-        ,s_state
-        ,i_color
-        ,i_current_price
-        ,i_manager_id
-        ,i_units
-        ,i_size)
-c_last_name
+      ,i_sizeによるグループ化
+  およびc_last_name
       ,c_first_name
       ,s_store_name
       ,sum(netpaid) paid
-ssales
-i_color = 'peach'によるgroup by c_last_name
-        ,c_first_name
-        ,s_store_name
-sum(netpaid) > (select 0.05*avg(netpaid)
-                 ssalesから)
-c_last_name
-        ,c_first_name
-        ,s_store_nameによるorder by
-;
-with ssales as
-(select c_last_name
-      ,c_first_name
-      ,s_store_name
-      ,ca_state
-      ,s_state
-      ,i_color
-      ,i_current_price
-      ,i_manager_id
-      ,i_units
-      ,i_size
-      ,sum(ss_net_paid) netpaid
-store_sales
-    ,store_returns
-    ,store
-    ,item
-    ,customer
-    ,customer_address
-ss_ticket_number = sr_ticket_number
-  ss_item_sk = sr_item_sk
-  ss_customer_sk = c_customer_sk
-  ss_item_sk = i_item_sk
-  ss_store_sk = s_store_sk
-  c_current_addr_sk = ca_address_sk
-  c_birth_country <> upper(ca_country)
-  s_zip = ca_zip
-  s_market_id = 8
-group by c_last_name
-        ,c_first_name
-        ,s_store_name
-        ,ca_state
-        ,s_state
-        ,i_color
-        ,i_current_price
-        ,i_manager_id
-        ,i_units
-        ,i_size)
+from ssales
+およびi_color = 'peach'
 c_last_name
       ,c_first_name
       ,s_store_name
-      ,sum(netpaid) paid
-ssales
-i_color = 'saddle'によるgroup by c_last_name
-        ,c_first_name
-        ,s_store_name
-sum(netpaid) > (select 0.05*avg(netpaid)
-                 ssalesから)
+  およびsum(netpaid) > (select 0.05*avg(netpaid)
+                                 from ssales)
 c_last_name
         ,c_first_name
-        ,s_store_nameによるorder by
+        ,s_store_nameによる順序付け
 ;
--- query 25
-select  
- i_item_id
- ,i_item_desc
- ,s_store_id
- ,s_store_name
- ,sum(ss_net_profit) as store_sales_profit
- ,sum(sr_net_loss) as store_returns_loss
- ,sum(cs_net_profit) as catalog_sales_profit
- store_sales
- ,store_returns
- ,catalog_sales
- ,date_dim d1
- ,date_dim d2
- ,date_dim d3
- ,store
- ,item
-d1.d_moy = 4
- and d1.d_year = 2001
- and d1.d_date_sk = ss_sold_date_sk
-i_item_sk = ss_item_sk
-s_store_sk = ss_store_sk
-ss_customer_sk = sr_customer_sk
-ss_item_sk = sr_item_sk
-ss_ticket_number = sr_ticket_number
-sr_returned_date_sk = d2.d_date_sk
-d2.d_moy               between 4 and  10
-d2.d_year              = 2001
-sr_customer_sk = cs_bill_customer_sk
-sr_item_sk = cs_item_sk
-cs_sold_date_sk = d3.d_date_sk
-d3.d_moy               between 4 and  10 
-d3.d_year              = 2001
-i_item_id
- ,i_item_desc
- ,s_store_id
- ,s_store_nameによるgroup by
-i_item_id
- ,i_item_desc
- ,s_store_id
- ,s_store_nameによるorder by
-i_item_id
- ,i_item_desc
- ,s_store_id
- ,s_store_name
- limit 100;
-
-
--- query 26
-select  i_item_id, 
-        avg(cs_quantity) agg1,
-        avg(cs_list_price) agg2,
-        avg(cs_coupon_amt) agg3,
-        avg(cs_sales_price) agg4 
- catalog_sales, customer_demographics, date_dim, item, promotion
- cs_sold_date_sk = d_date_sk and
-       cs_item_sk = i_item_sk and
-       cs_bill_cdemo_sk = cd_demo_sk and
-       cs_promo_sk = p_promo_sk and
-       cd_gender = 'M' and 
-       cd_marital_status = 'S' and
-       cd_education_status = 'College' and
-       (p_channel_email = 'N' or p_channel_event = 'N') and
-       d_year = 2000によるgroup by i_item_id
-i_item_idによるorder by
-i_item_id
- limit 100;
-
-
--- query 27
-select  i_item_id,
-        s_state, grouping(s_state) g_state,
-        avg(ss_quantity) agg1,
-        avg(ss_list_price) agg2,
-        avg(ss_coupon_amt) agg3,
-        avg(ss_sales_price) agg4
- store_sales, customer_demographics, date_dim, store, item
- ss_sold_date_sk = d_date_sk and
-       ss_item_sk = i_item_sk and
-       ss_store_sk = s_store_sk and
-       ss_cdemo_sk = cd_demo_sk and
-       cd_gender = 'M' and
-       cd_marital_status = 'S' and
-       cd_education_status = 'College' and
-       d_year = 2002 and
-       s_state in ('TN','TN', 'TN', 'TN', 'TN', 'TN')
-i_item_id, s_stateによるrollup 
-i_item_id
-         ,s_stateによるorder by
-i_item_id
-         ,s_state
- limit 100;
-
-
--- query 28
-select  *
-from (select avg(ss_list_price) B1_LP
-            ,count(ss_list_price) B1_CNT
-            ,count(distinct ss_list_price) B1_CNTD
-store_sales
-ss_quantity between 0 and 5
-        and (ss_list_price between 8 and 8+10 
-             or ss_coupon_amt between 459 and 459+1000
-             or ss_wholesale_cost between 57 and 57+20)) B1,
-     (select avg(ss_list_price) B2_LP
-            ,count(ss_list_price) B2_CNT
-            ,count(distinct ss_list_price) B2_CNTD
-store_sales
-ss_quantity between 6 and 10
-        and (ss_list_price between 90 and 90+10
-          or ss_coupon_amt between 2323 and 2323+1000
-          or ss_wholesale_cost between 31 and 31+20)) B2,
-     (select avg(ss_list_price) B3_LP
-            ,count(ss_list_price) B3_CNT
-            ,count(distinct ss_list_price) B3_CNTD
-store_sales
-ss_quantity between 11 and 15
-        and (ss_list_price between 142 and 142+10
-          or ss_coupon_amt between 12214 and 12214+1000
-          or ss_wholesale_cost between 79 and 79+20)) B3,
-     (select avg(ss_list_price) B4_LP
-            ,count(ss_list_price) B4_CNT
-            ,count(distinct ss_list_price) B4_CNTD
-store_sales
-ss_quantity between 16 and 20
-        and (ss_list_price between 135 and 135+10
-          or ss_coupon_amt between 6071 and 6071+1000
-          or ss_wholesale_cost between 38 and 38+20)) B4,
-     (select avg(ss_list_price) B5_LP
-            ,count(ss_list_price) B5_CNT
-            ,count(distinct ss_list_price) B5_CNTD
-store_sales
-ss_quantity between 21 and 25
-        and (ss_list_price between 122 and 122+10
+(以下略)
 ```
 ```plaintext
-またはss_coupon_amtが836～836+1000の間の場合
-またはss_wholesale_costが17～17+20の間の場合)) B5,
-(select avg(ss_list_price) B6_LP、
-count(ss_list_price) B6_CNT、
-count(distinct ss_list_price) B6_CNTD
-from store_sales
-where ss_quantityが26～30の間で、
-(ss_list_priceが154～154+10の間の場合
-またはss_coupon_amtが7326～7326+1000の間の場合
-またはss_wholesale_costが7～7+20の間の場合)) B6
-limit 100;
-
+セレクト
+    アイテム ID
+    , アイテム説明
+    , S ストア ID
+    , S ストア名
+    , sum(ss_quantity) ストア販売数量
+    , sum(sr_return_quantity) ストア返品数量
+    , sum(cs_quantity) カタログ販売数量
+フォーム
+    ストア販売
+    , ストア返品
+    , カタログ販売
+   , デイト ディム d1
+   , デイト ディム d2
+   , デイト ディム d3
+   , ストア
+   , アイテム
+ウェア
+     d1.d_moy               = 9 
+  および d1.d_year              = 1999
+  そして d1.d_date_sk           = ss_sold_date_sk
+  および i_item_sk              = ss_item_sk
+  および s_store_sk             = ss_store_sk
+  および ss_customer_sk         = sr_customer_sk
+  および ss_item_sk             = sr_item_sk
+  および ss_ticket_number       = sr_ticket_number
+  および sr_returned_date_sk    = d2.d_date_sk
+  および d2.d_moy               between 9 および  9 + 3 
+  および d2.d_year              = 1999
+  および sr_customer_sk         = cs_bill_customer_sk
+  および sr_item_sk             = cs_item_sk
+  および cs_sold_date_sk        = d3.d_date_sk     
+  および d3.d_year              in (1999,1999+1,1999+2)
+ グループ バイ
+    i_item_id
+   , i_item_desc
+   , s_store_id
+   , s_store_name
+ オーダー バイ
+    i_item_id 
+   , i_item_desc
+   , s_store_id
+   , s_store_name
+ リミット 100;
 
 -- クエリ 29
-select
-i_item_id、i_item_desc、s_store_id、s_store_name、
-sum(ss_quantity) as store_sales_quantity、
-sum(sr_return_quantity) as store_returns_quantity、
-sum(cs_quantity) as catalog_sales_quantity
-from
-store_sales、
-store_returns、
-catalog_sales、
-date_dim d1、
-date_dim d2、
-date_dim d3、
-store、
-item
-where
-d1.d_moy = 9
-かつ d1.d_year = 1999
-かつ d1.d_date_sk = ss_sold_date_sk
-かつ i_item_sk = ss_item_sk
-かつ s_store_sk = ss_store_sk
-かつ ss_customer_sk = sr_customer_sk
-かつ ss_item_sk = sr_item_sk
-かつ ss_ticket_number = sr_ticket_number
-かつ sr_returned_date_sk = d2.d_date_sk
-かつ d2.d_moy が 9 ～ 9 + 3 の間
-かつ d2.d_year = 1999
-かつ sr_customer_sk = cs_bill_customer_sk
-かつ sr_item_sk = cs_item_sk
-かつ cs_sold_date_sk = d3.d_date_sk
-かつ d3.d_yearが(1999,1999+1,1999+2)の中に
-i_item_id、i_item_desc、s_store_id、s_store_nameで
-グループ化し
-i_item_id 、i_item_desc 、s_store_id 、s_store_nameで
-順番を付け
-limit 100;
-
+セレクト  
+     i_item_id
+    ,i_item_desc
+    ,s_store_id
+    ,s_store_name
+    ,sum(ss_quantity)        as store_sales_quantity
+    ,sum(sr_return_quantity) as store_returns_quantity
+    ,sum(cs_quantity)        as catalog_sales_quantity
+ フロム
+    store_sales
+   ,store_returns
+   ,catalog_sales
+   ,date_dim             d1
+   ,date_dim             d2
+   ,date_dim             d3
+   ,store
+   ,item
+ ホエア
+     d1.d_moy               = 9 
+  および d1.d_year              = 1999
+  そして d1.d_date_sk           = ss_sold_date_sk
+  および i_item_sk              = ss_item_sk
+  および s_store_sk             = ss_store_sk
+  および ss_customer_sk         = sr_customer_sk
+  および ss_item_sk             = sr_item_sk
+  および ss_ticket_number       = sr_ticket_number
+  および sr_returned_date_sk    = d2.d_date_sk
+  および d2.d_moy               between 9 および  9 + 3 
+  および d2.d_year              = 1999
+  および sr_customer_sk         = cs_bill_customer_sk
+  および sr_item_sk             = cs_item_sk
+  および cs_sold_date_sk        = d3.d_date_sk     
+  そして d3.d_year              in (1999,1999+1,1999+2)
+ グループ バイ
+    i_item_id
+   , i_item_desc
+   , s_store_id
+   , s_store_name
+ オーダー バイ
+    i_item_id 
+   , i_item_desc
+   , s_store_id
+   , s_store_name
+ リミット 100;
 
 -- クエリ 30
-with customer_total_return as
-(select wr_returning_customer_sk as ctr_customer_sk
-、ca_state as ctr_state、
-wr_return_amtの総和をctr_total_return
-from web_returns、
-date_dim、
-customer_address
-where wr_returned_date_sk = d_date_sk
-かつ d_year = 2002
-かつ wr_returning_addr_sk = ca_address_sk
-によって
-wr_returning_customer_skでctr_total_returnの平均値*1.2を超える
-c_customer_id、c_salutation、c_first_name、c_last_name、c_preferred_cust_flag
-、c_birth_day、c_birth_month、c_birth_year、c_birth_country、c_login、c_email_address
-、c_last_review_date、ctr_total_returnが
-customer_total_return ctr1、
-customer_address、
-customerから選ぶ
-ca_address_sk = c_current_addr_sk
-かつ ca_state = 'GA'
-かつ ctr1.ctr_customer_sk = c_customer_sk
-によって
-c_customer_id、c_salutation、c_first_name、c_last_name、c_preferred_cust_flag
-、c_birth_day、c_birth_month、c_birth_year、c_birth_country、c_login、c_email_address
-、c_last_review_date、ctr_total_returnで
-順番を付け
-limit 100;
-
+ウィズ カスタマー トータル リターン アズ
+ (セレクト wr_returning_customer_sk as ctr_customer_sk
+        ,ca_state as ctr_state, 
+    sum(wr_return_amt) as ctr_total_return
+ フロム web_returns
+     ,date_dim
+     ,customer_address
+ ホエア wr_returned_date_sk = d_date_sk 
+   そして d_year =2002
+   そして wr_returning_addr_sk = ca_address_sk 
+ グループ バイ wr_returning_customer_sk
+         ,ca_state)
+  セレクト  c_customer_id,c_salutation,c_first_name,c_last_name,c_preferred_cust_flag
+       ,c_birth_day,c_birth_month,c_birth_year,c_birth_country,c_login,c_email_address
+       ,c_last_review_date,ctr_total_return
+ フロム customer_total_return ctr1
+     ,customer_address
+     ,customer
+ ホエア ctr1.ctr_total_return > (セレクト avg(ctr_total_return)*1.2
+            フロム customer_total_return ctr2 
+                       ホエア ctr1.ctr_state = ctr2.ctr_state)
+       そして ca_address_sk = c_current_addr_sk
+       そして ca_state = 'GA'
+       そして ctr1.ctr_customer_sk = c_customer_sk
+ オーダー バイ c_customer_id,c_salutation,c_first_name,c_last_name,c_preferred_cust_flag
+                  ,c_birth_day,c_birth_month,c_birth_year,c_birth_country,c_login,c_email_address
+                  ,c_last_review_date,ctr_total_return
+リミット 100;
 
 -- クエリ 31
-with ss as
-(ca_county、d_qoy、d_year、ss_ext_sales_priceの総和をstore_sales
-from store_sales、date_dim、customer_address
-ss_sold_date_sk = d_date_sk
-かつ ss_addr_sk=ca_address_sk
-によって
-ca_county、d_qoy、d_yearでグループ化し
-ws as
-(ca_county、d_qoy、d_year、ws_ext_sales_priceの総和をweb_sales
-from web_sales、date_dim、customer_address
-ws_sold_date_sk = d_date_sk
-かつ ws_bill_addr_sk=ca_address_sk
-によって
-ca_county、d_qoy、d_yearでグループ化し
-ss1.ca_county
-ss1.d_year
-ws2.web_sales/ws1.web_salesをweb_q1_q2_increase
-ss2.store_sales/ss1.store_salesをstore_q1_q2_increase
-ws3.web_sales/ws2.web_salesをweb_q2_q3_increase
-ss3.store_sales/ss2.store_salesをstore_q2_q3_increase
-from
-ss ss1、
-ss ss2、
-ss ss3、
-ws ws1、
-ws ws2、
-ws ws3
-where
-ss1.d_qoy = 1
-かつ ss1.d_year = 2000
-かつ ss1.ca_county = ss2.ca_county
-かつ ss2.d_qoy = 2
-かつ ss2.d_year = 2000
-かつ ss2.ca_county = ss3.ca_county
-かつ ss3.d_qoy = 3
-かつ ss3.d_year = 2000
-かつ ss1.ca_county = ws1.ca_county
-かつ ws1.d_qoy = 1
-かつ ws1.d_year = 2000
-かつ ws1.ca_county = ws2.ca_county
-かつ ws2.d_qoy = 2
-かつ ws2.d_year = 2000
-かつ ws1.ca_county = ws3.ca_county
-かつ ws3.d_qoy = 3
-かつ ws3.d_year =2000
-かつ case 当ws1.web_sales > 0 だったらws2.web_sales/ws1.web_sales他wise null end 
-が当ss1.store_sales > 0 だったらss2.store_sales/ss1.store_sales他
-とcase 当ws2.web_sales > 0 だったらws3.web_sales/ws2.web_sales他wise null end 
-が当ss2.store_sales > 0 だったらss3.store_sales/ss2.store_sales他
-を超える
-ca_countyで順番を付け;
-
+ウィズ ss あず
+ (セレクト ca_county,d_qoy, d_year,sum(ss_ext_sales_price) as store_sales
+ フロム store_sales,date_dim,customer_address
+ ホエア ss_sold_date_sk = d_date_sk
+  そして ss_addr_sk=ca_address_sk
+ グループ バイ ca_county,d_qoy, d_year),
+ ws あず
+ (セレクト ca_county,d_qoy, d_year,sum(ws_ext_sales_price) as web_sales
+ フロム web_sales,date_dim,customer_address
+ ホエア ws_sold_date_sk = d_date_sk
+  そして ws_bill_addr_sk=ca_address_sk
+ グループ バイ ca_county,d_qoy, d_year)
+ セレクト 
+        ss1.ca_county
+       ,ss1.d_year
+       ,ws2.web_sales/ws1.web_sales web_q1_q2_increase
+       ,ss2.store_sales/ss1.store_sales store_q1_q2_increase
+       ,ws3.web_sales/ws2.web_sales web_q2_q3_increase
+       ,ss3.store_sales/ss2.store_sales store_q2_q3_increase
+ フロム
+        ss ss1
+       ,ss ss2
+       ,ss ss3
+       ,ws ws1
+       ,ws ws2
+       ,ws ws3
+ ホエア
+    ss1.d_qoy = 1
+    そして ss1.d_year = 2000
+    そして ss1.ca_county = ss2.ca_county
+    そして ss2.d_qoy = 2
+    そして ss2.d_year = 2000
+ そして ss2.ca_county = ss3.ca_county
+    そして ss3.d_qoy = 3
+    そして ss3.d_year = 2000
+    そして ss1.ca_county = ws1.ca_county
+    そして ws1.d_qoy = 1
+    そして ws1.d_year = 2000
+    そして ws1.ca_county = ws2.ca_county
+    そして ws2.d_qoy = 2
+    そして ws2.d_year = 2000
+    そして ws1.ca_county = ws3.ca_county
+    そして ws3.d_qoy = 3
+    そして ws3.d_year =2000
+    そして ケース ウェン ws1.web_sales > 0 されたら ws2.web_sales/ws1.web_sales えるせるは null エルス
+       > ケース ウェン ss1.store_sales > 0 されたら ss2.store_sales/ss1.store_sales えるせるは null エルス
+    そして ケース ウェン ws2.web_sales > 0 されたら ws3.web_sales/ws2.web_sales えるせるは null エルス
+       > ケース ウェン ss2.store_sales > 0 されたら ss3.store_sales/ss2.store_sales えるせるは null エルス
+ オーダー バイ ss1.ca_county;
 
 -- クエリ 32
-i_manufact_id=977 であると
-i_item_sk = cs_item_sk 
-かつ d_dateが'2000-01-27'と
-date_add(cast('2000-01-27' as date), 90)の間であると
-d_date_sk = cs_sold_date_sk 
-かつ cs_ext_discount_amt 
-    が 
-    ( 
-     i_item_sk = i_item_sk
-かつ d_dateが'2000-01-27'と
-date_add(cast('2000-01-27' as date), 90)の間であると
-かつ d_date_sk = cs_sold_date_sk 
-    ) から1.3 * cs_ext_discount_amtの平均を超える
-"excess discount amount"の総和
-from 
-catalog_sales
+セレクト  sum(cs_ext_discount_amt)  あず "excess discount amount" 
+フロム 
+   catalog_sales 
    ,item 
    ,date_dim
-limit 100;
-
+ホエア
+i_manufact_id = 977
+そして i_item_sk = cs_item_sk 
+そして d_date between '2000-01-27' そして 
+        date_add(cast('2000-01-27' as date), 90)
+そして d_date_sk = cs_sold_date_sk 
+そして cs_ext_discount_amt  
+     > ( 
+         セレクト 
+            1.3 * avg(cs_ext_discount_amt) 
+         フロム 
+            catalog_sales 
+           ,date_dim
+         ホエア 
+              cs_item_sk = i_item_sk 
+          そして d_date between '2000-01-27' そして
+                             date_add(cast('2000-01-27' as date), 90)
+          そして d_date_sk = cs_sold_date_sk 
+      ) 
+リミット 100;
 
 -- クエリ 33
-with ss as (
-i_manufact_id,sum(ss_ext_sales_price) total_sales
-from
-store_sales,
-date_dim,
-     customer_address,
-     item
-where
-     i_manufact_id in (select
-i_manufact_id
-from
-item
-where i_category in ('Electronics'))
-and     ss_item_sk              = i_item_sk
-and     ss_sold_date_sk         = d_date_sk
-and     d_year                  = 1998
-and     d_moy                   = 5
-and     ss_addr_sk              = ca_address_sk
-and     ca_gmt_offset           = -5 
-i_manufact_id,sum(cs_ext_sales_price) total_sales
-from
-catalog_sales,
-date_dim,
-     customer_address,
-     item
-where
-     i_manufact_id               in (select
-i_manufact_id
-from
-item
-where i_category in ('Electronics'))
-and     cs_item_sk              = i_item_sk
-and     cs_sold_date_sk         = d_date_sk
-and     d_year                  = 1998
-and     d_moy                   = 5
-and     cs_bill_addr_sk         = ca_address_sk
-and     ca_gmt_offset           = -5 
-i_manufact_id,sum(ws_ext_sales_price) total_sales
-from
-web_sales,
-date_dim,
-     customer_address,
-     item
-where
-     i_manufact_id               in (select
-i_manufact_id
-from
-item
-where i_category in ('Electronics'))
-and     ws_item_sk              = i_item_sk
-and     ws_sold_date_sk         = d_date_sk
-and     d_year                  = 1998
-and     d_moy                   = 5
-and     ws_bill_addr_sk         = ca_address_sk
-and     ca_gmt_offset           = -5
-i_manufact_id ,sum(total_sales) total_sales
-from  (select * from ss 
-    union all
-    select * from cs 
-    union all
-    select * from ws) tmp1
-i_manufact_idでグループ化して
-total_salesで順番を付け
+ウィズ ss あず (
+ セレクト
+          i_manufact_id,sum(ss_ext_sales_price) total_sales
+ フロム
+    store_sales,
+    date_dim,
+         customer_address,
+         item
+ ホエア
+         i_manufact_id in (セレクト
+  i_manufact_id
+フロム
+ item
+ホエア i_category in ('Electronics'))
+そして     ss_item_sk              = i_item_sk
+そして     ss_sold_date_sk         = d_date_sk
+そして     d_year                  = 1998
+そして     d_moy                   = 5
+そして     ss_addr_sk              = ca_address_sk
+そして     ca_gmt_offset           = -5 
+グループ バイ i_manufact_id),
+ cs あず (
+ セレクト
+          i_manufact_id,sum(cs_ext_sales_price) total_sales
+ フロム
+    catalog_sales,
+    date_dim,
+         customer_address,
+         item
+ ホエア
+         i_manufact_id               in (セレクト
+  i_manufact_id
+フロム
+ item
+ホエア i_category in ('Electronics'))
+そして     cs_item_sk              = i_item_sk
+そして     cs_sold_date_sk         = d_date_sk
+そして     d_year                  = 1998
+そして     d_moy                   = 5
+そして     cs_bill_addr_sk         = ca_address_sk
+そして     ca_gmt_offset           = -5 
+グループ バイ i_manufact_id),
+ ws あず (
+ セレクト
+          i_manufact_id,sum(ws_ext_sales_price) total_sales
+ フロム
+    web_sales,
+    date_dim,
+         customer_address,
+         item
+ ホエア
+         i_manufact_id               in (セレクト
+  i_manufact_id
+フロム
+ item
+ホエア i_category in ('Electronics'))
+そして     ws_item_sk              = i_item_sk
+そして     ws_sold_date_sk         = d_date_sk
+そして     d_year                  = 1998
+そして     d_moy                   = 5
+そして     ws_bill_addr_sk         = ca_address_sk
+そして     ca_gmt_offset           = -5
+グループ バイ i_manufact_id)
+ セレクト  i_manufact_id ,sum(total_sales) total_sales
+ フロム  (セレクト * フロム ss 
+        union all
+        セレクト * フロム cs 
+        union all
+        セレクト * フロム ws) tmp1
+ グループ バイ i_manufact_id
+ オーダー バイ total_sales
 ```
-```
+```sql
+      limit 100;
+
+
+-- query 34
 select c_last_name
        ,c_first_name
        ,c_salutation
@@ -1965,54 +1829,12 @@ with inv as
         and d_year =2001
       group by w_warehouse_name,w_warehouse_sk,i_item_sk,d_moy) foo
  where case mean when 0 then 0 else stdev/mean end > 1)
-select inv1.w_warehouse_sk,inv1.i_item_sk,inv1.d_moy,inv1.mean, inv1.cov
-        ,inv2.w_warehouse_sk,inv2.i_item_sk,inv2.d_moy,inv2.mean, inv2.cov
-from inv inv1,inv inv2
-where inv1.i_item_sk = inv2.i_item_sk
-  and inv1.w_warehouse_sk =  inv2.w_warehouse_sk
-  and inv1.d_moy=1
+select inv1.w_warehouse_sk,inv1.i_item_sk,inv1.d_moy
 ```
 ```sql
-  ,ss_sold_date_sk
- from
-   store_sales
-      ,customer
-      ,customer_address
- where
-      ss_customer_sk = c_customer_sk
-  and ca_address_sk = c_current_addr_sk
-group by
-      ss_sold_date_sk
-     ,ss_ticket_number
-     ,ss_customer_sk
-     ,ca_city
-) sa
-     ,customer
-     ,customer_address
- where
-     ss_customer_sk = c_customer_sk
- and ca_address_sk = c_current_addr_sk
- and substr(ca_city,1,2) = substr(bought_city,1,2)
- and ss_sold_date_sk = (select d_date_sk
-                      from  date_dim
-                      where d_date = date'2000-03-11') 
- group by
-    c_last_name
-   ,c_first_name
-   ,ca_city
-   ,bought_city
-   ,ss_ticket_number
-   ,amt
-   ,profit
- order by
-   profit,amt
- limit 100;
-```
-```sql
- について
   and inv2.d_moy=1+1
   and inv1.cov > 1.5
-inv1.w_warehouse_sk,inv1.i_item_sk,inv1.d_moy,inv1.mean,inv1.cov
+order by inv1.w_warehouse_sk,inv1.i_item_sk,inv1.d_moy,inv1.mean,inv1.cov
         ,inv2.d_moy,inv2.mean, inv2.cov
 ;
 -- query 40
@@ -2204,277 +2026,250 @@ select  c_last_name
           ,ca_city bought_city
           ,sum(ss_coupon_amt) amt
           ,sum(ss_net_profit) profit
- について
- を選択
-  (from
-   store_sales
-      ,customer
-      ,customer_address
- どこ
-      ss_customer_sk = c_customer_sk
-  and ca_address_sk = c_current_addr_sk
-グループの中で
-      ss_sold_date_sk
-     ,ss_ticket_number
-     ,ss_customer_sk
-     ,ca_city
-) sa
-     ,customer
-     ,customer_address
- どこ
-     ss_customer_sk = c_customer_sk
-  and ca_address_sk = c_current_addr_sk
- と 
-     substr(ca_city,1,2) = substr(bought_city,1,2)
- と ss_sold_date_sk = (選択 d_date_sk
-                      (from  date_dim
-                      どこ d_date = date'2000-03-11') 
-グループの中で
-    c_last_name
-   ,c_first_name
-   ,ca_city
-   ,bought_city
-   ,ss_ticket_number
-   ,amt
-   ,profit
-順番に
-   profit,amt
- limit 100;
 ```
-ストアセールス、日付次元、ストア、世帯人口統計、顧客住所から
-ストアセールス.ss_sold_date_sk = 日付次元.d_date_sk
-かつ、ストアセールス.ss_store_sk = ストア.s_store_sk
-かつ、ストアセールス.ss_hdemo_sk = 世帯人口統計.hd_demo_sk
-かつ、ストアセールス.ss_addr_sk = 顧客住所.ca_address_sk
-かつ、(世帯人口統計.hd_dep_count = 4 or
-      世帯人口統計.hd_vehicle_count= 3)
-かつ、日付次元.d_dow in (6,0)
-かつ、日付次元.d_year in (1999,1999+1,1999+2)
-かつ、ストア.s_city in ('Fairview','Midway','Fairview','Fairview','Fairview')
-グループ化条件 客室チケット番号, 客室お客様sk, 客室住所sk, ca_city)しかし、顧客, 顧客住所現住所
-かつ、ss_customer_sk = c_customer_sk
-かつ、customer.c_current_addr_sk = current_addr.ca_address_sk
-かつ、current_addr.ca_city <> bought_city
-並べ替え 来る人の姓
-     ,来る人の名前
-     ,ca_city
-     ,bought_city
-     ,ss_ticket_number
-リミット100;
+from store_sales,date_dim,store,household_demographics,customer_address 
+where store_sales.ss_sold_date_sk = date_dim.d_date_sk
+and store_sales.ss_store_sk = store.s_store_sk  
+and store_sales.ss_hdemo_sk = household_demographics.hd_demo_sk
+and store_sales.ss_addr_sk = customer_address.ca_address_sk
+and (household_demographics.hd_dep_count = 4 or
+     household_demographics.hd_vehicle_count= 3)
+and date_dim.d_dow in (6,0)
+and date_dim.d_year in (1999,1999+1,1999+2) 
+and store.s_city in ('Fairview','Midway','Fairview','Fairview','Fairview') 
+group by ss_ticket_number,ss_customer_sk,ss_addr_sk,ca_city) dn,customer,customer_address current_addr
+where ss_customer_sk = c_customer_sk
+  and customer.c_current_addr_sk = current_addr.ca_address_sk
+  and current_addr.ca_city <> bought_city
+order by c_last_name
+      ,c_first_name
+      ,ca_city
+      ,bought_city
+      ,ss_ticket_number
+limit 100;
+
 
 -- クエリ47
-v1 as(
- カテゴリ, ブランド,
+with v1 as(
+ select i_category, i_brand,
         s_store_name, s_company_name,
         d_year, d_moy,
         sum(ss_sales_price) sum_sales,
         avg(sum(ss_sales_price)) over
-          (カテゴリ別, ブランド別,
+          (partition by i_category, i_brand,
                      s_store_name, s_company_name, d_year)
           avg_monthly_sales,
         rank() over
-          (カテゴリ別, ブランド別,
+          (partition by i_category, i_brand,
                      s_store_name, s_company_name
            order by d_year, d_moy) rn
- 物品, ストアセールス, 日付次元, ストアから
- ss_item_sk = i_item_sk かつ
-       ss_sold_date_sk = d_date_sk かつ
-       ss_store_sk = s_store_sk かつ
+ from item, store_sales, date_dim, store
+ where ss_item_sk = i_item_sk and
+       ss_sold_date_sk = d_date_sk and
+       ss_store_sk = s_store_sk and
        (
-         d_year = 1999 または
-         ( d_year = 1999-1 かつ d_moy =12) または
-         ( d_year = 1999+1 かつ d_moy =1)
+         d_year = 1999 or
+         ( d_year = 1999-1 and d_moy =12) or
+         ( d_year = 1999+1 and d_moy =1)
        )
- グループ化条件 カテゴリ, ブランド,
+ group by i_category, i_brand,
           s_store_name, s_company_name,
           d_year, d_moy),
  v2 as(
- カテゴリ, ブランド, s_store_name, s_company_name
-        ,d_year, d_moy
-        ,avg_monthly_sales
-        ,sum_sales, v1_lag.sum_sales psum, v1_lead.sum_sales nsum
- v1, v1 v1_lag, v1 v1_lead
- v1.i_category = v1_lag.i_category かつ
-       v1.i_category = v1_lead.i_category かつ
-       v1.i_brand = v1_lag.i_brand かつ
-       v1.i_brand = v1_lead.i_brand かつ
-       v1.s_store_name = v1_lag.s_store_name かつ
-       v1.s_store_name = v1_lead.s_store_name かつ
-       v1.s_company_name = v1_lag.s_company_name かつ
-       v1.s_company_name = v1_lead.s_company_name かつ
-       v1.rn = v1_lag.rn + 1 かつ
+ select v1.i_category, v1.i_brand, v1.s_store_name, v1.s_company_name
+        ,v1.d_year, v1.d_moy
+        ,v1.avg_monthly_sales
+        ,v1.sum_sales, v1_lag.sum_sales psum, v1_lead.sum_sales nsum
+ from v1, v1 v1_lag, v1 v1_lead
+ where v1.i_category = v1_lag.i_category and
+       v1.i_category = v1_lead.i_category and
+       v1.i_brand = v1_lag.i_brand and
+       v1.i_brand = v1_lead.i_brand and
+       v1.s_store_name = v1_lag.s_store_name and
+       v1.s_store_name = v1_lead.s_store_name and
+       v1.s_company_name = v1_lag.s_company_name and
+       v1.s_company_name = v1_lead.s_company_name and
+       v1.rn = v1_lag.rn + 1 and
        v1.rn = v1_lead.rn - 1)
-  から  *
- d_year = 1999 かつ    
-        avg_monthly_sales > 0 かつ
-        avg_monthly_sales > 0 ならば abs(sum_sales - avg_monthly_sales) / avg_monthly_sales これ以外なら null end > 0.1
-         並べ替え sum_sales - avg_monthly_sales, s_store_name
-リミット100;
+  select  *
+ from v2
+ where  d_year = 1999 and    
+        avg_monthly_sales > 0 and
+        case when avg_monthly_sales > 0 then abs(sum_sales - avg_monthly_sales) / avg_monthly_sales else null end > 0.1
+ order by sum_sales - avg_monthly_sales, s_store_name
+ limit 100;
 
 
 -- クエリ48
-  sum (ss_quantity)
- ストア販売, ストア, 顧客人口統計, 顧客住所, 日付次元から
- s_store_sk = ss_store_sk かつ
-  ss_sold_date_sk = d_date_sk かつ d_year = 2000
- かつ  
+select sum (ss_quantity)
+ from store_sales, store, customer_demographics, customer_address, date_dim
+ where s_store_sk = ss_store_sk
+ and  ss_sold_date_sk = d_date_sk and d_year = 2000
+ and  
  (
   (
    cd_demo_sk = ss_cdemo_sk
-   かつ 
+   and 
    cd_marital_status = 'M'
-   かつ 
+   and 
    cd_education_status = '4 yr Degree'
-   かつ 
-   ss_sales_price between 100.00 と 150.00  
+   and 
+   ss_sales_price between 100.00 and 150.00  
    )
- または
+ or
   (
   cd_demo_sk = ss_cdemo_sk
-   かつ 
+   and 
    cd_marital_status = 'D'
-   かつ 
+   and 
    cd_education_status = '2 yr Degree'
-   かつ 
-   ss_sales_price between 50.00 と 100.00   
+   and 
+   ss_sales_price between 50.00 and 100.00   
   )
- または 
+ or 
  (
   cd_demo_sk = ss_cdemo_sk
-  かつ 
+  and 
    cd_marital_status = 'S'
-   かつ 
+   and 
    cd_education_status = 'College'
-   かつ 
-   ss_sales_price between 150.00 と 200.00  
+   and 
+   ss_sales_price between 150.00 and 200.00  
  )
  )
- かつ
+ and
  (
   (
   ss_addr_sk = ca_address_sk
-  かつ
+  and
   ca_country = 'United States'
-  かつ
+  and
   ca_state in ('CO', 'OH', 'TX')
-  かつ ss_net_profit between 0 と 2000  
+  and ss_net_profit between 0 and 2000  
   )
- または
+ or
   (ss_addr_sk = ca_address_sk
-  かつ
+  and
   ca_country = 'United States'
-  かつ
+  and
   ca_state in ('OR', 'MN', 'KY')
-  かつ ss_net_profit between 150 と 3000 
+  and ss_net_profit between 150 and 3000 
   )
- または
+ or
   (ss_addr_sk = ca_address_sk
-  かつ
+  and
   ca_country = 'United States'
-  かつ
+  and
   ca_state in ('VA', 'CA', 'MS')
-  かつ ss_net_profit between 50 と 25000 
+  and ss_net_profit between 50 and 25000 
   )
  )
 ;
 
 
 -- クエリ49
-チャンネル, 商品, 返品比率, 返品ランク, 通貨ランク from
- (選択
- 'web' as チャンネル
- ,web.商品
- ,web.返品比率
- ,web.返品ランク
- ,web.通貨ランク
- (選択 
-    商品
-   ,返品比率
-   ,通貨比率
-   ,rank() over (返品比率で並び替え) as 返品ランク
-   ,rank() over (通貨比率で並び替え) as 通貨ランク
- (選択 ws.ws_item_sk as 商品
+select  channel, item, return_ratio, return_rank, currency_rank from
+ (select
+ 'web' as channel
+ ,web.item
+ ,web.return_ratio
+ ,web.return_rank
+ ,web.currency_rank
+ from (
+    select 
+     item
+    ,return_ratio
+    ,currency_ratio
+    ,rank() over (order by return_ratio) as return_rank
+    ,rank() over (order by currency_ratio) as currency_rank
+    from
+    (    select ws.ws_item_sk as item
        ,(cast(sum(coalesce(wr.wr_return_quantity,0)) as decimal(15,4))/
-       cast(sum(coalesce(ws.ws_quantity,0)) as decimal(15,4) )) as 返品比率
+       cast(sum(coalesce(ws.ws_quantity,0)) as decimal(15,4) )) as return_ratio
        ,(cast(sum(coalesce(wr.wr_return_amt,0)) as decimal(15,4))/
-       cast(sum(coalesce(ws.ws_net_paid,0)) as decimal(15,4) )) as 通貨比率
-  web_sales ws 左外部結合 web_returns wr 
+       cast(sum(coalesce(ws.ws_net_paid,0)) as decimal(15,4) )) as currency_ratio
+       from 
+        web_sales ws left outer join web_returns wr 
           on (ws.ws_order_number = wr.wr_order_number and 
           ws.ws_item_sk = wr.wr_item_sk)
                  ,date_dim
        where 
           wr.wr_return_amt > 10000 
-          かつ ws.ws_net_profit > 1
-                         かつ ws.ws_net_paid > 0
-                         かつ ws.ws_quantity > 0
-                         かつ ws_sold_date_sk = d_date_sk
-                         かつ d_year = 2001
-                         かつ d_moy = 12
-       グループ化条件 ws.ws_item_sk
- ) in_web
+          and ws.ws_net_profit > 1
+                         and ws.ws_net_paid > 0
+                         and ws.ws_quantity > 0
+                         and ws_sold_date_sk = d_date_sk
+                         and d_year = 2001
+                         and d_moy = 12
+       group by ws.ws_item_sk
+    ) in_web
  ) web
- かつ 
+ where 
  (
- web.返品ランク <= 10
- または
- web.通貨ランク <= 10
+ web.return_rank <= 10
+ or
+ web.currency_rank <= 10
  )
  union
- 選択 
- 'catalog' as チャンネル
- ,catalog.商品
- ,catalog.返品比率
- ,catalog.返品ランク
- ,catalog.通貨ランク
- (選択 
- 商品
-   ,返品比率
-   ,通貨比率
-   ,rank() over (返品比率で並び替え) as 返品ランク
-   ,rank() over (通貨比率で並び替え) as 通貨ランク
- (選択 
-       cs.cs_item_sk as 商品
+ select 
+ 'catalog' as channel
+ ,catalog.item
+ ,catalog.return_ratio
+ ,catalog.return_rank
+ ,catalog.currency_rank
+ from (
+    select 
+     item
+    ,return_ratio
+    ,currency_ratio
+    ,rank() over (order by return_ratio) as return_rank
+    ,rank() over (order by currency_ratio) as currency_rank
+    from
+    (    select 
+       cs.cs_item_sk as item
        ,(cast(sum(coalesce(cr.cr_return_quantity,0)) as decimal(15,4))/
-       cast(sum(coalesce(cs.cs_quantity,0)) as decimal(15,4) )) as 返品比率
+       cast(sum(coalesce(cs.cs_quantity,0)) as decimal(15,4) )) as return_ratio
        ,(cast(sum(coalesce(cr.cr_return_amount,0)) as decimal(15,4))/
-       cast(sum(coalesce(cs.cs_net_paid,0)) as decimal(15,4) )) as 通貨比率
-  catalog_sales cs 左外部結合 catalog_returns cr
+       cast(sum(coalesce(cs.cs_net_paid,0)) as decimal(15,4) )) as currency_ratio
+       from 
+       catalog_sales cs left outer join catalog_returns cr
           on (cs.cs_order_number = cr.cr_order_number and 
           cs.cs_item_sk = cr.cr_item_sk)
                 ,date_dim
        where 
           cr.cr_return_amount > 10000 
-          かつ cs.cs_net_profit > 1
-                         かつ cs.cs_net_paid > 0
-                         かつ cs.cs_quantity > 0
-                         かつ cs_sold_date_sk = d_date_sk
-                         かつ d_year = 2001
-                         かつ d_moy = 12
-                 グループ化条件 cs.cs_item_sk
- ) in_cat
+          and cs.cs_net_profit > 1
+                         and cs.cs_net_paid > 0
+                         and cs.cs_quantity > 0
+                         and cs_sold_date_sk = d_date_sk
+                         and d_year = 2001
+                         and d_moy = 12
+                 group by cs.cs_item_sk
+    ) in_cat
  ) catalog
- かつ 
+ where 
  (
- catalog.返品ランク <= 10
- または
- catalog.通貨ランク <=10
+ catalog.return_rank <= 10
+ or
+ catalog.currency_rank <=10
  )
  union
- 選択 
- 'store' as チャンネル
- ,store.商品
- ,store.返品比率
- ,store.返品ランク
- ,store.通貨ランク
- (選択 
- 商品
-   ,返品比率
-   ,通貨比率
-   ,rank() over (返品比率で並び替え) as 返品ランク
-   ,rank() over (通貨比率で並び替え) as 通貨ランク
- (選択 sts.ss_item_sk as 商品
-       ,(cast(sum(coalesce(sr.sr_return_quantity,0)) as decimal(15,4))/cast(sum(coalesce(sts.ss_quantity,0)) as decimal(15,4) )) as 返品比率
-```plaintext
+ select 
+ 'store' as channel
+ ,store.item
+ ,store.return_ratio
+ ,store.return_rank
+ ,store.currency_rank
+ from (
+    select 
+     item
+    ,return_ratio
+    ,currency_ratio
+    ,rank() over (order by return_ratio) as return_rank
+    ,rank() over (order by currency_ratio) as currency_rank
+    from
+    (    select sts.ss_item_sk as item
+       ,(cast(sum(coalesce(sr.sr_return_quantity,0)) as decimal(15,4))/cast(sum(coalesce(sts.ss_quantity,0)) as decimal(15,4) )) as return_ratio
        ,(cast(sum(coalesce(sr.sr_return_amt,0)) as decimal(15,4))/cast(sum(coalesce(sts.ss_net_paid,0)) as decimal(15,4) )) as currency_ratio
        from 
        store_sales sts left outer join store_returns sr
@@ -2701,235 +2496,248 @@ with my_customers as (
  group by c_customer_sk
  )
  , segments as
-```
-```sql
-（売上高/50）をint型にキャスト as セグメント
- from my_revenue（私の売上） 
- ）
-  セグメント, num_customers（顧客数）、セグメント*50（セグメント×50） 
- from segments（セグメント）
- group by segment（セグメント）
-  order by segment（セグメント）、num_customers（顧客数）
- limit 100;
- 
- 
+（収益/50のint) as segment
+マイリバニューから
+)
+セグメントを選択して、num_customersとしてカウントする、
+セグメント*50をセグメントのベースとして
+セグメントから
+セグメントによってnum_customersをグループ化し
+順に、セグメント、num_customers
+100までを選択する;
+
+
 -- クエリ55
-select  i_brand_id（i_ブランドID） brand_id, i_brand（i_ブランド） brand,
-    sum(ss_ext_sales_price)（ss_ext_sales_priceの合計） ext_price
- from date_dim（日付次元）, store_sales（ストア販売）, item（商品）
- where d_date_sk = ss_sold_date_sk
-    and ss_item_sk = i_item_sk
-    and i_manager_id=28
-    and d_moy=11
-    and d_year=1999
- group by i_brand, i_brand_id
- order by ext_price desc, i_brand_id
-limit 100 ;
+i_brand_id ブランドID, i_brand ブランド,
+    sum(ss_ext_sales_price) ext_price
+ 日付_dim, 店舗販売, 商品
+ いずれかが d_date_sk = ss_sold_date_sk
+    かつ ss_item_sk = i_item_sk
+    かつ i_manager_id=28
+    かつ d_moy=11
+    かつ d_year=1999
+ i_brand, i_brand_id でグループ化して
+ ext_price で降順、i_brand_id
+100までを選択;
 
 
 -- クエリ56
-with ss as (
- select i_item_id,sum(ss_ext_sales_price)（ss_ext_sales_priceの合計） total_sales
- from
-    store_sales（ストア販売）,
-    date_dim（日付次元）,
-         customer_address（顧客住所）,
-         item（商品）
- where i_item_id in (select
+ss として (
+ i_item_id,sum(ss_ext_sales_price) total_sales
+ いずれかが
+ (
+ 
+いずれかが
+ (
+    カタログ販売,
+    日付_dim,
+         顧客住所,
+         商品
+     where
+         i_item_id in (選択
      i_item_id
-from item（商品）
+商品から
 where i_color in ('slate', 'blanched', 'burnished'))
- and     ss_item_sk              = i_item_sk
- and     ss_sold_date_sk         = d_date_sk
- and     d_year                  = 2001
- and     d_moy                   = 2
- and     ss_addr_sk              = ca_address_sk
- and     ca_gmt_offset           = -5 
- group by i_item_id),
- cs as (
- select i_item_id,sum(cs_ext_sales_price)（cs_ext_sales_priceの合計） total_sales
- from
-    catalog_sales（カタログ販売）,
-    date_dim（日付次元）,
-         customer_address（顧客住所）,
-         item（商品）
- where
-         i_item_id               in (select
+ かつ     ss_item_sk              = i_item_sk
+ かつ     ss_sold_date_sk         = d_date_sk
+ かつ     d_year                  = 2001
+ かつ     d_moy                   = 2
+ かつ     ss_addr_sk              = ca_address_sk
+ かつ     ca_gmt_offset           = -5 
+ i_item_id), 
+ cs として (
+ i_item_id,sum(cs_ext_sales_price) total_sales
+ いずれかが
+ (
+ 
+いずれかが
+ (
+    カタログ販売,
+    日付_dim,
+         顧客住所,
+         商品
+     where
+         i_item_id               in (選択
   i_item_id
-from item（商品）
+商品から
 where i_color in ('slate', 'blanched', 'burnished'))
- and     cs_item_sk              = i_item_sk
- and     cs_sold_date_sk         = d_date_sk
- and     d_year                  = 2001
- and     d_moy                   = 2
- and     cs_bill_addr_sk         = ca_address_sk
- and     ca_gmt_offset           = -5 
- group by i_item_id),
- ws as (
- select i_item_id,sum(ws_ext_sales_price)（ws_ext_sales_priceの合計） total_sales
- from
-    web_sales（Web販売）,
-    date_dim（日付次元）,
-         customer_address（顧客住所）,
-         item（商品）
- where
-         i_item_id               in (select
+ かつ     cs_item_sk              = i_item_sk
+ かつ     cs_sold_date_sk         = d_date_sk
+ かつ     d_year                  = 2001
+ かつ     d_moy                   = 2
+ かつ     cs_bill_addr_sk         = ca_address_sk
+ かつ     ca_gmt_offset           = -5 
+ i_item_id), 
+ ws として (
+ i_item_id,sum(ws_ext_sales_price) total_sales
+ いずれかが
+ (
+ 
+いずれかが
+ (
+    ウェブ販売,
+    日付_dim,
+         顧客住所,
+         商品
+     where
+         i_item_id               in (選択
   i_item_id
-from item（商品）
+商品から
 where i_color in ('slate', 'blanched', 'burnished'))
- and     ws_item_sk              = i_item_sk
- and     ws_sold_date_sk         = d_date_sk
- and     d_year                  = 2001
- and     d_moy                   = 2
- and     ws_bill_addr_sk         = ca_address_sk
- and     ca_gmt_offset           = -5
- group by i_item_id)
-  select  i_item_id ,sum(total_sales)（total_salesの合計） total_sales
- from  (select * from ss 
-        union all
-        select * from cs 
-        union all
-        select * from ws) tmp1
- group by i_item_id
- order by total_sales,
+ かつ     ws_item_sk              = i_item_sk
+ かつ     ws_sold_date_sk         = d_date_sk
+ かつ     d_year                  = 2001
+ かつ     d_moy                   = 2
+ かつ     ws_bill_addr_sk         = ca_address_sk
+ かつ     ca_gmt_offset           = -5
+ i_item_id)
+ いずれかが  i_item_id ,sum(total_sales) total_sales
+ いずれかから ss 
+        いずれかから cs 
+        いずれかから ws) tmp1
+ i_item_id
+ total_sales
+ でグループ化し
+ total_sales,
           i_item_id
- limit 100;
+から
+100までを選択;
 
 
 -- クエリ57
-with v1 as(
- select i_category, i_brand,
+v1として(
+ i_category, i_brand,
         cc_name,
         d_year, d_moy,
-        sum(cs_sales_price)（cs_sales_priceの合計） sum_sales,
+        sum(cs_sales_price) sum_sales,
         avg(sum(cs_sales_price)) over
           (partition by i_category, i_brand,
                      cc_name, d_year)
-          avg_monthly_sales（平均月間売上）,
+          avg_monthly_sales,
         rank() over
           (partition by i_category, i_brand,
                      cc_name
-           order by d_year, d_moy) rn
- from item（商品）, catalog_sales（カタログ販売）, date_dim（日付次元）, call_center（コールセンター）
- where cs_item_sk = i_item_sk and
-       cs_sold_date_sk = d_date_sk and
-       cc_call_center_sk= cs_call_center_sk and
-       (
-         d_year = 1999 or
-         ( d_year = 1999-1 and d_moy =12) or
-         ( d_year = 1999+1 and d_moy =1)
-       )
- group by i_category, i_brand,
+           日付で
+           d_year = 1999 または
+           ( d_year = 1999-1 かつ d_moy =12) または
+           ( d_year = 1999+1 かつ d_moy =1)
+       でグループ化し
+ i_category, i_brand,
           cc_name , d_year, d_moy),
- v2 as(
- select v1.i_category, v1.i_brand, v1.cc_name
-        ,v1.d_year, v1.d_moy
-        ,v1.avg_monthly_sales
-        ,v1.sum_sales, v1_lag.sum_sales psum, v1_lead.sum_sales nsum
- from v1, v1 v1_lag, v1 v1_lead
- where v1.i_category = v1_lag.i_category and
-       v1.i_category = v1_lead.i_category and
-       v1.i_brand = v1_lag.i_brand and
-       v1.i_brand = v1_lead.i_brand and
-       v1. cc_name = v1_lag. cc_name and
-       v1. cc_name = v1_lead. cc_name and
-       v1.rn = v1_lag.rn + 1 and
-       v1.rn = v1_lead.rn - 1)
-  select  *
- from v2
- where  d_year = 1999 and
-        avg_monthly_sales > 0 and
-        case when avg_monthly_sales > 0 then abs(sum_sales - avg_monthly_sales) / avg_monthly_sales else null end > 0.1
- order by sum_sales - avg_monthly_sales, cc_name
- limit 100;
+ v2として(
+ i_category, i_brand, cc_name       
+        ,d_year, d_moy
+        ,avg_monthly_sales
+        ,sum_sales, v1_lag.sum_sales psum, v1_lead.sum_sales nsum
+ いずれかから v1, v1 v1_lag, v1 v1_lead
+ i_category = v1_lag.i_category かつ
+       i_category = v1_lead.i_category かつ
+       i_brand = v1_lag.i_brand かつ
+       i_brand = v1_lead.i_brand かつ
+       cc_name = v1_lag. cc_name かつ
+       cc_name = v1_lead. cc_name かつ
+       rn = v1_lag.rn + 1 かつ
+       rn = v1_lead.rn - 1)
+ でグループ化し
+ *
+ where  d_year = 1999 かつ
+        avg_monthly_sales > 0 かつ
+        avg_monthly_sales > 0 の場合 abs(sum_sales - avg_monthly_sales) / avg_monthly_sales でグループ化し
+sum_sales - avg_monthly_sales, cc_name
+100までを選択;
 
 
 -- クエリ58
-with ss_items as
- (select i_item_id（i_商品ID） item_id
-        ,sum(ss_ext_sales_price)（ss_ext_sales_priceの合計） ss_item_rev 
- from store_sales（ストア販売）
-     ,item（商品）
-     ,date_dim（日付次元）
- where ss_item_sk = i_item_sk
-   and d_date in (select d_date
-                  from date_dim（日付次元）
-                  where d_week_seq = (select d_week_seq （週のシーケンス） 
-                                      from date_dim（日付次元）
+ss_itemsとして
+ (i_item_id item_id
+        ,sum(ss_ext_sales_price) ss_item_rev 
+ いずれかから
+ (販売,
+商品,
+date_dim
+ ss_item_sk = i_item_sk
+   と d_date in (選択 d_date
+                  from date_dim
+                  where d_week_seq = (選択 d_week_seq 
+                                      from date_dim
                                       where d_date = '2000-01-03'))
-   and ss_sold_date_sk   = d_date_sk
- group by i_item_id),
- cs_items as
- (select i_item_id（i_商品ID） item_id
-        ,sum(cs_ext_sales_price)（cs_ext_sales_priceの合計） cs_item_rev
-  from catalog_sales（カタログ販売）
-      ,item（商品）
-      ,date_dim（日付次元）
- where cs_item_sk = i_item_sk
-  and  d_date in (select d_date
-                  from date_dim（日付次元）
-                  where d_week_seq = (select d_week_seq （週のシーケンス） 
-                                      from date_dim（日付次元）
+   かつ ss_sold_date_sk   = d_date_sk
+ でグループ化し i_item_id),
+ cs_itemsとして
+ (i_item_id item_id
+        ,sum(cs_ext_sales_price) cs_item_rev
+ いずれかから
+ (カタログ販売
+      ,商品
+      ,date_dim
+ cs_item_sk = i_item_sk
+  と  d_date in (選択 d_date
+                  from date_dim
+                  where d_week_seq = (選択 d_week_seq 
+                                      from date_dim
                                       where d_date = '2000-01-03'))
-  and  cs_sold_date_sk = d_date_sk
- group by i_item_id),
- ws_items as
- (select i_item_id（i_商品ID） item_id
-        ,sum(ws_ext_sales_price)（ws_ext_sales_priceの合計） ws_item_rev
-  from web_sales（Web販売）
-      ,item（商品）
-      ,date_dim（日付次元）
- where ws_item_sk = i_item_sk
-  and  d_date in (select d_date
-                  from date_dim（日付次元）
-                  where d_week_seq =(select d_week_seq （週のシーケンス） 
-                                     from date_dim（日付次元）
+  と  cs_sold_date_sk = d_date_sk
+ i_item_id),
+ ws_itemsとして
+ (i_item_id item_id
+        ,sum(ws_ext_sales_price) ws_item_rev
+ いずれかから
+ (ウェブ販売
+   ,商品
+   ,date_dim
+ ws_item_sk = i_item_sk
+  と  d_date in (選択 d_date
+                  from date_dim
+                  where d_week_seq =(選択 d_week_seq 
+                                     from date_dim
                                      where d_date = '2000-01-03'))
-  and ws_sold_date_sk   = d_date_sk
- group by i_item_id)
-  select  ss_items.item_id
+  かつ ws_sold_date_sk   = d_date_sk
+ i_item_id)
+  i_item_id
        ,ss_item_rev
-       ,ss_item_rev/((ss_item_rev+cs_item_rev+ws_item_rev)/3) * 100（ss_dev）
+       ,(ss_item_rev+cs_item_rev+ws_item_rev)/3の中から ss_item_rev/((ss_item_rev+cs_item_rev+ws_item_rev)/3) * 100 ss_dev
        ,cs_item_rev
-       ,cs_item_rev/((ss_item_rev+cs_item_rev+ws_item_rev)/3) * 100（cs_dev）
+       ,(ss_item_rev+cs_item_rev+ws_item_rev)/3の中から cs_item_rev/((ss_item_rev+cs_item_rev+ws_item_rev)/3) * 100 cs_dev
        ,ws_item_rev
-       ,ws_item_rev/((ss_item_rev+cs_item_rev+ws_item_rev)/3) * 100（ws_dev）
-       ,(ss_item_rev+cs_item_rev+ws_item_rev)/3（平均） average
- from ss_items,cs_items,ws_items
- where ss_items.item_id=cs_items.item_id
-   and ss_items.item_id=ws_items.item_id 
-   and ss_item_rev between 0.9 * cs_item_rev and 1.1 * cs_item_rev
-   and ss_item_rev between 0.9 * ws_item_rev and 1.1 * ws_item_rev
-   and cs_item_rev between 0.9 * ss_item_rev and 1.1 * ss_item_rev
-   and cs_item_rev between 0.9 * ws_item_rev and 1.1 * ws_item_rev
-   and ws_item_rev between 0.9 * ss_item_rev and 1.1 * ss_item_rev
-   and ws_item_rev between 0.9 * cs_item_rev and 1.1 * cs_item_rev
- order by item_id
-         ,ss_item_rev
- limit 100;
+       ,(ss_item_rev+cs_item_rev+ws_item_rev)/3の中から ws_item_rev/((ss_item_rev+cs_item_rev+ws_item_rev)/3) * 100 ws_dev
+       ,(ss_item_rev+cs_item_rev+ws_item_rev)/3 average
+ i_item_id
+ ss_item_rev
+ where
+   ss_item_id=cs_items.item_id
+   かつ ss_item_id=ws_items.item_id 
+   かつ ss_item_rev between 0.9 * cs_item_rev かつ 1.1 * cs_item_rev
+   かつ ss_item_rev between 0.9 * ws_item_rev かつ 1.1 * ws_item_rev
+   かつ cs_item_rev between 0.9 * ss_item_rev かつ 1.1 * ss_item_rev
+   かつ cs_item_rev between 0.9 * ws_item_rev かつ 1.1 * ws_item_rev
+   かつ ws_item_rev between 0.9 * ss_item_rev かつ 1.1 * ss_item_rev
+   かつ ws_item_rev between 0.9 * cs_item_rev かつ 1.1 * cs_item_rev
+ item_id
+ ss_item_rev
+100までを選択;
 
 
 -- クエリ59
-with wss as 
- (select d_week_seq（週のシーケンス）,
+wssとして 
+ (d_week_seq,
         ss_store_sk,
-        sum(case when (d_day_name='Sunday') then ss_sales_price else null end)（日曜日の売上） sun_sales,
-        sum(case when (d_day_name='Monday') then ss_sales_price else null end)（月曜日の売上） mon_sales,
-        sum(case when (d_day_name='Tuesday') then ss_sales_price else  null end)（火曜日の売上） tue_sales,
-        sum(case when (d_day_name='Wednesday') then ss_sales_price else null end)（水曜日の売上） wed_sales,
-        sum(case when (d_day_name='Thursday') then ss_sales_price else null end)（木曜日の売上） thu_sales,
-        sum(case when (d_day_name='Friday') then ss_sales_price else null end)（金曜日の売上） fri_sales,
-        sum(case when (d_day_name='Saturday') then ss_sales_price else null end)（土曜日の売上） sat_sales
- from store_sales（ストア販売）,date_dim（日付次元）
- where d_date_sk = ss_sold_date_sk
- group by d_week_seq,ss_store_sk
+        (d_day_name='Sunday') then ss_sales_price else null end) sun_sales,
+        (d_day_name='Monday') then ss_sales_price else null end) mon_sales,
+        (d_day_name='Tuesday') then ss_sales_price else  null end) tue_sales,
+        (d_day_name='Wednesday') then ss_sales_price else null end) wed_sales,
+        (d_day_name='Thursday') then ss_sales_price else null end) thu_sales,
+        (d_day_name='Friday') then ss_sales_price else null end) fri_sales,
+        (d_day_name='Saturday') then ss_sales_price else null end) sat_sales
+ いずれかが
+ store_sales,date_dim
+ d_date_sk = ss_sold_date_sk
+ の中から グループ化する d_week_seq,ss_store_sk
  )
-  select  s_store_name1,s_store_id1,d_week_seq1
+  s_store_name1,s_store_id1,d_week_seq1
        ,sun_sales1/sun_sales2,mon_sales1/mon_sales2
-```
-```markdown
-       ,tue_sales1/tue_sales2,wed_sales1/wed_sales2,thu_sales1/thu_sales2
-       ,fri_sales1/fri_sales2,sat_sales1/sat_sales2
+```plaintext
+      ,tue_sales1/tue_sales2,wed_sales1/wed_sales2,thu_sales1/thu_sales2
+      ,fri_sales1/fri_sales2,sat_sales1/sat_sales2
  from
  (select s_store_name s_store_name1,wss.d_week_seq d_week_seq1
         ,s_store_id s_store_id1,sun_sales sun_sales1
@@ -2952,7 +2760,7 @@ with wss as
  where s_store_id1=s_store_id2
    and d_week_seq1=d_week_seq2-52
  order by s_store_name1,s_store_id1,d_week_seq1
- limit 100;
+limit 100;
 
 
 -- query 60
@@ -3145,19 +2953,17 @@ limit 100;
 with cs_ui as
  (select cs_item_sk
         ,sum(cs_ext_list_price) as sale,sum(cr_refunded_cash+cr_reversed_charge+cr_store_credit) as refund
-```
-```
-from catalog_sales
-      ,catalog_returns
-  where cs_item_sk = cr_item_sk
-    and cs_order_number = cr_order_number
-  group by cs_item_sk
-  having sum(cs_ext_list_price)>2*sum(cr_refunded_cash+cr_reversed_charge+cr_store_credit)),
-cross_sales as
- (select i_product_name product_name
-     ,i_item_sk item_sk
-     ,s_store_name store_name
-     ,s_zip store_zip
+カタログセールス
+    ,カタログリターン
+where cs_item_sk = cr_item_sk
+  および cs_order_number = cr_order_number
+    cs_item_sk でグループ化
+  sum(cs_ext_list_price) > 2 * sum(cr_refunded_cash + cr_reversed_charge + cr_store_credit)
+クロスセールスとして
+ (select i_product_name 商品名
+     ,i_item_sk 商品sk
+     ,s_store_name 店舗名
+     ,s_zip 店舗郵便番号
      ,ad1.ca_street_number b_street_number
      ,ad1.ca_street_name b_street_name
      ,ad1.ca_city b_city
@@ -3166,9 +2972,9 @@ cross_sales as
      ,ad2.ca_street_name c_street_name
      ,ad2.ca_city c_city
      ,ad2.ca_zip c_zip
-     ,d1.d_year as syear
-     ,d2.d_year as fsyear
-     ,d3.d_year s2year
+     ,d1.d_year syear
+     ,d2.d_year fsyear
+     ,d3.d_year s2年
      ,count(*) cnt
      ,sum(ss_wholesale_cost) s1
      ,sum(ss_list_price) s2
@@ -3191,185 +2997,246 @@ cross_sales as
         ,income_band ib1
         ,income_band ib2
         ,item
-  WHERE  ss_store_sk = s_store_sk AND
-         ss_sold_date_sk = d1.d_date_sk AND
-         ss_customer_sk = c_customer_sk AND
-         ss_cdemo_sk= cd1.cd_demo_sk AND
-         ss_hdemo_sk = hd1.hd_demo_sk AND
-         ss_addr_sk = ad1.ca_address_sk and
-         ss_item_sk = i_item_sk and
-         ss_item_sk = sr_item_sk and
-         ss_ticket_number = sr_ticket_number and
-         ss_item_sk = cs_ui.cs_item_sk and
-         c_current_cdemo_sk = cd2.cd_demo_sk AND
-         c_current_hdemo_sk = hd2.hd_demo_sk AND
-         c_current_addr_sk = ad2.ca_address_sk and
-         c_first_sales_date_sk = d2.d_date_sk and
-         c_first_shipto_date_sk = d3.d_date_sk and
-         ss_promo_sk = p_promo_sk and
-         hd1.hd_income_band_sk = ib1.ib_income_band_sk and
-         hd2.hd_income_band_sk = ib2.ib_income_band_sk and
-         cd1.cd_marital_status <> cd2.cd_marital_status and
-         i_color in ('purple','burlywood','indian','spring','floral','medium') and
-         i_current_price between 64 and 64 + 10 and
-         i_current_price between 64 + 1 and 64 + 15
-group by i_product_name
-       ,i_item_sk
-       ,s_store_name
-       ,s_zip
-       ,ad1.ca_street_number
-       ,ad1.ca_street_name
-       ,ad1.ca_city
-       ,ad1.ca_zip
-       ,ad2.ca_street_number
-       ,ad2.ca_street_name
-       ,ad2.ca_city
-       ,ad2.ca_zip
-       ,d1.d_year
-       ,d2.d_year
-       ,d3.d_year
+  WHERE  ss_store_sk = s_store_sk そして
+         ss_sold_date_sk = d1.d_date_sk そして
+         ss_customer_sk = c_customer_sk そして
+         ss_cdemo_sk= cd1.cd_demo_sk そして
+         ss_hdemo_sk = hd1.hd_demo_sk そして
+         ss_addr_sk = ad1.ca_address_sk そして
+         ss_item_sk = i_item_sk そして
+         ss_item_sk = sr_item_sk そして
+         ss_ticket_number = sr_ticket_number そして
+         ss_item_sk = cs_ui.cs_item_sk そして
+         c_current_cdemo_sk = cd2.cd_demo_sk そして
+         c_current_hdemo_sk = hd2.hd_demo_sk そして
+         c_current_addr_sk = ad2.ca_address_sk そして
+         c_first_sales_date_sk = d2.d_date_sk そして
+         c_first_shipto_date_sk = d3.d_date_sk そして
+         ss_promo_sk = p_promo_sk そして
+         hd1.hd_income_band_sk = ib1.ib_income_band_sk そして
+         hd2.hd_income_band_sk = ib2.ib_income_band_sk そして
+         cd1.cd_marital_status <> cd2.cd_marital_status そして
+         i_color in ('purple','burlywood','indian','spring','floral','medium') そして
+         i_current_price が 64 および 64 + 10 の間にある そして
+         i_current_price が 64 + 1 および 64 + 15 の間にある
+cs1.product_name  ,i_item_sk  ,s_store_name  ,s_zip  ,ad1.ca_street_number  ,ad1.ca_street_name  ,ad1.ca_city  ,ad1.ca_zip  ,ad2.ca_street_number  ,ad2.ca_street_name  ,ad2.ca_city  ,ad2.ca_zip  ,d1.d_year  ,d2.d_year  ,d3.d_year
+でグループ化
 )
-select cs1.product_name
-     ,cs1.store_name
-     ,cs1.store_zip
-     ,cs1.b_street_number
-     ,cs1.b_street_name
-     ,cs1.b_city
-     ,cs1.b_zip
-     ,cs1.c_street_number
-     ,cs1.c_street_name
-     ,cs1.c_city
-     ,cs1.c_zip
-     ,cs1.syear
-     ,cs1.cnt
-     ,cs1.s1 as s11
-     ,cs1.s2 as s21
-     ,cs1.s3 as s31
-     ,cs2.s1 as s12
-     ,cs2.s2 as s22
-     ,cs2.s3 as s32
-     ,cs2.syear
-     ,cs2.cnt
-from cross_sales cs1,cross_sales cs2
-where cs1.item_sk=cs2.item_sk and
-     cs1.syear = 1999 and
-     cs2.syear = 1999 + 1 and
-     cs2.cnt <= cs1.cnt and
-     cs1.store_name = cs2.store_name and
-     cs1.store_zip = cs2.store_zip
-order by cs1.product_name
-       ,cs1.store_name
-       ,cs2.cnt
-       ,cs1.s1
-       ,cs2.s1;
-
-
--- query 65
-select 
-    s_store_name,
-    i_item_desc,
-    sc.revenue,
-    i_current_price,
-    i_wholesale_cost,
-    i_brand
- from store, item,
-     (select ss_store_sk, avg(revenue) as ave
-    from
-        (select  ss_store_sk, ss_item_sk, 
-            sum(ss_sales_price) as revenue
-       from store_sales, date_dim
-       where ss_sold_date_sk = d_date_sk and d_month_seq between 1176 and 1176+11
-       group by ss_store_sk, ss_item_sk) sa
-    group by ss_store_sk) sb,
-     (select  ss_store_sk, ss_item_sk, sum(ss_sales_price) as revenue
-    from store_sales, date_dim
-    where ss_sold_date_sk = d_date_sk and d_month_seq between 1176 and 1176+11
-    group by ss_store_sk, ss_item_sk) sc
- where sb.ss_store_sk = sc.ss_store_sk and 
-       sc.revenue <= 0.1 * sb.ave and
-       s_store_sk = sc.ss_store_sk and
-       i_item_sk = sc.ss_item_sk
- order by s_store_name, i_item_desc
+cs1.product_name  ,cs1.store_name  ,cs1.store_zip  ,cs1.b_street_number  ,cs1.b_street_name  ,cs1.b_city  ,cs1.b_zip  ,cs1.c_street_number  ,cs1.c_street_name  ,cs1.c_city  ,cs1.c_zip  ,cs1.syear  ,cs1.cnt  ,cs1.s1  s11  ,cs1.s2  s21  ,cs1.s3  s31  ,cs2.s1  s12  ,cs2.s2  s22  ,cs2.s3  s32  ,cs2.syear  ,cs2.cnt
+cs1.item_sk = cs2.item_sk そして  cs1.syear = 1999 そして  cs2.syear = 1999 + 1 そして  cs2.cnt <= cs1.cnt そして  cs1.store_name = cs2.store_name そして  cs1.store_zip = cs2.store_zip
+cs1.product_name  ,cs1.store_name  ,cs2.cnt  ,cs1.s1  ,cs2.s1
+-- クエリ 65
+s_store_name  ,i_item_desc  ,sc.revenue  ,i_current_price  ,i_wholesale_cost  ,i_brand
+店舗  ,アイテム
+    (ss_store_sk, revenues)からsbを選択
+    > 0.1 * sb.ave そして  s_store_sk = sc.ss_store_sk そして  i_item_sk = sc.ss_item_sk
+s_store_name , i_item_desc で 100 件制限
+-- クエリ 66
+w_warehouse_name  ,w_warehouse_sq_ft  ,w_city  ,w_county  ,w_state  ,w_country  ,ship_carriers  ,year  ,jan_sales  保有(sales)  ,feb_sales  保有(sales)  ,mar_sales  保有(sales)  ,apr_sales  保有(sales)  ,may_sales  保有(sales)  ,jun_sales  保有(sales)  ,jul_sales  保有(sales)  ,aug_sales  保有(sales)  ,sep_sales  保有(sales)  ,oct_sales  保有(sales)  ,nov_sales  保有(sales)  ,dec_sales  保有(sales)  ,jan_sales_per_sq_foot  保有(sales)  ,feb_sales_per_sq_foot  保有(sales)  ,mar_sales_per_sq_foot  保有(sales)  ,apr_sales_per_sq_foot  保有(sales)  ,may_sales_per_sq_foot  保有(sales)  ,jun_sales_per_sq_foot  保有(sales)  ,jul_sales_per_sq_foot  保有(sales)  ,aug_sales_per_sq_foot  保有(sales)  ,sep_sales_per_sq_foot  保有(sales)  ,oct_sales_per_sq_foot  保有(sales)  ,nov_sales_per_sq_foot  保有(sales)  ,dec_sales_per_sq_foot  保有(sales)  ,jan_net  保有(net)  ,feb_net  保有(net)  ,mar_net  保有(net)  ,apr_net  保有(net)  ,may_net  保有(net)  ,jun_net  保有(net)  ,jul_net  保有(net)  ,aug_net  保有(net)  ,sep_net  保有(net)  ,oct_net  保有(net)  ,nov_net  保有(net)  ,dec_net  保有(net)
+    w_warehouse_sq_ft  ,w_city  ,w_county  ,w_state  ,w_country  から、ship_carriers
+       ,d_year  ,jan_net  保有(net)  ,feb_net  保有(net)  ,mar_net  保有(net)  ,apr_net  保有(net)  ,may_net  保有(net)  ,jun_net  保有(net)  ,jul_net  保有(net)  ,aug_net  保有(net)  ,sep_net  保有(net)  ,oct_net  保有(net)  ,nov_net  保有(net)  ,dec_net  保有(net)
+ を選択
+```plaintext
+then ws_ext_sales_price* ws_quantity else 0 end) as apr_sales
+,sum(case when d_moy = 5 
+   then ws_ext_sales_price* ws_quantity else 0 end) as may_sales
+,sum(case when d_moy = 6 
+   then ws_ext_sales_price* ws_quantity else 0 end) as jun_sales
+,sum(case when d_moy = 7 
+   then ws_ext_sales_price* ws_quantity else 0 end) as jul_sales
+,sum(case when d_moy = 8 
+   then ws_ext_sales_price* ws_quantity else 0 end) as aug_sales
+,sum(case when d_moy = 9 
+   then ws_ext_sales_price* ws_quantity else 0 end) as sep_sales
+,sum(case when d_moy = 10 
+   then ws_ext_sales_price* ws_quantity else 0 end) as oct_sales
+,sum(case when d_moy = 11
+   then ws_ext_sales_price* ws_quantity else 0 end) as nov_sales
+,sum(case when d_moy = 12
+   then ws_ext_sales_price* ws_quantity else 0 end) as dec_sales
+,sum(case when d_moy = 1 
+   then ws_net_paid * ws_quantity else 0 end) as jan_net
+,sum(case when d_moy = 2
+   then ws_net_paid * ws_quantity else 0 end) as feb_net
+,sum(case when d_moy = 3 
+   then ws_net_paid * ws_quantity else 0 end) as mar_net
+,sum(case when d_moy = 4 
+   then ws_net_paid * ws_quantity else 0 end) as apr_net
+,sum(case when d_moy = 5 
+   then ws_net_paid * ws_quantity else 0 end) as may_net
+,sum(case when d_moy = 6 
+   then ws_net_paid * ws_quantity else 0 end) as jun_net
+,sum(case when d_moy = 7 
+   then ws_net_paid * ws_quantity else 0 end) as jul_net
+,sum(case when d_moy = 8 
+   then ws_net_paid * ws_quantity else 0 end) as aug_net
+,sum(case when d_moy = 9 
+   then ws_net_paid * ws_quantity else 0 end) as sep_net
+,sum(case when d_moy = 10 
+   then ws_net_paid * ws_quantity else 0 end) as oct_net
+,sum(case when d_moy = 11
+   then ws_net_paid * ws_quantity else 0 end) as nov_net
+,sum(case when d_moy = 12
+   then ws_net_paid * ws_quantity else 0 end) as dec_net
+ from
+      web_sales
+     ,warehouse
+     ,date_dim
+     ,time_dim
+  ,ship_mode
+ where
+        ws_warehouse_sk =  w_warehouse_sk
+    and ws_sold_date_sk = d_date_sk
+    and ws_sold_time_sk = t_time_sk
+and ws_ship_mode_sk = sm_ship_mode_sk
+    and d_year = 2001
+and t_time between 30838 and 30838+28800 
+and sm_carrier in ('DHL','BARIAN')
+ group by 
+    w_warehouse_name
+,w_warehouse_sq_ft
+,w_city
+,w_county
+,w_state
+,w_country
+   ,d_year
+union all
+ select 
+w_warehouse_name
+,w_warehouse_sq_ft
+,w_city
+,w_county
+,w_state
+,w_country
+,'DHL' || ',' || 'BARIAN' as ship_carriers
+   ,d_year as year
+,sum(case when d_moy = 1 
+   then cs_sales_price* cs_quantity else 0 end) as jan_sales
+,sum(case when d_moy = 2 
+   then cs_sales_price* cs_quantity else 0 end) as feb_sales
+,sum(case when d_moy = 3 
+   then cs_sales_price* cs_quantity else 0 end) as mar_sales
+,sum(case when d_moy = 4 
+   then cs_sales_price* cs_quantity else 0 end) as apr_sales
+,sum(case when d_moy = 5 
+   then cs_sales_price* cs_quantity else 0 end) as may_sales
+,sum(case when d_moy = 6 
+   then cs_sales_price* cs_quantity else 0 end) as jun_sales
+,sum(case when d_moy = 7 
+   then cs_sales_price* cs_quantity else 0 end) as jul_sales
+,sum(case when d_moy = 8 
+   then cs_sales_price* cs_quantity else 0 end) as aug_sales
+,sum(case when d_moy = 9 
+   then cs_sales_price* cs_quantity else 0 end) as sep_sales
+,sum(case when d_moy = 10 
+   then cs_sales_price* cs_quantity else 0 end) as oct_sales
+,sum(case when d_moy = 11
+   then cs_sales_price* cs_quantity else 0 end) as nov_sales
+,sum(case when d_moy = 12
+   then cs_sales_price* cs_quantity else 0 end) as dec_sales
+,sum(case when d_moy = 1 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as jan_net
+,sum(case when d_moy = 2 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as feb_net
+,sum(case when d_moy = 3 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as mar_net
+,sum(case when d_moy = 4 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as apr_net
+,sum(case when d_moy = 5 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as may_net
+,sum(case when d_moy = 6 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as jun_net
+,sum(case when d_moy = 7 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as jul_net
+,sum(case when d_moy = 8 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as aug_net
+,sum(case when d_moy = 9 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as sep_net
+,sum(case when d_moy = 10 
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as oct_net
+,sum(case when d_moy = 11
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as nov_net
+,sum(case when d_moy = 12
+   then cs_net_paid_inc_tax * cs_quantity else 0 end) as dec_net
+ from
+      catalog_sales
+     ,warehouse
+     ,date_dim
+     ,time_dim
+  ,ship_mode
+ where
+        cs_warehouse_sk =  w_warehouse_sk
+    and cs_sold_date_sk = d_date_sk
+    and cs_sold_time_sk = t_time_sk
+and cs_ship_mode_sk = sm_ship_mode_sk
+    and d_year = 2001
+and t_time between 30838 AND 30838+28800 
+and sm_carrier in ('DHL','BARIAN')
+ group by 
+    w_warehouse_name
+,w_warehouse_sq_ft
+,w_city
+,w_county
+,w_state
+,w_country
+   ,d_year
+) x
+group by 
+    w_warehouse_name
+ ,w_warehouse_sq_ft
+,w_city
+,w_county
+,w_state
+ ,w_country
+,ship_carriers
+   ,year
+order by w_warehouse_name
 limit 100;
 
 
--- query 66
-select   
-         w_warehouse_name
-    ,w_warehouse_sq_ft
-    ,w_city
-    ,w_county
-    ,w_state
-    ,w_country
-        ,ship_carriers
-        ,year
-    ,sum(jan_sales) as jan_sales
-    ,sum(feb_sales) as feb_sales
-    ,sum(mar_sales) as mar_sales
-    ,sum(apr_sales) as apr_sales
-    ,sum(may_sales) as may_sales
-    ,sum(jun_sales) as jun_sales
-    ,sum(jul_sales) as jul_sales
-    ,sum(aug_sales) as aug_sales
-    ,sum(sep_sales) as sep_sales
-    ,sum(oct_sales) as oct_sales
-    ,sum(nov_sales) as nov_sales
-    ,sum(dec_sales) as dec_sales
-    ,sum(jan_sales/w_warehouse_sq_ft) as jan_sales_per_sq_foot
-    ,sum(feb_sales/w_warehouse_sq_ft) as feb_sales_per_sq_foot
-    ,sum(mar_sales/w_warehouse_sq_ft) as mar_sales_per_sq_foot
-    ,sum(apr_sales/w_warehouse_sq_ft) as apr_sales_per_sq_foot
-    ,sum(may_sales/w_warehouse_sq_ft) as may_sales_per_sq_foot
-    ,sum(jun_sales/w_warehouse_sq_ft) as jun_sales_per_sq_foot
-    ,sum(jul_sales/w_warehouse_sq_ft) as jul_sales_per_sq_foot
-    ,sum(aug_sales/w_warehouse_sq_ft) as aug_sales_per_sq_foot
-    ,sum(sep_sales/w_warehouse_sq_ft) as sep_sales_per_sq_foot
-    ,sum(oct_sales/w_warehouse_sq_ft) as oct_sales_per_sq_foot
-    ,sum(nov_sales/w_warehouse_sq_ft) as nov_sales_per_sq_foot
-    ,sum(dec_sales/w_warehouse_sq_ft) as dec_sales_per_sq_foot
-    ,sum(jan_net) as jan_net
-    ,sum(feb_net) as feb_net
-    ,sum(mar_net) as mar_net
-    ,sum(apr_net) as apr_net
-    ,sum(may_net) as may_net
-    ,sum(jun_net) as jun_net
-    ,sum(jul_net) as jul_net
-    ,sum(aug_net) as aug_net
-    ,sum(sep_net) as sep_net
-    ,sum(oct_net) as oct_net
-    ,sum(nov_net) as nov_net
-    ,sum(dec_net) as dec_net
- from (
-     select 
-    w_warehouse_name
-    ,w_warehouse_sq_ft
-    ,w_city
-    ,w_county
-    ,w_state
-    ,w_country
-    ,'DHL' || ',' || 'BARIAN' as ship_carriers
-       ,d_year as year
-    ,sum(case when d_moy = 1 
-       then ws_ext_sales_price* ws_quantity else 0 end) as jan_sales
-    ,sum(case when d_moy = 2 
-       then ws_ext_sales_price* ws_quantity else 0 end) as feb_sales
-    ,sum(case when d_moy = 3 
-       then ws_ext_sales_price* ws_quantity else 0 end) as mar_sales
-    ,sum(case when d_moy = 4 
+-- query 67
+select  *
+from (select i_category
+        ,i_class
+        ,i_brand
+        ,i_product_name
+        ,d_year
+        ,d_qoy
+        ,d_moy
+        ,s_store_id
+        ,sumsales
+        ,rank() over (partition by i_category order by sumsales desc) rk
+  from (select i_category
+              ,i_class
+              ,i_brand
+              ,i_product_name
+              ,d_year
+              ,d_qoy
+              ,d_moy
+              ,s_store_id
+              ,sum(coalesce(ss_sales_price*ss_quantity,0)) sumsales
+        from store_sales
+            ,date_dim
+            ,store
+            ,item
+   where  ss_sold_date_sk=d_date_sk
+      and ss_item_sk=i_item_sk
+      and ss_store_sk = s_store_sk
+      and d_month_seq between 1200 and 1200+11
+   group by  rollup(i_category, i_class, i_brand, i_product_name, d_year, d_qoy, d_moy,s_store_id))dw1) dw2
+where rk <= 100
+order by i_category
+    ,i_class
+    ,i_brand
+    ,i_product_name
 ```
 ```plaintext
-      + {T}
-      + {T}
-    + {T}
-  + {T}
-```
-```sql
-     ,d_year
-     ,d_qoy
-     ,d_moy
-     ,s_store_id
-     ,sumsales
-     ,rk
+        ,d_year
+        ,d_qoy
+        ,d_moy
+        ,s_store_id
+        ,sumsales
+        ,rk
 limit 100;
 
 
@@ -3599,428 +3466,25 @@ select c_last_name
 
 -- クエリ74
 ```
-with year_total as (
- select c_customer_id customer_id
-       ,c_first_name customer_first_name
-       ,c_last_name customer_last_name
-       ,d_year as year
-       ,sum(ss_net_paid) year_total
-       ,'s' sale_type
- from customer
-     ,store_sales
-     ,date_dim
- where c_customer_sk = ss_customer_sk
-   and ss_sold_date_sk = d_date_sk
-   and d_year in (2001,2001+1)
- group by c_customer_id
-         ,c_first_name
-         ,c_last_name
-         ,d_year
- union all
- select c_customer_id customer_id
-       ,c_first_name customer_first_name
-       ,c_last_name customer_last_name
-       ,d_year as year
-       ,sum(ws_net_paid) year_total
-       ,'w' sale_type
- from customer
-     ,web_sales
-     ,date_dim
- where c_customer_sk = ws_bill_customer_sk
-   and ws_sold_date_sk = d_date_sk
-   and d_year in (2001,2001+1)
- group by c_customer_id
-         ,c_first_name
-         ,c_last_name
-         ,d_year
-         )
-  select 
-        t_s_secyear.customer_id, t_s_secyear.customer_first_name, t_s_secyear.customer_last_name
- from year_total t_s_firstyear
-     ,year_total t_s_secyear
-     ,year_total t_w_firstyear
-     ,year_total t_w_secyear
- where t_s_secyear.customer_id = t_s_firstyear.customer_id
-         and t_s_firstyear.customer_id = t_w_secyear.customer_id
-         and t_s_firstyear.customer_id = t_w_firstyear.customer_id
-         and t_s_firstyear.sale_type = 's'
-         and t_w_firstyear.sale_type = 'w'
-         and t_s_secyear.sale_type = 's'
-         and t_w_secyear.sale_type = 'w'
-         and t_s_firstyear.year = 2001
-         and t_s_secyear.year = 2001+1
-         and t_w_firstyear.year = 2001
-         and t_w_secyear.year = 2001+1
-         and t_s_firstyear.year_total > 0
-         and t_w_firstyear.year_total > 0
-         and case when t_w_firstyear.year_total > 0 then t_w_secyear.year_total / t_w_firstyear.year_total else null end
-           > case when t_s_firstyear.year_total > 0 then t_s_secyear.year_total / t_s_firstyear.year_total else null end
- order by 1, 1, 1
-limit 100;
-
-
--- query 75
-WITH all_sales AS (
- SELECT d_year
-       ,i_brand_id
-       ,i_class_id
-       ,i_category_id
-       ,i_manufact_id
-       ,SUM(sales_cnt) AS sales_cnt
-       ,SUM(sales_amt) AS sales_amt
- FROM (SELECT d_year
-             ,i_brand_id
-             ,i_class_id
-             ,i_category_id
-             ,i_manufact_id
-             ,cs_quantity - COALESCE(cr_return_quantity,0) AS sales_cnt
-             ,cs_ext_sales_price - COALESCE(cr_return_amount,0.0) AS sales_amt
-       FROM catalog_sales JOIN item ON i_item_sk=cs_item_sk
-                          JOIN date_dim ON d_date_sk=cs_sold_date_sk
-                          LEFT JOIN catalog_returns ON (cs_order_number=cr_order_number 
-                                                    AND cs_item_sk=cr_item_sk)
-       WHERE i_category='Books'
-       UNION
-       SELECT d_year
-             ,i_brand_id
-             ,i_class_id
-             ,i_category_id
-             ,i_manufact_id
-             ,ss_quantity - COALESCE(sr_return_quantity,0) AS sales_cnt
-             ,ss_ext_sales_price - COALESCE(sr_return_amt,0.0) AS sales_amt
-       FROM store_sales JOIN item ON i_item_sk=ss_item_sk
-                        JOIN date_dim ON d_date_sk=ss_sold_date_sk
-                        LEFT JOIN store_returns ON (ss_ticket_number=sr_ticket_number 
-                                                AND ss_item_sk=sr_item_sk)
-       WHERE i_category='Books'
-       UNION
-       SELECT d_year
-             ,i_brand_id
-             ,i_class_id
-             ,i_category_id
-             ,i_manufact_id
-             ,ws_quantity - COALESCE(wr_return_quantity,0) AS sales_cnt
-             ,ws_ext_sales_price - COALESCE(wr_return_amt,0.0) AS sales_amt
-       FROM web_sales JOIN item ON i_item_sk=ws_item_sk
-                      JOIN date_dim ON d_date_sk=ws_sold_date_sk
-                      LEFT JOIN web_returns ON (ws_order_number=wr_order_number 
-                                            AND ws_item_sk=wr_item_sk)
-       WHERE i_category='Books') sales_detail
- GROUP BY d_year, i_brand_id, i_class_id, i_category_id, i_manufact_id)
- SELECT  prev_yr.d_year AS prev_year
-                          ,curr_yr.d_year AS year
-                          ,curr_yr.i_brand_id
-                          ,curr_yr.i_class_id
-                          ,curr_yr.i_category_id
-                          ,curr_yr.i_manufact_id
-                          ,prev_yr.sales_cnt AS prev_yr_cnt
-                          ,curr_yr.sales_cnt AS curr_yr_cnt
-                          ,curr_yr.sales_cnt-prev_yr.sales_cnt AS sales_cnt_diff
-                          ,curr_yr.sales_amt-prev_yr.sales_amt AS sales_amt_diff
- FROM all_sales curr_yr, all_sales prev_yr
- WHERE curr_yr.i_brand_id=prev_yr.i_brand_id
-   AND curr_yr.i_class_id=prev_yr.i_class_id
-   AND curr_yr.i_category_id=prev_yr.i_category_id
-   AND curr_yr.i_manufact_id=prev_yr.i_manufact_id
-   AND curr_yr.d_year=2002
-   AND prev_yr.d_year=2002-1
-   AND CAST(curr_yr.sales_cnt AS DECIMAL(17,2))/CAST(prev_yr.sales_cnt AS DECIMAL(17,2))<0.9
- ORDER BY sales_cnt_diff,sales_amt_diff
- limit 100;
-
-
--- query 76
-select  channel, col_name, d_year, d_qoy, i_category, COUNT(*) sales_cnt, SUM(ext_sales_price) sales_amt FROM (
-        SELECT 'store' as channel, 'ss_store_sk' col_name, d_year, d_qoy, i_category, ss_ext_sales_price ext_sales_price
-         FROM store_sales, item, date_dim
-         WHERE ss_store_sk IS NULL
-           AND ss_sold_date_sk=d_date_sk
-           AND ss_item_sk=i_item_sk
-        UNION ALL
-        SELECT 'web' as channel, 'ws_ship_customer_sk' col_name, d_year, d_qoy, i_category, ws_ext_sales_price ext_sales_price
-         FROM web_sales, item, date_dim
-         WHERE ws_ship_customer_sk IS NULL
-           AND ws_sold_date_sk=d_date_sk
-           AND ws_item_sk=i_item_sk
-        UNION ALL
-        SELECT 'catalog' as channel, 'cs_ship_addr_sk' col_name, d_year, d_qoy, i_category, cs_ext_sales_price ext_sales_price
-         FROM catalog_sales, item, date_dim
-         WHERE cs_ship_addr_sk IS NULL
-           AND cs_sold_date_sk=d_date_sk
-           AND cs_item_sk=i_item_sk) foo
-GROUP BY channel, col_name, d_year, d_qoy, i_category
-ORDER BY channel, col_name, d_year, d_qoy, i_category
-limit 100;
-
-
--- query 77
-with ss as
- (select s_store_sk,
-         sum(ss_ext_sales_price) as sales,
-         sum(ss_net_profit) as profit
- from store_sales,
-      date_dim,
-      store
- where ss_sold_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date) 
-                  and date_add(cast('2000-08-23' as date),  30)
-       and ss_store_sk = s_store_sk
- group by s_store_sk)
- ,
- sr as
- (select s_store_sk,
-         sum(sr_return_amt) as returns,
-         sum(sr_net_loss) as profit_loss
- from store_returns,
-      date_dim,
-      store
- where sr_returned_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and date_add(cast('2000-08-23' as date),  30)
-       and sr_store_sk = s_store_sk
- group by s_store_sk), 
- cs as
- (select cs_call_center_sk,
-        sum(cs_ext_sales_price) as sales,
-        sum(cs_net_profit) as profit
- from catalog_sales,
-      date_dim
- where cs_sold_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and date_add(cast('2000-08-23' as date),  30)
- group by cs_call_center_sk 
- ), 
- cr as
- (select cr_call_center_sk,
-         sum(cr_return_amount) as returns,
-         sum(cr_net_loss) as profit_loss
- from catalog_returns,
-      date_dim
- where cr_returned_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and date_add(cast('2000-08-23' as date),  30)
- group by cr_call_center_sk
- ), 
- ws as
- ( select wp_web_page_sk,
-        sum(ws_ext_sales_price) as sales,
-　sum(ws_net_profit) as profit
- from web_sales,
-      date_dim,
-      web_page
- where ws_sold_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and date_add(cast('2000-08-23' as date),  30)
-       and ws_web_page_sk = wp_web_page_sk
- group by wp_web_page_sk), 
- wr as
- (select wp_web_page_sk,
-        sum(wr_return_amt) as returns,
-        sum(wr_net_loss) as profit_loss
- from web_returns,
-      date_dim,
-      web_page
- where wr_returned_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and date_add(cast('2000-08-23' as date),  30)
-       and wr_web_page_sk = wp_web_page_sk
- group by wp_web_page_sk)
-  select  channel
-        , id
-        , sum(sales) as sales
-        , sum(returns) as returns
-        , sum(profit) as profit
- from 
- (select 'store channel' as channel
-        , ss.s_store_sk as id
-        , sales
-        , coalesce(returns, 0) as returns
-        , (profit - coalesce(profit_loss,0)) as profit
- from   ss left join sr
-        on  ss.s_store_sk = sr.s_store_sk
- union all
- select 'catalog channel' as channel
-        , cs_call_center_sk as id
-        , sales
-        , returns
-        , (profit - profit_loss) as profit
- from  cs
-       , cr
- union all
- select 'web channel' as channel
-        , ws.wp_web_page_sk as id
-        , sales
-        , coalesce(returns, 0) returns
-        , (profit - coalesce(profit_loss,0)) as profit
- from   ws left join wr
-        on  ws.wp_web_page_sk = wr.wp_web_page_sk
- ) x
- group by rollup (channel, id)
- order by channel
-         ,id
- limit 100;
-
-
--- query 78
-with ws as
-  (select d_year AS ws_sold_year, ws_item_sk,
-    ws_bill_customer_sk ws_customer_sk,
-    sum(ws_quantity) ws_qty,
-    sum(ws_wholesale_cost) ws_wc,
-    sum(ws_sales_price) ws_sp
-   from web_sales
-   left join web_returns on wr_order_number=ws_order_number and ws_item_sk=wr_item_sk
-   join date_dim on ws_sold_date_sk = d_date_sk
-   where wr_order_number is null
-   group by d_year, ws_item_sk, ws_bill_customer_sk
-   ),
-cs as
-  (select d_year AS cs_sold_year, cs_item_sk,
-    cs_bill_customer_sk cs_customer_sk,
-    sum(cs_quantity) cs_qty,
-    sum(cs_wholesale_cost) cs_wc,
-    sum(cs_sales_price) cs_sp
-   from catalog_sales
-   left join catalog_returns on cr_order_number=cs_order_number and cs_item_sk=cr_item_sk
-   join date_dim on cs_sold_date_sk = d_date_sk
-   where cr_order_number is null
-   group by d_year, cs_item_sk, cs_bill_customer_sk
-   ),
-ss as
-  (select d_year AS ss_sold_year, ss_item_sk,
-    ss_customer_sk,
-    sum(ss_quantity) ss_qty,
-    sum(ss_wholesale_cost) ss_wc,
-    sum(ss_sales_price) ss_sp
-   from store_sales
-   left join store_returns on sr_ticket_number=ss_ticket_number and ss_item_sk=sr_item_sk
-   join date_dim on ss_sold_date_sk = d_date_sk
-   where sr_ticket_number is null
-   group by d_year, ss_item_sk, ss_customer_sk
-   )
- select 
-ss_sold_year, ss_item_sk, ss_customer_sk,
-round(ss_qty/(coalesce(ws_qty,0)+coalesce(cs_qty,0)),2) ratio,
-ss_qty store_qty, ss_wc store_wholesale_cost, ss_sp store_sales_price,
-coalesce(ws_qty,0)+coalesce(cs_qty,0) other_chan_qty,
-coalesce(ws_wc,0)+coalesce(cs_wc,0) other_chan_wholesale_cost,
-coalesce(ws_sp,0)+coalesce(cs_sp,0) other_chan_sales_price
-from ss
-left join ws on (ws_sold_year=ss_sold_year and ws_item_sk=ss_item_sk and ws_customer_sk=ss_customer_sk)
-left join cs on (cs_sold_year=ss_sold_year and cs_item_sk=ss_item_sk and cs_customer_sk=ss_customer_sk)
-where (coalesce(ws_qty,0)>0 or coalesce(cs_qty, 0)>0) and ss_sold_year=2000
-order by 
-  ss_sold_year, ss_item_sk, ss_customer_sk,
-  ss_qty desc, ss_wc desc, ss_sp desc,
-  other_chan_qty,
-  other_chan_wholesale_cost,
-  other_chan_sales_price,
-  ratio
-limit 100;
-
-
--- query 79
-select 
-  c_last_name,c_first_name,substr(s_city,1,30),ss_ticket_number,amt,profit
-  from
-   (select ss_ticket_number
-          ,ss_customer_sk
-          ,store.s_city
-          ,sum(ss_coupon_amt) amt
-          ,sum(ss_net_profit) profit
-    from store_sales,date_dim,store,household_demographics
-    where store_sales.ss_sold_date_sk = date_dim.d_date_sk
-    and store_sales.ss_store_sk = store.s_store_sk  
-    and store_sales.ss_hdemo_sk = household_demographics.hd_demo_sk
-    and (household_demographics.hd_dep_count = 6 or household_demographics.hd_vehicle_count > 2)
-    and date_dim.d_dow = 1
-    and date_dim.d_year in (1999,1999+1,1999+2) 
-    and store.s_number_employees between 200 and 295
-    group by ss_ticket_number,ss_customer_sk,ss_addr_sk,store.s_city) ms,customer
-    where ss_customer_sk = c_customer_sk
- order by c_last_name,c_first_name,substr(s_city,1,30), profit
-limit 100;
-
-
--- query 80
-with ssr as
- (select  s_store_id as store_id,
-          sum(ss_ext_sales_price) as sales,
-          sum(coalesce(sr_return_amt, 0)) as returns,
-          sum(ss_net_profit - coalesce(sr_net_loss, 0)) as profit
-  from store_sales left outer join store_returns on
-         (ss_item_sk = sr_item_sk and ss_ticket_number = sr_ticket_number),
-     date_dim,
-     store,
-     item,
-     promotion
- where ss_sold_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date) 
-                  and date_add(cast('2000-08-23' as date),  30)
-       and ss_store_sk = s_store_sk
-       and ss_item_sk = i_item_sk
-       and i_current_price > 50
-       and ss_promo_sk = p_promo_sk
-       and p_channel_tv = 'N'
- group by s_store_id)
- ,
- csr as
- (select  cp_catalog_page_id as catalog_page_id,
-          sum(cs_ext_sales_price) as sales,
-          sum(coalesce(cr_return_amount, 0)) as returns,
-          sum(cs_net_profit - coalesce(cr_net_loss, 0)) as profit
-  from catalog_sales left outer join catalog_returns on
-         (cs_item_sk = cr_item_sk and cs_order_number = cr_order_number),
-     date_dim,
-     catalog_page,
-     item,
-     promotion
- where cs_sold_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and date_add(cast('2000-08-23' as date),  30)
-        and cs_catalog_page_sk = cp_catalog_page_sk
-       and cs_item_sk = i_item_sk
-       and i_current_price > 50
-       and cs_promo_sk = p_promo_sk
-       and p_channel_tv = 'N'
-group by cp_catalog_page_id)
- ,
- wsr as
- (select  web_site_id,
-          sum(ws_ext_sales_price) as sales,
-          sum(coalesce(wr_return_amt, 0)) as returns,
-          sum(ws_net_profit - coalesce(wr_net_loss, 0)) as profit
-  from web_sales left outer join web_returns on
-         (ws_item_sk = wr_item_sk and ws_order_number = wr_order_number),
-     date_dim,
-     web_site,
-     item,
-     promotion
- where ws_sold_date_sk = d_date_sk
-       and d_date between cast('2000-08-23' as date)
-                  and date_add(cast('2000-08-23' as date),  30)
-        and ws_web_site_sk = web_site_sk
-       and ws_item_sk = i_item_sk
-       and i_current_price > 50
-       and ws_promo_sk = p_promo_sk
-       and p_channel_tv = 'N'
-group by web_site_id)
-  select  channel
-        , id
-        , sum(sales) as sales
-        , sum(returns) as returns
-        , sum(profit) as profit
- from 
- (select 'store channel' as channel
-        , 'store' || store_id as id
-        , sales
-        , returns
-        , profit
- from   ssr
- union all
- select 'catalog channel' as channel
-```plaintext
- ', 'catalog_page' || catalog_page_id as id
+```sql
+      + {T}
+      + {T}
+    + {T}
+  + {T}
+```
+```sql
+     + {R}
+     + {R}
+    + {R}
+  + {R}
+```
+```sql
+     + {T}
+     + {T}
+    + {T}
+  + {T}
+```
+        , 'catalog_page' || catalog_page_id as id
         , sales
         , returns
         , profit
@@ -4039,7 +3503,7 @@ group by web_site_id)
  limit 100;
 
 
--- query 81
+-- クエリ81
 with customer_total_return as
  (select cr_returning_customer_sk as ctr_customer_sk
         ,ca_state as ctr_state, 
@@ -4070,7 +3534,7 @@ with customer_total_return as
  limit 100;
 
 
--- query 82
+-- クエリ82
 select  i_item_id
        ,i_item_desc
        ,i_current_price
@@ -4087,7 +3551,7 @@ select  i_item_id
  limit 100;
 
 
--- query 83
+-- クエリ83
 with sr_items as
  (select i_item_id item_id,
         sum(sr_return_quantity) sr_item_qty
@@ -4133,7 +3597,7 @@ with sr_items as
     where d_week_seq in 
         (select d_week_seq
         from date_dim
-      where d_date in ('2000-06-30','2000-09-27','2000-11-17')))
+        where d_date in ('2000-06-30','2000-09-27','2000-11-17')))
  and   wr_returned_date_sk   = d_date_sk
  group by i_item_id)
   select  sr_items.item_id
@@ -4154,7 +3618,7 @@ with sr_items as
  limit 100;
 
 
--- query 84
+-- クエリ84
 select  c_customer_id as customer_id
        , coalesce(c_last_name,'') || ', ' || coalesce(c_first_name,'') as customername
  from customer
@@ -4175,7 +3639,7 @@ select  c_customer_id as customer_id
  limit 100;
 
 
--- query 85
+-- クエリ85
 select  substr(r_reason_desc,1,20)
        ,avg(ws_quantity)
        ,avg(wr_refunded_cash)
@@ -4259,7 +3723,7 @@ order by substr(r_reason_desc,1,20)
 limit 100;
 
 
--- query 86
+-- クエリ86
 select   
     sum(ws_net_paid) as total_sum
    ,i_category
@@ -4272,22 +3736,20 @@ select
  from
     web_sales
    ,date_dim       d1
-```
-```sql
-   ,item
- where
+、item
+where
     d1.d_month_seq between 1200 and 1200+11
- and d1.d_date_sk = ws_sold_date_sk
- and i_item_sk  = ws_item_sk
- group by rollup(i_category,i_class)
- order by
-   lochierarchy desc,
-   case when lochierarchy = 0 then i_category end,
-   rank_within_parent
- limit 100;
+    and d1.d_date_sk = ws_sold_date_sk
+    and i_item_sk  = ws_item_sk
+group by rollup(i_category,i_class)
+order by
+    lochierarchy desc,
+    case when lochierarchy = 0 then i_category end,
+    rank_within_parent
+limit 100;
 
 
--- クエリ87
+-- クエリ 87
 select count(*) 
 from ((select distinct c_last_name, c_first_name, d_date
        from store_sales, date_dim, customer
@@ -4310,7 +3772,7 @@ from ((select distinct c_last_name, c_first_name, d_date
 ;
 
 
--- クエリ88
+-- クエリ 88
 select  *
 from
  (select count(*) h8_30_to_9
@@ -4404,7 +3866,7 @@ from
 ;
 
 
--- クエリ89
+-- クエリ 89
 select  *
 from(
 select i_category, i_class, i_brand,
@@ -4432,30 +3894,30 @@ order by sum_sales - avg_monthly_sales, s_store_name
 limit 100;
 
 
--- クエリ90
+-- クエリ 90
 select  cast(amc as decimal(15,4))/cast(pmc as decimal(15,4)) am_pm_ratio
  from ( select count(*) amc
        from web_sales, household_demographics , time_dim, web_page
        where ws_sold_time_sk = time_dim.t_time_sk
-```
 ```sql
-         、ws_ship_hdemo_sk = household_demographics.hd_demo_sk
-         、ws_web_page_sk = web_page.wp_web_page_sk
-         、time_dim.t_hour between 8 and 8+1
-         、household_demographics.hd_dep_count = 6
-         、web_page.wp_char_count between 5000 and 5200) at,
-      (web_sales、household_demographics , time_dim, web_pageからのselect count(*) pmc
+         and ws_ship_hdemo_sk = household_demographics.hd_demo_sk
+         and ws_web_page_sk = web_page.wp_web_page_sk
+         and time_dim.t_hour between 8 and 8+1
+         and household_demographics.hd_dep_count = 6
+         and web_page.wp_char_count between 5000 and 5200) at,
+      ( select count(*) pmc
+       from web_sales, household_demographics , time_dim, web_page
        where ws_sold_time_sk = time_dim.t_time_sk
-         、ws_ship_hdemo_sk = household_demographics.hd_demo_sk
-         、ws_web_page_sk = web_page.wp_web_page_sk
-         、time_dim.t_hour between 19 and 19+1
-         、household_demographics.hd_dep_count = 6
-         、web_page.wp_char_count between 5000 and 5200) pt
+         and ws_ship_hdemo_sk = household_demographics.hd_demo_sk
+         and ws_web_page_sk = web_page.wp_web_page_sk
+         and time_dim.t_hour between 19 and 19+1
+         and household_demographics.hd_dep_count = 6
+         and web_page.wp_char_count between 5000 and 5200) pt
  order by am_pm_ratio
  limit 100;
 
 
--- クエリ91
+-- query 91
 select  
         cc_call_center_id Call_Center,
         cc_name Call_Center_Name,
@@ -4479,14 +3941,14 @@ and     ca_address_sk           = c_current_addr_sk
 and     d_year                  = 1998 
 and     d_moy                   = 11
 and     ( (cd_marital_status       = 'M' and cd_education_status     = 'Unknown')
-        または(cd_marital_status       = 'W' and cd_education_status     = 'Advanced Degree'))
+        or(cd_marital_status       = 'W' and cd_education_status     = 'Advanced Degree'))
 and     hd_buy_potential like 'Unknown%'
 and     ca_gmt_offset           = -7
 group by cc_call_center_id,cc_name,cc_manager,cd_marital_status,cd_education_status
 order by sum(cr_net_loss) desc;
 
 
--- クエリ92
+-- query {T}
 select  
    sum(ws_ext_discount_amt)  as "Excess Discount Amount" 
 from 
@@ -4508,15 +3970,15 @@ and ws_ext_discount_amt
            ,date_dim
          WHERE 
               ws_item_sk = i_item_sk 
-          、およびd_date between '2000-01-27' and
+          and d_date between '2000-01-27' and
                              date_add(cast('2000-01-27' as date), 90)
-          、d_date_sk = ws_sold_date_sk 
+          and d_date_sk = ws_sold_date_sk 
       ) 
 order by sum(ws_ext_discount_amt)
 limit 100;
 
 
--- クエリ93
+-- query {T}
 select  ss_customer_sk
             ,sum(act_sales) sumsales
       from (select ss_item_sk
@@ -4525,16 +3987,16 @@ select  ss_customer_sk
                   ,case when sr_return_quantity is not null then (ss_quantity-sr_return_quantity)*ss_sales_price
                                                             else (ss_quantity*ss_sales_price) end act_sales
             from store_sales left outer join store_returns on (sr_item_sk = ss_item_sk
-                                                               、およびsr_ticket_number = ss_ticket_number)
+                                                               and sr_ticket_number = ss_ticket_number)
                 ,reason
             where sr_reason_sk = r_reason_sk
-              及びr_reason_desc = 'reason 28') t
+              and r_reason_desc = 'reason 28') t
       group by ss_customer_sk
       order by sumsales, ss_customer_sk
 limit 100;
 
 
--- クエリ94
+-- query {T}
 select  
    count(distinct ws_order_number) as "order count"
   ,sum(ws_ext_ship_cost) as "total shipping cost"
@@ -4555,7 +4017,7 @@ and web_company_name = 'pri'
 and exists (select *
             from web_sales ws2
             where ws1.ws_order_number = ws2.ws_order_number
-              、及びws1.ws_warehouse_sk <> ws2.ws_warehouse_sk)
+              and ws1.ws_warehouse_sk <> ws2.ws_warehouse_sk)
 and not exists(select *
                from web_returns wr1
                where ws1.ws_order_number = wr1.wr_order_number)
@@ -4563,12 +4025,12 @@ order by count(distinct ws_order_number)
 limit 100;
 
 
--- クエリ95
+-- query {T}
 with ws_wh as
 (select ws1.ws_order_number,ws1.ws_warehouse_sk wh1,ws2.ws_warehouse_sk wh2
  from web_sales ws1,web_sales ws2
- 、where ws1.ws_order_number = ws2.ws_order_number
-   及びws1.ws_warehouse_sk <> ws2.ws_warehouse_sk)
+ where ws1.ws_order_number = ws2.ws_order_number
+   and ws1.ws_warehouse_sk <> ws2.ws_warehouse_sk)
  select  
    count(distinct ws_order_number) as "order count"
   ,sum(ws_ext_ship_cost) as "total shipping cost"
@@ -4579,13 +4041,12 @@ from
   ,customer_address
   ,web_site
 where
-    d_date between '1999-2-01' 及び
+    d_date between '1999-2-01' and 
            date_add(cast('1999-2-01' as date), 60)
 and ws1.ws_ship_date_sk = d_date_sk
 and ws1.ws_ship_addr_sk = ca_address_sk
 and ca_state = 'IL'
 and ws1.ws_web_site_sk = web_site_sk
-and web_company_name = 'pri'
 and ws1.ws_order_number in (select ws_order_number
                             from ws_wh)
 and ws1.ws_order_number in (select wr_order_number
@@ -4595,29 +4056,29 @@ order by count(distinct ws_order_number)
 limit 100;
 
 
--- クエリ96
+-- query {T}
 select  count(*) 
 from store_sales
     ,household_demographics 
-  、time_dim, store
+    ,time_dim, store
 where ss_sold_time_sk = time_dim.t_time_sk   
-    及びss_hdemo_sk = household_demographics.hd_demo_sk 
-    及びss_store_sk = s_store_sk
-    及びtime_dim.t_hour = 20
-    及びtime_dim.t_minute >= 30
-    及びhousehold_demographics.hd_dep_count = 7
-    及びstore.s_store_name = 'ese'
+    and ss_hdemo_sk = household_demographics.hd_demo_sk 
+    and ss_store_sk = s_store_sk
+    and time_dim.t_hour = 20
+    and time_dim.t_minute >= 30
+    and household_demographics.hd_dep_count = 7
+    and store.s_store_name = 'ese'
 order by count(*)
 limit 100;
 
 
--- クエリ97
+-- query {T}
 with ssci as (
 select ss_customer_sk customer_sk
       ,ss_item_sk item_sk
 from store_sales,date_dim
 where ss_sold_date_sk = d_date_sk
-  及びd_month_seq between 1200 及び 1200 + 11
+  and d_month_seq between 1200 and 1200 + 11
 group by ss_customer_sk
         ,ss_item_sk),
 csci as(
@@ -4625,18 +4086,18 @@ csci as(
       ,cs_item_sk item_sk
 from catalog_sales,date_dim
 where cs_sold_date_sk = d_date_sk
-  及びd_month_seq between 1200 及び 1200 + 11
+  and d_month_seq between 1200 and 1200 + 11
 group by cs_bill_customer_sk
         ,cs_item_sk)
- select  sum(case when ssci.customer_sk is not null 及びcsci.customer_sk is null then 1 else 0 end) store_only
-      ,sum(case when ssci.customer_sk is null 及びcsci.customer_sk is not null then 1 else 0 end) catalog_only
-      ,sum(case when ssci.customer_sk is not null 及びcsci.customer_sk is not null then 1 else 0 end) store_and_catalog
+ select  sum(case when ssci.customer_sk is not null and csci.customer_sk is null then 1 else 0 end) store_only
+      ,sum(case when ssci.customer_sk is null and csci.customer_sk is not null then 1 else 0 end) catalog_only
+      ,sum(case when ssci.customer_sk is not null and csci.customer_sk is not null then 1 else 0 end) store_and_catalog
 from ssci full outer join csci on (ssci.customer_sk=csci.customer_sk
-                               、及びssci.item_sk = csci.item_sk)
+                               and ssci.item_sk = csci.item_sk)
 limit 100;
 
 
--- クエリ98
+-- query {T}
 select i_item_id
       ,i_item_desc 
       ,i_category 
@@ -4651,10 +4112,10 @@ from
         ,date_dim
 where 
     ss_item_sk = i_item_sk 
-    及びi_category in ('Sports', 'Books', 'Home')
-    及びss_sold_date_sk = d_date_sk
-    及びd_date between cast('1999-02-22' as date) 
-            及びdate_add(cast('1999-02-22' as date), 30)
+    and i_category in ('Sports', 'Books', 'Home')
+    and ss_sold_date_sk = d_date_sk
+    and d_date between cast('1999-02-22' as date) 
+            and date_add(cast('1999-02-22' as date), 30)
 group by 
     i_item_id
         ,i_item_desc 
@@ -4666,10 +4127,10 @@ order by
         ,i_class
         ,i_item_id
         ,i_item_desc
-        及びrevenueratio;
+        ,revenueratio;
 
 
--- クエリ99
+-- query {T}
 select  
    substr(w_warehouse_name,1,20)
   ,sm_type
@@ -4677,13 +4138,13 @@ select
   ,sum(case when (cs_ship_date_sk - cs_sold_date_sk <= 30 ) then 1 else 0 end)  as "30 days" 
 ```
 ```
-   ,sum(case when (cs_ship_date_sk - cs_sold_date_sk > 30) and 
+    ,sum(case when (cs_ship_date_sk - cs_sold_date_sk > 30) and 
                  (cs_ship_date_sk - cs_sold_date_sk <= 60) then 1 else 0 end )  as "31-60 days" 
-   ,sum(case when (cs_ship_date_sk - cs_sold_date_sk > 60) and 
+    ,sum(case when (cs_ship_date_sk - cs_sold_date_sk > 60) and 
                  (cs_ship_date_sk - cs_sold_date_sk <= 90) then 1 else 0 end)  as "61-90 days" 
-   ,sum(case when (cs_ship_date_sk - cs_sold_date_sk > 90) and
+    ,sum(case when (cs_ship_date_sk - cs_sold_date_sk > 90) and
                  (cs_ship_date_sk - cs_sold_date_sk <= 120) then 1 else 0 end)  as "91-120 days" 
-   ,sum(case when (cs_ship_date_sk - cs_sold_date_sk  > 120) then 1 else 0 end)  as ">120 days" 
+    ,sum(case when (cs_ship_date_sk - cs_sold_date_sk  > 120) then 1 else 0 end)  as ">120 days" 
 from
    catalog_sales
   ,warehouse

@@ -14,7 +14,7 @@ displayed_sidebar: "Japanese"
 FLOOR(x);
 ```
 
-## パラメータ
+## パラメーター
 
 `x`: DOUBLE がサポートされています。
 

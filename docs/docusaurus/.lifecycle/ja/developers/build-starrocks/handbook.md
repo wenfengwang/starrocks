@@ -4,50 +4,54 @@ displayed_sidebar: "Japanese"
 
 # StarRocksのビルド方法
 
-一般的には、以下を実行することでStarRocksをビルドすることができます
+一般的には、StarRocksは次のコマンドを実行するだけでビルドできます。
 
 ```
 ./build.sh
 ```
 
-このコマンドはまずすべてのサードパーティ依存関係が準備できているかをチェックします。依存関係がすべて準備できている場合、StarRocksの`Backend`と`Frontend`をビルドします。
+このコマンドはまず、すべてのサードパーティの依存関係が準備されているかどうかをチェックします。すべての依存関係が準備されている場合、StarRocksの `Backend` と `Frontend` をビルドします。
 
-このコマンドが正常に実行された場合、生成されたバイナリは`output`ディレクトリにあります。
+このコマンドが正常に実行された場合、生成されたバイナリは `output` ディレクトリに保存されます。
 
 ## FE/BEを別々にビルドする方法
 
 毎回FEとBEの両方をビルドする必要はありません。それぞれを個別にビルドすることができます。
-たとえば、BEのみをビルドする場合は次のようにします
+例えば、次のようにしてBEのみをビルドすることができます。
+
 ```
 ./build.sh --be
 ```
 
-そして、FEのみをビルドする場合は次のようにします
+そして、次のようにしてFEのみをビルドできます。
+
 ```
 ./build.sh --fe
 ```
 
 # ユニットテストの実行方法
 
-BEとFEのユニットテストは別々になっています。一般的には、BEのテストは次のように実行できます
+BEとFEのユニットテストは分かれています。一般的には、BEのテストは次のコマンドで実行できます。
+
 ```
 ./run-be-ut.sh
 ```
 
-FEのテストは次のように実行できます
+FEのテストは次のように実行できます。
+
 ```
 ./run-fe-ut.sh
 ```
 
-## コマンドラインでBE UTを実行する方法
+## コマンドラインでBEのUTを実行する方法
 
-現在、BE UTを実行するためにはいくつかの依存関係が必要であり、`./run-be-ut.sh`がそれを助けます。しかし、これでは柔軟性に欠けます。コマンドラインでUTを実行したい場合は、次のように実行します
+現在、BEのUTは実行するためにいくつかの依存関係が必要で、`./run-be-ut.sh` がそれを手助けします。ただし、これには柔軟性がありません。コマンドラインでUTを実行したい場合は、次のように実行できます。
 
 ```
 UDF_RUNTIME_DIR=./ STARROCKS_HOME=./ LD_LIBRARY_PATH=/usr/lib/jvm/java-18-openjdk-amd64/lib/server ./be/ut_build_ASAN/test/starrocks_test
 ```
 
-StarRocks Backend UTはgoogle-testに基づいて構築されているため、いくつかのUTを実行するためにフィルタを渡すことができます。たとえば、MapColumnに関連するテストのみを実行したい場合は、次のように実行します
+StarRocks Backend UTはgoogle-testをベースにして構築されているため、UTの一部を実行するためのフィルタを渡すことができます。例えば、MapColumnに関連するテストのみを実行したい場合は、次のように実行できます。
 
 ```
 UDF_RUNTIME_DIR=./ STARROCKS_HOME=./ LD_LIBRARY_PATH=/usr/lib/jvm/java-18-openjdk-amd64/lib/server ./be/ut_build_ASAN/test/starrocks_test --gtest_filter="*MapColumn*"
@@ -57,30 +61,31 @@ UDF_RUNTIME_DIR=./ STARROCKS_HOME=./ LD_LIBRARY_PATH=/usr/lib/jvm/java-18-openjd
 
 ## clangを使用してビルドする
 
-`clang`を使用してStarRocksをビルドすることもできます
+StarRocksは `clang` を使用してもビルドできます。
 
 ```
 CC=clang CXX=clang++ ./build.sh --be
 ```
 
-すると、ビルドメッセージに以下と類似したメッセージが表示されます
+その後、ビルドメッセージで以下のような似たようなメッセージが表示されます。
 
 ```
 -- compiler Clang version 14.0.0
 ```
 
-## 異なるリンカを使用してビルドする
+## 異なるリンカーを使用してビルドする
 
-デフォルトのリンカは遅いため、開発者はリンクを高速化するために異なるリンカを指定することができます。
-たとえば、LLVMベースのリンカである`lld`を使用することができます。
+デフォルトのリンカーは遅いため、開発者はリンクを高速化するために異なるリンカーを指定することができます。
+例えば、LLVMベースのリンカーである `lld` を使用することができます。
 
-まず、`lld`をインストールする必要があります。
+まず、`lld` をインストールする必要があります。
 
 ```
 sudo apt install lld
 ```
-次に、環境変数STARROCKS_LINKERに使用したいリンカを設定します。
-たとえば：
+
+その後、希望するリンカーを環境変数 STARROCKS_LINKER で設定します。
+例えば：
 
 ```
 STARROCKS_LINKER=lld ./build.sh --be
@@ -88,7 +93,8 @@ STARROCKS_LINKER=lld ./build.sh --be
 
 ## 異なるタイプでビルドする
 
-異なるBUILD_TYPE変数を使用して異なるタイプでStarRocksをビルドすることができます。デフォルトのBUILD_TYPEは`RELEASE`です。たとえば、`ASAN`タイプでStarRocksをビルドする場合は次のようにします
+異なるBUILD_TYPE変数を使用して、異なるタイプでStarRocksをビルドすることができます。デフォルトのBUILD_TYPEは `RELEASE` です。例えば、次のようにして `ASAN` タイプでStarRocksをビルドすることができます。
+
 ```
 BUILD_TYPE=ASAN ./build.sh --be
 ```

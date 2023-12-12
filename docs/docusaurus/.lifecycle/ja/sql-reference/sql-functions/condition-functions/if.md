@@ -1,31 +1,30 @@
-```markdown
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # if
 
-## Description
+## 説明
 
-`expr1` が TRUE を評価する場合、`expr2` を返します。それ以外の場合は、`expr3` を返します。
+`expr1` が TRUE に評価される場合、`expr2` を返します。それ以外の場合は、`expr3` を返します。
 
-## Syntax
+## 構文
 
 ```Haskell
-if(expr1, expr2, expr3);
+if(expr1,expr2,expr3);
 ```
 
-## Parameters
+## パラメーター
 
-`expr1`: 条件。BOOLEAN 値でなければなりません。
+`expr1`：条件です。BOOLEAN値である必要があります。
 
-`expr2` および `expr3`: データ型が互換性がある必要があります。
+`expr2` と `expr3` はデータ型互換である必要があります。
 
-## Return value
+## 戻り値
 
 戻り値の型は `expr2` と同じです。
 
-## Examples
+## 例
 
 ```Plain Text
 mysql> select if(true,1,2);

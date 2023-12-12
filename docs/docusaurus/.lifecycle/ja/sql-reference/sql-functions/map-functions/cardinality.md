@@ -1,14 +1,14 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "英語"
 ---
 
 # カーディナリティ
 
 ## 説明
 
-MAP値の要素数を返します。MAPは、例えば`{"a":1, "b":2}`のようなキーと値のペアの順序なしコレクションです。1つのキーと値のペアが1つの要素を構成します。`{"a":1, "b":2}`には2つの要素が含まれています。
+MAP値の要素数を返します。MAPはキーと値のペアの順序不定のコレクションで、例えば `{"a":1, "b":2}` のようです。1つのキーと値のペアが1つの要素を構成します。`{"a":1, "b":2}` には2つの要素が含まれています。
 
-この関数はv3.0以降でサポートされています。これは[map_size()](map_size.md)のエイリアスです。
+この関数はv3.0以降でサポートされています。[map_size()](map_size.md)の別名です。
 
 ## 構文
 
@@ -16,9 +16,9 @@ MAP値の要素数を返します。MAPは、例えば`{"a":1, "b":2}`のよう�
 INT cardinality(any_map)
 ```
 
-## パラメーター
+## パラメータ
 
-`any_map`: 要素数を取得したいMAPの値。
+`any_map`: 要素数を取得したいMAP値。
 
 ## 戻り値
 
@@ -26,13 +26,13 @@ INT値の値を返します。
 
 入力がNULLの場合、NULLが返されます。
 
-MAPの値のキーまたは値がNULLの場合、NULLは通常の値として処理されます。
+MAP値のキーまたは値がNULLの場合、NULLは通常の値として処理されます。
 
 ## 例
 
-### StarRocksネイティブテーブルからMAPデータをクエリする
+### StarRocksのネイティブテーブルからMAPデータをクエリする
 
-v3.1以降、StarRocksではテーブルを作成する際にMAP列を定義することがサポートされています。この例では、以下のデータを含む`test_map`テーブルが使用されています。
+v3.1以降、StarRocksはテーブルを作成するときにMAP列を定義することをサポートしています。この例では、以下のデータを含むテーブル `test_map` を使用しています：
 
 ```Plain
 CREATE TABLE test_map(
@@ -54,7 +54,7 @@ SELECT * FROM test_map ORDER BY col_int;
 |       2 | {"c":3}       |
 |       3 | {"d":4,"e":5} |
 +---------+---------------+
-3 rows in set (0.05 sec)
+3行セット (0.05 秒)
 ```
 
 `col_map`列の各行の要素数を取得します。
@@ -68,12 +68,12 @@ select cardinality(col_map) from test_map order by col_int;
 |                    1 |
 |                    2 |
 +----------------------+
-3 rows in set (0.05 sec)
+3行セット (0.05 秒)
 ```
 
-### データレイクからMAPデータをクエリする
+### データレイクからのMAPデータをクエリする
 
-この例では、以下のデータを含むHiveテーブル`hive_map`が使用されています。
+この例では、以下のデータを含むHive表 `hive_map` を使用しています：
 
 ```Plaintext
 SELECT * FROM hive_map ORDER BY col_int;
@@ -86,7 +86,7 @@ SELECT * FROM hive_map ORDER BY col_int;
 +---------+---------------+
 ```
 
-[Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog)がクラスターに作成された後、このカタログとcardinality()関数を使用して`col_map`列の各行の要素数を取得できます。
+クラスターに [Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog) が作成された後、このカタログとcardinality()関数を使用して、`col_map`列の各行の要素数を取得することができます。
 
 ```Plaintext
 SELECT cardinality(col_map) FROM hive_map ORDER BY col_int;
@@ -97,5 +97,5 @@ SELECT cardinality(col_map) FROM hive_map ORDER BY col_int;
 |                    1 |
 |                    2 |
 +----------------------+
-3 rows in set (0.05 sec)
+3行セット (0.05 秒)
 ```

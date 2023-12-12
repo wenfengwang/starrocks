@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 `session_variables`はセッション変数に関する情報を提供します。
 
-`session_variables`には、次のフィールドが提供されています：
+`session_variables`には次のフィールドが含まれています：
 
 | **Field**      | **Description**        |
 | -------------- | ---------------------- |

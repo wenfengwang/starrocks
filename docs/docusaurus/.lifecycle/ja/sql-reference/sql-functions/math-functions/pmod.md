@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-`dividend`を`divisor`で割ったときの正の剰余を返します。
+`dividend`を`divisor`で割ったときの正の余りを返します。
 
 ## 構文
 
@@ -19,16 +19,16 @@ pmod(dividend, divisor)
 - `dividend`: 割られる数。
 - `divisor`: 割る数。
 
-`arg1`および`arg2`は以下のデータ型に対応しています。
+`dividend`と`divisor`は以下のデータ型をサポートしています。
 
 - BIGINT
 - DOUBLE
 
 > **注意**
 >
-> `dividend`および`divisor`はデータ型で一致している必要があります。一致していない場合、StarRocksは暗黙の変換を行います。
+> `dividend`と`divisor`のデータ型は一致している必要があります。StarRocksは、データ型が一致していない場合には暗黙的な変換を行います。
 
-## 戻り値
+## 返り値
 
 `dividend`と同じデータ型の値を返します。`divisor`が0で指定された場合、StarRocksはNULLを返します。
 

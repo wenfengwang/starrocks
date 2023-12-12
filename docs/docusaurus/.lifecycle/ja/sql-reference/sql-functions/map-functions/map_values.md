@@ -16,21 +16,21 @@ displayed_sidebar: "Japanese"
 map_values(any_map)
 ```
 
-## パラメーター
+## パラメータ
 
-`any_map`: 値を取得したいMAP値。
+`any_map`: 値を取得したいMAP値です。
 
 ## 戻り値
 
-戻り値は `array<valueType>` の形式です。配列内の要素の型はマップ内の値の型と一致します。
+戻り値は`array<valueType>`の形式です。配列内の要素の型は、マップ内の値の型と一致します。
 
-入力がNULLの場合、NULLが返されます。MAPのキーまたは値がNULLの場合、NULLは通常の値として処理され、結果に含まれます。
+入力がNULLの場合、NULLが返されます。マップ値内のキーまたは値がNULLの場合、NULLは通常の値として処理され、結果に含まれます。
 
 ## 例
 
-### StarRocksネイティブテーブルからMAPデータをクエリ
+### StarRocksネイティブテーブルからのMAPデータのクエリ
 
-v3.1以降、StarRocksではテーブルを作成する際にMAP列を定義することがサポートされています。この例では、以下のデータを含む`test_map`テーブルを使用しています。
+v3.1以降、StarRocksではテーブル作成時にMAP列を定義することがサポートされています。この例では、以下のデータを含む`test_map`というテーブルを使用します。
 
 ```Plain
 CREATE TABLE test_map(
@@ -69,9 +69,9 @@ select map_values(col_map) from test_map order by col_int;
 3 rows in set (0.04 sec)
 ```
 
-### データレイクからMAPデータをクエリ
+### データレイクからのMAPデータのクエリ
 
-この例では、Hiveテーブル`hive_map`を使用しています。
+この例では、以下のデータを含むHiveテーブル`hive_map`を使用します。
 
 ```Plaintext
 SELECT * FROM hive_map ORDER BY col_int;
@@ -84,7 +84,7 @@ SELECT * FROM hive_map ORDER BY col_int;
 +---------+---------------+
 ```
 
-[Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog)がクラスター内に作成された後、このカタログと`map_values()`関数を使用して、`col_map`列の各行からすべての値を取得できます。
+[Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog)をクラスタに作成した後、このカタログとmap_values()関数を使用して、`col_map`列の各行からすべての値を取得できます。
 
 ```SQL
 select map_values(col_map) from hive_map order by col_int;

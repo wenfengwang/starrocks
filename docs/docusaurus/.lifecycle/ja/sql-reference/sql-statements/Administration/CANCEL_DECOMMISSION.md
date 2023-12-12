@@ -2,13 +2,13 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ノードの運用停止を取り消す
+# デコミッションのキャンセル
 
 ## 説明
 
-この文は、ノードの運用停止を取り消すために使用されます。 (管理者のみ!)
+このステートメントは、ノードのデコミッションを取り消すために使用されます。（管理者のみ！）
 
-構文:
+構文：
 
 ```sql
 CANCEL DECOMMISSION BACKEND "<host>:<heartbeat_port>"[,"<host>:<heartbeat_port>"...]
@@ -16,8 +16,8 @@ CANCEL DECOMMISSION BACKEND "<host>:<heartbeat_port>"[,"<host>:<heartbeat_port>"
 
 ## 例
 
-1. 2つのノードの運用停止を取り消す。
+1. 2つのノードのデコミッションをキャンセルします。
 
     ```sql
-    CANCEL DECOMMISSION BACKEND "ホスト1:ポート", "ホスト2:ポート";
+    CANCEL DECOMMISSION BACKEND "host1:port", "host2:port";
     ```

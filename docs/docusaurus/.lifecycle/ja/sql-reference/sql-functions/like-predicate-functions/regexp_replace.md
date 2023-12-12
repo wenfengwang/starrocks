@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-この関数は、正規表現パターンに一致する文字列を置換するためにreplを使用します。
+この関数は、正規表現パターンに一致するstr内の文字列をreplで置換します。
 
 ## 構文
 
@@ -34,4 +34,4 @@ MySQL > SELECT regexp_replace('a b c','(b)','<\\1>');
 
 ## キーワード
 
-REGEXP_REPLACE,REGEXP,REPLACE
+REGEXP_REPLACE, REGEXP, REPLACE

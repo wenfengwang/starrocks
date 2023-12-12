@@ -2,26 +2,26 @@
 displayed_sidebar: "Japanese"
 ---
 
-# KILL（キル）
+# KILL
 
-## 説明
+## Description
 
 StarRocks内で実行されているスレッドによって実行されている接続またはクエリを終了します。
 
-## 構文
+## Syntax
 
 ```SQL
 KILL [ CONNECTION | QUERY ] <processlist_id>
 ```
 
-## パラメータ
+## Parameters
 
-| **パラメータ**     | **説明**                                                  |
+| **Parameter**            | **Description**                                              |
 | ------------------------ | ------------------------------------------------------------ |
-| Modifier:<ul><li>CONNECTION</li><li>QUERY</li></ul> | <ul><li>「CONNECTION」修飾子を使用すると、KILLステートメントは指定された「processlist_id」と関連付けられた接続を終了し、接続が実行している任意のステートメントを終了します。</li><li>「QUERY」修飾子を使用すると、KILLステートメントは接続が現在実行しているステートメントを終了しますが、接続自体はそのままにします。</li><li>修飾子が指定されていない場合、デフォルトは「CONNECTION」です。</li></ul> |
-| processlist_id      | 終了したいスレッドのID。実行中のスレッドのIDは、[SHOW PROCESSLIST](../Administration/SHOW_PROCESSLIST.md)を使用して取得できます。 |
+| Modifier:<ul><li>CONNECTION</li><li>QUERY</li></ul> | <ul><li>`CONNECTION`修飾子を使用すると、KILLステートメントは指定された`processlist_id`に関連付けられた接続を終了し、接続が実行しているステートメントを終了します。</li><li>`QUERY`修飾子を使用すると、KILLステートメントは接続が現在実行しているステートメントを終了しますが、接続自体はそのままにします。</li><li>修飾子が指定されていない場合、デフォルトは`CONNECTION`です。</li></ul> |
+| processlist_id           | 終了したいスレッドのID。実行中のスレッドのIDは[SHOW PROCESSLIST](../Administration/SHOW_PROCESSLIST.md)を使用して取得できます。 |
 
-## 例
+## Examples
 
 ```Plain
 mysql> SHOW FULL PROCESSLIST;

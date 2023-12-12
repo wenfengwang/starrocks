@@ -6,11 +6,11 @@ displayed_sidebar: "Japanese"
 
 ## バックグラウンド
 
-ウィンドウ関数は、特別な組み込み関数の特殊なクラスです。集計関数と同様に、複数の入力行に対して計算を行い、単一のデータ値を取得します。違いは、ウィンドウ関数が「group by」方法ではなく、特定のウィンドウ内で入力データを処理する点です。各ウィンドウ内のデータは、over()句を使用してソートおよびグループ化することができます。ウィンドウ関数は**各行に個別の値を計算**し、グループごとに1つの値を計算するのではなく、柔軟性があります。この柔軟性により、ユーザーは選択節に追加の列を追加し、さらに結果セットをフィルタリングすることができます。ウィンドウ関数は選択リストと節の最も外側の位置にのみ表示されます。それはクエリの最後、つまり`join`、`where`、`group by`操作が行われた後に効果を発揮します。ウィンドウ関数は、大規模なデータにトレンドを分析したり、外れ値を計算したり、バケット分析を行うためによく使用されます。
+ウィンドウ関数は、特別な組み込み関数の特別なクラスです。 集約関数と同様に、複数の入力行に対して計算を行い、単一のデータ値を取得します。 違いは、ウィンドウ関数が「グループ化」メソッドを使用するのではなく、特定のウィンドウ内で入力データを処理する点です。 各ウィンドウのデータは、over()句を使用してソートおよびグループ化できます。 ウィンドウ関数は、グループごとに1つの値を計算するのではなく、**各行ごとに個別の値を計算**します。 この柔軟性により、ユーザーは選択句に追加の列を追加し、さらに結果セットをフィルタリングできます。 ウィンドウ関数は選択リストと句の最外部位置にのみ現れることができます。 ウィンドウ関数はクエリの最後に効果を発揮します。つまり、`join`、`where`、`group by`操作の後に効果を発揮します。 大規模なデータに対してトレンドを分析し、外れ値を計算し、バケット分析を実行するために、ウィンドウ関数はよく使用されます。
 
 ## 使用法
 
-ウィンドウ関数の構文は次のとおりです：
+ウィンドウ関数の構文：
 
 ```SQL
 function(args) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
@@ -20,7 +20,7 @@ order_by_clause ::= ORDER BY expr [ASC | DESC] [, expr [ASC | DESC] ...]
 
 ### 関数
 
-現在サポートされている関数は次の通りです：
+現在サポートされている関数は以下の通りです：
 
 * MIN(), MAX(), COUNT(), SUM(), AVG()
 * FIRST_VALUE(), LAST_VALUE(), LEAD(), LAG()
@@ -31,15 +31,15 @@ order_by_clause ::= ORDER BY expr [ASC | DESC] [, expr [ASC | DESC] ...]
 
 ### PARTITION BY句
 
-PARTITION BY句はGroup Byに似ています。1つまたは複数の指定された列によって入力行をグループ化します。同じ値を持つ行はグループ化されます。
+Partition By句はGroup Byと同様です。 指定した1つまたは複数の列によって入力行をグループ化します。 同じ値を持つ行が一緒にグループ化されます。
 
 ### ORDER BY句
 
-`Order By`句は基本的に外部の`Order By`と同じです。入力行の順序を定義します。`Partition By`が指定されている場合、`Order By`は各パーティションのグループ内での順序を定義します。唯一の違いは、`OVER`句内の`Order By n` (nは正の整数)はなにも操作を行わないことと等価であり、外部の`Order By`のnはn番目の列でのソートを示します。
+`Order By`句は基本的に外部の`Order By`と同じです。 入力行の順序を定義します。 `Partition By`が指定されている場合、`Order By`は各パーティショングループ内の順序を定義します。 唯一の違いは、`OVER`句内の`Order By n`（nは正の整数）は操作なしが相当し、外部の`Order By`の`n`はn番目の列で並べ替えを示します。
 
 例：
 
-この例では、イベントテーブルの`date_and_time`列でソートされた値が1, 2, 3などのid列を選択リストに追加しています。
+次の例は、イベントテーブルの`date_and_time`列でソートされた`id`列を選択リストに追加しています。
 
 ```SQL
 SELECT row_number() OVER (ORDER BY date_and_time) AS id,
@@ -49,16 +49,17 @@ FROM events;
 
 ### ウィンドウ句
 
-ウィンドウ句は、操作対象の行の範囲を指定するために使用されます（現在の行を基準にして前後の行）。次の構文をサポートしています：AVG()、COUNT()、FIRST_VALUE()、LAST_VALUE()、SUM()。MAX()およMIN()では、ウィンドウ句を`UNBOUNDED PRECEDING`から開始することができます。
+ウィンドウ句は操作のための行の範囲を指定するために使用されます（現在の行を基準に前後の行）。 AVG()、COUNT()、FIRST_VALUE()、LAST_VALUE()、SUM()の以下の構文をサポートしています。 MAX()およびMIN()の場合、ウィンドウ句は`UNBOUNDED PRECEDING`から始まることができます。
 
 構文：
+
 ```SQL
 ROWS BETWEEN [ { m | UNBOUNDED } PRECEDING | CURRENT ROW] [ AND [CURRENT ROW | { UNBOUNDED | n } FOLLOWING] ]
 ```
 
 例：
 
-次の株価データがあるとします。株式シンボルはJDRで、終値は日次終値です。
+以下のストックデータがあるとします。株式シンボルはJDRで、終値は日次の終値です。
 
 ```SQL
 create table stock_ticker (
@@ -73,7 +74,7 @@ from stock_ticker
 order by stock_symbol, closing_date
 ```
 
-生のデータは次のように表示されます：
+元のデータは以下の通りです：
 
 ```plaintext
 +--------------+---------------+---------------------+
@@ -89,7 +90,7 @@ order by stock_symbol, closing_date
 +--------------+---------------+---------------------+
 ```
 
-このクエリでは、ウィンドウ関数を使用して3日（前日、当日、翌日）の平均株価を生成するmoving_average列を生成しています。最初の日は前日の値を持たないため、最後の日は翌日の値を持たないため、これら2行は2日分の平均値を計算します。ここで`Partition By`は効果を持たないので、すべてのデータがJDRのデータです。しかし、他の株価情報がある場合、`Partition By`は各Partition内でウィンドウ関数が動作することを保証します。
+このクエリは、ウィンドウ関数を使用して、移動平均列を生成します。その値は3日間（前日、当日、翌日）の平均株価です。 最初の日は前日の値を持たないため、最後の日は翌日の値を持たないため、これらの値は2日間の平均値を計算します。 ここで、`Partition By`は効果を持たないため、すべてのデータがJDRデータであるためです。 ただし、他の株情報がある場合、`Partition By`により、ウィンドウ関数が各パーティション内で操作されることが保証されます。
 
 ```SQL
 select stock_symbol, closing_date, closing_price,
@@ -119,7 +120,7 @@ from stock_ticker;
 
 ## 関数の例
 
-このセクションでは、StarRocksでサポートされているウィンドウ関数について説明します。
+このセクションでは、StarRocksでサポートされているウィンドウ関数を説明します。
 
 ### AVG()
 
@@ -131,7 +132,7 @@ AVG(expr) [OVER (*analytic_clause*)]
 
 例：
 
-現在の行およびそれより前後の各行のx平均を計算します。
+現在の行とその前後の各行のx平均を計算します。
 
 ```SQL
 select x, property,
@@ -140,14 +141,14 @@ select x, property,
             partition by property
             order by x
             rows between 1 preceding and 1 following
-        ) as 'moving average'
+        ) as '移動平均'
 from int_t
 where property in ('odd','even');
 ```
 
 ```plaintext
 +----+----------+----------------+
-| x  | property | moving average |
+| x  | property | 移動平均       |
 +----+----------+----------------+
 | 2  | even     | 3              |
 | 4  | even     | 4              |
@@ -172,7 +173,7 @@ COUNT(expr) [OVER (analytic_clause)]
 
 例：
 
-現在の行から最初の行までのxの出現回数を数えます。
+現在の行から最初の行までのxの発生回数をカウントします。
 
 ```SQL
 select x, property,
@@ -181,13 +182,13 @@ select x, property,
             partition by property
             order by x
             rows between unbounded preceding and current row
-        ) as 'cumulative total'
+        ) as '累積合計'
 from int_t where property in ('odd','even');
 ```
 
 ```plaintext
 +----+----------+------------------+
-| x  | property | cumulative count |
+| x  | property | 累積合計        |
 +----+----------+------------------+
 | 2  | even     | 1                |
 | 4  | even     | 2                |
@@ -203,19 +204,19 @@ from int_t where property in ('odd','even');
 ```
 
 ### CUME_DIST()
-CUME_DIST() 関数は、パーティション内の値の累積分布を計算し、現在の行の値以下の値の割合としてその相対的な位置をパーセンテージで示します。0から1の範囲であり、パーセンタイルの計算やデータ分布解析に有用です。
+CUME_DIST() 関数は、パーティション内の値の累積分布を計算し、その相対的な位置を、現在の行の値以下の割合として示します。0から1の範囲であり、パーセンタイルの計算やデータ分布解析に有用です。
 
-構文:
+構文：
 
 ```SQL
 CUME_DIST() OVER (partition_by_clause order_by_clause)
 ```
 
-**この関数は、ORDER BYと併用して、パーティションの行を所望の順序に並べ替えるように使用する必要があります。ORDER BYを指定しない場合、全ての行は同等であり N/N = 1 の値を持つので、N がパーティションのサイズであることになります。**
+**この関数は、ORDER BYと併用して、パーティション行を希望の順序に並べ替えます。ORDER BYを使用しない場合、すべての行は等位であり、値 N/N = 1 となります。N はパーティションのサイズです。**
 
-CUME_DIST() は NULL 値を含み、これを最小値として扱います。
+CUME_DIST() は NULL 値を含み、これらを最も低い値として扱います。
 
-次の例は、列 x の各グループ内での列 y の累積分布を示しています。
+次の例は、列 y の累積分布を列 x の各グループ内で示しています。
 
 ```SQL
 SELECT x, y,
@@ -245,15 +246,15 @@ FROM int_t;
 
 ### DENSE_RANK()
 
-DENSE_RANK() 関数はランキングを表します。RANK() とは異なり、DENSE_RANK() は空き番号を持ちません。例えば、1 が 2 つある場合、DENSE_RANK() の 3 番目の数値は依然として 2 ですが、RANK() の 3 番目の数値は 3 です。
+DENSE_RANK() 関数はランキングを表すために使用されます。RANK() とは異なり、DENSE_RANK() には空き番号がありません。例えば、2つの1位がある場合、DENSE_RANK() の3番目の番号は依然として2になりますが、RANK() の3番目の番号は3になります。
 
-構文:
+構文：
 
 ```SQL
 DENSE_RANK() OVER(partition_by_clause order_by_clause)
 ```
 
-次の例は、プロパティ列のグルーピングに応じて列 x の順位を示しています。
+次の例は、プロパティ列のグルーピングに従って列 x のランキングを示しています。
 
 ```SQL
 select x, y,
@@ -283,26 +284,26 @@ from int_t;
 
 ### NTILE()
 
-NTILE() 関数は、パーティション内のソートされた行を指定された `num_buckets` の数で可能な限り均等に分割し、それぞれのバケツに分割された行を `[1, 2, ..., num_buckets]` の対応するバケツに保存し、各行が所属するバケツ番号を返します。
+NTILE() 関数は、パーティション内のソートされた行を指定された `num_buckets` の数だけできるだけ均等に分割し、分割された行をそれぞれのバケツに格納し、1 から `[1, 2, ..., num_buckets]` までのバケツ番号を返します。
 
-バケツのサイズについて:
+バケツのサイズに関して：
 
 * 行数が指定された `num_buckets` で正確に割り切れる場合、すべてのバケツのサイズは同じになります。
-* 行数が指定された `num_buckets` で正確に割り切れない場合、2 つの異なるサイズのバケツができます。サイズの差は 1 で、行数が多いバケツが少ないバケツよりも先にリストされます。
+* 行数を指定された `num_buckets` で割り切れない場合、2つの異なるサイズのバケツがあります。サイズの差は 1 です。行数が多いバケツが行数が少ないバケツよりも前にリストされます。
 
-構文:
+構文：
 
 ```SQL
 NTILE (num_buckets) OVER (partition_by_clause order_by_clause)
 ```
 
-`num_buckets`: 作成されるバケツの数。値は定数の正の整数である必要があります。最大値は `2^63 - 1` です。
+`num_buckets`: 作成するバケツの数。この値は、定数の正の整数でなければなりません。その最大値は `2^63 - 1` です。
 
-NTILE() 関数では、ウィンドウ句は許可されていません。
+NTILE() 関数ではウィンドウ節は許可されていません。
 
 NTILE() 関数は BIGINT 型のデータを返します。
 
-例:
+例：
 
 次の例では、パーティション内のすべての行を 2 つのバケツに分割します。
 
@@ -333,29 +334,29 @@ from t1;
 +------+------+------+-----------+
 ```
 
-上記の例からわかるように、`num_buckets` が `2` の場合:
+上記の例では、`num_buckets` が `2` の場合：
 
-* No.1 から No.6 の行は最初のパーティションに分類されました; No.1 から No.3 の行は最初のバケツに格納され、No.4 から No.6 の行は 2 番目のバケツに格納されました。
-* No.7 から No.9 の行は、2 番目のパーティションに分類されました; No.7 と No.8 の行は最初のバケツに格納され、No.9 の行は 2 番目のバケツに格納されました。
-* No.10 の行は第三のパーティションに分類され、最初のバケツに格納されました。
+* No.1 から No.6 の行は最初のパーティションに分類されます。No.1 から No.3 の行は最初のバケツに、No.4 から No.6 の行は 2 番目のバケツに保存されます。
+* No.7 から No.9 の行は 2 番目のパーティションに分類されます。No.7 と No.8 の行は最初のバケツに保存され、No.9 の行は 2 番目のバケツに保存されます。
+* No.10 の行は 3 番目のパーティションに分類され、最初のバケツに保存されます。
 
 <br/>
 
 ### FIRST_VALUE()
 
-FIRST_VALUE() はウィンドウ範囲の**最初の**値を返します。
+FIRST_VALUE() はウィンドウ範囲の最初の値を返します。
 
-構文:
+構文：
 
 ```SQL
 FIRST_VALUE(expr [IGNORE NULLS]) OVER(partition_by_clause order_by_clause [window_clause])
 ```
 
-`IGNORE NULLS` は v2.5.0 からサポートされています。これは、`expr` の NULL 値が計算から除外されるかどうかを決定するために使用されます。デフォルトでは、NULL 値が含まれるため、フィルタリングされた結果の最初の値が NULL の場合は NULL が返されます。IGNORE NULLS を指定した場合、NULL でない値がフィルタリングされた結果の最初の値が返されます。すべての値が NULL の場合、IGNORE NULLS を指定しても NULL が返されます。
+`IGNORE NULLS` は v2.5.0 からサポートされています。これは、`expr` の NULL 値が計算から除外されるかどうかを決定するために使用されます。デフォルトでは、NULL 値が含まれるため、フィルタリングされた結果の最初の値が NULL の場合、NULL が返されます。IGNORE NULLS を指定すると、フィルタリングされた結果の最初の非 NULL 値が返されます。すべての値が NULL の場合、IGNORE NULLS を指定しても NULL が返されます。
 
-例:
+例：
 
-以下のデータがあるとします:
+以下のデータがあるとします：
 
 ```SQL
  select name, country, greeting
@@ -375,7 +376,7 @@ FIRST_VALUE(expr [IGNORE NULLS]) OVER(partition_by_clause order_by_clause [windo
 +---------+---------+--------------+
 ```
 
-FIRST_VALUE() を使用して、国のグループ化に基づいて各グループ内の最初の挨拶値を返します。
+FIRST_VALUE() を使用して、国別のグループ化に基づいて各グループ内の最初の挨拶値を返します。
 
 ```SQL
 select country, name,
@@ -395,37 +396,37 @@ from mail_merge;
 | Germany | Michael | Guten tag |
 | Sweden  | Bjorn   | Hej       |
 | Sweden  | Mats    | Hej       |
-| USA     | John    | Hi        |
-| USA     | Pete    | Hi        |
+| USA     | John    | Hello     |
+| USA     | Pete    | Hello     |
 +---------+---------+-----------+
 ```
 
 ### LAG()
 
-現在の行から `offset` 行前の行の値を返します。この関数は、行間の値を比較したりデータをフィルタリングするためによく使用されます。
+`offset` 行前の現在の行の値を返します。この関数はしばしば行間の値の比較やデータのフィルタリングに使用されます。
 
-`LAG()` は次のタイプのデータのクエリに使用できます:
+`LAG()` は以下のタイプのデータをクエリするために使用可能です：
 
-* 数値: TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、DECIMAL
-* 文字列: CHAR、VARCHAR
-* 日付: DATE、DATETIME
-* StarRocks v2.5 からは、BITMAP と HLL がサポートされています。
+* 数値：TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、DECIMAL
+* 文字列：CHAR、VARCHAR
+* 日付：DATE、DATETIME
+* StarRocks v2.5 からは、BITMAP および HLL がサポートされています。
 
-構文:
+構文：
 
 ```SQL
 LAG(expr [IGNORE NULLS] [, offset[, default]])
 OVER([<partition_by_clause>] [<order_by_clause>])
 ```
 
-パラメータ:
+パラメータ：
 
-* `expr`: 計算したいフィールド。
-* `offset`: オフセット。**正の整数**でなければなりません。このパラメータが指定されていない場合、デフォルトは 1 です。
-* `default`: 一致する行が見つからない場合に返されるデフォルト値。このパラメータが指定されていない場合、デフォルトは NULL です。`default` は `expr` と互換性のある型である任意の式をサポートします。
-* `IGNORE NULLS`はv3.0からサポートされています。これは `expr` のNULL値が結果に含まれるかどうかを決定するために使用されます。デフォルトでは、`offset` 行が数えられるときにNULL値が含まれ、これは`offset`行の値がNULLの場合にNULLが返されることを意味します。例1を参照してください。`IGNORE NULLS`を指定すると、`offset`行が数えられるときにNULL値が無視され、システムは引き続き`offset`個のNULLでない値を検索します。`offset`個のNULLでない値が見つからない場合、NULLまたは（指定されている場合）`default`が返されます。例2を参照してください。
+* `expr`：計算したいフィールドです。
+* `offset`：オフセットです。これは **正の整数** でなければなりません。このパラメータが指定されていない場合、デフォルトで 1 になります。
+* `default`：一致する行が見つからない場合に返されるデフォルト値です。このパラメータが指定されていない場合、デフォルトで NULL になります。`default` は `expr` と互換性のある型の任意の式をサポートします。
+* `IGNORE NULLS`はv3.0からサポートされています。これは`expr`のNULL値が結果に含まれるかどうかを決定するために使用されます。デフォルトでは、NULL値は`offset`行がカウントされるときに含まれます。つまり、NULLが返されるのは、対象の行の値がNULLの場合です。 例1を参照してください。 `IGNORE NULLS`を指定すると、`offset`行がカウントされるときにNULL値が無視され、システムは引き続き`offset`の非NULL値を検索します。 `offset`の非NULL値が見つからない場合、NULLまたは（指定されている場合）`default`が返されます。例2を参照してください。
 
-例1：IGNORE NULLSが指定されていない場合
+例1：IGNORE NULLSが指定されていない
 
 テーブルを作成し、値を挿入します：
 
@@ -446,7 +447,7 @@ INSERT INTO test_tbl VALUES
     (10, NULL);
 ```
 
-このテーブルからデータをクエリします。ここでは `offset` が2となり、前の2行をたどることを意味します。 `default` は0で、一致する行が見つからない場合に0が返されます。
+このテーブルからデータをクエリします。ここで `offset` は2、つまり前の2つの行をトラバースします。 `default` は0で、一致する行が見つからない場合に0が返されます。
 
 出力：
 
@@ -469,13 +470,13 @@ FROM test_tbl ORDER BY col_1;
 +-------+-------+---------------------------------------------+
 ```
 
-最初の2行では、前の2行は存在せず、デフォルト値0が返されます。
+最初の2行の場合、前の2行は存在せず、デフォルト値0が返されます。 
 
-3行目のNULLについては、2つ前の値がNULLであり、NULLが返されます。このように、NULL値は許可されています。
+行3のNULLの場合、2つ前の値はNULLであり、NULLが返されます。
 
-例2：IGNORE NULLSが指定されている場合
+例2：IGNORE NULLSが指定されている
 
-前のテーブルとパラメータ設定を使用します。
+前述のテーブルとパラメータ設定を使用します。
 
 ```SQL
 SELECT col_1, col_2, LAG(col_2 IGNORE NULLS,2,0) OVER (ORDER BY col_1) 
@@ -496,130 +497,29 @@ FROM test_tbl ORDER BY col_1;
 +-------+-------+---------------------------------------------+
 ```
 
-1から4行目では、それぞれの行に対して前の2つの非NULL値が見つからないため、デフォルト値0が返されます。
+行1から4の場合、システムはそれぞれの前の行で2つの非NULL値を見つけることができず、デフォルト値0が返されます。
 
-7行目の値6については、2つ前の値がNULLであり、NULLが無視されます。システムは引き続き非NULL値を検索し、4行目の2が返されます。
-
-### LAST_VALUE()
-
-LAST_VALUE()はウィンドウ範囲の**最後**の値を返します。これはFIRST_VALUE()の逆です。
-
-構文：
-
-```SQL
-LAST_VALUE(expr [IGNORE NULLS]) OVER(partition_by_clause order_by_clause [window_clause])
+行7の値6の場合、2つ前の値はNULLですが、IGNORE NULLSが指定されているためNULLが無視されます。システムは引き続き非NULL値を検索し、行4の2が返されます。
 ```
+      |     1 |  NULL |                                            2 |
+      |     2 |     4 |                                            7 |
+      |     3 |  NULL |                                            7 |
+      |     4 |     2 |                                            6 |
+      |     5 |  NULL |                                            6 |
+      |     6 |     7 |                                            5 |
+      |     7 |     6 |                                            0 |
+      |     8 |     5 |                                            0 |
+      |     9 |  NULL |                                            0 |
+      |    10 |  NULL |                                            0 |
+    +-------+-------+----------------------------------------------+
 
-`IGNORE NULLS`はv2.5.0からサポートされています。これは `expr` のNULL値が計算から除外されるかどうかを決定するために使用されます。デフォルトではNULL値が含まれ、これはフィルターされた結果の最後の値がNULLの場合にNULLが返されることを意味します。`IGNORE NULLS`を指定すると、フィルターされた結果の最後のNULLでない値が返されます。すべての値がNULLであっても、`IGNORE NULLS`が指定されていてもNULLが返されます。
+    7 ~ 10行目では、後続の行に2つの非NULL値を見つけることができないため、デフォルト値0が返されます。
 
-例のデータを使用します：
-
-```SQL
-select country, name,
-    last_value(greeting)
-        over (
-            partition by country
-            order by name, greeting
-        ) as greeting
-from mail_merge;
-```
-
-```plaintext
-+---------+---------+--------------+
-| country | name    | greeting     |
-+---------+---------+--------------+
-| Germany | Boris   | Guten morgen |
-| Germany | Michael | Guten morgen |
-| Sweden  | Bjorn   | Tja          |
-| Sweden  | Mats    | Tja          |
-| USA     | John    | Hello        |
-| USA     | Pete    | Hello        |
-+---------+---------+--------------+
-```
-
-### LEAD()
-
-現在の行の先行する行の値を `offset` 行前に返します。この関数は、行間の値を比較したりデータをフィルタリングする際によく使用されます。
-
-`lead()`でクエリ可能なデータ型は[lag()](#lag)でサポートされているものと同じです。
-
-構文
-
-```sql
-LEAD(expr [IGNORE NULLS] [, offset[, default]])
-OVER([<partition_by_clause>] [<order_by_clause>])
-```
-
-パラメーター：
-
-* `expr`：計算したいフィールドです。
-* `offset`：オフセット。正の整数でなければなりません。このパラメータが指定されていない場合、デフォルトは1です。
-* `default`：一致する行が見つからない場合に返されるデフォルト値です。このパラメータが指定されていない場合、デフォルトはNULLです。 `default` は、`expr` と互換性のある型の任意の式をサポートします。
-* `IGNORE NULLS`はv3.0からサポートされています。これは `expr` のNULL値が結果に含まれるかどうかを決定するために使用されます。デフォルトでは、`offset` 行が数えられるときにNULL値が含まれ、これは`offset`行の値がNULLの場合にNULLが返されることを意味します。例1を参照してください。`IGNORE NULLS`を指定すると、`offset`行が数えられるときにNULL値が無視され、システムは引き続き`offset`個のNULLでない値を検索します。`offset`個のNULLでない値が見つからない場合、NULLまたは（指定されている場合）`default`が返されます。例2を参照してください。
-
-例1：IGNORE NULLSが指定されていない場合
-
-テーブルを作成し、値を挿入します：
-
-```SQL
-CREATE TABLE test_tbl (col_1 INT, col_2 INT)
-DISTRIBUTED BY HASH(col_1);
-
-INSERT INTO test_tbl VALUES 
-    (1, NULL),
-    (2, 4),
-    (3, NULL),
-    (4, 2),
-    (5, NULL),
-    (6, 7),
-    (7, 6),
-    (8, 5),
-    (9, NULL),
-    (10, NULL);
-```
-
-このテーブルからデータをクエリします。ここでは `offset` が2となり、後続の2行をたどることを意味します。 `default` は0で、一致する行が見つからない場合に0が返されます。
-
-出力：
-
-```plaintext
-SELECT col_1, col_2, LEAD(col_2,2,0) OVER (ORDER BY col_1) 
-FROM test_tbl ORDER BY col_1;
-+-------+-------+----------------------------------------------+
-| col_1 | col_2 | lead(col_2, 2, 0) OVER (ORDER BY col_1 ASC ) |
-+-------+-------+----------------------------------------------+
-|     1 |  NULL |                                         NULL |
-|     2 |     4 |                                            2 |
-|     3 |  NULL |                                         NULL |
-|     4 |     2 |                                            7 |
-|     5 |  NULL |                                            6 |
-|     6 |     7 |                                            5 |
-|     7 |     6 |                                         NULL |
-|     8 |     5 |                                         NULL |
-|     9 |  NULL |                                            0 |
-|    10 |  NULL |                                            0 |
-+-------+-------+----------------------------------------------+
-```
-
-最初の行では、2つ先にある値がNULLであり、NULLが返されます。
-| 1 | NULL | 2   |
-| 2 | 4    | 7   |
-| 3 | NULL | 7   |
-| 4 | 2    | 6   |
-| 5 | NULL | 6   |
-| 6 | 7    | 5   |
-| 7 | 6    | 0   |
-| 8 | 5    | 0   |
-| 9 | NULL | 0   |
-| 10| NULL | 0   |
-
-7~10行目では、システムは後続の行で2つの非NULL値を見つけることができず、デフォルト値0が返されます。
-
-最初の行では、2行先の値がNULLであり、NULLは無視されます。2番目の非NULL値を見つけるため、システムは続行し、4行目の2が返されます。
+    最初の行では、2つの行先の値がNULLであり、NULLはIGNORE NULLSが指定されているため無視されます。システムは引き続き2番目の非NULL値を検索し、4行目の2が返されます。
 
 ### MAX()
 
-現在のウィンドウ内の指定された行の最大値を返します。
+現在のウィンドウで指定された行の最大値を返します。
 
 構文
 
@@ -656,9 +556,9 @@ where property in ('prime','square');
 +---+----------+---------------+
 ```
 
-StarRocks 2.4以降では、`rows between n preceding and n following`として列範囲を指定できるようになりました。これにより、現在の行の前のn行と現在の行の後のn行をキャプチャできます。
+StarRocks 2.4以降では、`rows between n preceding and n following` という行範囲を指定できるようになり、現在の行の前のn行と現在の行の後のn行を取得できます。
 
-例文:
+例のステートメント：
 
 ```sql
 select x, property,
@@ -672,9 +572,9 @@ where property in ('prime','square');
 
 ### MIN()
 
-現在のウィンドウ内の指定された行の最小値を返します。
+現在のウィンドウで指定された行の最小値を返します。
 
-構文
+構文：
 
 ```SQL
 MIN(expr) [OVER (analytic_clause)]
@@ -709,9 +609,9 @@ where property in ('prime','square');
 +---+----------+---------------+
 ```
 
-StarRocks 2.4以降では、`rows between n preceding and n following`として行の範囲を指定できるようになりました。つまり、現在の行の前のn行と現在の行の後のn行をキャプチャできます。
+StarRocks 2.4以降では、`rows between n preceding and n following` という行範囲を指定できるようになり、現在の行の前のn行と現在の行の後のn行を取得できます。
 
-例文:
+例のステートメント：
 
 ```sql
 select x, property,
@@ -722,162 +622,11 @@ select x, property,
 from int_t
 where property in ('prime','square');
 ```
+`<column_list>`: データを取得したい列。
 
-### PERCENT_RANK()
+`<data_source>`: データソースは一般的にはテーブルです。
 
-PERCENT_RANK()関数は、行の相対的なランクをパーセンテージで計算します。現在の行の値を除く、結果セット内のパーティション値より低い値のパーセンテージを返します。戻り値の範囲は0から1です。この関数はパーセンタイルの計算やデータ分布の分析に役立ちます。
-
-PERCENT_RANK()関数は、次の式を使用して計算されます。ここで、rankは行のランクを、rowsはパーティション行の数を表します。
-
-```plaintext
-(rank - 1) / (rows - 1)
-```
-
-構文
-
-```SQL
-PERCENT_RANK() OVER (partition_by_clause order_by_clause)
-```
-
-**この関数は、所望の順序でパーティション行を並べ替えるためにORDER BYとともに使用する必要があります。ORDER BYがない場合、すべての行はピアであり、値が(1 - 1)/(N - 1) = 0となります。ここで、Nはパーティションのサイズです。**
-
-次の例では、列yの相対ランクを、列xの各グループ内で示しています。
-
-```SQL
-SELECT x, y,
-    PERCENT_RANK()
-        OVER (
-            PARTITION BY x
-            ORDER BY y
-        ) AS `percent_rank`
-FROM int_t;
-```
-
-```plaintext
-+---+---+--------------+
-| x | y | percent_rank |
-+---+---+--------------+
-| 1 | 1 |            0 |
-| 1 | 2 |          0.5 |
-| 1 | 2 |          0.5 |
-| 2 | 1 |            0 |
-| 2 | 2 |          0.5 |
-| 2 | 3 |            1 |
-| 3 | 1 |            0 |
-| 3 | 1 |            0 |
-| 3 | 2 |            1 |
-+---+---+--------------+
-```
-
-### RANK()
-
-RANK()関数はランキングを表すために使用されます。DENSE_RANK()とは異なり、RANK()は**未使用の番号として表示**されます。たとえば、同じ値の1が2つある場合、RANK()の3番目の番号は2ではなく3となります。
-
-構文
-
-```SQL
-RANK() OVER(partition_by_clause order_by_clause)
-```
-
-例：
-
-列xに従ってランク付け：
-
-```SQL
-select x, y, rank() over(partition by x order by y) as `rank`
-from int_t;
-```
-
-```plaintext
-+---+---+------+
-| x | y | rank |
-+---+---+------+
-| 1 | 1 | 1    |
-| 1 | 2 | 2    |
-| 1 | 2 | 2    |
-| 2 | 1 | 1    |
-| 2 | 2 | 2    |
-| 2 | 3 | 3    |
-| 3 | 1 | 1    |
-| 3 | 1 | 1    |
-| 3 | 2 | 3    |
-+---+---+------+
-```
-
-### ROW_NUMBER()
-
-パーティションごとに、連続して増加する整数を1から返します。RANK()やDENSE_RANK()とは異なり、ROW_NUMBER()によって返される値は**繰り返しがなく、隙間がなく**、**連続して増加**します。
-
-構文
-
-```SQL
-ROW_NUMBER() OVER(partition_by_clause order_by_clause)
-```
-
-例：
-
-```SQL
-select x, y, row_number() over(partition by x order by y) as `rank`
-from int_t;
-```
-
-```plaintext
-+---+---+------+
-| x | y | rank |
-+---+---+------+
-| 1 | 1 | 1    |
-| 1 | 2 | 2    |
-| 1 | 2 | 3    |
-| 2 | 1 | 1    |
-| 2 | 2 | 2    |
-| 2 | 3 | 3    |
-| 3 | 1 | 1    |
-| 3 | 1 | 2    |
-| 3 | 2 | 3    |
-+---+---+------+
-```
-
-### QUALIFY()
-
-QUALIFY句は、ウィンドウ関数の結果をフィルタリングします。SELECTステートメントでは、QUALIFY句を使用して列に条件を適用して結果をフィルタリングできます。QUALIFYは、集約関数のHAVING句に類似しています。この機能はv2.5からサポートされています。
-
-QUALIFYを使用する前のSELECTステートメントは、次のようになります。
-
-```SQL
-SELECT *
-FROM (SELECT DATE,
-             PROVINCE_CODE,
-             TOTAL_SCORE,
-             ROW_NUMBER() OVER(PARTITION BY PROVINCE_CODE ORDER BY TOTAL_SCORE) AS SCORE_ROWNUMBER
-      FROM example_table) T1
-WHERE T1.SCORE_ROWNUMBER = 1;
-```
-
-QUALIFYを使用した後、ステートメントは次のように短縮されます。
-
-```SQL
-SELECT DATE, PROVINCE_CODE, TOTAL_SCORE
-FROM example_table 
-QUALIFY ROW_NUMBER() OVER(PARTITION BY PROVINCE_CODE ORDER BY TOTAL_SCORE) = 1;
-```
-
-QUALIFYは、次の3つのウィンドウ関数のみをサポートしています: ROW_NUMBER()、RANK()、DENSE_RANK()。
-
-**構文:**
-
-```SQL
-SELECT <column_list>
-FROM <data_source>
-[GROUP BY ...]
-[HAVING ...]
-QUALIFY <window_function>
-[ ... ]
-```
-`<column_list>`: データを取得する列。
-
-`<data_source>`: データソースは一般的にテーブルです。
-
-`<window_function>`: `QUALIFY`句に続けて使用できるのは、ROW_NUMBER()、RANK()、およびDENSE_RANK()などのウィンドウ関数です。
+`<window_function>`: `QUALIFY`句の後には、ROW_NUMBER()、RANK()、DENSE_RANK()を含むウィンドウ関数しか続けることができません。
 
 **例:**
 
@@ -908,7 +657,7 @@ select * from sales_record order by city_id;
 +---------+--------+-------+
 ```
 
-例1: 行番号が1より大きいレコードを取得する。
+例1: 行番号が1より大きいレコードをテーブルから取得する。
 
 ```SQL
 SELECT city_id, item, sales
@@ -923,7 +672,7 @@ QUALIFY row_number() OVER (ORDER BY city_id) > 1;
 +---------+--------+-------+
 ```
 
-例2: テーブルの各パーティションから行番号が1のレコードを取得する。テーブルは`item`によって2つのパーティションに分かれ、各パーティションの最初の行が返される。
+例2: テーブルの各パーティションから行番号が1のレコードを取得します。テーブルは`item`によって2つのパーティションに分割され、各パーティションの最初の行が返されます。
 
 ```SQL
 SELECT city_id, item, sales
@@ -939,7 +688,7 @@ ORDER BY city_id;
 2 rows in set (0.01 sec)
 ```
 
-例3: テーブルの各パーティションから売上ランクが1位のレコードを取得する。テーブルは`item`によって2つのパーティションに分かれ、各パーティションの中で最も高い売上の行が返される。
+例3: テーブルの各パーティションから売上ランク1位のレコードを取得します。テーブルは`item`によって2つのパーティションに分割され、各パーティションの売上額が最も高い行が返されます。
 
 ```SQL
 SELECT city_id, item, sales
@@ -956,7 +705,7 @@ ORDER BY city_id;
 
 **使用上の注意:**
 
-`QUALIFY`を含むクエリの句の実行順序は次の順序で評価されます:
+`QUALIFY`を含むクエリの句の実行順序は、次の順序で評価されます:
 
 > 1. From
 > 2. Where
@@ -978,7 +727,7 @@ SUM(expr) [OVER (analytic_clause)]
 
 例:
 
-プロパティごとにグループ化し、グループ内の**現在の行、前の行、次の行**の合計を計算します。
+プロパティでグループ化し、グループ内の**現在、前、および次の行の合計**を計算します。
 
 ```SQL
 select x, property,
@@ -1009,7 +758,7 @@ from int_t where property in ('odd','even');
 
 ### VARIANCE, VAR_POP, VARIANCE_POP
 
-式の母集団分散を返します。VAR_POPおよびVARIANCE_POPはVARIANCEのエイリアスです。これらの関数はv2.5.10以降のウィンドウ関数として使用できます。
+式の標本分散を返します。VAR_POPおよびVARIANCE_POPはVARIANCEの別名です。これらの関数はv2.5.10以降、ウィンドウ関数として使用できます。
 
 **構文:**
 
@@ -1017,17 +766,17 @@ from int_t where property in ('odd','even');
 VARIANCE(expr) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
 ```
 
-> **注意**
+> **注記**
 >
 > 2.5.13、3.0.7、3.1.4以降では、このウィンドウ関数はORDER BYおよびWindow句をサポートしています。
 
 **パラメータ:**
 
-`expr`がテーブルの列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
+`expr`がテーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
 
 **例:**
 
-表`agg`に以下のデータがあるとします:
+テーブル`agg`が次のデータを持っているとします:
 
 ```plaintext
 mysql> select * from agg;
@@ -1074,7 +823,7 @@ FROM agg order by no,k;
 
 ### VAR_SAMP, VARIANCE_SAMP
 
-式の標本分散を返します。これらの関数はv2.5.10以降のウィンドウ関数として使用できます。
+式の標本分散を返します。VAR_SAMP()関数はウィンドウ関数として使用できます。v2.5.10以降から使用できます。
 
 **構文:**
 
@@ -1082,17 +831,17 @@ FROM agg order by no,k;
 VAR_SAMP(expr) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
 ```
 
-> **注意**
+> **注記**
 >
 > 2.5.13、3.0.7、3.1.4以降では、このウィンドウ関数はORDER BYおよびWindow句をサポートしています。
 
 **パラメータ:**
 
-`expr`がテーブルの列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
+`expr`がテーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
 
 **例:**
 
-表`agg`に以下のデータがあるとします:
+テーブル`agg`が次のデータを持っているとします:
 
 ```plaintext
 mysql> select * from agg;
@@ -1136,27 +885,21 @@ FROM agg order by no,k;
 |  72.91666666666667 |
 +--------------------+
 ```
+```plaintext
++ {T}
++ {T}
+  + {T}
+    + {T}
+      + {T}
+        + {T}
+          + {T}
+  + {T}
 
-### STD, STDDEV, STDDEV_POP
+パラメータ：
+exprがテーブルの列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALで評価する必要があります。
 
-式の標準偏差を返します。これらの関数はv2.5.10以降のウィンドウ関数として使用できます。
-
-**構文:**
-
-```sql
-STD(expr) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
-```
-
-> **注意**
-2.5.13, 3.0.7, 3.1.4以降、このウィンドウ関数はORDER BYおよびWindow句をサポートしています。
-
-**パラメータ:**
-
-`expr` がテーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
-
-**例:**
-
-テーブル`agg`に次のデータがあるとします：
+例：
+テーブルaggに次のデータがあるとします：
 
 ```plaintext
 mysql> select * from agg;
@@ -1171,7 +914,7 @@ mysql> select * from agg;
 +------+-------+-------+
 ```
 
-STD（）ウィンドウ関数を使用します。
+STD()ウィンドウ関数を使用します。
 
 ```plaintext
 mysql> select STD(k) over (partition by no) FROM agg;
@@ -1199,29 +942,26 @@ FROM agg order by no,k;
 |  7.39509972887452 |
 |  7.39509972887452 |
 +-------------------+
-```
 
-### STDDEV_SAMP
+STDDEV_SAMP
 
 式の標本標準偏差を返します。この関数はv2.5.10以降のウィンドウ関数として使用できます。
 
-**構文:**
+構文：
 
 ```sql
 STDDEV_SAMP(expr) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
 ```
 
-> **注記**
+> **注意**
 >
 > 2.5.13、3.0.7、3.1.4以降、このウィンドウ関数はORDER BYおよびWindow句をサポートしています。
 
-**パラメータ:**
+パラメータ：
+exprがテーブルの列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALで評価する必要があります。
 
-`expr` がテーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
-
-**例:**
-
-テーブル`agg`に次のデータがあるとします：
+例：
+テーブルaggに次のデータがあるとします：
 
 ```plaintext
 mysql> select * from agg;
@@ -1264,13 +1004,12 @@ FROM agg order by no,k;
 |  8.539125638299666 |
 |  8.539125638299666 |
 +--------------------+
-```
 
-### COVAR_SAMP
+COVAR_SAMP
 
 2つの式の標本共分散を返します。この関数はv2.5.10からサポートされています。また、集約関数でもあります。
 
-**構文:**
+構文：
 
 ```sql
 COVAR_SAMP(expr1,expr2) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
@@ -1280,13 +1019,11 @@ COVAR_SAMP(expr1,expr2) OVER([partition_by_clause] [order_by_clause] [order_by_c
 >
 > 2.5.13、3.0.7、3.1.4以降、このウィンドウ関数はORDER BYおよびWindow句をサポートしています。
 
-**パラメータ:**
+パラメータ：
+exprがテーブルの列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALで評価する必要があります。
 
-`expr` がテーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
-
-**例:**
-
-テーブル`agg`に次のデータがあるとします：
+例：
+テーブルaggに次のデータがあるとします：
 
 ```plaintext
 mysql> select * from agg;
@@ -1329,13 +1066,12 @@ FROM agg order by no,k;
 | 119.99999999999999 |
 | 119.99999999999999 |
 +--------------------+
-```
 
-### COVAR_POP
+COVAR_POP
 
 2つの式の母集団共分散を返します。この関数はv2.5.10からサポートされています。また、集約関数でもあります。
 
-**構文:**
+構文：
 
 ```sql
 COVAR_POP(expr1, expr2) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
@@ -1345,13 +1081,11 @@ COVAR_POP(expr1, expr2) OVER([partition_by_clause] [order_by_clause] [order_by_c
 >
 > 2.5.13、3.0.7、3.1.4以降、このウィンドウ関数はORDER BYおよびWindow句をサポートしています。
 
-**パラメータ:**
+パラメータ：
+exprがテーブルの列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALで評価する必要があります。
 
-`expr` がテーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
-
-**例:**
-
-テーブル`agg`に次のデータがあるとします：
+例：
+テーブルaggに次のデータがあるとします：
 
 ```plaintext
 mysql> select * from agg;
@@ -1394,13 +1128,12 @@ FROM agg order by no,k;
 | 79.99999999999999 |
 | 79.99999999999999 |
 +-------------------+
-```
 
-### CORR
+CORR
 
-2つの式間のPearson相関係数を返します。この関数はv2.5.10からサポートされています。また、集約関数でもあります。
+2つの式間のピアソン相関係数を返します。この関数はv2.5.10からサポートされています。また、集約関数でもあります。
 
-**構文:**
+構文：
 
 ```sql
 CORR(expr1, expr2) OVER([partition_by_clause] [order_by_clause] [order_by_clause window_clause])
@@ -1410,12 +1143,12 @@ CORR(expr1, expr2) OVER([partition_by_clause] [order_by_clause] [order_by_clause
 >
 > 2.5.13、3.0.7、3.1.4以降、このウィンドウ関数はORDER BYおよびWindow句をサポートしています。
 
-**パラメータ:**
-
-`expr` がテーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
+パラメータ：
+exprがテーブルの列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALで評価する必要があります。
+```
 **例：**
 
-テーブル`agg`に以下のデータがあるとします：
+テーブル`agg`に次のデータがあるとします：
 
 ```plaintext
 mysql> select * from agg;
@@ -1430,7 +1163,7 @@ mysql> select * from agg;
 +------+-------+-------+
 ```
 
-CORR()ウィンドウ関数を使用してください。
+CORR()ウィンドウ関数を使用します。
 
 ```plaintext
 mysql> select CORR(k, v) over (partition by no) FROM agg;

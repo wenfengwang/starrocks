@@ -2,27 +2,27 @@
 displayed_sidebar: "Japanese"
 ---
 
-# クラウドストレージからデータをロードします
+# クラウドストレージからデータをロードする
 
 import InsertPrivNote from '../assets/commonMarkdown/insertPrivNote.md'
 
-StarRocksでは、次の方法のいずれかを使用してクラウドストレージから大量のデータをロードすることができます：[ブローカーロード](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md) および [INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)。
+StarRocksは、クラウドストレージから大量のデータをロードするために次のいずれかの方法を使用することをサポートしています: [Broker Load](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md) および [INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)。
 
-v3.0およびそれ以前では、StarRocksはブローカーロードのみをサポートしており、非同期ロードモードで実行されます。ロードジョブを送信すると、StarRocksは非同期でジョブを実行します。`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#ロードジョブの表示)"セクションを参照してください。
+v3.0以前では、StarRocksはBroker Loadのみをサポートし、非同期ロードモードで実行されます。ロードジョブを送信すると、StarRocksは非同期でジョブを実行します。`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされます。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
 
-ブローカーロードは、複数のデータファイルをロードする際に各ロードジョブのトランザクション的な原子性を保証し、つまり1つのロードジョブで複数のデータファイルをロードする際にはすべて成功するかすべて失敗するかのどちらかとなります。あるデータファイルのロードが成功し、他のファイルのロードが失敗することはありません。
+Broker Loadは、複数のデータファイルをロードするために実行される各ロードジョブのトランザクション的な原子性を保証します。これは、1つのロードジョブで複数のデータファイルをロードする際に、すべてのデータファイルのロードが成功するか失敗するかであることを意味します。いくつかのデータファイルのロードが成功しても、他のファイルのロードが失敗することはありません。
 
-また、ブローカーロードはデータロード時のデータ変換をサポートし、データロード中のUPSERTおよびDELETE操作によるデータ変更をサポートしています。詳細については、[ロード時のデータ変換](../loading/Etl_in_loading.md) および [ロードによるデータの変更](../loading/Load_to_Primary_Key_tables.md) を参照してください。
+さらに、Broker Loadはデータロード時のデータ変換をサポートし、UPSERTやDELETE操作によるデータ変更もサポートします。詳細については、[ロード時のデータ変換](../loading/Etl_in_loading.md)および[ロードによるデータ変更](../loading/Load_to_Primary_Key_tables.md)を参照してください。
 
 <InsertPrivNote />
 
-v3.1以降、StarRocksは、外部テーブルを作成する手間を省いて、INSERTコマンドとFILESキーワードを使用してAWS S3からParquet形式またはORC形式のファイルのデータを直接ロードする機能をサポートしています。詳細については、[INSERT > ファイルを使用して外部ソースから直接データを挿入する](../loading/InsertInto.md#insert-data-directly-from-files-in-an-external-source-using-files) を参照してください。
+v3.1以降、StarRocksは、外部テーブルを作成する手間を省くために、INSERTコマンドとFILESキーワードを使用してAWS S3からParquet形式またはORC形式のファイルのデータを直接ロードすることをサポートしています。詳細については、[INSERT > FILESキーワードを使用して外部ソースのファイルからデータを直接挿入](../loading/InsertInto.md#insert-data-directly-from-files-in-an-external-source-using-files)を参照してください。
 
-このトピックでは、クラウドストレージからデータをロードするための [ブローカーロード](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md) の使用に焦点を当てています。
+このトピックでは、クラウドストレージからデータをロードするために[Broker Load](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)を使用することに焦点を当てています。
 
 ## サポートされているデータファイルフォーマット
 
-ブローカーロードは、次のデータファイルフォーマットをサポートしています：
+Broker Loadは、次のデータファイルフォーマットをサポートしています:
 
 - CSV
 
@@ -30,24 +30,24 @@ v3.1以降、StarRocksは、外部テーブルを作成する手間を省いて�
 
 - ORC
 
-> **注意**
+> **注記**
 >
-> CSVデータの場合、次の点に注意してください：
+> CSVデータの場合、以下の点に注意してください:
 >
-> - テキストデリミタとして長さが50バイト以下のUTF-8文字列（カンマ（,）、タブ、またはパイプ（|）など）を使用できます。
-> - `\\N` を使用してヌル値を表します。たとえば、データファイルには3つの列があり、そのファイルのレコードが最初の列と3番目の列にデータを保持していますが、2番目の列にはデータがありません。この状況では、2番目の列にヌル値を表すために `\\N` を使用する必要があります。これは、レコードを `a,\\N,b` としてコンパイルする必要があることを意味します。 `a,,b` は、レコードの2番目の列に空の文字列があることを示します。
+> - テキスト区切り記号として、コンマ(,)、タブ、またはパイプ(|)などの長さが50バイトを超えないUTF-8文字列を使用できます。
+> - ヌル値は`\N`を使用して示します。たとえば、データファイルは3つの列からなり、そのデータファイルのレコードは最初と3番目の列にデータを保持していますが、2番目の列にはデータがありません。この場合、2番目の列にヌル値を示すために`\N`を使用する必要があります。これは、レコードは`a,\N,b`としてコンパイルされなければならず、`a,,b`ではなく`a,,b`となります。`a,,b`は、レコードの2番目の列が空の文字列を保持していることを示します。
 
-## 仕組み
+## 動作仕様
 
-ロードジョブをFEに送信すると、FEはクエリプランを生成し、利用可能なBEの数とロードしたいデータファイルのサイズに基づいてクエリプランを分割し、それぞれのクエリプランを利用可能なBEに割り当てます。ロード中、関与する各BEは、外部ストレージシステムからデータファイルのデータを取得し、データの事前処理を行い、それをStarRocksクラスタにロードします。すべてのBEがクエリプランの作業を完了した後、FEはロードジョブが成功したかどうかを判断します。
+ロードジョブをFEに送信すると、FEはクエリプランを生成し、利用可能なBEの数とロードしたいデータファイルのサイズに基づいてクエリプランをポーションに分割し、それぞれのクエリプランを利用可能なBEに割り当てます。ロード中、関与する各BEは、外部ストレージシステムからデータファイルのデータを取得し、データを前処理し、その後データをStarRocksクラスタにロードします。すべてのBEがクエリプランのそれぞれのポーションを完了した後、FEはロードジョブが成功したかどうかを決定します。
 
-以下の図は、ブローカーロードジョブのワークフローを示しています。
+以下の図はBroker Loadジョブのワークフローを示しています。
 
-![ブローカーロードのワークフロー](../assets/broker_load_how-to-work_en.png)
+![Broker Loadのワークフロー](../assets/broker_load_how-to-work_en.png)
 
-## データの準備例
+## データの例を準備する
 
-1. ローカルのファイルシステムにログインし、2つのCSV形式のデータファイル `file1.csv` と `file2.csv` を作成します。両方のファイルは、順番にユーザーID、ユーザー名、ユーザースコアを表す3つの列で構成されています。
+1. ローカルのファイルシステムにログインし、`file1.csv`および`file2.csv`という2つのCSV形式のデータファイルを作成します。両方のファイルはユーザーID、ユーザー名、および順番にユーザースコアを表す3つの列で構成されています。
 
    - `file1.csv`
 
@@ -67,16 +67,16 @@ v3.1以降、StarRocksは、外部テーブルを作成する手間を省いて�
      8,Jacky,28
      ```
 
-2. `file1.csv` および `file2.csv` を、AWS S3バケット `bucket_s3` の `input` フォルダー、Google GCSバケット `bucket_gcs` の `input` フォルダー、S3互換ストレージオブジェクト（たとえばMinIO）バケット `bucket_minio` の `input` フォルダ、およびAzure Storageの指定されたパスにアップロードします。
+2. `file1.csv`および`file2.csv`をAWS S3バケット`bucket_s3`の`input`フォルダに、Google GCSバケット`bucket_gcs`の`input`フォルダに、S3互換ストレージオブジェクト(MinIOなど)のバケット`bucket_minio`の`input`フォルダに、およびAzure Storageの指定されたパスにアップロードします。
 
-3. 自分のStarRocksデータベース（たとえば `test_db`）にログインし、2つのプライマリキー付きテーブル `table1` および `table2` を作成します。両方のテーブルは、`id`、`name`、`score` の3つの列で構成されており、そのうち `id` がプライマリキーです。
+3. StarRocksデータベース(例: `test_db`)にログインし、`table1`および`table2`という2つのプライマリキーテーブルを作成します。両方のテーブルは、`id`、`name`、および`score`の3つの列で構成されており、`id`がプライマリキーです。
 
    ```SQL
    CREATE TABLE `table1`
       (
-          `id` int(11) NOT NULL COMMENT "ユーザーID",
-          `name` varchar(65533) NULL DEFAULT "" COMMENT "ユーザー名",
-          `score` int(11) NOT NULL DEFAULT "0" COMMENT "ユーザースコア"
+          `id` int(11) NOT NULL COMMENT "user ID",
+          `name` varchar(65533) NULL DEFAULT "" COMMENT "user name",
+          `score` int(11) NOT NULL DEFAULT "0" COMMENT "user score"
       )
           ENGINE=OLAP
           PRIMARY KEY(`id`)
@@ -84,9 +84,9 @@ v3.1以降、StarRocksは、外部テーブルを作成する手間を省いて�
              
    CREATE TABLE `table2`
       (
-          `id` int(11) NOT NULL COMMENT "ユーザーID",
-          `name` varchar(65533) NULL DEFAULT "" COMMENT "ユーザー名",
-          `score` int(11) NOT NULL DEFAULT "0" COMMENT "ユーザースコア"
+          `id` int(11) NOT NULL COMMENT "user ID",
+          `name` varchar(65533) NULL DEFAULT "" COMMENT "user name",
+          `score` int(11) NOT NULL DEFAULT "0" COMMENT "user score"
       )
           ENGINE=OLAP
           PRIMARY KEY(`id`)
@@ -95,15 +95,15 @@ v3.1以降、StarRocksは、外部テーブルを作成する手間を省いて�
 
 ## AWS S3からデータをロードする
 
-ブローカーロードは、S3プロトコルまたはS3Aプロトコルに従ってAWS S3へのアクセスをサポートしています。したがって、AWS S3からデータをロードする場合は、ファイルパス（DATA INFILE）に `s3://` または `s3a://` をプレフィックスとして含めることができます。
+Broker Loadは、S3またはS3Aプロトコルに準拠したAWS S3へのアクセスをサポートしています。したがって、AWS S3からデータをロードする場合は、ファイルパス(`DATA INFILE`)として`S3://`または`S3a://`を含めることができます。
 
-また、以下の例では、CSVファイル形式とインスタンスプロファイル認証方法を使用しています。他の形式でデータをロードする方法や、他の認証方法を使用する際に必要な認証パラメータの設定については、[BROKER LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md) を参照してください。
+また、以下の例はCSVファイル形式とインスタンスプロファイルベースの認証方法を使用しています。他のファイル形式でデータをロードする方法や他の認証方法を使用する際に構成する必要がある認証パラメータについては、[BROKER LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)を参照してください。
 
-### 1つのデータファイルを1つのテーブルにロードする
+### 単一のデータファイルを単一のテーブルにロードする
 
 #### 例
 
-次の文を実行して、AWS S3バケット `bucket_s3` の `input` フォルダーに保存された `file1.csv` のデータを `table1` にロードします。
+以下のステートメントを実行して、AWS S3バケット`bucket_s3`の`input`フォルダに保存されている`file1.csv`のデータを`table1`にロードします:
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_101
@@ -126,9 +126,9 @@ PROPERTIES
 
 #### データのクエリ
 
-ロードジョブを送信した後、`SELECT * FROM information_schema.loads` を使用して、ジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#ロードジョブの表示)"セクションを参照してください。
+ロードジョブを送信した後は、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされます。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
 
-ロードジョブが成功したことを確認した後、`table1` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます：
+ロードジョブが成功したことを確認した後、`table1`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます:
 
 ```SQL
 SELECT * FROM table1;
@@ -143,11 +143,11 @@ SELECT * FROM table1;
 4 rows in set (0.01 sec)
 ```
 
-### 複数のデータファイルを1つのテーブルにロードする
+### 複数のデータファイルを単一のテーブルにロードする
 
 #### 例
 
-次の文を実行して、AWS S3バケット `bucket_s3` の `input` フォルダーに保存されたすべてのデータファイル（`file1.csv` および `file2.csv`）のデータを `table1` にロードします：
+以下のステートメントを実行して、AWS S3バケット`bucket_s3`の`input`フォルダに保存されているすべてのデータファイル(`file1.csv`および`file2.csv`)のデータを`table1`にロードします:
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_102
@@ -170,33 +170,31 @@ PROPERTIES
 
 #### データのクエリ
 
-ロードジョブを送信した後、`SELECT * FROM information_schema.loads` を使用して、ジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#ロードジョブの表示)"セクションを参照してください。
+ロードジョブを送信した後は、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされます。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
 
-ロードジョブが成功したことを確認した後、`table1` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます：
+ロードジョブが成功したことを確認した後、`table1`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます:
 
 ```SQL
 SELECT * FROM table1;
-```markdown
 +------+-------+-------+
 | id   | name  | score |
 +------+-------+-------+
-|    1 | Lily  |    21 |
-|    2 | Rose  |    22 |
-|    3 | Alice |    23 |
-|    4 | Julia |    24 |
-|    5 | Tony  |    25 |
-|    6 | Adam  |    26 |
-|    7 | Allen |    27 |
-|    8 | Jacky |    28 |
+|    1 | リリー |    21 |
+|    2 | ローズ |    22 |
+|    3 | アリス |    23 |
+|    4 | ジュリア |    24 |
+|    5 | トニー |    25 |
+|    6 | アダム |    26 |
+|    7 | アレン |    27 |
+|    8 | ジャッキー |    28 |
 +------+-------+-------+
-4 行がセットに（0.01 秒）
-```
+4 行が選択されました (0.01 秒)
 
-### 複数のデータファイルを複数のテーブルにロードする
+### 複数のデータファイルを複数のテーブルに読み込む
 
 #### 例
 
-次のステートメントを実行して、AWS S3 バケット `bucket_s3` 内の `input` フォルダに保存されている `file1.csv` と `file2.csv` のデータをそれぞれ `table1` と `table2` にロードします：
+次のステートメントを実行して、AWS S3バケット`bucket_s3`の`input`フォルダに保存されている`file1.csv`および`file2.csv`のデータを、それぞれ`table1`と`table2`に読み込みます。
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_103
@@ -224,65 +222,225 @@ PROPERTIES
 
 #### データのクエリ
 
-ロードジョブを送信した後は、`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能は v3.1 以降でサポートされています。詳細については、このトピックの「[ロードジョブを表示](#view-a-load-job)」セクションを参照してください。
+ロードジョブを送信した後は、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
 
-ロードジョブが正常に完了したことを確認した後、`table1` と `table2` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます：
+ロードジョブが成功したことを確認した後は、`table1`および`table2`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます。
 
-1. `table1` をクエリ:
+1. `table1`をクエリ:
 
    ```SQL
    SELECT * FROM table1;
    +------+-------+-------+
    | id   | name  | score |
    +------+-------+-------+
-   |    1 | Lily  |    21 |
-   |    2 | Rose  |    22 |
-   |    3 | Alice |    23 |
-   |    4 | Julia |    24 |
+   |    1 | リリー |    21 |
+   |    2 | ローズ |    22 |
+   |    3 | アリス |    23 |
+   |    4 | ジュリア |    24 |
    +------+-------+-------+
-   4 行がセットに（0.01 秒）
+   4 行が選択されました (0.01 秒)
    ```
 
-2. `table2` をクエリ:
+2. `table2`をクエリ:
 
    ```SQL
    SELECT * FROM table2;
    +------+-------+-------+
    | id   | name  | score |
    +------+-------+-------+
-   |    5 | Tony  |    25 |
-   |    6 | Adam  |    26 |
-   |    7 | Allen |    27 |
-   |    8 | Jacky |    28 |
+   |    5 | トニー |    25 |
+   |    6 | アダム |    26 |
+   |    7 | アレン |    27 |
+   |    8 | ジャッキー |    28 |
    +------+-------+-------+
-   4 行がセットに（0.01 秒）
-   ```
-   |    6 | Adam  |    26 |
-   |    7 | Allen |    27 |
-   |    8 | Jacky |    28 |
-   +------+-------+-------+
-   4 rows in set (0.01 sec)
+   4 行が選択されました (0.01 秒)
    ```
 
-## Microsoft Azure Storage からデータを読み込む
+## Google GCSからデータをロード
 
-Microsoft Azure Storage からデータを読み込む際には、利用するアクセスプロトコルと具体的なストレージサービスに応じて使用するプレフィックスを決定する必要があります:
+ブローカーロードは、gsプロトコルに従ってGoogle GCSへのアクセスのみをサポートしています。そのため、Google GCSからデータをロードする際は、ファイルパス（`DATA INFILE`）としてGCS URIに`gs://`を含める必要があります。
 
-- Blob Storage からデータを読み込む場合、ファイルパス（`DATA INFILE`）にアクセスプロトコルに基づき `wasb://` または `wasbs://` をプレフィックスとして含める必要があります:
-  - Blob Storage が HTTP を介してのアクセスのみを許可している場合は、プレフィックスとして `wasb://` を使用します。例: `wasb://<container>@<storage_account>.blob.core.windows.net/<path>/<file_name>/*`。
-  - Blob Storage が HTTPS を介してのアクセスのみを許可している場合は、プレフィックスとして `wasbs://` を使用します。例: `wasbs://<container>@<storage_account>.blob.core.windows.net/<path>/<file_name>/*`。
-- Data Lake Storage Gen1 からデータを読み込む場合、ファイルパス（`DATA INFILE`）に `adl://` をプレフィックスとして含める必要があります。例: `adl://<data_lake_storage_gen1_name>.azuredatalakestore.net/<path>/<file_name>`。
-- Data Lake Storage Gen2 からデータを読み込む場合、ファイルパス（`DATA INFILE`）にアクセスプロトコルに基づき `abfs://` または `abfss://` をプレフィックスとして含める必要があります:
-  - Data Lake Storage Gen2 が HTTP を介してのアクセスのみを許可している場合は、プレフィックスとして `abfs://` を使用します。例: `abfs://<container>@<storage_account>.dfs.core.windows.net/<file_name>`。
-  - Data Lake Storage Gen2 が HTTPS を介してのアクセスのみを許可している場合は、プレフィックスとして `abfss://` を使用します。例: `abfss://<container>@<storage_account>.dfs.core.windows.net/<file_name>`。
+また、以下の例では、CSVファイル形式およびVMベースの認証メソッドが使用されています。他の形式でデータをロードしたり、他の認証方法を使用する際に構成する必要がある認証パラメータについては、[BROKER LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)を参照してください。
 
-また、以下の例では CSV ファイル形式、Azure Blob Storage、および共有キー認証方式を使用しています。他の形式でデータを読み込む方法や、他の Azure ストレージサービスや認証方式を使用する際に構成する必要がある認証パラメータについては、「[BROKER LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)」を参照してください。
-
-### 単一のデータファイルを単一のテーブルに読み込む
+### 単一のデータファイルを単一のテーブルにロード
 
 #### 例
 
-次のステートメントを実行して、Azure Storage の指定されたパスに保存されている `file1.csv` のデータを `table1` に読み込みます:
+次のステートメントを実行して、Google GCSバケット`bucket_gcs`の`input`フォルダに保存されている`file1.csv`のデータを`table1`にロードします。
+
+```SQL
+LOAD LABEL test_db.label_brokerloadtest_201
+(
+    DATA INFILE("gs://bucket_gcs/input/file1.csv")
+    INTO TABLE table1
+    COLUMNS TERMINATED BY ","
+    (id, name, score)
+)
+WITH BROKER
+(
+    "gcp.gcs.use_compute_engine_service_account" = "true"
+)
+PROPERTIES
+(
+    "timeout" = "3600"
+);
+```
+
+#### データのクエリ
+
+ロードジョブを送信した後は、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
+
+ロードジョブが成功したことを確認した後は、`table1`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます。
+
+```SQL
+SELECT * FROM table1;
++------+-------+-------+
+| id   | name  | score |
++------+-------+-------+
+|    1 | リリー |    21 |
+|    2 | ローズ |    22 |
+|    3 | アリス |    23 |
+|    4 | ジュリア |    24 |
++------+-------+-------+
+4 行が選択されました (0.01 秒)
+```
+
+### 複数のデータファイルを単一のテーブルにロード
+
+#### 例
+
+次のステートメントを実行して、Google GCSバケット`bucket_gcs`の`input`フォルダに保存されているすべてのデータファイル（`file1.csv`および`file2.csv`）のデータを`table1`にロードします。
+
+```SQL
+LOAD LABEL test_db.label_brokerloadtest_202
+(
+    DATA INFILE("gs://bucket_gcs/input/*")
+    INTO TABLE table1
+    COLUMNS TERMINATED BY ","
+    (id, name, score)
+)
+WITH BROKER
+(
+    "gcp.gcs.use_compute_engine_service_account" = "true"
+)
+PROPERTIES
+(
+    "timeout" = "3600"
+);
+```
+
+#### データのクエリ
+
+ロードジョブを送信した後は、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
+
+ロードジョブが成功したことを確認した後は、`table1`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます。
+
+```SQL
+SELECT * FROM table1;
++------+-------+-------+
+| id   | name  | score |
++------+-------+-------+
+|    1 | リリー |    21 |
+|    2 | ローズ |    22 |
+|    3 | アリス |    23 |
+|    4 | ジュリア |    24 |
+|    5 | トニー |    25 |
+|    6 | アダム |    26 |
+|    7 | アレン |    27 |
+|    8 | ジャッキー |    28 |
++------+-------+-------+
+4 行が選択されました (0.01 秒)
+```
+
+### 複数のデータファイルを複数のテーブルにロード
+
+#### 例
+
+次のステートメントを実行して、Google GCSバケット`bucket_gcs`の`input`フォルダに保存されている`file1.csv`および`file2.csv`のデータを、それぞれ`table1`と`table2`にロードします。
+
+```SQL
+LOAD LABEL test_db.label_brokerloadtest_203
+(
+    DATA INFILE("gs://bucket_gcs/input/file1.csv")
+    INTO TABLE table1
+    COLUMNS TERMINATED BY ","
+    (id, name, score)
+    ,
+    DATA INFILE("gs://bucket_gcs/input/file2.csv")
+    INTO TABLE table2
+    COLUMNS TERMINATED BY ","
+    (id, name, score)
+)
+WITH BROKER
+(
+    "gcp.gcs.use_compute_engine_service_account" = "true"
+);
+PROPERTIES
+(
+    "timeout" = "3600"
+);
+```
+
+#### データのクエリ
+
+ロードジョブを送信した後は、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
+
+ロードジョブが成功したことを確認した後は、`table1`および`table2`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます。
+
+1. `table1`をクエリ:
+
+   ```SQL
+   SELECT * FROM table1;
+   +------+-------+-------+
+   | id   | name  | score |
+   +------+-------+-------+
+   |    1 | リリー |    21 |
+   |    2 | ローズ |    22 |
+   |    3 | アリス |    23 |
+   |    4 | ジュリア |    24 |
+   +------+-------+-------+
+   4 行が選択されました (0.01 秒)
+   ```
+
+2. `table2`をクエリ:
+
+   ```SQL
+   SELECT * FROM table2;
+   +------+-------+-------+
+   | id   | name  | score |
+   +------+-------+-------+
+   |    5 | トニー |    25 |
+   |    6 | アダム |    26 |
+   |    7 | アレン |    27 |
+   |    8 | ジャッキー |    28 |
+   +------+-------+-------+
+   4 行が選択されました (0.01 秒)
+   ```
+   |    6 | Adam  |    26 |
+   |    7 | Allen |    27 |
+   |    8 | Jacky |    28 |
+   +------+-------+-------+
+   4行がセットされました（0.01秒）
+
+## Microsoft Azure Storageからデータをロードする
+
+Microsoft Azure Storageからデータをロードする際には、アクセスプロトコルと使用する特定のストレージサービスに基づいてどのプレフィックスを使用するかを決定する必要があります。
+
+- Blob Storageからデータをロードする場合、ファイルパス（`DATA INFILE`）にアクセスするために使用されるプロトコルに基づいて、`wasb://`または`wasbs://`をプレフィックスとして含める必要があります。
+  - Blob StorageがHTTP経由でのアクセスのみを許可する場合は、プレフィックスとして`wasb://`を使用します。たとえば`wasb://<container>@<storage_account>.blob.core.windows.net/<path>/<file_name>/*`。
+  - Blob StorageがHTTPS経由でのアクセスのみを許可する場合は、プレフィックスとして`wasbs://`を使用します。たとえば`wasbs://<container>@<storage_account>.blob.core.windows``.net/<path>/<file_name>/*`
+- Data Lake Storage Gen1からデータをロードする場合、ファイルパス（`DATA INFILE`）に`adl://`をプレフィックスとして含める必要があります。たとえば`adl://<data_lake_storage_gen1_name>.azuredatalakestore.net/<path>/<file_name>`。
+- Data Lake Storage Gen2からデータをロードする場合、ファイルパス（`DATA INFILE`）にアクセスするために使用されるプロトコルに基づいて`abfs://`または`abfss://`をプレフィックスとして含める必要があります。
+  - Data Lake Storage Gen2がHTTP経由のアクセスのみを許可する場合は、プレフィックスとして`abfs://`を使用します。たとえば`abfs://<container>@<storage_account>.dfs.core.windows.net/<file_name>`。
+  - Data Lake Storage Gen2がHTTPS経由のアクセスのみを許可する場合は、プレフィックスとして`abfss://`を使用します。たとえば`abfss://<container>@<storage_account>.dfs.core.windows.net/<file_name>`。
+
+また、次の例では、CSVファイル形式、Azure Blob Storage、共有キーベースの認証方法を使用しています。他のフォーマットでデータをロードする方法や、他のAzureストレージサービスと認証方法を使用する際に構成する必要がある認証パラメータについては、[BROKER LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)を参照してください。
+
+### 単一のデータファイルを単一のテーブルにロードする
+
+#### 例
+
+次のステートメントを実行して、Azure Storageの指定されたパスに保存されている`file1.csv`のデータを`table1`にロードします。
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_301
@@ -305,9 +463,9 @@ PROPERTIES
 
 #### データのクエリ
 
-ロードジョブを送信した後は、`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能は v3.1 以降でサポートされています。詳細については、このトピックの「[ロードジョブの表示](#view-a-load-job)」セクションを参照してください。
+ロードジョブを送信した後、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブを表示する](#ロードジョブを表示する)"セクションを参照してください。
 
-ロードジョブが成功したことを確認した後は、`table1` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます:
+ロードジョブが成功したことを確認した後、`table1`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます。
 
 ```SQL
 SELECT * FROM table1;
@@ -319,14 +477,14 @@ SELECT * FROM table1;
 |    3 | Alice |    23 |
 |    4 | Julia |    24 |
 +------+-------+-------+
-4 行が返されました (0.01 秒)
+4行がセットされました（0.01秒）
 ```
 
-### 複数のデータファイルを単一のテーブルに読み込む
+### 複数のデータファイルを単一のテーブルにロードする
 
 #### 例
 
-次のステートメントを実行して、Azure Storage の指定されたパスに保存されているすべてのデータファイル（`file1.csv` および `file2.csv`）のデータを `table1` に読み込みます:
+次のステートメントを実行して、Azure Storageの指定されたパスに保存されているすべてのデータファイル（`file1.csv`および`file2.csv`）のデータを`table1`にロードします。
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_302
@@ -349,9 +507,9 @@ PROPERTIES
 
 #### データのクエリ
 
-ロードジョブを送信した後は、`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能は v3.1 以降でサポートされています。詳細については、このトピックの「[ロードジョブの表示](#view-a-load-job)」セクションを参照してください。
+ロードジョブを送信した後、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブを表示する](#ロードジョブを表示する)"セクションを参照してください。
 
-ロードジョブが成功したことを確認した後は、`table1` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます:
+ロードジョブが成功したことを確認した後、`table1`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます。
 
 ```SQL
 SELECT * FROM table1;
@@ -367,14 +525,14 @@ SELECT * FROM table1;
 |    7 | Allen |    27 |
 |    8 | Jacky |    28 |
 +------+-------+-------+
-4 行が返されました (0.01 秒)
+8行がセットされました（0.01秒）
 ```
 
-### 複数のデータファイルを複数のテーブルに読み込む
+### 複数のデータファイルを複数のテーブルにロードする
 
 #### 例
 
-次のステートメントを実行して、Azure Storage の指定されたパスに保存されている `file1.csv` および `file2.csv` のデータをそれぞれ `table1` と `table2` に読み込みます:
+次のステートメントを実行して、Azure Storageの指定されたパスに保存されている`file1.csv`および`file2.csv`のデータをそれぞれ`table1`および`table2`にロードします。
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_303
@@ -402,11 +560,11 @@ PROPERTIES
 
 #### データのクエリ
 
-ロードジョブを送信した後は、`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能は v3.1 以降でサポートされています。詳細については、このトピックの「[ロードジョブの表示](#view-a-load-job)」セクションを参照してください。
+ロードジョブを送信した後、`SELECT * FROM information_schema.loads`を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブを表示する](#ロードジョブを表示する)"セクションを参照してください。
 
-ロードジョブが成功したことを確認した後は、`table1` および `table2` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます:
+ロードジョブが成功したことを確認した後、`table1`および`table2`のデータをクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)を使用できます。
 
-1. `table1` をクエリ:
+1. `table1`をクエリする：
 
    ```SQL
    SELECT * FROM table1;
@@ -418,10 +576,10 @@ PROPERTIES
    |    3 | Alice |    23 |
    |    4 | Julia |    24 |
    +------+-------+-------+
-   4 行が返されました (0.01 秒)
+   4行がセットされました（0.01秒）
    ```
 
-2. `table2` をクエリ:
+2. `table2`をクエリする：
 
    ```SQL
    SELECT * FROM table2;
@@ -433,18 +591,18 @@ PROPERTIES
    |    7 | Allen |    27 |
    |    8 | Jacky |    28 |
    +------+-------+-------+
-   4 行が返されました (0.01 秒)
+   4行がセットされました（0.01秒）
    ```
 
-## S3 互換ストレージシステムからデータを読み込む
+## S3互換ストレージシステムからデータをロードする
 
-以下の例では、CSV ファイル形式および MinIO ストレージシステムを使用しています。他の形式でデータを読み込む方法については、「[BROKER LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)」を参照してください。
+次の例では、CSVファイル形式とMinIOストレージシステムを使用しています。他のフォーマットでデータをロードする方法については、[BROKER LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)を参照してください。
 
-### 単一のデータファイルを単一のテーブルに読み込む
+### 単一のデータファイルを単一のテーブルにロードする
 
 #### 例
 
-次のステートメントを実行して、MinIO バケット `bucket_minio` の `input` フォルダに保存されている `file1.csv` のデータを `table1` に読み込みます:
+次のステートメントを実行して、MinIOのバケット`bucket_minio`の`input`フォルダに保存されている`file1.csv`のデータを`table1`にロードします。
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_401
@@ -453,8 +611,7 @@ LOAD LABEL test_db.label_brokerloadtest_401
     INTO TABLE table1
     COLUMNS TERMINATED BY ","
 ```
-(
-    id, name, score
+(id, name, score)
 )
 WITH BROKER
 (
@@ -470,11 +627,11 @@ PROPERTIES
 );
 ```
 
-#### クエリデータ
+#### データのクエリ
 
-ロードジョブを送信した後、「`SELECT * FROM information_schema.loads`」を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
+ロードジョブを送信した後、`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能は v3.1 以降でサポートされています。詳細は、このトピックの"[ロードジョブを表示](#ロードジョブを表示)"セクションを参照してください。
 
-ロードジョブが正常に完了したことを確認した後、「[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)」を使用して「`table1`」のデータをクエリできます。
+ロードジョブが成功したことを確認したら、`table1` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます。
 
 ```SQL
 SELECT * FROM table1;
@@ -486,14 +643,14 @@ SELECT * FROM table1;
 |    3 | Alice |    23 |
 |    4 | Julia |    24 |
 +------+-------+-------+
-4 rows in set (0.01 sec)
+4 行が返されました (0.01 秒)
 ```
 
 ### 複数のデータファイルを単一のテーブルにロードする
 
 #### 例
 
-次の文を実行して、MinIOバケット「bucket_minio」の「input」フォルダに格納されているすべてのデータファイル（`file1.csv`と`file2.csv`）のデータを、「table1」というテーブルにロードします。
+以下のステートメントを実行して、MinIO バケット `bucket_minio` の `input` フォルダに格納されているすべてのデータファイル (`file1.csv` と `file2.csv`) のデータを `table1` にロードします：
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_402
@@ -517,11 +674,11 @@ PROPERTIES
 );
 ```
 
-#### クエリデータ
+#### データのクエリ
 
-ロードジョブを送信した後、「`SELECT * FROM information_schema.loads`」を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
+ロードジョブを送信した後、`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能は v3.1 以降でサポートされています。詳細は、このトピックの"[ロードジョブを表示](#ロードジョブを表示)"セクションを参照してください。
 
-ロードジョブが正常に完了したことを確認した後、「[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)」を使用して「table1」のデータをクエリできます。
+ロードジョブが成功したことを確認したら、`table1` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます。
 
 ```SQL
 SELECT * FROM table1;
@@ -537,14 +694,14 @@ SELECT * FROM table1;
 |    7 | Allen |    27 |
 |    8 | Jacky |    28 |
 +------+-------+-------+
-4 rows in set (0.01 sec)
+4 行が返されました (0.01 秒)
 ```
 
 ### 複数のデータファイルを複数のテーブルにロードする
 
 #### 例
 
-次の文を実行して、「bucket_minio」の「input」フォルダに格納されているすべてのデータファイル（`file1.csv`と`file2.csv`）のデータを、「table1」と「table2」というテーブルにそれぞれロードします。
+以下のステートメントを実行して、MinIO バケット `bucket_minio` の `input` フォルダに格納されているすべてのデータファイル (`file1.csv` と `file2.csv`) のデータを、それぞれ `table1` と `table2` にロードします：
 
 ```SQL
 LOAD LABEL test_db.label_brokerloadtest_403
@@ -573,13 +730,13 @@ PROPERTIES
 );
 ```
 
-#### クエリデータ
+#### データのクエリ
 
-ロードジョブを送信した後、「`SELECT * FROM information_schema.loads`」を使用してジョブの結果をクエリできます。この機能はv3.1以降でサポートされています。詳細については、このトピックの"[ロードジョブの表示](#view-a-load-job)"セクションを参照してください。
+ロードジョブを送信した後、`SELECT * FROM information_schema.loads` を使用してジョブの結果をクエリできます。この機能は v3.1 以降でサポートされています。詳細は、このトピックの"[ロードジョブを表示](#ロードジョブを表示)"セクションを参照してください。
 
-ロードジョブが正常に完了したことを確認した後、「[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)」を使用して「table1」と「table2」のデータをクエリできます。
+ロードジョブが成功したことを確認したら、`table1` と `table2` のデータをクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) を使用できます。
 
-1. 「table1」をクエリする:
+1. `table1` をクエリする：
 
    ```SQL
    SELECT * FROM table1;
@@ -591,10 +748,10 @@ PROPERTIES
    |    3 | Alice |    23 |
    |    4 | Julia |    24 |
    +------+-------+-------+
-   4 rows in set (0.01 sec)
+   4 行が返されました (0.01 秒)
    ```
 
-2. 「table2」をクエリする:
+2. `table2` をクエリする：
 
    ```SQL
    SELECT * FROM table2;
@@ -606,14 +763,14 @@ PROPERTIES
    |    7 | Allen |    27 |
    |    8 | Jacky |    28 |
    +------+-------+-------+
-   4 rows in set (0.01 sec)
+   4 行が返されました (0.01 秒)
    ```
 
-## ロードジョブの表示
+## ロードジョブを表示
 
-`information_schema`データベースの`loads`テーブルから1つまたは複数のロードジョブの結果をクエリするために、[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)文を使用します。この機能はv3.1以降でサポートされています。
+`information_schema` データベースの `loads` テーブルから、1 つ以上のロードジョブの結果をクエリするために [SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md) ステートメントを使用します。この機能は v3.1 以降でサポートされています。
 
-例1: `test_db`データベースで実行されたロードジョブの結果をクエリする。クエリ文では、最大2つの結果を返し、結果は作成時間(`CREATE_TIME`)で降順に並べ替えられることを指定します。
+例 1: `test_db` データベースで実行されたロードジョブの結果をクエリする。クエリステートメントでは、最大 2 つの結果が返され、結果は作成時刻（`CREATE_TIME`）で降順にソートされるように指定します。
 
 ```SQL
 SELECT * FROM information_schema.loads
@@ -622,10 +779,10 @@ ORDER BY create_time DESC
 LIMIT 2\G
 ```
 
-以下の結果が返されます:
+次の結果が返されます：
 
 ```SQL
-*************************** 1. row ***************************
+*************************** 1 行目 ***************************
               JOB_ID: 20686
                LABEL: label_brokerload_unqualifiedtest_83
        DATABASE_NAME: test_db
@@ -644,12 +801,12 @@ LIMIT 2\G
      ETL_FINISH_TIME: 2023-08-02 15:25:24
      LOAD_START_TIME: 2023-08-02 15:25:24
     LOAD_FINISH_TIME: 2023-08-02 15:25:27
-         JOB_DETAILS: {"All backends":{"77fe760e-ec53-47f7-917d-be5528288c08":[10006],"0154f64e-e090-47b7-a4b2-92c2ece95f97":[10005]},"FileNumber":2,"FileSize":84,"InternalTableLoadBytes":252,"InternalTableLoadRows":8,"ScanBytes":84,"ScanRows":8,"TaskNumber":2,"Unfinished backends":{"77fe760e-ec53-47f7-917d-be5528288c08":[],"0154f64e-e090-47b7-a4b2-92c2ece95f97":[]}}
+         JOB_DETAILS: {"All backends":{"77fe760e-ec53-47f7-917d-be5528288c08":[10006],"0154f64e-e090-47b7-a4b2-92c2ece95f97":[10005]},"FileNumber":2,"FileSize":84,"InternalTableLoadBytes":252,"InternalTableLoadRows":8,"ScanBytes":84,"ScanRows: 8,"TaskNumber":2," Unfinished backends:{"77fe760e-ec53-47f7-917d-be5528288c08":[],"0154f64e-e090-47b7-a4b2-92c2ece95f97":[]}}
            ERROR_MSG: NULL
         TRACKING_URL: NULL
         TRACKING_SQL: NULL
 REJECTED_RECORD_PATH: NULL
-*************************** 2. row ***************************
+*************************** 2 行目 ***************************
               JOB_ID: 20624
                LABEL: label_brokerload_unqualifiedtest_82
        DATABASE_NAME: test_db
@@ -664,8 +821,7 @@ REJECTED_RECORD_PATH: NULL
             ETL_INFO:
            TASK_INFO: resource:N/A; timeout(s):14400; max_filter_ratio:1.0
          CREATE_TIME: 2023-08-02 15:23:29
-```
-ETL_START_TIME: 2023-08-02 15:23:34
+      ETL_START_TIME: 2023-08-02 15:23:34
      ETL_FINISH_TIME: 2023-08-02 15:23:34
      LOAD_START_TIME: 2023-08-02 15:23:34
     LOAD_FINISH_TIME: 2023-08-02 15:23:34

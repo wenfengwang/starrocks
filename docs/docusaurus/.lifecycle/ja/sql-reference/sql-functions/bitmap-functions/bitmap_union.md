@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-グループ化した後の値のセットのビットマップの和を計算します。一般的な使用シナリオには、PVとUVの計算が含まれます。
+グループ化した値のビットマップ和を計算します。一般的な使用シナリオには、PVとUVの計算が含まれます。
 
 ## 構文
 
@@ -22,7 +22,7 @@ from table
 group by page_id;
 ```
 
-この関数をbitmap_count()と共に使用して、ウェブページのUVを取得します。
+この関数は、`bitmap_count()`と組み合わせてウェブページのUVを取得するために使用します。
 
 ```sql
 select page_id, bitmap_count(bitmap_union(user_id))
@@ -30,7 +30,7 @@ from table
 group by page_id;
 ```
 
-`user_id`が整数である場合、上記のクエリ文は次のと等価です。
+`user_id`が整数である場合、上記のクエリ文は次のものと同等です。
 
 ```sql
 select page_id, count(distinct user_id)

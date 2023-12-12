@@ -4,15 +4,15 @@ displayed_sidebar: "Japanese"
 
 # Flinkコネクタ
 
-## flink-connector-jdbc_2.11のシンクがStarRocksで8時間遅れています
+## flink-connector-jdbc_2.11sinkはStarRocksで8時間遅れています
 
 **問題の説明:**
 
-Localtimestap関数によって生成された時間はFlinkでは正常です。しかし、StarRocksにシンクされると8時間遅れます。FlinkサーバーとStarRocksサーバーは同じタイムゾーン、つまりAsia/Shanghai UTC/GMT+08:00に位置しています。Flinkのバージョンは1.12で、ドライバーはflink-connector-jdbc_2.11です。この問題を解決する方法を教えていただけますか？
+localtimestap関数によって生成される時間はFlinkでは正常です。しかしStarRocksに沈んだ時に8時間遅れました。FlinkサーバーとStarRocksサーバーは同じタイムゾーン、つまりAsia/Shanghai UTC/GMT+08:00に位置しています。Flinkバージョンは1.12です。ドライバー: flink-connector-jdbc_2.11. この問題を解決する方法を教えてもらえますか？
 
-**解決策:**
+**解決方法:**
 
-Flinkのシンクテーブルで'time'というパラメータを'Asia/Shanghai'に設定してみてください。また、jdbcのURLに&serverTimezone=Asia/Shanghaiを追加してください。以下に例を示します：
+Flinkのsinkテーブルで'time'パラメーターを 'server-time-zone' = 'Asia/Shanghai' に設定してみてください。jdbc URLにも &serverTimezone=Asia/Shanghai を追加してみてください。以下に例を示します:
 
 ```sql
 CREATE TABLE sk (
@@ -31,7 +31,7 @@ WITH (
 );
 ```
 
-## FlinkのインポートではStarRocksクラスタに展開されたkafkaクラスタのみインポートできます
+## Flinkインポートでは、StarRocksクラスタに展開されたkafkaクラスタのみをインポートできます
 
 **問題の説明:**
 
@@ -39,40 +39,40 @@ WITH (
 failed to query wartermark offset, err: Local: Bad message format
 ```
 
-**解決策:**
+**解決方法:**
 
-Kafka通信にはホスト名が必要です。ユーザーはStarRocksクラスタノードでホスト名の解決を/etc/hostsに設定する必要があります。
+Kafkaの通信にはホスト名が必要です。ユーザーはStarRocksクラスタノードでホスト名解決を/etc/hostsに設定する必要があります。
 
-## StarRocksは'create tableステートメント'をバッチでエクスポートできますか？
+## StarRocksは'create table statements'をバッチでエクスポートできますか？
 
-**解決策:**
+**解決方法:**
 
-StarRocks Toolsを使用してステートメントをエクスポートできます。
+StarRocksツールを使用してステートメントをエクスポートすることができます。
 
-## BEによって要求されたメモリが操作システムに戻されない
+## BEが要求したメモリがオペレーティングシステムに返却されない
 
-これは正常な現象です。データベースに割り当てられた大きなメモリブロックは、メモリを再利用してメモリの割り当てをより便利にするために、割り当て時に予約され、解放時に保留されています。メモリが解放されそうかを長期間監視して、メモリが解放されるかどうかを検証することをお勧めします。
+これは正常な現象です。データベースにオペレーティングシステムから割り当てられた大きなメモリブロックは割り当て時に予約され、解放時には遅延されて再利用されるため、メモリ割り当てをより便利に行うためです。メモリが解放されるかどうかを確認するために、ユーザーはメモリ使用状況を長期間監視してテスト環境を検証することを推奨します。
 
 ## ダウンロード後にFlinkコネクタが機能しない
 
 **問題の説明:**
 
-このパッケージはAliyunミラーアドレスを通じて取得する必要があります。
+このパッケージはAliyunミラーアドレスを介して取得する必要があります。
 
-**解決策:**
+**解決方法:**
 
-/etc/maven/settings.xmlのミラーパートがすべてAliyunミラーアドレスを通じて取得するように構成されていることを確認してください。
+/etc/maven/settings.xmlのミラー部分がすべてAliyunミラーアドレスを介して取得するように構成されていることを確認してください。
 
-もしそうであれば、次のように変更してください：
+構成されている場合は、次のように変更してください:
 
  <mirror>
-    <id>aliyunmaven</id>
-    <mirrorof>central</mirrorof>
+    <id>aliyunmaven </id>
+    <mirrorf>central</mirrorf>
     <name>aliyun public repo</name>
-    <url>https://maven.aliyun.com/repository/public</url>
+    <url>https: //maven.aliyun.com/repository/public</url>
 </mirror>
 
-## Flink-connector-StarRocksのパラメータ'sink.buffer-flush.interval-ms'の意味
+## Flink-connector-StarRocksのパラメーターsink.buffer-flush.interval-msの意味
 
 **問題の説明:**
 
@@ -85,8 +85,8 @@ StarRocks Toolsを使用してステートメントをエクスポートでき�
 +----------------------+--------------------------------------------------------------+
 ```
 
-このパラメータを15秒に設定し、チェックポイント間隔が5分と等しい場合、この値は引き続き効果がありますか？
+このパラメータがチェックポイント間隔が5分であり、値を15秒に設定した場合、この値は有効ですか？
 
-**解決策:**
+**解決方法:**
 
-これらのうちどちらかのしきい値が最初に達成された場合、それが最初に効果を発揮します。これはcheckpointインターバル値に影響されず、それは単一の値にのみ適用されます。Interval-msはat_least_onceに使用されます。
+3つの閾値のうち、最初に到達したものが最初に有効になります。チェックポイント間隔の値は、単一の値に対してのみ機能するため、これに影響を与えません。interval-msはat_least_onceに使用されます。

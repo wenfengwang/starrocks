@@ -4,17 +4,17 @@ displayed_sidebar: "Japanese"
 
 # bitmap_count
 
-## Description
+## 説明
 
-入力ビットマップの1ビットのカウントを返します。
+入力ビットマップの1ビットの数を返します。
 
-## Syntax
+## 構文
 
 ```Haskell
 INT BITMAP_COUNT(any_bitmap)
 ```
 
-## Examples
+## 例
 
 ```Plain Text
 MySQL > select bitmap_count(bitmap_from_string("1,2,4"));
@@ -32,6 +32,6 @@ MySQL > select bitmap_count(NULL);
 +--------------------+
 ```
 
-## keyword
+## キーワード
 
 BITMAP,BITMAP_COUNT

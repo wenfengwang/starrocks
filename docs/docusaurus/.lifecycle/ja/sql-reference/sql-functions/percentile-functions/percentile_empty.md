@@ -1,12 +1,12 @@
----
+```---
 displayed_sidebar: "Japanese"
 ---
 
-# percentile_empty（パーセンタイル空）
+# percentile_empty（パーセンタイル_空）
 
 ## 説明
 
-[Stream Load](../../../loading/StreamLoad.md)または[INSERT INTO](../../../loading/InsertInto.md)を使用したデータローディングのためにnull値を埋めるために使用されるPERCENTILE値を構築します。
+[Stream Load](../../../loading/StreamLoad.md)または[INSERT INTO](../../../loading/InsertInto.md)を使用してデータのロード時にnull値を埋めるために使用されるPERCENTILE値を構築します。
 
 ## 構文
 
@@ -20,18 +20,18 @@ PERCENTILE_EMPTY();
 
 ## 戻り値
 
-PERCENTILE値を返します。
+パーセンタイル値を返します。
 
 ## 例
 
-テーブルを作成します。`percent`列はPERCENTILE列です。
+テーブルを作成します。`percent`列はパーセンタイル列です。
 
 ```sql
 CREATE TABLE `aggregate_tbl` (
-  `site_id` largeint(40) NOT NULL COMMENT "siteのID",
+  `site_id` largeint(40) NOT NULL COMMENT "siteのid",
   `date` date NOT NULL COMMENT "イベントの時間",
-  `city_code` varchar(20) NULL COMMENT "ユーザーの市コード",
-  `pv` bigint(20) SUM NULL DEFAULT "0" COMMENT "総ページビュー",
+  `city_code` varchar(20) NULL COMMENT "ユーザーのcity_code",
+  `pv` bigint(20) SUM NULL DEFAULT "0" COMMENT "総合ページビュー",
   `percent` PERCENTILE PERCENTILE_UNION COMMENT "その他"
 ) ENGINE=OLAP
 AGGREGATE KEY(`site_id`, `date`, `city_code`)

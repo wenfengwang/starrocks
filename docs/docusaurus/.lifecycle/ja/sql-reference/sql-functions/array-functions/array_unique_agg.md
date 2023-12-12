@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-配列の列に含まれる重複しない値（`NULL`を含む）を配列に集約します（複数の行を1行にまとめます）。
+配列列内の重複しない値（`NULL`を含む）を配列に集約します（複数の行を1行に）。
 
 ## 構文
 
@@ -16,7 +16,7 @@ ARRAY_UNIQUE_AGG(col)
 
 ## パラメータ
 
-- `col`: 集約したい列。サポートされるデータ型はARRAYです。
+- `col`: 集約したい列。サポートされているデータ型はARRAYです。
 
 ## 戻り値
 
@@ -25,12 +25,12 @@ ARRAY型の値を返します。
 ## 使用上の注意
 
 - 配列内の要素の順序はランダムです。
-- 返される配列の要素のデータ型は、入力列の要素のデータ型と同じです。
-- 入力が空でグループ化する列がない場合は、`NULL`を返します。
+- 戻される配列内の要素のデータ型は、入力列の要素のデータ型と同じです。
+- 入力が空でgroup-by列がない場合、`NULL`が返されます。
 
 ## 例
 
-次のデータテーブルを例にします：
+次のデータテーブルを例にとってください：
 
 ```plaintext
 mysql> select * from array_unique_agg_example;
@@ -44,7 +44,7 @@ mysql> select * from array_unique_agg_example;
 +------+--------------+
 ```
 
-例1：列`a`の値をグループ化し、列`b`の重複しない値を配列に集約します。
+例 1: 列 `a` の値をグループ化し、列 `b` 内の重複しない値を配列に集約します。
 
 ```plaintext
 mysql> select a, array_unique_agg(b) from array_unique_agg_example group by a;
@@ -56,7 +56,7 @@ mysql> select a, array_unique_agg(b) from array_unique_agg_example group by a;
 +------+---------------------+
 ```
 
-例2：WHERE句を使用して列`b`の値を集約します。フィルタ条件を満たすデータがない場合、`NULL`値が返されます。
+例 2: 列 `b` の値をWHERE句を使用して集約します。フィルタ条件を満たすデータがない場合、`NULL`が返されます。
 
 ```plaintext
 mysql> select array_unique_agg(b) from array_unique_agg_example where a < 0;

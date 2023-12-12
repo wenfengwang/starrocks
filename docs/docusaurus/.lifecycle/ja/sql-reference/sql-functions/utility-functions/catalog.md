@@ -18,15 +18,15 @@ catalog()
 
 ## パラメータ
 
-この関数にはパラメータは不要です。
+この関数にはパラメータは必要ありません。
 
 ## 戻り値
 
-現在のカタログの名前を文字列で返します。
+現在のカタログの名前を文字列として返します。
 
 ## 例
 
-例1: 現在のカタログはStarRocks内部のカタログ `default_catalog` です。
+例1：現在のカタログはStarRocks内部のカタログ `default_catalog` です。
 
 ```plaintext
 select catalog();
@@ -38,7 +38,7 @@ select catalog();
 1行が返されました（0.01秒）
 ```
 
-例2: 現在のカタログは外部カタログ `hudi_catalog` です。
+例2：現在のカタログは外部カタログ `hudi_catalog` です。
 
 ```sql
 -- 外部カタログに切り替える。
@@ -55,4 +55,4 @@ select catalog();
 
 ## 関連項目
 
-[SET CATALOG](../../sql-statements/data-definition/SET_CATALOG.md): 宛先のカタログに切り替えます。
+[SET CATALOG](../../sql-statements/data-definition/SET_CATALOG.md): 宛先カタログに切り替えます。

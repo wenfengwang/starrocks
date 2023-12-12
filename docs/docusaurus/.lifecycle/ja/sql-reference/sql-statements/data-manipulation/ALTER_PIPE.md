@@ -1,8 +1,5 @@
----
-displayed_sidebar: "Japanese"
----
-
-# パイプの変更
+```SQL
+ALTER PIPE
 
 ## 説明
 
@@ -18,7 +15,7 @@ SET PROPERTY
 ) 
 ```
 
-## パラメータ
+## パラメーター
 
 ### db_name
 
@@ -34,7 +31,7 @@ SET PROPERTY
 
 ## 例
 
-データベース `mydatabase` にある `user_behavior_replica` という名前のパイプの `AUTO_INGEST` プロパティを `FALSE` に変更する場合:
+データベース `mydatabase` にある `user_behavior_replica` という名前のパイプの `AUTO_INGEST` プロパティの設定を `FALSE` に変更する例：
 
 ```SQL
 USE mydatabase;

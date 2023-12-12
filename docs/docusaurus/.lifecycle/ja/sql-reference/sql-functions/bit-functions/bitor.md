@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# bitor
+# bitor（ビット単位のOR）
 
 ## 説明
 
-2つの数値式のビットごとのORを返します。
+2つの数値式のビット単位のORを返します。
 
 ## 構文
 
@@ -16,24 +16,24 @@ BITOR(x,y);
 
 ## パラメーター
 
-- `x`: この式は、次のデータ型のいずれかに評価される必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
+- `x`: この式は次のいずれかのデータ型に評価する必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
 
-- `y`: この式は、次のデータ型のいずれかに評価される必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
+- `y`: この式は次のいずれかのデータ型に評価する必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
 
-> `x` および `y` はデータ型で一致している必要があります。
+> `x` と `y` はデータ型で一致する必要があります。
 
 ## 戻り値
 
-戻り値の型は `x` と同じです。いずれかの値がNULLの場合、結果もNULLになります。
+戻り値は `x` と同じ型です。どちらかの値がNULLの場合、結果もNULLになります。
 
 ## 例
 
-```プレーンテキスト
+```Plain Text
 mysql> select bitor(3,0);
 +-------------+
 | bitor(3, 0) |
 +-------------+
 |           3 |
 +-------------+
-1行が選択されました (0.00 秒)
+1 行が返されました (0.00 秒)
 ```

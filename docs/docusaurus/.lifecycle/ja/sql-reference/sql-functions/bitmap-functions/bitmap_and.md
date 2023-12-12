@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## Description
 
-2つの入力ビットマップの積集合を計算して新しいビットマップを返します。
+2つの入力ビットマップの積集合を計算し、新しいビットマップを返します。
 
 ## Syntax
 

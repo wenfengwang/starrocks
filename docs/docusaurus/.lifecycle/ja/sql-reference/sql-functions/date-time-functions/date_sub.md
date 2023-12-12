@@ -1,3 +1,4 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -14,15 +15,15 @@ displayed_sidebar: "Japanese"
 DATETIME DATE_SUB(DATETIME|DATE date,INTERVAL expr type)
 ```
 
-## パラメータ
+## パラメーター
 
 - `date`: 有効なDATEまたはDATETIME式でなければなりません。
 - `expr`: 減算したい時間間隔です。INT型でなければなりません。
-- `type`: 時間間隔の単位です。次の値のいずれかにのみ設定できます：YEAR、MONTH、DAY、HOUR、MINUTE、SECOND。
+- `type`: 時間間隔の単位です。YEAR、MONTH、DAY、HOUR、MINUTE、SECONDのいずれかにのみ設定できます。
 
 ## 戻り値
 
-DATETIME値を返します。日付が存在しない場合（例： `2020-02-30`）、または日付がDATEまたはDATETIME値でない場合、NULLが返されます。
+DATETIME値を返します。たとえば、`2020-02-30`のような日付が存在しない場合や、日付がDATEまたはDATETIME値でない場合は、NULLが返されます。
 
 ## 例
 

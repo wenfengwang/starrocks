@@ -2,13 +2,13 @@
 displayed_sidebar: "Japanese"
 ---
 
-# 全ての列を表示
+# 全てのカラムを表示
 
-## 説明
+## 概要
 
-このステートメントは、指定されたテーブルから列の内容を表示するために使用されます。
+この文は、指定されたテーブルからカラムの内容を表示するために使用されます。
 
-構文:
+構文：
 
 ```sql
 SHOW FULL COLUMNS FROM <tbl_name>
@@ -16,7 +16,7 @@ SHOW FULL COLUMNS FROM <tbl_name>
 
 ## 例
 
-1. 指定されたテーブルから列の内容を表示します。  
+1. 指定されたテーブルからカラムの内容を表示します。  
 
     ```sql
     SHOW FULL COLUMNS FROM tbl;

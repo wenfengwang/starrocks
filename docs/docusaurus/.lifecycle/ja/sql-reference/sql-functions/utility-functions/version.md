@@ -8,7 +8,7 @@ displayed_sidebar: "Japanese"
 
 MySQLデータベースの現在のバージョンを返します。
 
-StarRocksのバージョンをクエリするには[current_version](current_version.md)を使用できます。
+[現在のバージョン](current_version.md)を使用して、StarRocksのバージョンをクエリできます。
 
 ## 構文
 
@@ -22,7 +22,7 @@ VARCHAR version();
 
 ## 戻り値
 
-VARCHAR型の値を返します。
+VARCHARタイプの値を返します。
 
 ## 例
 
@@ -33,7 +33,7 @@ mysql> select version();
 +-----------+
 | 5.1.0     |
 +-----------+
-1行がセットされました (0.00 秒)
+1 row in set (0.00 sec)
 ```
 
 ## 参照

@@ -1,16 +1,17 @@
+```
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# マテリアライズドビューのリフレッシュ
+# MATERIALIZED VIEWのリフレッシュ
 
 ## 説明
 
-特定の非同期マテリアライズドビューまたはそのパーティションを手動でリフレッシュします。
+特定の非同期マテリアライズド・ビューまたはそのパーティションを手動でリフレッシュします。
 
 > **注意**
 >
-> ASYNCまたはMANUALのリフレッシュ戦略を採用したマテリアライズドビューのみ手動でリフレッシュできます。非同期マテリアライズドビューのリフレッシュ戦略は、[SHOW MATERIALIZED VIEWS](../data-manipulation/SHOW_MATERIALIZED_VIEW.md)を使用して確認できます。
+> ASYNCまたはMANUALのリフレッシュ戦略を採用するマテリアライズド・ビューのみを手動でリフレッシュできます。非同期マテリアライズド・ビューのリフレッシュ戦略は、[SHOW MATERIALIZED VIEWS](../data-manipulation/SHOW_MATERIALIZED_VIEW.md)を使用して確認できます。
 
 ## 構文
 
@@ -23,22 +24,22 @@ REFRESH MATERIALIZED VIEW [database.]mv_name
 
 ## パラメータ
 
-| **パラメータ**           | **必須** | **説明**                                                   |
+| **パラメータ**             | **必須** | **説明**                                        |
 | ------------------------- | ------------ | ------------------------------------------------------ |
-| mv_name                   | yes          | 手動でリフレッシュするマテリアライズドビューの名前。 |
+| mv_name                   | yes          | 手動でリフレッシュするマテリアライズド・ビューの名前。 |
 | PARTITION START () END () | no           | 特定の時間間隔内のパーティションを手動でリフレッシュします。 |
 | partition_start_date      | no           | 手動でリフレッシュするパーティションの開始日。  |
 | partition_end_date        | no           | 手動でリフレッシュするパーティションの終了日。    |
-| FORCE                     | no           | このパラメータを指定すると、StarRocksは対応するマテリアライズドビューまたはパーティションを強制的にリフレッシュします。このパラメータを指定しない場合、StarRocksはデータが更新されたかどうかを自動的に判断し、必要に応じてパーティションをリフレッシュします。  |
-| WITH ... MODE             | no           | リフレッシュタスクの同期または非同期の呼び出しを行います。`SYNC`はリフレッシュタスクの同期的な呼び出しを示し、StarRocksはタスクが成功または失敗したときだけタスクの結果を返します。`ASYNC`はリフレッシュタスクの非同期な呼び出しを示し、StarRocksはタスクを提出した直後に成功を返し、タスクをバックグラウンドで非同期に実行します。非同期マテリアライズドビューのリフレッシュタスクのステータスは、StarRocksのInformation Schemaの`tasks`および`task_runs`メタデータビューをクエリすることで確認できます。詳細については、[非同期マテリアライズドビューの実行ステータスを確認する](../../../using_starrocks/Materialized_view.md#check-the-execution-status-of-asynchronous-materialized-view)を参照してください。デフォルト値: `ASYNC`。v3.1.0以降でサポートされています。 |
+| FORCE                     | no           | このパラメータを指定すると、StarRocksは対応するマテリアライズド・ビューまたはパーティションを強制的にリフレッシュします。このパラメータを指定しない場合、StarRocksはデータが更新されたかどうかを自動的に判断し、必要に応じてパーティションのみをリフレッシュします。  |
+| WITH ... MODE             | no           | リフレッシュタスクを同期または非同期で実行します。`SYNC`はリフレッシュタスクを同期的に実行し、StarRocksはタスクが成功または失敗した場合のみタスク結果を返します。`ASYNC`はリフレッシュタスクを非同期的に実行し、StarRocksはタスクが提出されるとすぐに成功を返し、タスクはバックグラウンドで非同期に実行されます。非同期マテリアライズド・ビューのリフレッシュタスクの状態は、StarRocksのInformation Schemaの`tasks`および`task_runs`メタデータビューをクエリして確認できます。詳細については、[非同期マテリアライズド・ビューの実行状態を確認する](../../../using_starrocks/Materialized_view.md#check-the-execution-status-of-asynchronous-materialized-view)を参照してください。デフォルト：`ASYNC`。v3.1.0以降でサポートされています。 |
 
 > **注意**
 >
-> 外部カタログに基づいて作成されたマテリアライズドビューをリフレッシュする場合、StarRocksはすべてのパーティションをリフレッシュします。
+> 外部カタログに基づいて作成されたマテリアライズド・ビューをリフレッシュする場合、StarRocksはすべてのパーティションをリフレッシュします。
 
 ## 例
 
-例1: 非同期呼び出しで特定のマテリアライズドビューを手動でリフレッシュする。
+Example 1: 非同期コールを使用して特定のマテリアライズド・ビューを手動でリフレッシュします。
 
 ```Plain
 REFRESH MATERIALIZED VIEW lo_mv1;
@@ -46,21 +47,21 @@ REFRESH MATERIALIZED VIEW lo_mv1;
 REFRESH MATERIALIZED VIEW lo_mv1 WITH ASYNC MODE;
 ```
 
-例2: 特定のマテリアライズドビューの特定のパーティションを手動でリフレッシュする。
+Example 2: 特定のマテリアライズド・ビューの特定のパーティションを手動でリフレッシュします。
 
 ```Plain
 REFRESH MATERIALIZED VIEW lo_mv1 
 PARTITION START ("2020-02-01") END ("2020-03-01");
 ```
 
-例3: 特定のマテリアライズドビューの特定のパーティションを強制的にリフレッシュする。
+Example 3: 特定のマテリアライズド・ビューの特定のパーティションを強制的にリフレッシュします。
 
 ```Plain
 REFRESH MATERIALIZED VIEW lo_mv1
 PARTITION START ("2020-02-01") END ("2020-03-01") FORCE;
 ```
 
-例4: 同期呼び出しでマテリアライズドビューを手動でリフレッシュする。
+Example 4: 同期コールを使用してマテリアライズド・ビューを手動でリフレッシュします。
 
 ```Plain
 REFRESH MATERIALIZED VIEW lo_mv1 WITH SYNC MODE;

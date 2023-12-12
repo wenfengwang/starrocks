@@ -1,4 +1,3 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -7,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-日付から週数を減算した値を返します。
+日付から引かれる週の数とともに値を返します。
 
 ## 構文
 
@@ -17,15 +16,15 @@ DATETIME weeks_sub(DATETIME expr1, INT expr2);
 
 ## パラメーター
 
-- `expr1`: 元の日付です。`DATETIME` 型でなければなりません。
+- `expr1`: 元の日付。`DATETIME` 型である必要があります。
 
-- `expr2`: 週数です。`INT` 型でなければなりません。
+- `expr2`: 週の数。`INT` 型である必要があります。
 
-## 返り値
+## 戻り値
 
 `DATETIME` を返します。
 
-日付が存在しない場合は `NULL` が返されます。
+日付が存在しない場合、`NULL` が返されます。
 
 ## 例
 

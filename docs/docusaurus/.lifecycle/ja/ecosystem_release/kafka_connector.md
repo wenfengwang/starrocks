@@ -16,7 +16,7 @@ displayed_sidebar: "Japanese"
 
 | Kafkaコネクタ | StarRocks | Java |
 | --------------- | --------- | ---- |
-| 1.0.0           | 2.1 およびそれ以降 | 8    |
+| 1.0.0           | 2.1以降 | 8    |
 
 ## リリースノート
 
@@ -28,5 +28,5 @@ displayed_sidebar: "Japanese"
 
 **機能**
 
-- CSV、JSON、Avro、およびProtobufデータの読み込みをサポート。
-- 自己管理型Apache KafkaクラスタまたはConfluentクラウドからのデータロードをサポート。
+- CSV、JSON、Avro、Protobufデータの読み込みをサポート
+- セルフマネージドのApache KafkaクラスタやConfluent Cloudからのデータ読み込みをサポート

@@ -1,5 +1,5 @@
 ---
-displayed_sidebar: "English"
+displayed_sidebar: "Japanese"
 ---
 
 # array_avg
@@ -14,7 +14,7 @@ displayed_sidebar: "English"
 array_avg(array(type))
 ```
 
-`array(type)`では、次の種類の要素がサポートされています: BOOLEAN, TINYINT, SMALLINT, INT, BIGINT, LARGEINT, FLOAT, DOUBLE, DECIMALV2。
+`array(type)`は以下の要素タイプをサポートしています：BOOLEAN、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、DECIMALV2。
 
 ## 例
 
@@ -36,4 +36,4 @@ mysql> select array_avg([11.33, 11.11, 12.324]);
 
 ## キーワード
 
-ARRAY_AVG,ARRAY
+ARRAY_AVG, ARRAY

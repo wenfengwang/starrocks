@@ -4,17 +4,17 @@ displayed_sidebar: "Japanese"
 
 # ロードバランシング
 
-複数のFEノードを展開する際に、ユーザーは高可用性を実現するためにFEの上にロードバランシング層を展開することができます。
+複数のFEノードを展開する場合、ユーザーは高可用性を実現するためにFEの上にロードバランシングレイヤーを展開することができます。
 
-以下はいくつかの高可用性オプションです。
+以下はいくつかの高可用性オプションです：
 
 ## コードアプローチ
 
-1つの方法は、アプリケーション層にコードを実装して、リトライとロードバランシングを行うことです。例えば、接続が切断された場合、他の接続で自動的にリトライされます。このアプローチでは、ユーザーは複数のFEノードアドレスを構成する必要があります。
+1つの方法は、アプリケーションレイヤーで再試行とロードバランシングを実行するためのコードを実装することです。たとえば、接続が切断された場合、他の接続で自動的に再試行します。このアプローチでは、複数のFEノードアドレスを構成する必要があります。
 
 ## JDBCコネクタ
 
-JDBCコネクタは自動的なリトライをサポートしています。
+JDBCコネクタは自動再試行をサポートしています：
 
 ~~~sql
 jdbc:mysql:loadbalance://[host1][:port],[host2][:port][,[host3][:port]]...[/[database]][?propertyName1=propertyValue1[&propertyName2=propertyValue2]...]
@@ -22,35 +22,35 @@ jdbc:mysql:loadbalance://[host1][:port],[host2][:port][,[host3][:port]]...[/[dat
 
 ## ProxySQL
 
-ProxySQLはMySQLプロキシ層であり、読み込み/書き込みの分離、クエリのルーティング、SQLのキャッシング、動的な負荷設定、フェールオーバー、SQLのフィルタリングをサポートしています。
+ProxySQLは、読み書きの分離、クエリのルーティング、SQLのキャッシュ、動的なロード構成、フェイルオーバー、およびSQLフィルタリングをサポートするMySQLプロキシレイヤーです。
 
-StarRocks FEは、接続とクエリのリクエストを受け取る責任があり、水平スケーラブルで高可用性です。ただし、FEでは自動的なロードバランシングを実現するために、その上にプロキシ層を設定する必要があります。セットアップの手順は以下の通りです。
+StarRocks FEは接続とクエリのリクエストを受け取る責任があり、水平方向に拡張可能で高可用性です。しかし、FEでは自動的なロードバランシングを実現するために、その上にプロキシレイヤーを設定する必要があります。セットアップの手順については以下を参照してください：
 
-### 1. 関連する依存関係をインストール
+### 1. 関連する依存関係のインストール
 
 ~~~shell
 yum install -y gnutls perl-DBD-MySQL perl-DBI perl-devel
 ~~~
 
-### 2. インストールパッケージをダウンロード
+### 2. インストールパッケージのダウンロード
 
 ~~~shell
 wget https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-centos7.x86_64.rpm
 ~~~
 
-### 3. 現在のディレクトリに展開
+### 3. 現在のディレクトリに展開する
 
 ~~~shell
 rpm2cpio proxysql-2.0.14-1-centos7.x86_64.rpm | cpio -ivdm
 ~~~
 
-### 4. 構成ファイルを変更
+### 4. 設定ファイルの変更
 
 ~~~shell
 vim ./etc/proxysql.cnf 
 ~~~
 
-ユーザーがアクセス権限を持っているディレクトリに移動（絶対パス）:
+ユーザーがアクセス権限を持っているディレクトリに移動します（絶対パス）：
 
 ~~~vim
 datadir="/var/lib/proxysql"
@@ -69,7 +69,7 @@ errorlog="/var/lib/proxysql/proxysql.log"
 mysql -u admin -padmin -h 127.0.0.1 -P6032
 ~~~
 
-### 7. グローバルログの構成
+### 7. グローバルログの設定
 
 ~~~shell
 SET mysql-eventslog_filename='proxysql_queries.log';
@@ -92,33 +92,33 @@ insert into mysql_servers(hostgroup_id, hostname, port) values(2, '172.26.34.139
 insert into mysql_servers(hostgroup_id, hostname, port) values(2, '172.26.34.140', 9931);
 ~~~
 
-### 10. 構成を読み込む
+### 10. 設定の読み込み
 
 ~~~sql
 load mysql servers to runtime;
 save mysql servers to disk;
 ~~~
 
-### 11. ユーザー名とパスワードを構成
+### 11. ユーザー名とパスワードの設定
 
 ~~~sql
 insert into mysql_users(username, password, active, default_hostgroup, backend, frontend) values('root', '*94BDCEBE19083CE2A1F959FD02F964C7AF4CFC29', 1, 1, 1, 1);
 ~~~
 
-### 12. 構成を読み込む
+### 12. 設定の読み込み
 
 ~~~sql
 load mysql users to runtime; 
 save mysql users to disk;
 ~~~
 
-### 13. プロキシルールに書き込む
+### 13. プロキシルールへの書き込み
 
 ~~~sql
 insert into mysql_query_rules(rule_id, active, match_digest, destination_hostgroup, mirror_hostgroup, apply) values(1, 1, '.', 1, 2, 1);
 ~~~
 
-### 14. 構成を読み込む
+### 14. 設定の読み込み
 
 ~~~sql
 load mysql query rules to runtime; 

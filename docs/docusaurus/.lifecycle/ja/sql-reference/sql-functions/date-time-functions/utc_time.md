@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## Description
 
-現在のUTC時刻を 'HH:MM:SS' の値で返します。
+現在のUTC時間を 'HH:MM:SS' の値として返します。
 
 ## Syntax
 

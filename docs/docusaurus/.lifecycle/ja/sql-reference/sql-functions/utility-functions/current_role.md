@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## Description
 
-現在のユーザーにアクティベートされている役割をクエリします。
+現在のユーザーにアクティブになっているロールをクエリします。
 
 ## Syntax
 

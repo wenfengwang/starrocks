@@ -1,9 +1,8 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# array_join（配列結合）
+# array_join
 
 ## 説明
 
@@ -15,13 +14,13 @@ displayed_sidebar: "Japanese"
 array_join(array, sep[, null_replace_str])
 ```
 
-## パラメータ
+## パラメーター
 
-- `array`: 連結したい配列。ARRAYデータ型のみサポートされます。
+- `array`: 連結したい配列。ARRAYデータ型のみサポートされています。
 
-- `sep`: 連結された配列要素を区切るデリミタ。VARCHARデータ型のみサポートされます。
+- `sep`: 連結された配列要素を区切るために使用される区切り記号。VARCHARデータ型のみサポートされています。
 
-- `null_replace_str`: `NULL` 値を代替する文字列。VARCHARデータ型のみサポートされます。
+- `null_replace_str`: `NULL`値を代替するために使用される文字列。VARCHARデータ型のみサポートされています。
 
 ## 戻り値
 
@@ -29,19 +28,19 @@ VARCHARデータ型の値を返します。
 
 ## 使用上の注意
 
-- `array` パラメータの値は一次元の配列である必要があります。
+- `array`パラメーターの値は一次元配列である必要があります。
 
-- `array` パラメータはDECIMAL値をサポートしていません。
+- `array`パラメーターはDECIMAL値をサポートしていません。
 
-- `sep` パラメータを `NULL` に設定すると、戻り値は `NULL` になります。
+- `sep`パラメーターを`NULL`に設定すると、戻り値は`NULL`になります。
 
-- `null_replace_str` パラメータを指定しない場合、`NULL` 値は破棄されます。
+- `null_replace_str`パラメーターを指定しない場合、`NULL`値は破棄されます。
 
-- `null_replace_str` パラメータを `NULL` に設定すると、戻り値は `NULL` になります。
+- `null_replace_str`パラメーターを`NULL`に設定すると、戻り値は`NULL`になります。
 
 ## 例
 
-例1: 配列の要素を連結します。この例では、配列内の `NULL` 値が破棄され、連結された配列要素はアンダースコア (`_`) で区切られます。
+例1: 配列の要素を連結する。この例では、配列内の`NULL`値は破棄され、連結された配列要素はアンダースコア(`_`)で区切られます。
 
 ```plaintext
 mysql> select array_join([1, 3, 5, null], '_');
@@ -57,7 +56,7 @@ mysql> select array_join([1, 3, 5, null], '_');
 +-------------------------------+
 ```
 
-例2: 配列の要素を連結します。この例では、配列内の `NULL` 値が `NULL` 文字列に置換され、連結された配列要素はアンダースコア (`_`) で区切られます。
+例2: 配列の要素を連結する。この例では、配列内の`NULL`値は`NULL`文字列で置き換えられ、連結された配列要素はアンダースコア(`_`)で区切られます。
 
 ```plaintext
 mysql> select array_join([1, 3, 5, null], '_', 'NULL');

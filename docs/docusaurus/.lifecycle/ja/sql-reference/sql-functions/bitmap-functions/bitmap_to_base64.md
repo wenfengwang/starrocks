@@ -14,9 +14,9 @@ displayed_sidebar: "Japanese"
 VARCHAR bitmap_to_base64(BITMAP bitmap)
 ```
 
-## パラメータ
+## パラメーター
 
-`bitmap`: 変換するビットマップ。このパラメータは必須です。入力値が無効な場合、エラーが返されます。
+`bitmap`: 変換するビットマップ。このパラメーターは必須です。入力値が無効な場合、エラーが返されます。
 
 ## 戻り値
 
@@ -24,7 +24,7 @@ VARCHAR型の値を返します。
 
 ## 例
 
-例1：他のビットマップ関数と共にこの関数を使用します。
+例1: 他のビットマップ関数と一緒にこの関数を使用します。
 
 ```Plain
 select bitmap_to_base64(bitmap_from_string("0, 1, 2, 3"));
@@ -33,8 +33,7 @@ select bitmap_to_base64(bitmap_from_string("0, 1, 2, 3"));
 +----------------------------------------------------+
 | AjowAAABAAAAAAADABAAAAAAAAEAAgADAA==               |
 +----------------------------------------------------+
-1 row in set (0.00 sec)
-
+1行が選択されました (0.00 秒)
 
 select bitmap_to_base64(to_bitmap(1));
 +--------------------------------+
@@ -42,8 +41,7 @@ select bitmap_to_base64(to_bitmap(1));
 +--------------------------------+
 | AQEAAAA=                       |
 +--------------------------------+
-1 row in set (0.00 sec)
-
+1行が選択されました (0.00 秒)
 
 select bitmap_to_base64(bitmap_empty());
 +----------------------------------+
@@ -51,12 +49,12 @@ select bitmap_to_base64(bitmap_empty());
 +----------------------------------+
 | AA==                             |
 +----------------------------------+
-1 row in set (0.00 sec)
+1行が選択されました (0.00 秒)
 ```
 
-例2：BITMAP列内の各値をBase64エンコードされた文字列に変換します。
+例2: BITMAP列内の各値をBase64エンコードされた文字列に変換します。
 
-1. `page_id`と`visit_date`が`AGGREGATE KEY`であるAggregateテーブル`page_uv`を作成します。このテーブルには集約されるべきBITMAP列`visit_users`が含まれています。
+1. `page_uv`という集約テーブルを作成します。`AGGREGATE KEY`は(`page_id`, `visit_date`)です。このテーブルには集約されるBITMAP列`visit_users`が含まれています。
 
     ```SQL
         CREATE TABLE `page_uv`

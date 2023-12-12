@@ -1,3 +1,4 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -16,15 +17,15 @@ DATETIME weeks_add(DATETIME expr1, INT expr2);
 
 ## Parameters
 
-- `expr1`: 元の日付。`DATETIME`型でなければなりません。
+- `expr1`: 元の日付。 `DATETIME` 型でなければなりません。
 
-- `expr2`: 週数。`INT`型でなければなりません。
+- `expr2`: 週数。 `INT` 型でなければなりません。
 
 ## Return value
 
-`DATETIME`を返します。
+`DATETIME` を返します。
 
-日付が存在しない場合は`NULL`が返されます。
+日付が存在しない場合は `NULL` が返されます。
 
 ## Examples
 

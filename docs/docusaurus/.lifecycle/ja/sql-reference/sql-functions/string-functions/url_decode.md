@@ -1,5 +1,5 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "日本語"
 ---
 
 # url_decode
@@ -16,7 +16,7 @@ url_decode(str)
 
 ## パラメータ
 
-- `str`: デコードする文字列。`str`が文字列型でない場合、暗黙のキャストを先に試みます。
+- `str`: デコードする文字列。`str`が文字列型でない場合、暗黙的なキャストを試みます。
 
 ## 戻り値
 

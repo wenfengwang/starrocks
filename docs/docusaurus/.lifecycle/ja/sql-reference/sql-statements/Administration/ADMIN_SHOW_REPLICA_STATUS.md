@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-このステートメントは、テーブルまたはパーティションのレプリカのステータスを表示するために使用されます。
+この文は、テーブルまたはパーティションのレプリカのステータスを表示するために使用されます。
 
 構文：
 
@@ -22,9 +22,9 @@ WHERE STATUS [!]= "replica_status"
 
 ```plain text
 replica_status:
-OK:            レプリカは健全です
+OK:            レプリカは正常です
 DEAD:          レプリカのバックエンドが利用できません
-VERSION_ERROR: レプリカデータのバージョンが見つかりません
+VERSION_ERROR: レプリカのデータバージョンが見つかりません
 SCHEMA_ERROR:  レプリカのスキーマハッシュが正しくありません
 MISSING:       レプリカが存在しません
 ```
@@ -37,7 +37,7 @@ MISSING:       レプリカが存在しません
     ADMIN SHOW REPLICA STATUS FROM db1.tbl1;
     ```
 
-2. VERSION_ERROR のステータスを持つパーティションのレプリカを表示します。
+2. VERSION_ERRORのステータスを持つパーティションのレプリカを表示します。
 
     ```sql
     ADMIN SHOW REPLICA STATUS FROM tbl1 PARTITION (p1, p2)

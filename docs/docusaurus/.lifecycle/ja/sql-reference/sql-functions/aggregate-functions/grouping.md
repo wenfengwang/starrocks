@@ -1,25 +1,24 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # grouping
 
-## Description
+## 説明
 
-列が集計列かどうかを示します。集計列の場合、0が返されます。それ以外の場合、1が返されます。
+列が集計列であるかどうかを示します。集計列の場合、0が返されます。それ以外の場合、1が返されます。
 
-## Syntax
+## 構文
 
 ```Haskell
 GROUPING(col_expr)
 ```
 
-## Parameters
+## パラメーター
 
-`col_expr`: GROUP BY句のROLLUP、CUBE、またはGROUPING SETSの展開の式リストで指定された次元列の式。
+`col_expr`: GROUP BY句のROLLUP、CUBE、またはGROUPING SETSの展開の式リストで指定されたディメンション列の式。
 
-## Examples
+## 例
 
 ```plain text
 MySQL > select * from t;
@@ -35,7 +34,7 @@ MySQL > select * from t;
 | a    | B    |
 | a    | b    |
 +------+------+
-8 行がセットされました(0.12 sec)
+8 rows in set (0.12 sec)
 
 MySQL > SELECT k1, k2, GROUPING(k1), GROUPING(k2), COUNT(*) FROM t GROUP BY ROLLUP(k1, k2);
 +------+------+--------------+--------------+----------+
@@ -50,9 +49,9 @@ MySQL > SELECT k1, k2, GROUPING(k1), GROUPING(k2), COUNT(*) FROM t GROUP BY ROLL
 | A    | NULL |            0 |            0 |        1 |
 | A    | B    |            0 |            0 |        1 |
 | A    | b    |            0 |            0 |        1 |
-| a    | NULL |            0 |            0 |        1 |
+| a    | NULL |             0 |           0 |        1 |
 | a    | B    |            0 |            0 |        1 |
 | a    | b    |            0 |            0 |        1 |
 +------+------+--------------+--------------+----------+
-12 行がセットされました(0.12 sec)
+12 rows in set (0.12 sec)
 ```

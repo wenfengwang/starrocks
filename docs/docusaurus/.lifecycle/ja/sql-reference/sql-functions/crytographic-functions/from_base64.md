@@ -1,31 +1,31 @@
-```
+```markdown
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # from_base64
 
-## Description
+## 説明
 
 Base64でエンコードされた文字列をデコードします。この関数は[to_base64](to_base64.md)の逆です。
 
-## Syntax
+## 構文
 
 ```Haskell
 from_base64(str);
 ```
 
-## Parameters
+## パラメータ
 
 `str`: デコードする文字列。VARCHAR型である必要があります。
 
-## Return value
+## 戻り値
 
 VARCHAR型の値を返します。入力がNULLまたは無効なBase64文字列の場合、NULLが返されます。入力が空の場合、エラーが返されます。
 
-この関数は1つの文字列のみを受け付けます。複数の入力文字列があるとエラーが発生します。
+この関数は文字列を1つだけ受け付けます。複数の入力文字列があるとエラーが発生します。
 
-## Examples
+## 例
 
 ```Plain Text
 mysql> select from_base64("starrocks");

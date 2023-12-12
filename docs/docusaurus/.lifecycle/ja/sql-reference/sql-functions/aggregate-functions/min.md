@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# min
+# min（最小値）
 
 ## 説明
 

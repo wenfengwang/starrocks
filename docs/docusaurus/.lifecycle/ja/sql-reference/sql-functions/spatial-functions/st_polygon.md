@@ -1,13 +1,13 @@
 ```yaml
 ---
-displayed_sidebar: "日本語"
+displayed_sidebar: "Japanese"
 ---
 
 # ST_Polygon,ST_PolyFromText,ST_PolygonFromText
 
 ## 説明
 
-WKT（Well Known Text）を対応するポリゴンのメモリ形式に変換します。
+WKT(Well Known Text)を対応するポリゴンメモリ形式に変換します。
 
 ## 構文
 

@@ -6,23 +6,23 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-このステートメントはリソースを作成するために使用されます。ユーザーrootまたは管理者のみがリソースを作成できます。現在、StarRocksはSparkとHiveリソースのみをサポートしています。将来的には、クエリ用のSpark/GPU、外部ストレージ用のHDFS/S3、ETL用のMapReduceなど、その他の外部リソースがStarRocksに追加されるかもしれません。
+このステートメントはリソースを作成するために使用されます。リソースは、ユーザールートまたは管理者のみ作成できます。現在、SparkおよびHiveリソースのみがサポートされています。将来的には、Spark/GPUクエリ用、外部ストレージとしてのHDFS/S3、ETL用のMapReduceなど、その他の外部リソースがStarRocksに追加されるかもしれません。
 
-構文:
+構文：
 
 ```sql
 CREATE [EXTERNAL] RESOURCE "resource_name"
 PROPERTIES ("key"="value", ...)
 ```
 
-注意:  
+注：
 
-1. PROPERTIESではリソースの種類が指定されます。現在、SparkとHiveのみがサポートされています。
-2. PROPERTIESはリソースの種類によって異なります。詳細は例を参照してください。
+1. PROPERTIESはリソースの種類を指定します。現在、SparkとHiveのみがサポートされています。
+2. PROPERTIESはリソースの種類によって異なります。詳細については例を参照してください。
 
 ## 例
 
-1. ヤーンクラスターモードでspark0という名前のSparkリソースを作成します。
+1. yarn クラスターモードで名前が spark0 の Spark リソースを作成します。
 
     ```sql
     CREATE EXTERNAL RESOURCE "spark0"
@@ -44,27 +44,27 @@ PROPERTIES ("key"="value", ...)
     );
     ```
 
-    Spark関連のパラメータは以下の通りです:
+    Sparkに関連するパラメータは以下の通りです：
 
     ```plain text
-    1. spark.master: 必須。現在、yarnとspark ://host:portをサポートしています。
-    2. spark.submit.deployMode: Sparkプログラムのデプロイモードが必要です。clusterとclientをサポートしています。
-    3. spark.hadoop.yarn.resourcemanager.address: マスターがyarnの場合に必要です。
-    4. spark.hadoop.fs.defaultFS: マスターがyarnの場合に必要です。
+    1. spark.master: 必須。現在、yarnとspark ://host:portのみがサポートされています。
+    2. spark.submit.deployMode: Sparkプログラムの展開モードが必要です。clusterおよびclientをサポートしています。
+    3. spark.hadoop.yarn.resourcemanager.address: masterがyarnの場合に必要です。
+    4. spark.hadoop.fs.defaultFS: masterがyarnの場合に必要です。
     5. その他のパラメータはオプションです。詳細はhttp://spark.apache.org/docs/latest/configuration.htmlを参照してください。
     ```
 
-    ETLにSparkを使用する場合は、working_DIRとbrokerを指定する必要があります。指示は以下の通りです:
+    SparkをETL用に使用する場合は、working_DIRとbrokerを指定する必要があります。手順は次のとおりです：
 
     ```plain text
-    working_dir: ETLに使用されるディレクトリ。SparkをETLリソースとして使用する場合に必要です。例: hdfs://host:port/tmp/starrocks。
-    broker: ブローカーの名前。SparkをETLリソースとして使用し、以前に`ALTER SYSTEM ADD BROKER`コマンドを使用して構成する必要があります。
-    broker.property_key: ブローカーがETLによって作成された中間ファイルを読み込む際に指定する必要があるプロパティ情報です。
+    working_dir: ETLで使用されるディレクトリ。SparkをETLリソースとして使用する場合に必要です。例：hdfs://host:port/tmp/starrocks。
+    broker: ブローカーの名前。SparkをETLリソースとして使用し、事前に`ALTER SYSTEM ADD BROKER`コマンドを使用して構成する必要があります。
+    broker.property_key: ETLによって作成された中間ファイルをブローカーが読み取る際に指定する必要があるプロパティ情報です。
     ```
 
-2. hive0という名前のHiveリソースを作成します。
+2. 名前が hive0 の Hive リソースを作成します。
 
-     ```sql
+    ```sql
     CREATE EXTERNAL RESOURCE "hive0"
     PROPERTIES
     (

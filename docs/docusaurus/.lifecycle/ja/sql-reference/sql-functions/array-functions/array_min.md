@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# array_min
+# array_min（配列の最小値）
 
 ## 説明
 
-配列内のすべてのデータの最小値を取得して、その結果を返します。
+配列内のすべてのデータの最小値を取得し、その結果を返します。
 
 ## 構文
 
@@ -41,4 +41,4 @@ mysql> select array_min([cast('2020-02-25 11:35:17' as datetime), cast('2019-08-
 
 ## キーワード
 
-ARRAY_MIN,ARRAY
+ARRAY_MIN, ARRAY

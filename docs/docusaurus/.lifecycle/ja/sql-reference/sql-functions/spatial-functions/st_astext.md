@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-幾何学図形をWKT（Well Known Text）形式に変換します。
+幾何図形をWKT（Well Known Text）形式に変換します。
 
 ## 構文
 
@@ -25,6 +25,6 @@ MySQL > SELECT ST_AsText(ST_Point(24.7, 56.7));
 +---------------------------------+
 ```
 
-## keyword
+## キーワード
 
 ST_ASTEXT,ST_ASWKT,ST,ASTEXT,ASWKT

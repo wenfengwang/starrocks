@@ -1,46 +1,47 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # INSERTを使用してデータをロードする
 
-import InsertPrivNote from '../assets/commonMarkdown/insertPrivNote.md'
+../assets/commonMarkdown/insertPrivNote.mdからInsertPrivNoteをインポートします。
 
-このトピックでは、SQLステートメントINSERTを使用してStarRocksにデータをロードする方法について説明します。
+このトピックでは、SQLステートメントであるINSERTを使用してStarRocksにデータをロードする方法について説明します。
 
-MySQLや多くの他のデータベース管理システムと同様に、StarRocksはINSERTを使用して内部テーブルにデータをロードすることをサポートしています。 VALUES句を使用して1行以上のデータを直接挿入して、機能やデモをテストすることができます。また、クエリの結果によって定義されたデータを内部テーブルに挿入することもできます。StarRocks v3.1以降では、INSERTコマンドおよびテーブル関数FILES（）を使用してクラウドストレージ上のファイルからデータを直接ロードすることができます。
+StarRocksは、MySQLや他の多くのデータベース管理システムと同様に、INSERTを使用して内部テーブルにデータをロードすることをサポートしています。VALUES句を使用して1つ以上の行を直接挿入して、関数やDEMOをテストすることができます。また、クエリの結果によって定義されたデータを[外部テーブル](../data_source/External_table.md)から内部テーブルに挿入することもできます。StarRocks v3.1以降、INSERTコマンドとテーブル関数[FILES()](../sql-reference/sql-functions/table-functions/files.md)を使用してクラウドストレージ上のファイルから直接データをロードすることもできます。
 
-StarRocks v2.4では、INSERT OVERWRITEを使用してテーブルにデータを上書きすることもサポートされています。 INSERT OVERWRITEステートメントは、上書き機能を実装するために、次の操作を統合しています。
+StarRocks v2.4では、INSERT OVERWRITEを使用してテーブルにデータを上書きすることもサポートされています。INSERT OVERWRITEステートメントには、以下の操作が統合されて上書き機能が実装されています。
 
-1.元のデータを保存しているパーティションに基づいて一時パーティションを作成します。
-2.データを一時パーティションに挿入します。
-3.元のパーティションと一時的なパーティションを交換します。
+1. オリジナルデータを保存するパーティションに基づいて一時パーティションを作成します。
+2. データを一時パーティションに挿入します。
+3. オリジナルのパーティションと一時的なパーティションを入れ替えます。
 
-> **注**
+> **注意**
 >
-> 上書き前にデータを検証する必要がある場合は、INSERT OVERWRITEを使用せずに、パーティションを交換する前にデータを上書きし、検証するための手順に従うことができます。
+> データを上書きする前にデータを検証する必要がある場合は、INSERT OVERWRITEを使用せずに、パーティションを入れ替える前にデータを上書きし、検証してください。
 
-## 用心事
+## 注意事項
 
-- MySQLクライアントから同期INSERTトランザクションをキャンセルするには、**Ctrl** と **C** キーを押してください。
-- [SUBMIT TASK](../sql-reference/sql-statements/data-manipulation/SUBMIT_TASK.md)を使用して非同期INSERTタスクを送信できます。
-- StarRocksの現行バージョンでは、データのいずれかの行がテーブルのスキーマに準拠していない場合、INSERTトランザクションはデフォルトで失敗します。たとえば、テーブルのマッピングフィールドの長さを超える場合、行の長さが制限を超える場合、INSERTトランザクションは失敗します。セッション変数`enable_insert_strict`を`false`に設定して、テーブルに一致しない行をフィルタリングしてトランザクションを続行できます。
-- StarRocksに頻繁にINSERTステートメントを実行して、データを小さなバッチでStarRocksにロードすると、過剰なデータバージョンが生成されます。クエリのパフォーマンスに深刻な影響を与えます。本番環境では、頻繁にINSERTコマンドを使用してデータをロードすることは避け、日常的なデータロードのルーチンとして使用することは推奨しません。アプリケーションや解析シナリオによっては、ストリーミングデータや小さなデータバッチをロードするソリューションが求めらる場合があります。このような場合は、データソースとしてApache Kafka®を使用し、[Routine Load](../loading/RoutineLoad.md)を介してデータをロードすることをお勧めします。
-- INSERT OVERWRITEステートメントを実行する場合、StarRocksは元のデータを保存しているパーティションに一時パーティションを作成し、新しいデータを一時パーティションに挿入し、[元のパーティションを一時的なパーティションと交換します](../sql-reference/sql-statements/data-definition/ALTER_TABLE.md#use-a-temporary-partition-to-replace-current-partition)。これらの操作はすべてFEリーダーノードで実行されます。したがって、FEリーダーノードがINSERT OVERWRITEコマンドの実行中にクラッシュすると、ロードトランザクション全体が失敗し、一時パーティションは切り捨てられます。
+- 同期的なINSERTトランザクションをキャンセルするには、MySQLクライアントから**Ctrl**キーと**C**キーを押すことしかできません。
+- 非同期のINSERTタスクを提出するには、[SUBMIT TASK](../sql-reference/sql-statements/data-manipulation/SUBMIT_TASK.md)を使用してください。
+- 現在のStarRocksのバージョンでは、任意の行のデータがテーブルのスキーマに準拠していない場合、INSERTトランザクションはデフォルトで失敗します。たとえば、テーブル内のマッピングフィールドの長さを超える行がある場合、INSERTトランザクションは失敗します。テーブルと一致しない行をフィルタリングしてトランザクションを続行するには、セッション変数`enable_insert_strict`を`false`に設定できます。
+- StarRocksに小さなデータバッチを頻繁にロードするためにINSERTステートメントを実行すると、大量のデータバージョンが生成されます。これはクエリのパフォーマンスに深刻な影響を与えます。本番環境では、INSERTコマンドを頻繁に使用したり、データのローディングを日常的なルーチンとして使用することはお勧めしません。アプリケーションや解析シナリオがストリーミングデータのローディングや小さなデータバッチを別々に要求する場合、Apache Kafka®をデータソースとして使用して、[Routine Load](../loading/RoutineLoad.md)を介してデータをロードすることをお勧めします。
+- INSERT OVERWRITEステートメントを実行すると、StarRocksはオリジナルのデータを保存するパーティションに一時的なパーティションを作成し、新しいデータを一時的なパーティションに挿入し、[オリジナルのパーティションを一時的なパーティションで入れ替えます](../sql-reference/sql-statements/data-definition/ALTER_TABLE.md#use-a-temporary-partition-to-replace-current-partition)。これらの操作はすべてFEリーダーノードで実行されます。そのため、INSERT OVERWRITEコマンドを実行中にFEリーダーノードがクラッシュすると、ロードトランザクション全体が失敗し、一時的なパーティションが切り捨てられます。
 
 ## 準備
 
-### 権限の確認
+### 権限をチェックする
 
-<InsertPrivNote />
+<InsertPrivNote />の権限をチェックします。
 
-### オブジェクトの作成
+### オブジェクトを作成する
 
-`load_test`という名前のデータベースを作成し、宛先テーブルとして `insert_wiki_edit`、ソーステーブルとして`source_wiki_edit`を作成します。
+`load_test`という名前のデータベースを作成し、宛先テーブルとして`insert_wiki_edit`とソーステーブルとして`source_wiki_edit`を作成します。
 
-> **注**
+> **注意**
 >
-> このトピックで示される例は、`insert_wiki_edit`テーブルと`source_wiki_edit`テーブルを基にしています。独自のテーブルとデータで作業したい場合は、準備をスキップして次のステップに進むことができます。
+> 本トピックで示される例は、テーブル`insert_wiki_edit`とテーブル`source_wiki_edit`をベースにしています。独自のテーブルとデータで作業する場合は、準備をスキップして次のステップに進んでください。
 
 ```SQL
 CREATE DATABASE IF NOT EXISTS load_test;
@@ -109,19 +110,19 @@ PARTITION BY RANGE(event_time)(
 DISTRIBUTED BY HASH(user);
 ```
 
+> **お知らせ**
+>
+> v2.5.7以降、StarRocksはテーブルを作成したりパーティションを追加する際に、バケツの数（BUCKETS）を自動的に設定できます。バケツの数を手動で設定する必要はもはやありません。詳細については、[バケツの数を決定する](../table_design/Data_distribution.md#determine-the-number-of-buckets)を参照してください。
+
+## INSERT INTO VALUESを使用してデータを挿入する
+
+INSERT INTO VALUESコマンドを使用して、特定のテーブルに1つ以上の行を追加できます。複数行を挿入する場合は、カンマ（,）で区切ります。詳しい手順とパラメータの参照については、[SQLリファレンス - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)を参照してください。
+
 > **注意**
 >
-> v2.5.7以降、StarRocksは、テーブルを作成したりパーティションを追加したりする際に、バケツ（BUCKETS）の数を自動的に設定できます。バケツの数を手動で設定する必要はもはやありません。詳細については、[バケツの数を決定する](../table_design/Data_distribution.md#determine-the-number-of-buckets)を参照してください。
+> INSERT INTO VALUESを使用してデータを挿入するのは、小さなデータセットでDEMOを検証する場合にのみ適用されます。大規模なテストや本番環境にはお勧めしません。StarRocksに大量のデータをロードするには、シナリオに応じた他のオプションである[Ingestion Overview](../loading/Loading_intro.md)を参照してください。
 
-## INSERT INTO VALUESを使用してデータを挿入
-
-INSERT INTO VALUESコマンドを使用して、特定のテーブルに1行以上のデータを追加することができます。複数行はコンマ（,）で区切られます。詳細な手順とパラメータの参照については、[SQLリファレンス - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)を参照してください。
-
-> **注意**
->
-> INSERT INTO VALUESを使用してデータを挿入するのは、小さなデータセットでDEMOを検証する必要がある場合にのみ適用されます。大規模なテストまたは本番環境では推奨されません。StarRocksに大量データをロードするには、シナリオに合った他のオプションを利用できるかどうかを確認するために、[Ingestion Overview](../loading/Loading_intro.md)を参照してください。
-
-次の例では、`source_wiki_edit`データソーステーブルに`insert_load_wikipedia`ラベルを付けて2行を挿入します。ラベルは、データベース内の各データロードトランザクションのユニークな識別ラベルです。
+次の例では、「insert_load_wikipedia」というラベルでデータソーステーブル`source_wiki_edit`に2行を挿入します。ラベルはデータロードトランザクションごとに一意の識別ラベルです。
 
 ```SQL
 INSERT INTO source_wiki_edit
@@ -131,17 +132,17 @@ VALUES
     ("2015-09-12 00:00:00","#ca.wikipedia","helloSR",0,1,0,1,0,3,23,0);
 ```
 
-## SELECT INTO INSERTを使用してデータを挿入
+## INSERT INTO SELECTを使用してデータを挿入する
 
-SELECT INTO INSERTコマンドを使用して、データソーステーブルのクエリ結果をターゲットテーブルにロードすることができます。SELECT INTO INSERTコマンドは、データソーステーブルからのデータに対するETL操作を実行し、StarRocks内部テーブルにデータをロードします。データソースは内部テーブルまたは外部テーブルのいずれか、またはクラウドストレージ上のデータファイルである場合があります。ターゲットテーブルは、StarRocksの内部テーブルである必要があります。詳細な手順とパラメータの参照については、[SQLリファレンス - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)を参照してください。
+INSERT INTO SELECTコマンドを使用して、データソーステーブル上のクエリの結果を対象テーブルにロードできます。INSERT INTO SELECTコマンドは、データソーステーブルのデータに対してETL操作を実行し、データをStarRocksの内部テーブルにロードします。データソースには、1つ以上の内部または外部テーブル、あるいはクラウドストレージ上のデータファイルが利用できます。対象テーブルはStarRocksの内部テーブルである必要があります。詳しい手順とパラメータの参照については、[SQLリファレンス - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)を参照してください。
 
-### 内部または外部テーブルから内部テーブルにデータを挿入
+### 内部または外部テーブルから内部テーブルにデータを挿入する
 
-> **注**
+> **注意**
 >
-> 外部テーブルからデータを挿入することは、内部テーブルからデータを挿入することと同様です。簡単のため、以下の例では内部テーブルからデータの挿入方法のみを示します。
+> 外部テーブルからデータを挿入する場合、内部テーブルからデータを挿入するのと同じです。わかりやすくするために、以下の例では内部テーブルからデータを挿入する方法のみを示します。
 
-- 次の例は、ソーステーブルのデータをターゲットテーブル`insert_wiki_edit`に挿入します。
+- 次の例では、ソーステーブルのデータを対象テーブル`insert_wiki_edit`に挿入します。
 
 ```SQL
 INSERT INTO insert_wiki_edit
@@ -149,7 +150,7 @@ WITH LABEL insert_load_wikipedia_1
 SELECT * FROM source_wiki_edit;
 ```
 
-- 次の例は、ソーステーブルのデータをターゲットテーブル`insert_wiki_edit`の`p06`と`p12`パーティションに挿入します。パーティションが指定されていない場合、データはすべてのパーティションに挿入されます。それ以外の場合、データは指定されたパーティションにのみ挿入されます。
+- 次の例では、ソーステーブルのデータを対象テーブル`insert_wiki_edit`の`p06`および`p12`パーティションに挿入します。パーティションが指定されていない場合は、すべてのパーティションにデータが挿入されます。そうでない場合は、指定されたパーティションにのみデータが挿入されます。
 
 ```SQL
 INSERT INTO insert_wiki_edit PARTITION(p06, p12)
@@ -157,27 +158,33 @@ WITH LABEL insert_load_wikipedia_2
 SELECT * FROM source_wiki_edit;
 ```
 
-データがそれぞれのテーブルに挿入されていることを確認するために、ターゲットテーブルのクエリを実行してください。
+対象テーブルのクエリを実行して、データが存在することを確認します。
 
-```Plain text```
+```plainttext
 ```SQL
 MySQL > select * from insert_wiki_edit;
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-| イベント時間         | チャンネル    | ユーザー  | 匿名           | マイナー   | 新規    | ロボット  | 未巡回         | デルタ | 追加   | 削除       |
+| イベント_時刻        | チャンネル     | ユーザ     | 匿名         | マイナー   | 新規   | ロボット  | 未巡回       | デルタ  | 追加   | 削除     |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
 | 2015-09-12 00:00:00 | #en.wikipedia | AustinFF |            0 |        0 |      0 |        0 |              0 |    21 |     5 |       0 |
 | 2015-09-12 00:00:00 | #ca.wikipedia | helloSR  |            0 |        1 |      0 |        1 |              0 |     3 |    23 |       0 |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-2 行をセット (0.00 秒)
+2 行がセット (0.00 秒)
+```
 
+- "p06" および "p12" パーティションを切断すると、クエリにデータが返されなくなります。
+
+```Plain
 MySQL > TRUNCATE TABLE insert_wiki_edit PARTITION(p06, p12);
-クエリ Ok、0 行が変更されました (0.01 秒)
+クエリは正常に完了しました。0 行が影響を受けました (0.01 秒)
 
 MySQL > select * from insert_wiki_edit;
 空のセット (0.00 秒)
+```
 
-- 次の例は、ソーステーブルの `event_time` および `channel` 列をターゲットテーブル `insert_wiki_edit` に挿入します。ここで指定されていない列にはデフォルト値が使用されます。
+- 次の例では、ソーステーブルの "event_time" および "channel" の列をターゲットテーブル "insert_wiki_edit" に挿入します。ここで指定されていない列ではデフォルト値が使用されます。
 
+```SQL
 INSERT INTO insert_wiki_edit
 WITH LABEL insert_load_wikipedia_3 
 (
@@ -185,12 +192,13 @@ WITH LABEL insert_load_wikipedia_3
     channel
 )
 SELECT event_time, channel FROM source_wiki_edit;
+```
 
-###ファイルを使用して外部ソースからデータを直接挿入する
+### FILES() を使用して外部ソースのファイルからデータを直接挿入する
 
-v3.1以降、StarRocksは[FILES()](../sql-reference/sql-functions/table-functions/files.md)関数を使用してクラウドストレージのファイルからデータを直接ロードすることをサポートしているため、まず外部カタログまたは外部ファイルテーブルを作成する必要はありません。さらに、FILES()はファイルのテーブルスキーマを自動的に推測することができます。
+v3.1 以降、StarRocks は INSERT コマンドと [FILES()](../sql-reference/sql-functions/table-functions/files.md) 関数を使用して、クラウドストレージ上のファイルからデータを直接ロードする機能をサポートしており、外部カタログやファイル外部テーブルを事前に作成する必要はありません。また、FILES() を使用するとファイルのテーブルスキーマを自動的に推測することができるため、データの読み込みプロセスが大幅に簡素化されます。
 
-次の例では、AWS S3バケット `inserttest` 内のParquetファイル **parquet/insert_wiki_edit_append.parquet** からテーブル `insert_wiki_edit` にデータ行を挿入します。
+次の例では、AWS S3 バケット "inserttest" 内の Parquet ファイル **parquet/insert_wiki_edit_append.parquet** からテーブル "insert_wiki_edit" にデータの行を挿入します。
 
 ```Plain
 INSERT INTO insert_wiki_edit
@@ -203,36 +211,37 @@ INSERT INTO insert_wiki_edit
 );
 ```
 
-## INSERT OVERWRITE VALUESを使用したデータの上書き
+## INSERT OVERWRITE VALUES を使用してデータを上書きする
 
-INSERT OVERWRITE VALUESコマンドを使用して、1つまたは複数の行で特定のテーブルを上書きできます。複数の行はコンマ（、）で区切られます。詳しい手順やパラメータの参照については、[SQLリファレンス - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)を参照してください。
+INSERT OVERWRITE VALUES コマンドを使用して、1 つ以上の行で特定のテーブルを上書きできます。複数の行はコンマ (,) で区切られます。詳しい手順やパラメータの参照については、[SQL Reference - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md) を参照してください。
 
 > **注意**
 >
-> INSERT OVERWRITE VALUESを使用してデータを上書きするのは、小規模なデータセットを使用してデモを確認する場合にのみ適用されます。大規模なテストや本番環境にはお勧めしません。StarRocksに大量のデータをロードする場合は、シナリオに合った他のオプションについては、[インジェスション概要](../loading/Loading_intro.md)を参照してください。
+> INSERT OVERWRITE VALUES を使用してデータを上書きするのは、デモ確認と小規模のデータセットでのみ推奨されます。大量のテストや本番環境ではお勧めしません。大量データを StarRocks に読み込むには、シナリオに適したその他のオプションについては [Ingestion Overview](../loading/Loading_intro.md) を参照してください。
 
-ソーステーブルとターゲットテーブルをクエリして、それぞれにデータが含まれていることを確認してください。
+ソーステーブルとターゲットテーブルをクエリして、それぞれにデータがあることを確認します。
 
 ```Plain
 MySQL > SELECT * FROM source_wiki_edit;
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-| イベント時間         | チャンネル    | ユーザー  | 匿名           | マイナー   | 新規    | ロボット  | 未巡回         | デルタ | 追加   | 削除       |
+| イベント_時刻          | チャンネル       | ユーザ     | 匿名         | マイナー   | 新規   | ロボット   | 未巡回           | デルタ   | 追加     | 削除      |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
 | 2015-09-12 00:00:00 | #ca.wikipedia | helloSR  |            0 |        1 |      0 |        1 |              0 |     3 |    23 |       0 |
 | 2015-09-12 00:00:00 | #en.wikipedia | AustinFF |            0 |        0 |      0 |        0 |              0 |    21 |     5 |       0 |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-2 行をセット (0.02 秒)
-
+2 行がセット (0.02 秒)
+ 
 MySQL > SELECT * FROM insert_wiki_edit;
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-| イベント時間         | チャンネル    | ユーザー  | 匿名           | マイナー   | 新規    | ロボット  | 未巡回         | デルタ | 追加   | 削除       |
+| イベント_時刻          | チャンネル       | ユーザ     | 匿名         | マイナー   | 新規   | ロボット  | 未巡回          | デルタ  | 追加   | 削除     |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
 | 2015-09-12 00:00:00 | #ca.wikipedia | helloSR  |            0 |        1 |      0 |        1 |              0 |     3 |    23 |       0 |
 | 2015-09-12 00:00:00 | #en.wikipedia | AustinFF |            0 |        0 |      0 |        0 |              0 |    21 |     5 |       0 |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-2 行をセット (0.01 秒)
+2 行がセット (0.01 秒)
+```
 
-次の例では、ソーステーブル `source_wiki_edit` を新しい行2つで上書きします。
+次の例では、ソーステーブル "source_wiki_edit" を新しい 2 行で上書きします。
 
 ```SQL
 INSERT OVERWRITE source_wiki_edit
@@ -242,36 +251,37 @@ VALUES
     ("2015-09-12 00:00:00","#fr.wikipedia","PereBot",0,1,0,1,0,17,17,0);
 ```
 
-## INSERT OVERWRITE SELECTを使用したデータの上書き
+## INSERT OVERWRITE SELECT を使用してデータを上書きする
 
-INSERT OVERWRITE SELECTコマンドを使用して、データソーステーブルからのクエリ結果でテーブルを上書きできます。INSERT OVERWRITE SELECTステートメントは、1つ以上の内部または外部テーブルのデータに対するETL操作を実行し、データを内部テーブルに上書きます。詳しい手順やパラメータの参照については、[SQLリファレンス - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)を参照してください。
+INSERT OVERWRITE SELECT コマンドを使用して、データソーステーブルのクエリ結果でテーブルを上書きできます。INSERT OVERWRITE SELECT ステートメントは、1 つ以上の内部または外部テーブルのデータに対して ETL 操作を実行し、内部テーブルをデータで上書きします。詳しい手順やパラメータの参照については、[SQL Reference - INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md) を参照してください。
 
 > **注意**
 >
-> 外部テーブルからデータをロードすることは、内部テーブルからデータをロードすることと同じです。単純化のため、以下の例では内部テーブルのデータでターゲットテーブルを上書きする方法のみを示しています。
+> 外部テーブルからデータを読み込む手順は、内部テーブルからデータを読み込む手順と同じです。簡単のため、以下の例では内部テーブルのデータでターゲットテーブルを上書きする手順のみを示します。
 
-異なるデータ行を含むソーステーブルとターゲットテーブルをクエリしてください。
+ソーステーブルとターゲットテーブルをクエリして、それぞれに異なる行のデータがあることを確認します。
 
 ```Plain
 MySQL > SELECT * FROM source_wiki_edit;
 +---------------------+---------------+--------------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-| イベント時間         | チャンネル    | ユーザー     | 匿名           | マイナー   | 新規    | ロボット  | 未巡回         | デルタ | 追加   | 削除       |
+| イベント_時刻          | チャンネル       | ユーザ               | 匿名         | マイナー  | 新規    | ロボット  | 未巡回             | デルタ   | 追加      | 削除      |
 +---------------------+---------------+--------------+--------------+----------+--------+----------+----------------+-------+-------+---------+
 | 2015-09-12 00:00:00 | #cn.wikipedia | GELongstreet |            0 |        0 |      0 |        0 |              0 |    36 |    36 |       0 |
 | 2015-09-12 00:00:00 | #fr.wikipedia | PereBot      |            0 |        1 |      0 |        1 |              0 |    17 |    17 |       0 |
 +---------------------+---------------+--------------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-2 行をセット (0.02 秒)
-
+2 行がセット (0.02 秒)
+ 
 MySQL > SELECT * FROM insert_wiki_edit;
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-| イベント時間         | チャンネル    | ユーザー  | 匿名           | マイナー   | 新規    | ロボット  | 未巡回         | デルタ | 追加   | 削除       |
+| イベント_時刻          | チャンネル       | ユーザ     | 匿名         | マイナー   | 新規   | ロボット  | 未巡回         | デルタ  | 追加   | 削除     |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
 | 2015-09-12 00:00:00 | #en.wikipedia | AustinFF |            0 |        0 |      0 |        0 |              0 |    21 |     5 |       0 |
 | 2015-09-12 00:00:00 | #ca.wikipedia | helloSR  |            0 |        1 |      0 |        1 |              0 |     3 |    23 |       0 |
 +---------------------+---------------+----------+--------------+----------+--------+----------+----------------+-------+-------+---------+
-2 行をセット (0.01 秒)
+2 行がセット (0.01 秒)
 ```
-- 以下の例では、テーブル`insert_wiki_edit`をソーステーブルのデータで上書きします。
+
+- 以下の例は、テーブル `insert_wiki_edit` のデータをソーステーブルから上書きします。
 
 ```SQL
 INSERT OVERWRITE insert_wiki_edit
@@ -279,7 +289,7 @@ WITH LABEL insert_load_wikipedia_ow_1
 SELECT * FROM source_wiki_edit;
 ```
 
-- 以下の例では、テーブル`insert_wiki_edit`の`p06`および`p12`のパーティションをソーステーブルのデータで上書きします。
+- 以下の例は、テーブル `insert_wiki_edit` の`p06`および`p12` パーティションを、ソーステーブルのデータで上書きします。
 
 ```SQL
 INSERT OVERWRITE insert_wiki_edit PARTITION(p06, p12)
@@ -287,7 +297,7 @@ WITH LABEL insert_load_wikipedia_ow_2
 SELECT * FROM source_wiki_edit;
 ```
 
-ターゲットテーブルをクエリしてデータが存在することを確認します。
+ターゲットテーブルをクエリして、データが含まれていることを確認してください。
 
 ```plain text
 MySQL > select * from insert_wiki_edit;
@@ -300,7 +310,7 @@ MySQL > select * from insert_wiki_edit;
 2 rows in set (0.01 sec)
 ```
 
-`p06`および`p12`パーティションを切り詰めると、クエリでデータが返されなくなります。
+`p06`および`p12`パーティションを切り捨てると、クエリでデータが返されなくなります。
 
 ```Plain
 MySQL > TRUNCATE TABLE insert_wiki_edit PARTITION(p06, p12);
@@ -310,7 +320,7 @@ MySQL > select * from insert_wiki_edit;
 Empty set (0.00 sec)
 ```
 
-- 以下の例では、ソーステーブルからの`event_time`および`channel`列でターゲットテーブル`insert_wiki_edit`を上書きします。データが上書きされない列にはデフォルト値が割り当てられます。
+- 以下の例は、ターゲットテーブル `insert_wiki_edit` を、ソーステーブルの`event_time`および`channel`列で上書きします。データが上書きされない列には、デフォルト値が割り当てられます。
 
 ```SQL
 INSERT OVERWRITE insert_wiki_edit
@@ -322,13 +332,13 @@ WITH LABEL insert_load_wikipedia_ow_3
 SELECT event_time, channel FROM source_wiki_edit;
 ```
 
-## 生成列を持つテーブルにデータを挿入
+## 生成列を持つテーブルにデータを挿入する
 
-生成列は、事前に定義された式または他の列に基づいて導出される特別な列です。生成列は、クエリが高額な式を評価する場合に特に役立ちます。例えば、JSON値から特定のフィールドをクエリしたり、ARRAYデータを計算したりする場合などです。StarRocksは、テーブルにデータが読み込まれる際に式を評価して結果を生成列に格納し、クエリ中の式の評価を回避し、クエリのパフォーマンスを向上させます。
+生成列とは、定義済みの式または他の列に基づいて派生した値を持つ特別な列です。生成列は、例えばJSON値から特定のフィールドをクエリしたり、ARRAYデータを計算したりするようなクエリ要求が含まれる場合に特に便利です。StarRocksは式を評価して生成列に結果を格納するため、クエリ中に式評価を回避し、クエリのパフォーマンスを向上させることができます。
 
-INSERTを使用して生成列を持つテーブルにデータをロードできます。
+INSERTを使用してテーブルに生成列を持つデータをロードできます。
 
-以下の例では、テーブル`insert_generated_columns`を作成し、その中に1行挿入します。テーブルには2つの生成列（`avg_array`および`get_string`）が含まれています。`avg_array`は`data_array`内のARRAYデータの平均値を計算し、`get_string`は`data_json`のJSONパス`a`から文字列を抽出します。
+以下の例では、テーブル `insert_generated_columns` を作成し、そのテーブルに行を挿入します。テーブルには、`avg_array`および`get_string`という2つの生成列が含まれています。`avg_array`は`data_array`のARRAYデータの平均値を計算し、`get_string`は`data_json`のJSONパス`a`から文字列を抽出します。
 
 ```SQL
 CREATE TABLE insert_generated_columns (
@@ -351,7 +361,7 @@ VALUES (1, [1,2], parse_json('{"a" : 1, "b" : 2}'));
 >
 > 生成列にデータを直接ロードすることはサポートされていません。
 
-テーブル内のデータを確認するためにクエリを実行できます。
+テーブルのデータを確認するためにクエリを実行できます。
 
 ```Plain
 mysql> SELECT * FROM insert_generated_columns;
@@ -365,23 +375,23 @@ mysql> SELECT * FROM insert_generated_columns;
 
 ## INSERTを使用してデータを非同期でロードする
 
-INSERTでデータをロードすることは同期的なトランザクションを送信します。セッションの中断やタイムアウトのために失敗する可能性があります。[SUBMIT TASK](../sql-reference/sql-statements/data-manipulation/SUBMIT_TASK.md)を使用して非同期のINSERTトランザクションを送信できます。この機能はStarRocks v2.5からサポートされています。
+INSERTを使用してデータをロードすると、同期トランザクションが送信され、セッションの中断やタイムアウトのために失敗する可能性があります。StarRocks v2.5以降、[SUBMIT TASK](../sql-reference/sql-statements/data-manipulation/SUBMIT_TASK.md) を使用して非同期のINSERTトランザクションを送信できます。
 
-- 以下の例は、ソーステーブルからデータをターゲットテーブル`insert_wiki_edit`に非同期で挿入します。
+- 以下の例は、ソーステーブルからターゲットテーブル `insert_wiki_edit` にデータを非同期で挿入します。
 
 ```SQL
 SUBMIT TASK AS INSERT INTO insert_wiki_edit
 SELECT * FROM source_wiki_edit;
 ```
 
-- 以下の例は、テーブル`insert_wiki_edit`をソーステーブルのデータで非同期に上書きします。
+- 以下の例は、テーブル `insert_wiki_edit` を、ソーステーブルのデータで非同期に上書きします。
 
 ```SQL
 SUBMIT TASK AS INSERT OVERWRITE insert_wiki_edit
 SELECT * FROM source_wiki_edit;
 ```
 
-- 以下の例は、ヒントを使用してクエリのタイムアウトを`100000`秒に延長して、テーブル`insert_wiki_edit`をソーステーブルのデータで非同期に上書きします。
+- 以下の例は、テーブル `insert_wiki_edit` を、ソーステーブルのデータで上書きし、ヒントを使用してクエリのタイムアウトを`100000`秒に延長します。
 
 ```SQL
 SUBMIT /*+set_var(query_timeout=100000)*/ TASK AS
@@ -389,7 +399,7 @@ INSERT OVERWRITE insert_wiki_edit
 SELECT * FROM source_wiki_edit;
 ```
 
-- 以下の例は、タスク名を`async`として指定し、テーブル`insert_wiki_edit`をソーステーブルのデータで非同期に上書きします。
+- 以下の例は、テーブル `insert_wiki_edit` を、ソーステーブルのデータで上書きし、タスク名を`async`と指定します。
 
 ```SQL
 SUBMIT TASK async
@@ -397,23 +407,23 @@ AS INSERT OVERWRITE insert_wiki_edit
 SELECT * FROM source_wiki_edit;
 ```
 
-非同期のINSERTタスクのステータスは、Information Schemaのメタデータビュー`task_runs`をクエリして確認できます。
+非同期のINSERTタスクの状態は、情報スキーマのメタデータビュー `task_runs`をクエリして確認できます。
 
-以下の例は非同期INSERTタスク`async`のステータスをチェックしています。
+以下の例は、非同期のINSERTタスク `async` の状態を確認するものです。
 
 ```SQL
 SELECT * FROM information_schema.task_runs WHERE task_name = 'async';
 ```
 
-## INSERTジョブのステータスを確認
+## INSERTジョブの状態を確認する
 
-### 結果を使用してチェック
+### 結果を使って確認
 
-同期的なINSERTトランザクションは、トランザクションの結果に応じて異なるステータスを返します。
+同期のINSERTトランザクションは、トランザクションの結果に応じて異なる状態を返します。
 
 - **トランザクションが成功した場合**
 
-トランザクションが成功した場合、StarRocksは次の内容を返します。
+トランザクションが成功した場合、StarRocksは以下を返します。
 
 ```Plain
 Query OK, 2 rows affected (0.05 sec)
@@ -422,19 +432,19 @@ Query OK, 2 rows affected (0.05 sec)
 
 - **トランザクションが失敗した場合**
 
-すべてのデータ行がターゲットテーブルにロードされない場合、INSERTトランザクションは失敗します。トランザクションが失敗した場合、StarRocksは次の内容を返します。
+すべてのデータ行がターゲットテーブルにロードできなかった場合、INSERTトランザクションは失敗します。トランザクションが失敗した場合、StarRocksは以下を返します。
 
 ```Plain
 ERROR 1064 (HY000): Insert has filtered data in strict mode, tracking_url=http://x.x.x.x:yyyy/api/_load_error_log?file=error_log_9f0a4fd0b64e11ec_906bbede076e9d08
 ```
 
-`tracking_url`を使用してログを確認して問題を特定できます。
+`tracking_url`でログを確認して問題を特定できます。
 
-### Information Schemaを使用してチェック
+### Information Schemaを使用して確認
 
-[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)ステートメントを使用して、`information_schema`データベースの`loads`テーブルから1つまたは複数のロードジョブの結果をクエリできます。この機能はv3.1からサポートされています。
+[v3.1](https://github.com/starrocks/starrocks/commit/470c3705)以降のバージョンで、`information_schema`データベースの`loads`テーブルから1つまたは複数のロードジョブの結果をクエリするために[SELECT](../sql-reference/sql-statements/data-manipulation/SELECT.md)ステートメントを使用できます。
 
-例1：`load_test`データベースで実行されたロードジョブの結果をクエリし、作成時間（`CREATE_TIME`）で結果を降順にソートし、トップの結果のみを返します。
+例1：`load_test`データベースで実行されたロードジョブの結果をクエリし、作成時間（`CREATE_TIME`）で結果を降順に並べ替えて、トップの結果のみを返します。
 
 ```SQL
 SELECT * FROM information_schema.loads
@@ -443,14 +453,14 @@ ORDER BY create_time DESC
 LIMIT 1\G
 ```
 
-例2：`load_test`データベースで実行されたロードジョブ（ラベルが`insert_load_wikipedia`）の結果をクエリします。
+例2：ラベルが`insert_load_wikipedia`のロードジョブ（`load_test`データベースで実行）の結果をクエリします。
 
 ```SQL
 SELECT * FROM information_schema.loads
 WHERE database_name = 'load_test' and label = 'insert_load_wikipedia'\G
 ```
 
-結果は以下の通りです。
+結果は次のようになります。
 
 ```Plain
 *************************** 1. row ***************************
@@ -479,33 +489,32 @@ WHERE database_name = 'load_test' and label = 'insert_load_wikipedia'\G
         TRACKING_SQL: NULL
 REJECTED_RECORD_PATH: NULL
 1 row in set (0.01 sec)
-```
 
-For information about the fields in the return results, see [Information Schema > loads](../reference/information_schema/loads.md).
+結果のフィールドに関する詳細は、[Information Schema > loads](../reference/information_schema/loads.md) を参照してください。
 
-### curlコマンドを使用して確認します
+### curlコマンドを使用して確認する
 
-curlコマンドを使用して、INSERTトランザクションのステータスを確認できます。
+curlコマンドを使用してINSERTトランザクションのステータスを確認できます。
 
-ターミナルを起動し、次のコマンドを実行します。
+ターミナルを開き、次のコマンドを実行します。
 
 ```Bash
 curl --location-trusted -u <username>:<password> \
   http://<fe_address>:<fe_http_port>/api/<db_name>/_load_info?label=<label_name>
 ```
 
-次の例は、ラベル`insert_load_wikipedia`のトランザクションのステータスを確認しています。
+次の例では、ラベル`insert_load_wikipedia`のトランザクションのステータスをチェックしています。
 
 ```Bash
 curl --location-trusted -u <username>:<password> \
   http://x.x.x.x:8030/api/load_test/_load_info?label=insert_load_wikipedia
 ```
 
-> **注記**
+> **注意**
 >
-> パスワードを設定していないアカウントを使用する場合は、`<username>:`のみを入力する必要があります。
+> パスワードが設定されていないアカウントを使用する場合、`<username>:`のみを入力する必要があります。
 
-結果は次のようになります。
+戻り値は次のとおりです。
 
 ```Plain
 {
@@ -526,18 +535,17 @@ curl --location-trusted -u <username>:<password> \
 
 ## 設定
 
-INSERTトランザクションのために次の構成項目を設定できます。
+INSERTトランザクションに対して次の構成項目を設定できます。
 
-- **FE configuration**
+- **FE構成**
 
-| FE configuration                   | Description                                                  |
+| FE構成                           | 説明                                                       |
 | ---------------------------------- | ------------------------------------------------------------ |
-| insert_load_default_timeout_second | INSERTトランザクションのデフォルトのタイムアウト設定。単位：秒。このパラメータで設定された時間内に、現在のINSERTトランザクションが完了しない場合、システムによってキャンセルされ、ステータスがCANCELLEDになります。StarRocksの現行バージョンでは、このパラメータを使用してすべてのINSERTトランザクションに対して均一なタイムアウトを指定することができますが、特定のINSERTトランザクションに対して異なるタイムアウトを設定することはできません。デフォルト値は3600秒（1時間）です。指定された時間内にINSERTトランザクションが完了しない場合、このパラメータを調整してタイムアウトを延長できます。 |
+| insert_load_default_timeout_second | INSERTトランザクションのデフォルトタイムアウト。単位：秒。現在のINSERTトランザクションがこのパラメータで設定された時間内に完了しない場合、システムによってキャンセルされ、ステータスはCANCELLEDになります。StarRocksの現行バージョンでは、このパラメータを使用してすべてのINSERTトランザクションに一様なタイムアウトを指定することしかできず、特定のINSERTトランザクションに異なるタイムアウトを設定することはできません。デフォルトは3600秒（1時間）です。指定された時間内にINSERTトランザクションを完了できない場合は、このパラメータを調整してタイムアウトを延長することができます。 |
 
 - **セッション変数**
 
-| Session variable     | Description                                                  |
+| セッション変数     | 説明                                                  |
 | -------------------- | ------------------------------------------------------------ |
-| enable_insert_strict | INSERTトランザクションが無効なデータ行に対して寛大であるかどうかを制御するためのスイッチ値。 `true`に設定すると、データ行のいずれかが無効な場合、トランザクションは失敗します。 `false`に設定すると、少なくとも1行のデータが正しくロードされた場合にトランザクションが成功し、ラベルが返されます。デフォルト値は`true`です。この変数は`SET enable_insert_strict = {true or false};`コマンドで設定できます。 |
-| query_timeout        | SQLコマンドのタイムアウト。単位：秒。SQLコマンドとしてのINSERTも、このセッション変数によって制限されます。この変数は`SET query_timeout = xxx;`コマンドで設定できます。 |
-```
+| enable_insert_strict | INSERTトランザクションが不正なデータ行に寛容かどうかを制御するためのスイッチ値。`true`に設定すると、データ行のいずれかが無効な場合、トランザクションは失敗します。`false`に設定すると、少なくとも1行のデータが正しくロードされていればトランザクションは成功し、ラベルが返されます。デフォルトは`true`です。この変数は、`SET enable_insert_strict = {true or false};`コマンドで設定できます。 |
+| query_timeout        | SQLコマンドのタイムアウト。単位：秒。SQLコマンドであるINSERTも、このセッション変数で制限されます。この変数は、`SET query_timeout = xxx;`コマンドで設定できます。 |

@@ -1,11 +1,11 @@
 ---
-displayed_sidebar: "英語"
+displayed_sidebar: "Japanese"
 ---
 
-# TINYINT
+# TINYINT（タイニーインテ）
 
 ## 説明
 
-TINYINT
+TINYINT（タイニーインテ）
 
-1バイト符号付き整数、範囲[-128, 127]
+1バイトの符号付き整数、範囲[-128、127]

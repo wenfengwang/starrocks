@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# isnotnull（isNullでない）
+# isnotnull
 
 ## 説明
 
@@ -14,13 +14,13 @@ displayed_sidebar: "Japanese"
 ISNOTNULL(v)
 ```
 
-## パラメーター
+## パラメータ
 
-- `v`: チェックする値。すべてのデータ型がサポートされています。
+- `v`: チェックする値。すべての日付型がサポートされています。
 
 ## 戻り値
 
-`NULL`でない場合は`1`を返し、`NULL`の場合は`0`を返します。
+`NULL`でない場合は1を返し、`NULL`の場合は0を返します。
 
 ## 例
 

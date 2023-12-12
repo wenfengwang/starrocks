@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定されたマップ内のすべてのキーを含む配列を返します。
+指定されたマップ内のすべてのキーの配列を返します。
 
 この関数はv2.5からサポートされています。
 
@@ -16,21 +16,21 @@ displayed_sidebar: "Japanese"
 map_keys(any_map)
 ```
 
-## パラメーター
+## パラメータ
 
 `any_map`: キーを取得したいMAP値です。
 
 ## 戻り値
 
-戻り値は`array<keyType>`形式です。配列内の要素の型はマップ内のキーの型と一致します。
+戻り値は`array<keyType>`形式です。配列内の要素タイプは、マップ内のキータイプに一致します。
 
-入力がNULLの場合、NULLが返されます。MAP値内のキーまたは値がNULLの場合、NULLが通常の値として処理され、結果に含まれます。
+入力がNULLの場合、NULLが返されます。MAP値内のキーまたは値がNULLの場合、NULLは通常の値として処理され、結果に含まれます。
 
 ## 例
 
 ### StarRocksネイティブテーブルからMAPデータをクエリする
 
-v3.1以降、StarRocksではテーブルを作成する際にMAP列を定義することがサポートされています。この例では、次のデータを含む`test_map`テーブルを使用しています。
+v3.1以降、StarRocksはテーブル作成時にMAP列の定義をサポートしています。この例では、次のデータを含む`test_map`テーブルを使用しています。
 
 ```Plain
 CREATE TABLE test_map(
@@ -84,7 +84,7 @@ SELECT * FROM hive_map ORDER BY col_int;
 +---------+---------------+
 ```
 
-[Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog)をクラスターに作成した後、このカタログとmap_keys()関数を使用して`col_map`列の各行からすべてのキーを取得できます。
+[Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog)がクラスターに作成されたら、このカタログとmap_keys()関数を使用して`col_map`列の各行からすべてのキーを取得できます。
 
 ```Plaintext
 select map_keys(col_map) from hive_map order by col_int;

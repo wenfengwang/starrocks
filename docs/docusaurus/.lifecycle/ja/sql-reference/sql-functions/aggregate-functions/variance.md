@@ -16,7 +16,7 @@ VARIANCE(expr)
 
 ## パラメータ
 
-`expr`: 式。これがテーブル列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
+`expr`: 式。テーブル列の場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価する必要があります。
 
 ## 戻り値
 
@@ -50,4 +50,4 @@ MySQL > select variance(i_current_price), i_rec_start_date from item group by i_
 
 ## キーワード
 
-VARIANCE, VAR_POP, VARIANCE_POP
+分散、VAR_POP、VARIANCE_POP

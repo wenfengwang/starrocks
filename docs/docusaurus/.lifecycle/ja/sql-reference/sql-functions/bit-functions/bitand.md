@@ -1,13 +1,12 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# ビットアンド
+# bitand
 
 ## 説明
 
-2つの数値式のビットごとの論理積を返します。
+2つの数値式のビットごとのANDを返します。
 
 ## 構文
 
@@ -17,15 +16,15 @@ BITAND(x,y);
 
 ## パラメーター
 
-- `x`: この式は次のいずれかのデータ型に評価される必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
+- `x`: この式は次のデータ型のいずれかに評価する必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
 
-- `y`: この式は次のいずれかのデータ型に評価される必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
+- `y`: この式は次のデータ型のいずれかに評価する必要があります：TINYINT、SMALLINT、INT、BIGINT、LARGEINT。
 
-> `x` と `y` はデータ型で一致している必要があります。
+> `x` と `y` はデータ型で同意する必要があります。
 
 ## 戻り値
 
-戻り値の型は `x` と同じです。どちらかの値がNULLの場合、結果もNULLです。
+戻り値は `x` と同じタイプです。いずれかの値がNULLの場合、結果もNULLです。
 
 ## 例
 

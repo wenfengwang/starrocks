@@ -4,27 +4,27 @@ displayed_sidebar: "Japanese"
 
 # years_diff
 
-## 説明
+## Description
 
-2つの日付式（`expr1` − `expr2`）の年の差を年単位で正確に返します。
+2つの日付式（`expr1` − `expr2`）の間の年の違いを返します。年単位で正確です。
 
 ## 構文
 
 ```Haskell
-BIGINT years_diff(DATETIME expr1,DATETIME expr2);
+BIGINT years_diff(DATETIME expr1, DATETIME expr2);
 ```
 
 ## パラメータ
 
-- `expr1`: 終了時刻。DATETIMEまたはDATE型である必要があります。
+- `expr1`: 終了時刻です。DATETIMEまたはDATE型である必要があります。
 
-- `expr2`: 開始時刻。DATETIMEまたはDATE型である必要があります。
+- `expr2`: 開始時刻です。DATETIMEまたはDATE型である必要があります。
 
 ## 戻り値
 
 BIGINT値を返します。
 
-たとえば2022-02-29のような日付が存在しない場合、NULLが返されます。
+存在しない日付の場合はNULLが返されます。例：2022-02-29。
 
 ## 例
 

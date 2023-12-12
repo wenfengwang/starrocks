@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-任意の種類の入力の32ビットハッシュ値を計算し、ハッシュ値を含むビットマップを返します。これは主に、非整数フィールドをStarRocksテーブルのビットマップフィールドにインポートするためのストリームロードタスクに使用されます。例：
+任意の種類の入力に対して32ビットのハッシュ値を計算し、ハッシュ値を含むビットマップを返します。主に、非整数フィールドをStarRocksテーブルのビットマップフィールドにインポートするストリームロードタスクに使用されます。例：
 
 ```bash
 cat data | curl --location-trusted -u user:passwd -T - \
@@ -40,4 +40,4 @@ select bitmap_to_string(bitmap_hash('hello'));
 
 ## キーワード
 
-BITMAP_HASH、BITMAP
+BITMAP_HASH,BITMAP

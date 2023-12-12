@@ -4,29 +4,29 @@ displayed_sidebar: "Japanese"
 
 # seconds_diff
 
-## 説明
+## Description
 
-日付式（`expr1` − `expr2`）間の秒の差を、秒単位で正確に返します。
+2つの日付式（`expr1` - `expr2`）間の秒差を秒単位で返します。
 
-## 構文
+## Syntax
 
 ```Haskell
-BIGINT seconds_diff(DATETIME expr1,DATETIME expr2);
+BIGINT seconds_diff(DATETIME expr1, DATETIME expr2);
 ```
 
-## パラメーター
+## Parameters
 
-- `expr1`: 終了時間。DATETIME型である必要があります。
+- `expr1`: 終了時刻。DATETIME型である必要があります。
 
-- `expr2`: 開始時間。DATETIME型である必要があります。
+- `expr2`: 開始時刻。DATETIME型である必要があります。
 
-## 戻り値
+## Return value
 
 BIGINT値を返します。
 
-日付が存在しない場合、例えば2022-02-29のような場合はNULLが返されます。
+例えば、2022-02-29のような存在しない日付の場合、NULLが返されます。
 
-## 例
+## Examples
 
 ```Plain
 select seconds_diff('2010-11-30 23:59:59', '2010-11-30 20:59:59');

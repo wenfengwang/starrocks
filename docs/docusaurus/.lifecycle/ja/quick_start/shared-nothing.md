@@ -1,30 +1,30 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "日本語"
 sidebar_position: 1
-description: "DockerでStarRocks: JOINを使用してリアルデータをクエリする"
+description: "StarRocks in Docker: JOINを使用して実際のデータをクエリ"
 ---
 import DDL from '../assets/quick-start/_DDL.mdx'
 import Clients from '../assets/quick-start/_clientsAllin1.mdx'
 import SQL from '../assets/quick-start/_SQL.mdx'
 import Curl from '../assets/quick-start/_curl.mdx'
 
-# StarRocksの基本
+# StarRocks 基礎
 
-このチュートリアルでは以下をカバーしています：
+このチュートリアルでは以下の内容をカバーします：
 
-- 単一のDockerコンテナでStarRocksを実行する方法
-- インプットデータを含む2つの公開データセットをロードする方法、データの基本的な変換
-- SELECTとJOINを使用してデータを解析する方法
-- 基本的なデータ変換 (ETLの'T')
+- 単一のDockerコンテナでStarRocksを実行
+- 基本的なデータのロード
+- SELECTとJOINを使用したデータの解析
+- 基本的なデータ変換（ETLの**T**）
 
-使用するデータは、NYC OpenDataとNational Centers for Environmental Informationが提供しています。
+使用されるデータはNYC OpenDataとNational Centers for Environmental Informationによって提供されています。
 
-これらのデータセットは非常に大きいため、このチュートリアルでは過去120年間のデータをロードすることは行いません。Dockerイメージを実行し、このデータを4 GBのRAMが割り当てられたマシンにロードできます。より大規模で信頼性のある展開については、後で他の文書を提供します。
+これらのデータセットは非常に大きいため、このチュートリアルでは過去120年間のデータをロードすることはしません。Dockerに割り当てられた4GBのRAMを持つマシンでDockerイメージを実行し、このデータをロードすることができます。耐障害性とスケーラブルな展開については、後で別の文書を提供します。
 
-この文書には多くの情報が含まれており、最初にステップバイステップのコンテンツで、最後に技術的な詳細が提示されています。これは以下の目的をこの順番で達成するために行われています：
+この文書には多くの情報が含まれており、最初にステップバイステップのコンテンツと最後に技術的な詳細を提示しています。これは次の目的を達成するためにこの順序で行われています：
 
-1. 読者にStarRocksでデータをロードし、そのデータを解析することを許可する。
-2. ロード中のデータ変換の基本を説明する。
+1. StarRocksでデータをロードし、そのデータを解析するための読者への許可
+2. データのロード中の基本的なデータ変換を説明
 
 ---
 
@@ -33,29 +33,29 @@ import Curl from '../assets/quick-start/_curl.mdx'
 ### Docker
 
 - [Docker](https://docs.docker.com/engine/install/)
-- Dockerに割り当てられた4 GBのRAM
-- Dockerに割り当てられた10 GBの空きディスク容量
+- Dockerに割り当てられた4GBのRAM
+- Dockerに割り当てられた10GBの空きディスク領域
 
 ### SQLクライアント
 
-Docker環境で提供されているSQLクライアントを使用するか、システム上のクライアントを使用できます。多くのMySQL互換のクライアントが動作するため、このガイドではDBeaverとMySQL WorkBenchの構成について説明します。
+Docker環境で提供されているSQLクライアントを使用するか、システム上で使用しても構いません。多くのMySQL互換クライアントが動作し、このガイドではDBeaverとMySQL WorkBenchの構成について説明します。
 
 ### curl
 
-`curl`は、StarRocksにデータロードジョブを発行し、データセットをダウンロードするために使用されます。OSプロンプトで`curl`または`curl.exe`を実行してインストールされているかどうかを確認してください。curlがインストールされていない場合は、[こちらからcurlを取得してください](https://curl.se/dlwiz/?type=bin)。
+`curl`はデータロードジョブをStarRocksに発行したり、データセットをダウンロードするために使用されます。OSプロンプトで`curl`または`curl.exe`を実行してインストールされているかどうかを確認してください。curlがインストールされていない場合は、[こちらからcurlを入手してください](https://curl.se/dlwiz/?type=bin)。
 
 ---
 ## 用語
 
 ### FE
-フロントエンドノードは、メタデータ管理、クライアント接続管理、クエリプランニング、およびクエリスケジューリングを担当しています。各FEは、そのメモリにメタデータの完全なコピーを保存および維持するため、FE間で均一なサービスを保証します。
+フロントエンドノードは、メタデータ管理、クライアント接続管理、クエリの計画、およびクエリのスケジューリングに責任があります。各FEはそのメモリにメタデータの完全なコピーを保存および維持し、これによりFE間での無差別なサービスが保証されます。
 
 ### BE
-バックエンドノードは、データの保存およびクエリプランの実行を担当しています。
+バックエンドノードはデータの保存とクエリプランの実行に責任があります。
 
 ---
 
-## StarRocksを起動する
+## StarRocksを起動
 
 ```bash
 docker run -p 9030:9030 -p 8030:8030 -p 8040:8040 -itd \
@@ -68,9 +68,9 @@ docker run -p 9030:9030 -p 8030:8030 -p 8040:8040 -itd \
 
 ---
 
-## データをダウンロードする
+## データをダウンロード
 
-これらの2つのデータセットを自分のマシンにダウンロードします。Dockerを実行しているホストマシンにダウンロードすることができます。コンテナ内でダウンロードする必要はありません。
+これらの2つのデータセットをマシンにダウンロードしてください。Dockerを実行しているホストマシンにダウンロードしても問題ありません。コンテナ内にダウンロードする必要はありません。
 
 ### ニューヨーク市のクラッシュデータ
 
@@ -78,7 +78,7 @@ docker run -p 9030:9030 -p 8030:8030 -p 8040:8040 -itd \
 curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-samples/quickstart/datasets/NYPD_Crash_Data.csv
 ```
 
-### 天候データ
+### 天気データ
 
 ```bash
 curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-samples/quickstart/datasets/72505394728.csv
@@ -86,14 +86,14 @@ curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-sa
 
 ---
 
-### SQLクライアントを使用してStarRocksに接続する
+### SQLクライアントでStarRocksに接続
 
 :::tip
 
 mysql CLI以外のクライアントを使用している場合は、そのクライアントを開いてください。
 :::
 
-このコマンドはDockerコンテナで`mysql`コマンドを実行します：
+このコマンドはDockerコンテナ内で`mysql`コマンドを実行します：
 
 ```sql
 docker exec -it quickstart \
@@ -102,22 +102,23 @@ mysql -P 9030 -h 127.0.0.1 -u root --prompt="StarRocks > "
 
 ---
 
-## テーブルを作成する
+## いくつかのテーブルを作成
 
 <DDL />
 
 ---
 
-## 2つのデータセットをロードする
-StarRocksにデータをロードする方法はいくつかあります。このチュートリアルでは、最も簡単な方法はcurlとStarRocks Stream Loadを使用する方法です。
+## 2つのデータセットをロード
+
+StarRocksにデータをロードする方法はいくつかあります。このチュートリアルでは、最も簡単な方法としてcurlとStarRocks Stream Loadを使用します。
 
 :::tip
-これらのcurlコマンドは`mysql`クライアントではなく、オペレーティングシステムプロンプトで実行されるため、新しいシェルを開いてください。コマンドはダウンロードした場所から実行するように指定されているため、ファイルをダウンロードしたディレクトリから実行してください。
+これらのcurlコマンドは`mysql`クライアントではなく、オペレーティングシステムのプロンプトで実行されるため、新しいシェルを開いてください。これらのコマンドはダウンロードしたディレクトリから実行するため、ダウンロードしたファイルのディレクトリで実行してください。
 
-パスワードが求められます。おそらくMySQLの`root`ユーザにパスワードを割り当てていないので、単にEnterキーを押してください。
+パスワードが求められます。おそらくMySQL `root`ユーザにパスワードを割り当てていないため、ただEnterキーを押してください。
 :::
 
-これらの`curl`コマンドは複雑に見えますが、チュートリアルの最後で詳しく説明されています。現時点では、コマンドを実行し、データを解析するためにいくつかのSQLを実行し、最後にデータロードの詳細を読むことをお勧めします。
+これらの`curl`コマンドは複雑に見えますが、この後のチュートリアルで詳しく説明します。今のところは、コマンドを実行し、データを解析するためのいくつかのSQLを実行し、最後にデータのロードの詳細を読むことを推奨します。
 
 ### ニューヨーク市の衝突データ - クラッシュ
 
@@ -133,10 +134,10 @@ curl --location-trusted -u root             \
     -XPUT http://localhost:8030/api/quickstart/crashdata/_stream_load
 ```
 
-前のコマンドの出力は以下です。最初のハイライトされたセクションは、期待される出力 (OKおよび1行を除きすべての行が挿入された) を示しています。1行が正しい列数を含んでいないため、1行がフィルタリングされました。
+直前のコマンドの出力は次の通りです。最初のハイライトされたセクションは、予想される出力です（OKとほぼ一行が挿入されました）。行が正しい列数を持たないため、1行がフィルタリングされました。
 
 ```bash
-ユーザ 'root' のホストパスワード:
+Enter host password for user 'root':
 {
     "TxnId": 2,
     "Label": "crashdata-0",
@@ -161,24 +162,24 @@ curl --location-trusted -u root             \
 }%
 ```
 
-エラーがある場合、出力はエラーメッセージを見るためのURLを提供します。ブラウザでこれを開いて何が起こったかを確認してください。詳細を見ると、エラーメッセージが表示されます。
+エラーがある場合、出力にエラーメッセージを確認するためのURLが提供されます。ブラウザでこれを開き、何が起こったかを確認してください。エラーメッセージを表示するには詳細を展開してください。
 
 <details>
 
-<summary>ブラウザでエラーメッセージを見る</summary>
+<summary>ブラウザでのエラーメッセージの読み取り</summary>
 
 ```bash
-エラー: 値の数が列の数と一致しません。29を予期していましたが、32が渡されました。
+Error: Value count does not match column count. Expect 29, but got 32.
 
-列区切り文字: 44, 行区切り文字: 10.. 行: 09/06/2015,14:15,,,40.6722269,-74.0110059,"(40.6722269, -74.0110059)",,,"R/O 1 BEARD ST. ( IKEA'S 
+Column delimiter: 44,Row delimiter: 10.. Row: 09/06/2015,14:15,,,40.6722269,-74.0110059,"(40.6722269, -74.0110059)",,,"R/O 1 BEARD ST. ( IKEA'S 
 09/14/2015,5:30,BRONX,10473,40.814551,-73.8490955,"(40.814551, -73.8490955)",TORRY AVENUE                    ,NORTON AVENUE                   ,,0,0,0,0,0,0,0,0,Driver Inattention/Distraction,Unspecified,,,,3297457,PASSENGER VEHICLE,PASSENGER VEHICLE,,,
 ```
 
 </details>
 
-### 天候データ
+### 天気データ
 
-クラッシュデータと同じ方法で天候データをロードします。
+クラッシュデータをロードしたのと同じ方法で天気データをロードします。
 
 ```bash
 curl --location-trusted -u root             \

@@ -4,27 +4,27 @@ displayed_sidebar: "Japanese"
 
 # abs
 
-## 説明
+## Description
 
 数値 `x` の絶対値を返します。入力値がNULLの場合、NULLが返されます。
 
-## 構文
+## Syntax
 
 ```Haskell
 ABS(x);
 ```
 
-## パラメーター
+## Parameters
 
-`x`: 数値の値または式。
+`x`: 数値値または式。
 
-サポートされているデータ型: DOUBLE, FLOAT, LARGEINT, BIGINT, INT, SMALLINT, TINYINT, DECIMALV2, DECIMAL32, DECIMAL64, DECIMAL128。
+サポートされているデータ型: DOUBLE、FLOAT、LARGEINT、BIGINT、INT、SMALLINT、TINYINT、DECIMALV2、DECIMAL32、DECIMAL64、DECIMAL128。
 
-## 戻り値
+## Return value
 
-戻り値のデータ型は `x` の型と同じです。
+返り値のデータ型は `x` の型と同じです。
 
-## 例
+## Examples
 
 ```Plain Text
 mysql> select abs(-1);
@@ -33,9 +33,9 @@ mysql> select abs(-1);
 +---------+
 |       1 |
 +---------+
-1 行が返されました (0.00 秒)
+1 row in set (0.00 sec)
 ```
 
-## キーワード
+## Keywords
 
-abs, absolute
+abs, 絶対

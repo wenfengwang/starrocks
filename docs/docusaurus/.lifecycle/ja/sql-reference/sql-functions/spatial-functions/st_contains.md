@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ST_Contains（ST_コンテインズ）
+# ST_Contains
 
 ## 説明
 
-図形 shape1 が完全に shape2 を含んでいるかどうかをチェックします。
+図形 shape1 が shape2 を完全に含んでいるかどうかをチェックします。
 
 ## 構文
 

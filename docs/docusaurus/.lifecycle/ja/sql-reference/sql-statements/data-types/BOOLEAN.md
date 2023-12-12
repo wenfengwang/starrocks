@@ -6,6 +6,6 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-BOOL、BOOLEAN
+BOOL, BOOLEAN
 
 TINYINTと同様に、0はfalseを表し、1はtrueを表します。

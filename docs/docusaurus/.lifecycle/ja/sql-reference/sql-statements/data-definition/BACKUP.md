@@ -6,15 +6,15 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定されたデータベース、テーブル、またはパーティションのデータをバックアップします。現時点では、StarRocksはOLAPテーブルのデータのバックアップのみをサポートしています。詳細については、[データのバックアップとリストア](../../../administration/Backup_and_restore.md)を参照してください。
+指定されたデータベース、テーブル、またはパーティションのデータをバックアップします。現在、StarRocksではOLAPテーブルのデータのバックアップのみがサポートされています。詳細については、[データのバックアップおよび復元](../../../administration/Backup_and_restore.md)を参照してください。
 
-バックアップは非同期操作です。[SHOW BACKUP](../data-manipulation/SHOW_BACKUP.md)を使用してバックアップジョブのステータスを確認したり、[CANCEL BACKUP](../data-definition/CANCEL_BACKUP.md)を使用してバックアップジョブをキャンセルしたりすることができます。スナップショット情報は[SHOW SNAPSHOT](../data-manipulation/SHOW_SNAPSHOT.md)を使用して表示できます。
+バックアップは非同期操作です。[SHOW BACKUP](../data-manipulation/SHOW_BACKUP.md)を使用してバックアップジョブの状態を確認したり、[CANCEL BACKUP](../data-definition/CANCEL_BACKUP.md)を使用してバックアップジョブをキャンセルしたりすることができます。スナップショット情報は[SHOW SNAPSHOT](../data-manipulation/SHOW_SNAPSHOT.md)を使用して表示できます。
 
 > **注意**
 >
 > - 管理者権限を持つユーザーのみがデータをバックアップできます。
-> - 各データベースでは、実行中のバックアップまたはリストアジョブを1つだけ許可します。それ以外の場合、StarRocksはエラーを返します。
-> - StarRocksはデータバックアップに対するデータ圧縮アルゴリズムの指定をサポートしていません。
+> - 各データベースにつき、実行中のバックアップジョブまたはリストアジョブは1つだけ許可されます。それ以外の場合、StarRocksはエラーを返します。
+> - StarRocksはデータのバックアップに対するデータ圧縮アルゴリズムの指定をサポートしていません。
 
 ## 構文
 
@@ -26,20 +26,20 @@ TO <repository_name>
 [ PROPERTIES ("key"="value" [, ...] ) ]
 ```
 
-## パラメーター
+## パラメータ
 
-| **パラメーター** | **説明**                                                    |
+| **パラメータ**   | **説明**                                              |
 | --------------- | ------------------------------------------------------------ |
-| db_name         | バックアップするデータを格納するデータベースの名前。          |
-| snapshot_name   | データスナップショットの名前を指定します。グローバルに一意です。  |
-| repository_name | リポジトリ名。[CREATE REPOSITORY](../data-definition/CREATE_REPOSITORY.md)を使用してリポジトリを作成できます。        |
-| ON              | バックアップするテーブルの名前。このパラメーターが指定されていない場合、データベース全体がバックアップされます。   |
-| PARTITION       | バックアップするパーティションの名前。このパラメーターが指定されていない場合、テーブル全体がバックアップされます。   |
-| PROPERTIES      | データスナップショットのプロパティ。有効なキー:`type`：バックアップタイプ。現在、完全バックアップ `FULL` のみがサポートされています。デフォルト：`FULL`。`timeout`：タスクのタイムアウト。単位：秒。デフォルト：`86400`。        |
+| db_name         | バックアップするデータを格納するデータベースの名前。   |
+| snapshot_name   | データスナップショットの名前を指定します。グローバルに一意です。       |
+| repository_name | レポジトリの名前。[CREATE REPOSITORY](../data-definition/CREATE_REPOSITORY.md)を使用してレポジトリを作成できます。 |
+| ON              | バックアップするテーブルの名前。このパラメータが指定されていない場合は、データベース全体がバックアップされます。 |
+| PARTITION       | バックアップするパーティションの名前。このパラメータが指定されていない場合は、テーブル全体がバックアップされます。 |
+| PROPERTIES      | データスナップショットのプロパティ。有効なキー:`type`：バックアップのタイプ。現在、フルバックアップ `FULL` のみがサポートされています。デフォルト：`FULL`。`timeout`：タスクのタイムアウト。単位：秒。デフォルト：`86400`。 |
 
 ## 例
 
-例1：データベース`example_db`をリポジトリ`example_repo`にバックアップします。
+例1：データベース `example_db` をリポジトリ `example_repo` にバックアップします。
 
 ```SQL
 BACKUP SNAPSHOT example_db.snapshot_label1
@@ -47,7 +47,7 @@ TO example_repo
 PROPERTIES ("type" = "full");
 ```
 
-例2：`example_db`のテーブル`example_tbl`を`example_repo`にバックアップします。
+例2：`example_db` のテーブル `example_tbl` を `example_repo` にバックアップします。
 
 ```SQL
 BACKUP SNAPSHOT example_db.snapshot_label2
@@ -55,7 +55,7 @@ TO example_repo
 ON (example_tbl);
 ```
 
-例3：`example_db`のテーブル`example_tbl`のパーティション`p1`および`p2`とテーブル`example_tbl2`を`example_repo`にバックアップします。
+例3：`example_db` のテーブル `example_tbl` のパーティション `p1` および `p2` およびテーブル `example_tbl2` を `example_repo` にバックアップします。
 
 ```SQL
 BACKUP SNAPSHOT example_db.snapshot_label3

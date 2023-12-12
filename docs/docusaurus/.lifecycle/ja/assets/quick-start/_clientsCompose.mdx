@@ -1,11 +1,11 @@
-```javascript
+```markdown
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-この3つのクライアントは、このチュートリアルでテストされていますが、1つだけ必要です：
+これらの3つのクライアントは、このチュートリアルでテストされており、一つだけ必要です：
 
-- mysql CLI：Docker環境または自分のマシンから実行できます。
-- [DBeaver](https://dbeaver.io/download/) はコミュニティ版とPro版が利用可能です。
+- mysql CLI：Docker環境またはあなたのマシンから実行できます。
+- [DBeaver](https://dbeaver.io/download/) はコミュニティバージョンとプロバージョンが利用可能です。
 - [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
 
 #### クライアントの設定
@@ -13,7 +13,7 @@ import TabItem from '@theme/TabItem';
 <Tabs groupId="client">
 <TabItem value="mysqlCLI" label="mysql CLI" default>
 
-mysql CLI を使用する最も簡単な方法は、StarRocksコンテナ `starrocks-fe` から実行することです：
+mysql CLIを使うもっとも簡単な方法は、StarRocks コンテナ `starrocks-fe` から実行することです：
 
 ```bash
 docker compose exec starrocks-fe \
@@ -21,18 +21,18 @@ mysql -P 9030 -h 127.0.0.1 -u root --prompt="StarRocks > "
 ```
 
 :::tip
-すべての `docker compose` コマンドは、`docker-compose.yml` ファイルを含むディレクトリから実行する必要があります。
+すべての `docker compose` コマンドは `docker-compose.yml` ファイルを含むディレクトリから実行する必要があります。
 :::
 
-mysql CLI をインストールする場合は、以下の**mysql client install**を展開してください：
+mysql CLIをインストールしたい場合、以下の **mysql client install** を展開してください：
 
 <details>
 
 <summary>mysql client install</summary>
 
-- macOS: Homebrewを使用し、MySQL Serverが不要な場合は、`brew install mysql` を実行してCLIをインストールします。
-- Linux: リポジトリシステムで `mysql` クライアントを確認してください。例: `yum install mariadb`。
-- Microsoft Windows: [MySQL Community Server](https://dev.mysql.com/downloads/mysql/) をインストールし、提供されたクライアントを実行するか、WSLから `mysql` を実行します。
+- macOS：Homebrew を使用し、MySQLサーバーが不要な場合は `brew install mysql` を実行してCLIをインストールします。
+- Linux：リポジトリシステムで `mysql` クライアントを確認します。例えば、`yum install mariadb` です。
+- Microsoft Windows：[MySQL Community Server](https://dev.mysql.com/downloads/mysql/) をインストールして提供されるクライアントを実行するか、WSLから `mysql` を実行します。
 
 </details>
 
@@ -40,18 +40,18 @@ mysql CLI をインストールする場合は、以下の**mysql client install
 
 <TabItem value="DBeaver" label="DBeaver" >
 
-- [DBeaver](https://dbeaver.io/download/) をインストールし、接続を追加します：
-![接続の追加](./DBeaver-1.png)
-- ポート、IP、およびユーザー名を構成します。接続をテストし、テストが成功した場合は完了をクリックしてください：
-![構成とテスト](./DBeaver-2.png)
+- [DBeaver](https://dbeaver.io/download/)をインストールし、接続を追加します：
+![接続を追加](./DBeaver-1.png)
+- ポート、IP、ユーザー名を設定し、接続をテストします。テストが成功したら完了をクリックします：
+![設定とテスト](./DBeaver-2.png)
 
 </TabItem>
 <TabItem value="MySQLWorkbench" label="MySQL Workbench">
 
 - [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) をインストールし、接続を追加します。
-- ポート、IP、ユーザー名を構成し、接続をテストします：
+- ポート、IP、ユーザー名を設定し、接続をテストします：
 ![接続設定](./Workbench-1.png)
-- 特定のMySQLバージョンを確認すると、Workbenchから警告が表示されますが、警告を無視し、警告の表示を停止するようにWorkbenchを構成するよう求められます：
+- Workbenchが特定のMySQLバージョンを確認している際に警告が表示されます。警告は無視して、プロンプトが表示されたら Workbenchを警告を表示しないように設定できます：
 ![警告を無視](./Workbench-2.png)
 </TabItem>
 

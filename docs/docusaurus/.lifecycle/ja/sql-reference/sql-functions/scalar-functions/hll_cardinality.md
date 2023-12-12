@@ -1,12 +1,12 @@
 ---
-displayed_sidebar: "英語"
+displayed_sidebar: "Japanese"
 ---
 
 # HLL_CARDINALITY
 
 ## 説明
 
-HLL_CARDINALITYは、単一のHLL型の値の基数を計算するために使用されます。
+HLL_CARDINALITY は単一のHLLタイプの値の基数を計算するために使用されます。
 
 ## 構文
 
@@ -27,4 +27,4 @@ MySQL > select HLL_CARDINALITY(uv_set) from test_uv;
 
 ## キーワード
 
-HLL,HLL_CARDINALITY
+HLL, HLL_CARDINALITY

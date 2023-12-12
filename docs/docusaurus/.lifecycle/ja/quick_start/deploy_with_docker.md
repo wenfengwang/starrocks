@@ -1,34 +1,36 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "日本語"
 sidebar_position: 1
 ---
 
-# Dockerを使用してStarRocksをデプロイ
+# Dockerを使用してStarRocksを展開する
 
-このクイックスタートチュートリアルでは、Dockerを使用してローカルマシンにStarRocksをデプロイする手順を案内します。始める前に、[StarRocks アーキテクチャ](../introduction/Architecture.md)で概念的な詳細を確認できます。
+このクイックスタートチュートリアルでは、Dockerを使用してローカルマシンにStarRocksを展開する手順について説明します。始める前に、より概念的な詳細については[StarRocks アーキテクチャ](../introduction/Architecture.md)を参照してください。
 
-これらの手順に従うと、**1つのFEノード**および**1つのBEノード**を備えたシンプルなStarRocksクラスタをデプロイできます。これにより、[テーブルを作成](../quick_start/Create_table.md)および[データの読み込みとクエリ](../quick_start/Import_and_query.md)の次のクイックスタートチュートリアルを完了し、StarRocksの基本操作に慣れることができます。
+これらの手順に従うことで、**1つのFEノード**と**1つのBEノード**を持つシンプルなStarRocksクラスターを展開できます。これにより、[テーブルの作成](../quick_start/Create_table.md)および[データのロードとクエリ](../quick_start/Import_and_query.md)といった次のクイックスタートチュートリアルを完了し、StarRocksの基本操作に慣れることができます。
 
 > **注意**
 >
-> このチュートリアルで使用されているDockerイメージを使用してStarRocksをデプロイするのは、小規模なデータセットを検証する必要がある場合に適用されます。大規模なテストや本番環境には推奨されません。高可用性のStarRocksクラスタをデプロイするには、シナリオに適した他のオプションについては[Deployment overview](../deployment/deployment_overview.md)を参照してください。
+> このチュートリアルで使用されるDockerイメージを使用してStarRocksを展開するのは、小規模なデータセットでデモを検証する必要がある場合に適用されるものであり、大規模なテストや本番環境には推奨されません。高可用性のStarRocksクラスターを展開するには、シナリオに適した他のオプションについては[展開の概要](../deployment/deployment_overview.md)を参照してください。
 
-## 前提条件
+## 必要条件
 
-DockerでStarRocksをデプロイする前に、次の要件を満たしていることを確認してください：
+DockerでStarRocksを展開する前に、以下の要件を満たしていることを確認してください：
 
 - **ハードウェア**
-  StarRocksを8つのCPUコアと16GB以上のメモリを搭載したマシンにデプロイすることをお勧めします。
+
+  StarRocksを8つのCPUコアと16GB以上のメモリを搭載したマシンに展開することをお勧めします。
 
 - **ソフトウェア**
-  次のソフトウェアがマシンにインストールされている必要があります：
 
-  - [Docker Engine](https://docs.docker.com/engine/install/) (17.06.0 以降) またはそれ以降のバージョン、そしてディスクパーティションのメタディレクトリに少なくとも5GBの空き容量が必要です。 詳細についてはhttps://github.com/StarRocks/starrocks/issues/35608 を参照してください。
-  - MySQLクライアント (5.5 以降)
+  マシンに以下のソフトウェアがインストールされている必要があります：
 
-## ステップ1: StarRocks Dockerイメージをダウンロード
+  - [Docker Engine](https://docs.docker.com/engine/install/)（17.06.0以降） かつメタディレクトリのディスクパーティションに少なくとも5GBの空き容量があること。 詳細についてはhttps://github.com/StarRocks/starrocks/issues/35608を参照してください。
+  - MySQLクライアント（5.5以降）
 
-[StarRocks Docker Hub](https://hub.docker.com/r/starrocks/allin1-ubuntu/tags) からStarRocks Dockerイメージをダウンロードします。イメージのタグに基づいて特定のバージョンを選択できます。
+## ステップ1: StarRocks Dockerイメージのダウンロード
+
+[StarRocks Docker Hub](https://hub.docker.com/r/starrocks/allin1-ubuntu/tags)からStarRocks Dockerイメージをダウンロードします。イメージのタグに基づいて特定のバージョンを選択できます。
 
 ```Bash
 sudo docker run -p 9030:9030 -p 8030:8030 -p 8040:8040 \
@@ -37,24 +39,24 @@ sudo docker run -p 9030:9030 -p 8030:8030 -p 8040:8040 \
 
 > **トラブルシューティング**
 >
-> 上記のポートのいずれかがホストマシンで使用中の場合、「docker: Error response from daemon: driver failed programming external connectivity on endpoint tender_torvalds (): Bind for 0.0.0.0:xxxx failed: port is already allocated.」というシステムメッセージが表示されます。コマンド内のコロン (:) の前のポートを変更することで、ホストマシンで使用可能なポートを割り当てることができます。
+> 上記ポートのいずれかがホストマシンで使用中の場合、システムは「docker: Error response from daemon: driver failed programming external connectivity on endpoint tender_torvalds (): Bind for 0.0.0.0:xxxx failed: port is already allocated.」と表示します。コマンドのコロン（:）の前にあるポートを変更して、ホストマシン上で利用可能なポートを割り当てることができます。
 
-次のコマンドを実行して、コンテナが適切に作成および実行されているかどうかを確認できます。
+次のコマンドを実行して、コンテナが適切に作成および実行されているか確認できます：
 
 ```Bash
 sudo docker ps
 ```
 
-以下のように表示される場合、StarRocksコンテナの`STATUS`が`Up`であれば、DockerコンテナにStarRocksが正常にデプロイされています。
+以下のように表示される場合、あなたのStarRocksコンテナの`STATUS`が`Up`である場合、StarRocksがDockerコンテナに展開されたことを成功裏に完了しました。
 
 ```Plain
 CONTAINER ID   IMAGE                                          COMMAND                  CREATED         STATUS                 PORTS                                                                                                                             NAMES
 8962368f9208   starrocks/allin1-ubuntu:branch-3.0-0afb97bbf   "/bin/sh -c ./start_…"   4 minutes ago   Up 4 minutes           0.0.0.0:8037->8030/tcp, :::8037->8030/tcp, 0.0.0.0:8047->8040/tcp, :::8047->8040/tcp, 0.0.0.0:9037->9030/tcp, :::9037->9030/tcp   xxxxx
 ```
 
-## ステップ2: StarRocksに接続
+## ステップ2: StarRocksに接続する
 
-StarRocksが適切にデプロイされた後、MySQLクライアントを使用してそれに接続できます。
+StarRocksが適切に展開された後、MySQLクライアントを使用してそれに接続できます。
 
 ```Bash
 mysql -P9030 -h127.0.0.1 -uroot --prompt="StarRocks > "
@@ -62,15 +64,15 @@ mysql -P9030 -h127.0.0.1 -uroot --prompt="StarRocks > "
 
 > **注意**
 >
-> `docker run`コマンドで`9030`の代わりに別のポートを割り当てた場合は、上記のコマンド内の`9030`を割り当てたポートに置き換える必要があります。
+> `docker run`コマンドで`9030`の代わりに別のポートを割り当てた場合、上記のコマンドの`9030`を割り当てたポートに置き換える必要があります。
 
-次のSQLを実行してFEノードの状態を確認できます：
+次のSQLを実行して、FEノードの状態を確認できます：
 
 ```SQL
 SHOW PROC '/frontends'\G
 ```
 
-例：
+例:
 
 ```Plain
 StarRocks > SHOW PROC '/frontends'\G
@@ -94,17 +96,17 @@ ReplayedJournalId: 99
 1 row in set (0.02 sec)
 ```
 
-- `Alive`のフィールドが`true`の場合、このFEノードは正しく起動され、クラスタに追加されています。
-- `Role`のフィールドが`FOLLOWER`の場合、このFEノードはリーダーFEノードとして選出される資格があります。
-- `Role`のフィールドが`LEADER`の場合、このFEノードはリーダーFEノードです。
+- `Alive`フィールドが`true`であれば、このFEノードは適切に起動され、クラスターに追加されています。
+- `Role`フィールドが`FOLLOWER`であれば、このFEノードはリーダーFEノードに選出される資格があります。
+- `Role`フィールドが`LEADER`であれば、このFEノードはリーダーFEノードです。
 
-次のSQLを実行してBEノードの状態を確認できます：
+BEノードの状態は次のSQLを実行して確認できます：
 
 ```SQL
 SHOW PROC '/backends'\G
 ```
 
-例：
+例:
 
 ```Plain
 StarRocks > SHOW PROC '/backends'\G
@@ -138,34 +140,34 @@ ClusterDecommissioned: false
 1 row in set (0.00 sec)
 ```
 
-`Alive`のフィールドが`true`の場合、このBEノードは適切に起動され、クラスタに追加されています。
+`Alive`フィールドが`true`であれば、このBEノードは適切に起動され、クラスターに追加されています。
 
-## Dockerコンテナを停止およぇ削除します。
+## Dockerコンテナを停止および削除する
 
-クイックスタートチュートリアル全体を完了した後は、StarRocksクラスタをホスティングするコンテナをそのコンテナIDで停止および削除できます。
+全体のクイックスタートチュートリアルを完了した後、StarRocksクラスターをホストするコンテナをそのコンテナIDで停止および削除できます。
 
 > **注意**
 >
 > `sudo docker ps`を実行してDockerコンテナの`container_id`を取得できます。
 
-次のコマンドを実行してコンテナを停止します：
+以下のコマンドを実行してコンテナを停止します：
 
 ```Bash
-# <container_id>をStarRocksクラスタのコンテナIDに置き換えてください。
+# <container_id>にStarRocksクラスターのコンテナIDを置き換えてください。
 sudo docker stop <container_id>
 ```
 
-もうコンテナが不要な場合は、次のコマンドを実行してコンテナを削除できます：
+コンテナをもはや必要としない場合は、以下のコマンドを実行してそれを削除できます：
 
 ```Bash
-# <container_id>をStarRocksクラスタのコンテナIDに置き換えてください。
+# <container_id>にStarRocksクラスターのコンテナIDを置き換えてください。
 sudo docker rm <container_id>
 ```
 
 > **注意**
 >
-> コンテナの削除は取り消せません。削除する前に重要なデータのバックアップを取得してください。
+> コンテナの削除は取り消しできません。削除する前に重要なデータのバックアップを取得していることを確認してください。
 
-## 次に何をすべきか
+## 次に何をするか
 
-StarRocksをデプロイしたら、[テーブルを作成](../quick_start/Create_table.md)および[データの読み込みとクエリ](../quick_start/Import_and_query.md)のQuickStartチュートリアルを続けることができます。
+StarRocksを展開したら、[テーブルの作成](../quick_start/Create_table.md)および[データのロードとクエリ](../quick_start/Import_and_query.md)のクイックスタートチュートリアルを続けることができます。

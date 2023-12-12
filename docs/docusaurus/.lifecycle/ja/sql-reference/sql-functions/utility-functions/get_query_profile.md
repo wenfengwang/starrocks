@@ -2,13 +2,13 @@
 displayed_sidebar: "Japanese"
 ---
 
-# get_query_profile
+# get_query_profile（クエリプロファイルの取得）
 
 ## 説明
 
-`query_id` を使用してクエリのプロファイルを取得します。この関数は、`query_id` が存在しないか、正しくない場合は空を返します。
+`query_id` を使用してクエリのプロファイルを取得します。この機能は、`query_id` が存在しない場合、または正しくない場合は空を返します。
 
-この関数を使用するには、プロファイリング機能を有効にする必要があります。つまり、セッション変数 `enable_profile` を `true` に設定する必要があります (`set enable_profile = true;`)。この機能が有効になっていない場合、空のプロファイルが返されます。
+この機能を使用するには、プロファイリング機能を有効にする必要があります。つまり、セッション変数 `enable_profile` を `true` に設定する必要があります（`set enable_profile = true;`）。この機能が有効になっていない場合、空のプロファイルが返されます。
 
 この関数は v3.0 からサポートされています。
 
@@ -18,13 +18,13 @@ displayed_sidebar: "Japanese"
 get_query_profile(x)
 ```
 
-## パラメーター
+## パラメータ
 
-`x`: クエリのID文字列。サポートされているデータ型は VARCHAR です。
+`x`: クエリ ID 文字列。サポートされているデータ型は VARCHAR です。
 
 ## 戻り値
 
-クエリのプロファイルには、以下のフィールドが含まれています。クエリのプロファイルの詳細については、[クエリプロファイル](../../../administration/query_profile.md)を参照してください。
+クエリプロファイルには次のフィールドが含まれています。クエリプロファイルの詳細については、[Query Profile](../../../administration/query_profile.md) を参照してください。
 
 ```SQL
 Query:
@@ -64,10 +64,10 @@ select last_query_id();
 | bd3335ce-8dde-11ee-92e4-3269eb8da7d1 |
 +--------------------------------------+
 
--- クエリのプロファイルを取得します。
+-- クエリプロファイルを取得します。
 select get_query_profile('502f3c04-8f5c-11ee-a41f-b22a2c00f66b');
 
--- 指定されたパターンに一致するプロファイル内の QueryPeakMemoryUsage を取得するために regexp_extract 関数を使用します。
+-- 指定されたパターンに一致するプロファイル内の QueryPeakMemoryUsage を取得するには、regexp_extract 関数を使用します。
 select regexp_extract(get_query_profile('bd3335ce-8dde-11ee-92e4-3269eb8da7d1'), 'QueryPeakMemoryUsage: [0-9\.]* [KMGB]*', 0);
 +-----------------------------------------------------------------------------------------------------------------------+
 | regexp_extract(get_query_profile('bd3335ce-8dde-11ee-92e4-3269eb8da7d1'), 'QueryPeakMemoryUsage: [0-9.]* [KMGB]*', 0) |

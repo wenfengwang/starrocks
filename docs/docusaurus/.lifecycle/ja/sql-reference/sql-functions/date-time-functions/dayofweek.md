@@ -1,14 +1,15 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# dayofweek
+# dayofweek（曜日）
 
 ## 説明
 
-指定した日付の曜日インデックスを返します。例えば、日曜日のインデックスは1、月曜日のインデックスは2、土曜日のインデックスは7です。
+指定された日付の曜日インデックスを返します。たとえば、日曜日のインデックスは1、月曜日のインデックスは2、土曜日のインデックスは7です。
 
-`date`パラメータはDATEまたはDATETIME型、またはDATEまたはDATETIMEの値にキャストできる有効な式である必要があります。
+`date` パラメータはDATEまたはDATETIME型、またはDATEまたはDATETIME値にキャストできる有効な式でなければなりません。
 
 ## 構文
 
@@ -37,3 +38,4 @@ MySQL > select dayofweek(cast(20190625 as date));
 ## キーワード
 
 DAYOFWEEK
+```

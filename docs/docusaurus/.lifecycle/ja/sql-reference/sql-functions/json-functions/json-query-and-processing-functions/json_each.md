@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-JSONオブジェクトの最も外側の要素をキーと値のペアのセットに展開し、それぞれの要素に対して1行ずつ含むテーブルを返します。
+JSONオブジェクトの外側の要素をキーと値のペアとして展開し、それぞれの要素に1行のテーブルを返す。
 
 ## 構文
 
@@ -16,20 +16,20 @@ json_each(json_object_expr)
 
 ## パラメータ
 
-`json_object_expr`: JSONオブジェクトを表す式。オブジェクトはJSON列であったり、PARSE_JSONなどのJSONコンストラクタ関数によって生成されたJSONオブジェクトです。
+`json_object_expr`: JSONオブジェクトを表す式。オブジェクトはJSON列またはPARSE_JSONなどのJSONコンストラクタ関数によって生成されたJSONオブジェクトである。
 
 ## 戻り値
 
-二つの列を返します: 一つはkeyと名付けられ、もう一つはvalueと名付けられます。key列はVARCHAR値を保存し、value列はJSON値を保存します。
+2つの列を返す：keyとvalue。key列はVARCHAR値を格納し、value列はJSON値を格納する。
 
 ## 使用上の注意
 
-json_each関数はテーブルを返すテーブル関数です。返されるテーブルは複数の行で構成される結果セットです。したがって、返されたテーブルを元のテーブルにJOINするためにFROM句にLATERAL JOINを使用する必要があります。LATERAL JOINは必須ですが、LATERALキーワードはオプションです。また、json_each関数はSELECT句で使用することはできません。
+json_each関数はテーブルを返すテーブル関数である。返されるテーブルは複数の行で構成された結果セットであるため、元のテーブルと返されたテーブルをFROM句でLATERAL JOINで結合する必要がある。LATERAL JOINは必須であるが、LATERALキーワードは任意である。json_each関数はSELECT句で使用することはできない。
 
 ## 例
 
 ```plaintext
--- tjという名前のテーブルが例として使用されています。tjテーブルでは、j列はJSONオブジェクトです。
+-- tjという名前のテーブルを例として使用する。tjテーブルでは、j列はJSONオブジェクトである。
 mysql> SELECT * FROM tj;
 +------+------------------+
 | id   | j                |
@@ -38,7 +38,7 @@ mysql> SELECT * FROM tj;
 |    3 | {"a": 3}         |
 +------+------------------+
 
--- tjテーブルのj列をkeyとvalueの二つの列に展開し、複数の行で構成される結果セットを取得します。この例では、LATERALキーワードを使用して結果セットをtjテーブルにJOINしています。
+-- tjテーブルのj列をキーと値の2つの列に展開し、複数行で構成された結果セットを取得する。この例では、LATERALキーワードを使用して、結果セットをtjテーブルに結合している。
 
 mysql> SELECT * FROM tj, LATERAL json_each(j);
 +------+------------------+------+-------+

@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-CHAR()は、与えられた整数値に対応するASCIIテーブルの文字値を返します。
+CHAR（）は、与えられた整数値に対応する文字値をASCIIテーブルに従って返します。
 
 ## 構文
 

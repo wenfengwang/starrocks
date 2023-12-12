@@ -1,21 +1,20 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # bitmap_contains
 
-## 説明
+## Description
 
 入力値がビットマップ列に含まれているかどうかを計算し、ブール値を返します。
 
-## 構文
+## Syntax
 
 ```Haskell
 B00LEAN BITMAP_CONTAINS(BITMAP bitmap, BIGINT input)
 ```
 
-## 例
+## Examples
 
 ```Plain Text
 MySQL > select bitmap_contains(to_bitmap(1),2) cnt;
@@ -33,7 +32,6 @@ MySQL > select bitmap_contains(to_bitmap(1),1) cnt;
 +------+
 ```
 
-## キーワード
+## keyword
 
 BITMAP_CONTAINS,BITMAP
-```

@@ -16,10 +16,10 @@ mod(dividend, divisor)
 
 ## パラメータ
 
-- `dividend`: 割られる数。
+- `dividend`: 割る数。
 - `divisor`: 割る数。
 
-`dividend`と`divisor`は以下のデータ型に対応しています。
+`dividend`と`divisor`の両方に以下のデータ型がサポートされています:
 
 - TINYINT
 - SMALLINT
@@ -35,11 +35,11 @@ mod(dividend, divisor)
 
 > **注意**
 >
-> `dividend`と`divisor`はデータ型で一致しなければなりません。StarRocksはデータ型で一致しない場合に暗黙の型変換を行います。
+> `dividend`と`divisor`はデータ型で同意する必要があります。StarRocksはデータ型が同意されていない場合、暗黙的な変換を行います。
 
-## 戻り値
+## 返り値
 
-`dividend`と同じデータ型の値を返します。`divisor`が0で指定された場合、StarRocksはNULLを返します。
+`dividend`と同じデータ型の値を返します。`divisor`が0と指定された場合、StarRocksはNULLを返します。
 
 ## 例
 

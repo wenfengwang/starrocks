@@ -1,14 +1,14 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "日本語"
 ---
 
 # map_size
 
 ## 説明
 
-MAPサイズを返します。 MAPは、キーと値のペアの順不同のコレクションです。 たとえば、 `{"a":1, "b":2}` です。 1つのキーと値のペアが1つの要素を構成し、たとえば、 `{"a":1, "b":2}` には2つの要素が含まれています。
+MAPの要素数を返します。MAPは、キーと値のペアの無順序なコレクションであり、例えば`{"a":1, "b":2}`のようになります。1つのキーと値のペアが1つの要素です。例えば`{"a":1, "b":2}`には2つの要素が含まれています。
 
-この関数には [cardinality()](cardinality.md) というエイリアスがあります。 v2.5からサポートされています。
+この関数には[cardinality()](cardinality.md)という別名があります。v2.5からサポートされています。
 
 ## 構文
 
@@ -16,23 +16,23 @@ MAPサイズを返します。 MAPは、キーと値のペアの順不同のコ�
 INT map_size(any_map)
 ```
 
-## パラメーター
+## パラメータ
 
-`any_map`： 要素の数を取得したいMAP値です。
+`any_map`: 要素数を取得したいMAPの値です。
 
 ## 戻り値
 
-INT型の値を返します。
+INTタイプの値を返します。
 
 入力がNULLの場合、NULLが返されます。
 
-MAP値のキーまたは値がNULLの場合、NULLが通常の値として処理されます。
+MAPの値のキーまたは値がNULLの場合、NULLは通常の値として処理されます。
 
 ## 例
 
 ### StarRocksネイティブテーブルからMAPデータをクエリする
 
-v3.1以降、StarRocksでは、テーブルを作成する際にMAP列を定義することがサポートされています。 この例では、`test_map`というテーブルを使用し、次のデータが含まれています。
+v3.1以降、StarRocksはテーブルを作成する際にMAP列を定義することをサポートしています。この例では、次のデータを含む`test_map`テーブルを使用しています。
 
 ```Plain
 CREATE TABLE test_map(
@@ -73,7 +73,7 @@ select map_size(col_map) from test_map order by col_int;
 
 ### データレイクからMAPデータをクエリする
 
-この例では、次のデータが含まれるHiveテーブル`hive_map`を使用します。
+この例では、次のデータを含むHiveテーブル`hive_map`を使用しています。
 
 ```Plaintext
 SELECT * FROM hive_map ORDER BY col_int;
@@ -86,7 +86,7 @@ SELECT * FROM hive_map ORDER BY col_int;
 +---------+---------------+
 ```
 
-[Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog)がクラスターに作成された後、このカタログとmap_size()関数を使用して`col_map`列の各行の要素数を取得できます。
+[Hiveカタログ](../../../data_source/catalog/hive_catalog.md#create-a-hive-catalog)がクラスターに作成された後、このカタログとmap_size()関数を使用して、`col_map`列の各行の要素数を取得できます。
 
 ```Plaintext
 select map_size(col_map) from hive_map order by col_int;

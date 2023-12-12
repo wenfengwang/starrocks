@@ -2,107 +2,107 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ユーザの変更
+# ALTER USER（ユーザーの変更）
 
 ## 説明
 
-ユーザの情報（パスワード、認証方法、デフォルトのロールなど）を変更します。
+ユーザーの情報（パスワード、認証方法、デフォルトのロールなど）を変更します。
 
-> 個々のユーザは、このコマンドを使用して自分自身の情報を変更できます。 `user_admin` は他のユーザの情報を変更するためにこのコマンドを使用できます。
+> 個々のユーザーは自分自身の情報を変更するためにこのコマンドを使用できます。 `user_admin` は他のユーザーの情報を変更するためにこのコマンドを使用できます。
 
 ## 構文
 
 ```SQL
-ALTER USER ユーザ識別子 [auth_option] [default_role]
+ALTER USER ユーザー識別子 [auth_option] [default_role]
 ```
 
-## パラメータ
+## パラメーター
 
-- `user_identity` は `username@'userhost'` の形式で、"user_name" と "host" の2つの部分で構成されます。"host" 部分では、不明瞭な一致のために `%` を使用できます。 "host" が指定されていない場合、デフォルトで "%" が使用され、ユーザはどのホストからでもStarRocksに接続できることを意味します。 
+- `ユーザー識別子` は `ユーザー名@'ユーザーホスト'` の形式で構成されており、2つの部分で構成されています。 "host" 部分には、曖昧な一致のために `%` を使用できます。 "host" が指定されていない場合、デフォルトで `%` が使用され、ユーザーはどのホストからでも StarRocks に接続できます。
 
-- `auth_option` は認証方法を指定します。現在、3つの認証方法がサポートされています。StarRocksネイティブパスワード、mysql_native_password、および "authentication_ldap_simple" です。StarRocksネイティブパスワードは、論理的には mysql_native_password と同じですが、構文が若干異なります。1つのユーザ識別子は1つの認証方法しか使用できません。ALTER USER を使用して、ユーザのパスワードと認証方法を変更できます。
+- `auth_option` は認証方法を指定します。現在、3つの認証方法がサポートされています: StarRocks ネイティブパスワード、mysql_native_password、および "authentication_ldap_simple"。 StarRocks ネイティブパスワードはロジックでは mysql_native_password と同じですが、構文に若干の違いがあります。 1つのユーザー識別子は1つの認証方法のみを使用できます。 ALTER USER を使用してユーザーのパスワードと認証方法を変更できます。
 
     ```SQL
     auth_option: {
-        IDENTIFIED BY 'auth_string'
-        IDENTIFIED WITH mysql_native_password BY 'auth_string'
-        IDENTIFIED WITH mysql_native_password AS 'auth_string'
-        IDENTIFIED WITH authentication_ldap_simple AS 'auth_string'
+        'auth_string' で識別
+        mysql_native_password の 'auth_string' で識別
+        mysql_native_password では 'auth_string' として識別
+        authentication_ldap_simple では 'auth_string' として識別
         
     }
     ```
 
-    | **認証方法**      | **ユーザ作成のためのパスワード** | **ログインのためのパスワード** |
-    | ------------------ | --------------------------------- | ------------------------------ |
-    | ネイティブパスワード | 平文または暗号文                    | 平文                        |
-    | `mysql_native_password BY` | 平文                          | 平文                        |
-    | `mysql_native_password WITH` | 暗号文                        | 平文                        |
-    | `authentication_ldap_simple` | 平文                          | 平文                        |
+    | **認証方法**             | **ユーザー作成のパスワード** | **ログインのパスワード** |
+    | --------------------------- | ------------------------------ | ---------------------- |
+    | ネイティブパスワード           | 平文または暗号文                  | 平文                  |
+    | `mysql_native_password` では    | 平文                              | 平文                  |
+    | `mysql_native_password` では   | 暗号文                             | 平文                  |
+    | `authentication_ldap_simple` では | 平文                              | 平文                  |
 
-> 注意：StarRocksは、ユーザのパスワードを保存する前に暗号化します。
+> 注: StarRocks はユーザーのパスワードを保存する前に暗号化します。
 
 - `DEFAULT ROLE`
 
-  ```SQL
-    -- 指定されたロールをデフォルトのロールとして設定します。
+   ```SQL
+    -- 指定されたロールをデフォルトの役割として設定します。
     DEFAULT ROLE <role_name>[, <role_name>, ...]
-    -- このユーザに割り当てられるすべてのロールを、デフォルトのロールとして設定します。
+    -- このユーザーに割り当てられるロールを含む、すべてのロールをデフォルトの役割として設定します。 
     DEFAULT ROLE ALL
-    -- デフォルトのロールを設定せず、ユーザログイン後もパブリックロールが有効のままになります。
+    -- ロールをデフォルトに設定しないが、ユーザーログイン後には public ロールが有効のままです。
     DEFAULT ROLE NONE
-  ```
+    ```
 
-  デフォルトのロールを設定する前に、すべてのロールがユーザに割り当てられていることを確認してください。ユーザが再ログインすると、ロールは自動的に有効になります。
+  デフォルトのロールを設定する前に、すべてのロールがユーザーに割り当てられていることを確認してください。 ユーザーが再度ログインすると、ロールは自動的にアクティブ化されます。
 
 ## 例
 
-例1：ユーザのパスワードを平文パスワードに変更します。
+例1: ユーザーのパスワードを平文パスワードに変更します。
 
 ```SQL
-ALTER USER 'jack' IDENTIFIED BY '123456';
-ALTER USER jack@'172.10.1.10' IDENTIFIED WITH mysql_native_password BY '123456';
+ALTER USER 'jack' '123456' で識別;
+ALTER USER jack@'172.10.1.10' は mysql_native_password の '123456' で識別;
 ```
 
-例2：ユーザのパスワードを暗号化パスワードに変更します。
+例2: ユーザーのパスワードを暗号文のパスワードに変更します。
 
 ```SQL
-ALTER USER jack@'172.10.1.10' IDENTIFIED BY PASSWORD '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9';
-ALTER USER jack@'172.10.1.10' IDENTIFIED WITH mysql_native_password AS '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9';
+ALTER USER jack@'172.10.1.10' でパスワード '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9' で識別;
+ALTER USER jack@'172.10.1.10' は mysql_native_password として '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9' で識別;
 ```
 
-> 暗号化されたパスワードは、password() 関数を使用して取得できます。
+> 暗号化されたパスワードは password() 関数を使用して取得できます。
 
-例3：認証方法をLDAPに変更します。
+例3: 認証方法を LDAP に変更します。
 
 ```SQL
-ALTER USER jack@'172.10.1.10' IDENTIFIED WITH authentication_ldap_simple;
+ALTER USER jack@'172.10.1.10' は authentication_ldap_simple として識別;
 ```
 
-例4：認証方法をLDAPに変更し、LDAP内のユーザの識別名（DN）を指定します。
+例4: 認証方法を LDAP に変更し、LDAP でのユーザーの識別名（DN）を指定します。
 
 ```SQL
-CREATE USER jack@'172.10.1.10' IDENTIFIED WITH authentication_ldap_simple AS 'uid=jack,ou=company,dc=example,dc=com';
+CREATE USER jack@'172.10.1.10' は authentication_ldap_simple として 'uid=jack,ou=company,dc=example,dc=com' で識別;
 ```
 
-例5：ユーザのデフォルトのロールを `db_admin` と `user_admin` に変更します。ユーザにはこれらの2つのロールが割り当てられている必要があります。
+例5: ユーザーのデフォルトの役割を `db_admin` および `user_admin` に変更します。 ユーザーはこれらの2つのロールが割り当てられている必要があります。
 
 ```SQL
 ALTER USER 'jack'@'192.168.%' DEFAULT ROLE db_admin, user_admin;
 ```
 
-例6：このユーザに割り当てられるすべてのロールをデフォルトのロールとして設定します。
+例6: このユーザーに割り当てられるロールを含め、ユーザーのすべてのロールをデフォルトのロールとして設定します。
 
 ```SQL
 ALTER USER 'jack'@'192.168.%' DEFAULT ROLE ALL;
 ```
 
-例7：ユーザのデフォルトのロールをすべてクリアします。
+例7: ユーザーのすべてのデフォルトロールをクリアします。
 
 ```SQL
 ALTER USER 'jack'@'192.168.%' DEFAULT ROLE NONE;
 ```
 
-> 注意：デフォルトでは、`public` ロールはユーザに対して有効のままです。
+> 注: デフォルトで、`public` ロールはユーザーに対して有効です。
 
 ## 参照
 

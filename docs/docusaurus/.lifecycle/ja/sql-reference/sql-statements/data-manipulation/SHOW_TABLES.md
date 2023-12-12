@@ -6,11 +6,11 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-StarRocksデータベースまたは外部データソース（たとえばHive、Iceberg、Hudi、またはDelta Lake）のデータベース内のすべてのテーブルを表示します。
+StarRocksデータベースまたは外部データソース（たとえば、Hive、Iceberg、Hudi、またはDelta Lake）のデータベース内のすべてのテーブルを表示します。
 
-> **注**
+> **注記**
 >
-> 外部データソースのテーブルを表示するには、該当するデータソースに対応する外部カタログに対してUSAGE権限を持っている必要があります。
+> 外部データソースのテーブルを表示するには、そのデータソースに対応する外部カタログでのUSAGE権限が必要です。
 
 ## 構文
 
@@ -20,14 +20,14 @@ SHOW TABLES [FROM <catalog_name>.<db_name>]
 
 ## パラメータ
 
- **パラメータ**                   | **必須** | **説明**                                                     |
+ **パラメータ**          | **必須** | **説明**                                                     |
 | ----------------- | -------- | ------------------------------------------------------------ |
-| catalog_name | いいえ       | 内部カタログまたは外部カタログの名前。<ul><li>このパラメータを指定しないか、`default_catalog`に設定すると、StarRocksデータベースのテーブルが返されます。</li><li>このパラメータを外部カタログの名前に設定すると、外部データソースのデータベースのテーブルが返されます。</li></ul> [SHOW CATALOGS](SHOW_CATALOGS.md) を実行して、内部および外部カタログを表示できます。|
-| db_name | いいえ       | データベースの名前。指定しない場合、デフォルトで現在のデータベースが使用されます。 |
+| catalog_name | いいえ       | 内部カタログまたは外部カタログの名前。<ul><li>このパラメータを指定しないか、`default_catalog`に設定すると、StarRocksデータベースのテーブルが返されます。</li><li>このパラメータを外部カタログの名前に設定すると、外部データソースのデータベースのテーブルが返されます。</li></ul> [SHOW CATALOGS](SHOW_CATALOGS.md) を実行して、内部カタログと外部カタログを表示できます。|
+| db_name | いいえ       | データベースの名前。指定しない場合は、デフォルトで現在のデータベースが使用されます。 |
 
 ## 例
 
-例 1: StarRocksクラスタに接続した後、`default_catalog`の`example_db`データベース内のテーブルを表示します。次の2つの文は同等です。
+例 1: StarRocksクラスタに接続した後、`default_catalog`の`example_db`データベース内のテーブルを表示します。次の2つのステートメントは同等です。
 
 ```plain
 show tables from example_db;
@@ -51,7 +51,7 @@ show tables from default_catalog.example_db;
 +----------------------------+
 ```
 
-例 2: このデータベースに接続した後、現在のデータベース`example_db`内のテーブルを表示します。
+例 2: このデータベースに接続した後、現在のデータベース`example_db`のテーブルを表示します。
 
 ```plain
 show tables;
@@ -65,7 +65,7 @@ show tables;
 +----------------------------+
 ```
 
-例 3: 外部カタログ`hudi_catalog`の`hudi_db`データベース内のテーブルを表示します。
+例 2: 外部カタログ`hudi_catalog`の`hudi_db`データベース内のテーブルを表示します。
 
 ```plain
 show tables from hudi_catalog.hudi_db;
@@ -77,7 +77,7 @@ show tables from hudi_catalog.hudi_db;
 +----------------------------+
 ```
 
-代わりに、SET CATALOGを実行して外部カタログ`hudi_catalog`に切り替え、`SHOW TABLES FROM hudi_db;`を実行できます。
+また、外部カタログ`hudi_catalog`に切り替えてから`SHOW TABLES FROM hudi_db;`を実行することもできます。
 
 ## 参照
 

@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# hll_hash
+# hll_hash（HLLハッシュ）
 
 ## 説明
 
-値をhllタイプに変換します。通常、ソースデータの値をStarRocksテーブルのHLL列タイプにマップするためにインポートで使用されます。
+値をhllタイプに変換します。通常は、元のデータの値をStarRocksテーブルのHLL列タイプにマップするためのインポートで使用されます。
 
 ## 構文
 
@@ -14,7 +14,7 @@ displayed_sidebar: "Japanese"
 HLL_HASH(column_name)
 ```
 
-## パラメーター
+## パラメータ
 
 `column_name`: 生成されたHLL列の名前。
 

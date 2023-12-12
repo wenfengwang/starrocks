@@ -3,11 +3,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# weeks_diff
+# weeks_diff（週の差分）
 
 ## 説明
 
-2つの日付式(*`expr1`* − *`expr2`*)の週の差を、週単位で正確に返します。
+2つの日付の差分を週単位で返します（*`expr1`* − *`expr2`*）。
 
 ## 構文
 
@@ -17,15 +17,15 @@ BIGINT weeks_diff(DATETIME expr1,DATETIME expr2);
 
 ## パラメータ
 
-- `expr1`: 終了時刻。DATETIMEまたはDATE型である必要があります。
+- `expr1`: 終了時間。DATETIMEまたはDATE型である必要があります。
 
-- `expr2`: 開始時刻。DATETIMEまたはDATE型である必要があります。
+- `expr2`: 開始時間。DATETIMEまたはDATE型である必要があります。
 
 ## 戻り値
 
 BIGINT値を返します。
 
-日付が存在しない場合はNULLが返されます。例: 2022-02-29
+たとえば、日付が存在しない場合はNULLが返されます。例：2022-02-29。
 
 ## 例
 

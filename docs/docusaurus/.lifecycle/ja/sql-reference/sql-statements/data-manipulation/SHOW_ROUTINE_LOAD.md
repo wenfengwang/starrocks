@@ -6,39 +6,39 @@ displayed_sidebar: "Japanese"
 
 ## 例
 
-1. テスト1という名前のすべてのルーチンインポートジョブ（停止またはキャンセルされたジョブを含む）を表示します。その結果は1行以上です。
+1. テスト1という名前のルーチンのすべてのインポートジョブ（停止またはキャンセルされたジョブを含む）を表示します。 結果は1行以上です。
 
     ```sql
     SHOW ALL ROUTINE LOAD FOR test1;
     ```
 
-2. テスト1という名前の現在実行中のルーチンインポートジョブを表示します。
+2. 現在実行中のルーチンインポートジョブを名前test1で表示する
 
     ```sql
     SHOW ROUTINE LOAD FOR test1;
     ```
 
-3. example_db内のすべてのルーチンインポートジョブ（停止またはキャンセルされたジョブを含む）を表示します。その結果は1行以上です。
+3. example_db内のすべてのルーチンインポートジョブ（停止またはキャンセルされたジョブを含む）を表示します。 結果は1行以上です。
 
     ```sql
     use example_db;
     SHOW ALL ROUTINE LOAD;
     ```
 
-4. example_db内のすべての実行中のルーチンインポートジョブを表示します。
+4. example_db内で実行中のすべてのルーチンインポートジョブを表示します
 
     ```sql
     use example_db;
     SHOW ROUTINE LOAD;
     ```
 
-5. example_db内の名前がtest1で現在実行中のルーチンインポートジョブを表示します。
+5. example_db内の名前がtest1の現在実行中のルーチンインポートジョブを表示します
 
     ```sql
     SHOW ROUTINE LOAD FOR example_db.test1;
     ```
 
-6. example_db内のテスト1という名前のすべてのルーチンインポートジョブ（停止またはキャンセルされたジョブを含む）を表示します。その結果は1行以上です。
+6. example_db内の名前がtest1のルーチンインポートジョブすべて（停止またはキャンセルされたジョブを含む）を表示します。 結果は1行以上です。 
 
     ```sql
     SHOW ALL ROUTINE LOAD FOR example_db.test1;

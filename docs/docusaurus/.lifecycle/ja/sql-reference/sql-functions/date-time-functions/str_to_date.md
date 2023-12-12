@@ -6,11 +6,11 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定された形式に従って文字列をDATETIME値に変換します。変換に失敗した場合、NULLが返されます。
+指定された形式に従って、文字列をDATETIME値に変換します。変換に失敗した場合、NULLが返されます。
 
-形式は、[date_format](./date_format.md)で説明されているものと一致している必要があります。
+形式は[date_format](./date_format.md)で記述されている形式と一致していなければなりません。
 
-この関数は、[date_format](./date_format.md)の逆の操作を行います。
+この関数は[date_format](./date_format.md)の逆です。
 
 ## 構文
 
@@ -20,15 +20,15 @@ DATETIME STR_TO_DATE(VARCHAR str, VARCHAR format)
 
 ## パラメータ
 
-`str`: 変換したい時刻表現。VARCHAR型である必要があります。
+`str`: 変換したい時間表現。VARCHAR型でなければなりません。
 
-`format`: 値を返すために使用される形式。サポートされている形式については、[date_format](./date_format.md)を参照してください。
+`format`: 値を返すために使用される形式。サポートされている形式については[date_format](./date_format.md)を参照してください。
 
 ## 戻り値
 
 DATETIME型の値を返します。`format`が日付を指定している場合、DATE値が返されます。
 
-`str`または`format`がNULLの場合はNULLが返されます。
+`str`または`format`がNULLの場合、NULLが返されます。
 
 ## 例
 
@@ -54,7 +54,7 @@ MySQL > select str_to_date('2014-12-21 12:34:56', '%Y-%m-%d');
 +--------------------------------------------------------------+
 ```
 
-例3: 入力の「200442 Monday」をDATE値に変換します。
+例3: 入力の"200442 月曜日"をDATE値に変換します。
 
 ```Plain Text
 MySQL > select str_to_date('200442 Monday', '%X%V %W');
@@ -67,4 +67,4 @@ MySQL > select str_to_date('200442 Monday', '%X%V %W');
 
 ## キーワード
 
-STR_TO_DATE, STR, TO, DATE
+STR_TO_DATE,STR,TO,DATE

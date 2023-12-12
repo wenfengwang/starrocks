@@ -1,12 +1,12 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "日本語"
 ---
 
 # to_json
 
 ## 説明
 
-MapまたはStruct値をJSON文字列に変換します。入力値がNULLの場合、NULLが返されます。
+MapまたはStructの値をJSON文字列に変換します。入力値がNULLの場合、NULLが返されます。
 
 他のデータ型の値をキャストしたい場合は、[cast](./cast.md)を参照してください。
 
@@ -20,9 +20,9 @@ to_json(any_value)
 
 ## パラメータ
 
-`any_value`: 変換したいMapまたはStruct式。入力値が無効な場合は、エラーが返されます。MapまたはStruct値の各キーと値のペアの値はNULL可能です。最後の例を参照してください。
+`any_value`: 変換したいMapまたはStructの式。入力値が無効な場合、エラーが返されます。MapまたはStructの値のキーと値のペアごとの値はnullableです。最後の例を参照してください。
 
-## 返り値
+## 戻り値
 
 JSON値を返します。
 

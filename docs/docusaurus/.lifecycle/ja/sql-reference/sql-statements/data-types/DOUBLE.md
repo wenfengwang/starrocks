@@ -2,10 +2,10 @@
 displayed_sidebar: "Japanese"
 ---
 
-# DOUBLE
+# DOUBLE（ダブル）
 
-## Description
+## 説明
 
-DOUBLE
+DOUBLE（ダブル）
 
-8バイト浮動小数点数
+8バイトの浮動小数点数

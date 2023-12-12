@@ -2,95 +2,89 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ストリームロードトランザクションインターフェースを使用したデータの読み込み
+# Stream Loadトランザクションインタフェースを使用してデータをロードする
 
 import InsertPrivNote from '../assets/commonMarkdown/insertPrivNote.md'
 
-v2.4以降、StarRocksでは、Apache Flink® や Apache Kafka® などの外部システムからデータをロードするトランザクションを実装するためのストリームロードトランザクションインターフェースが提供されます。ストリームロードトランザクションインターフェースを使用すると、高度に同時動作するストリームロードのパフォーマンスが向上します。
+v2.4以降、StarRocksは、Stream Loadトランザクションインタフェースを提供し、Apache Flink®やApache Kafka®などの外部システムからデータをロードするためのトランザクションの実装に2フェーズコミット（2PC）を行います。Stream Loadトランザクションインタフェースは、高度な同時ストリームロードのパフォーマンスを向上させるのに役立ちます。
 
-本トピックでは、ストリームロードトランザクションインターフェースの説明と、このインターフェースを使用してStarRocksにデータをロードする方法について説明します。
+このトピックでは、Stream Loadトランザクションインタフェースと、このインタフェースを使用してStarRocksにデータをロードする方法について説明します。
 
 <InsertPrivNote />
 
 ## 説明
 
-ストリームロードトランザクションインターフェースは、HTTPプロトコル互換のツールや言語を使用してAPI操作を呼び出すことをサポートします。本トピックでは、このインターフェースの使用方法を説明する例として、curlを使用します。このインターフェースにはトランザクション管理、データ書き込み、トランザクション事前コミット、トランザクションの重複排除、トランザクションタイムアウト管理など、さまざまな機能が提供されます。
+Stream Loadトランザクションインタフェースは、HTTPプロトコル互換のツールや言語を使用してAPI操作を呼び出すことをサポートします。このトピックでは、このインタフェースの使用方法を説明するために、curlを例にとって説明します。このインタフェースは、トランザクション管理、データ書き込み、トランザクションの事前コミット、トランザクションの重複排除、トランザクションのタイムアウト管理などのさまざまな機能を提供します。
 
 ### トランザクション管理
 
-ストリームロードトランザクションインターフェースは、トランザクションを管理するために使用される以下のAPI操作を提供します:
+Stream Loadトランザクションインタフェースでは、次のAPI操作が提供され、これらを使用してトランザクションを管理します。
 
-- `/api/transaction/begin`: 新しいトランザクションを開始します。
+- `/api/transaction/begin`：新しいトランザクションを開始します。
 
-- `/api/transaction/commit`: 現在のトランザクションをコミットしてデータ変更を永続化します。
+- `/api/transaction/commit`：現在のトランザクションをコミットしてデータ変更を永続化します。
 
-- `/api/transaction/rollback`: 現在のトランザクションをロールバックしてデータ変更を中止します。
+- `/api/transaction/rollback`：現在のトランザクションをロールバックしてデータ変更を中止します。
 
-### トランザクション事前コミット
+### トランザクションの事前コミット
 
-ストリームロードトランザクションインターフェースは、 `/api/transaction/prepare` 操作を提供し、現在のトランザクションを事前にコミットしてデータ変更を一時的に永続化します。トランザクションが事前にコミットされた後は、トランザクションをコミットまたはロールバックすることができます。StarRocksクラスタがトランザクションを事前にコミットした後に停止した場合でも、StarRocksクラスタが正常に復旧した後にトランザクションをコミットすることができます。
+Stream Loadトランザクションインタフェースでは、`/api/transaction/prepare`操作が提供され、これを使用して現在のトランザクションを事前コミットし、データ変更を一時的に永続化します。トランザクションを事前コミットした後、トランザクションを続行するか、ロールバックすることができます。StarRocksクラスターがトランザクションを事前コミットした後に障害が発生した場合、StarRocksクラスターが正常に復元された後、トランザクションをコミットすることができます。
 
 > **注意**
 >
-> トランザクションが事前にコミットされた後は、トランザクションを使用してデータの書き込みを継続しないでください。トランザクションを使用してデータの書き込みを継続すると、書き込みリクエストがエラーを返します。
+> トランザクションが事前コミットされた後は、トランザクションを使用してデータの書き込みを続けないでください。トランザクションを使用してデータを書き続けると、書き込みリクエストがエラーを返します。
 
-### データ書き込み
+### データの書き込み
 
-ストリームロードトランザクションインターフェースは、 `/api/transaction/load` 操作を提供し、データの書き込みに使用します。この操作は、1つのトランザクションで複数回呼び出すことができます。
+Stream Loadトランザクションインタフェースでは、`/api/transaction/load`操作が提供され、これを使用してデータを書き込むことができます。1つのトランザクション内で複数回この操作を呼び出すことができます。
 
 ### トランザクションの重複排除
 
-ストリームロードトランザクションインターフェースには、StarRocksのラベリングメカニズムを引き継いでいます。各トランザクションに固有のラベルをバインドして、トランザクションの重複排除を実現できます。
+Stream Loadトランザクションインタフェースは、StarRocksのラベリングメカニズムを引き継ぐことができます。各トランザクションにユニークなラベルをバインドし、トランザクションのために最大1回の保証を実現できます。
 
-### トランザクションタイムアウト管理
+### トランザクションのタイムアウト管理
 
-各FEの設定ファイルで `stream_load_default_timeout_second` パラメータを使用して、そのFEのデフォルトトランザクションタイムアウト期間を指定できます。
+各FEの設定ファイルで`stream_load_default_timeout_second`パラメータを使用して、そのFEのデフォルトのトランザクションタイムアウト期間を指定できます。
 
-トランザクションを作成する際に、HTTPリクエストヘッダの `timeout` フィールドを使用して、トランザクションのタイムアウト期間を指定できます。
+トランザクションを作成する際、HTTPリクエストヘッダーの`timeout`フィールドを使用して、トランザクションのタイムアウト期間を指定できます。
 
-トランザクションを作成する際に、HTTPリクエストヘッダの `idle_transaction_timeout` フィールドを使用して、トランザクションがアイドル状態に留まることができるタイムアウト期間を指定できます。指定されたタイムアウト期間内にデータが書き込まれない場合、トランザクションは自動的にロールバックされます。
+トランザクションを作成する際、HTTPリクエストヘッダーの`idle_transaction_timeout`フィールドを使用して、トランザクションがアイドル状態で滞在できるタイムアウト期間を指定できます。タイムアウト期間内にデータが書き込まれない場合、トランザクションは自動的にロールバックされます。
 
-## メリット
+## ベネフィット
 
-ストリームロードトランザクションインターフェースには、次のメリットがあります:
+Stream Loadトランザクションインタフェースは、以下のベネフィットをもたらします。
 
-- **正確に一度** の意味論
+- **正確に1回だけのセマンティクス**
 
-  トランザクションは、事前コミットとコミットの2つの段階に分割され、システム間でデータを簡単にロードできます。例えば、このインターフェースを使用すると、Flinkからデータをロードする際に正確に一度の意味論を保証することができます。
+  トランザクションは事前コミットとコミットの2つのフェーズに分かれており、システム全体でデータを簡単にロードすることができます。たとえば、このインタフェースを使用すると、Flinkからのデータロードに対して正確に1回だけのセマンティクスを保証できます。
 
-- **改善されたロードのパフォーマンス**
+- **ロードのパフォーマンス向上**
 
-  プログラムを使用してロードジョブを実行する場合、ストリームロードトランザクションインターフェースを使用すると、複数のミニバッチのデータを必要に応じて結合し、`/api/transaction/commit` 操作を呼び出して1つのトランザクションで一度にすべて送信することができます。そのため、ロードする必要があるデータバージョンが少なくなり、ロードのパフォーマンスが向上します。
+  プログラムを使用してロードジョブを実行する場合、Stream Loadトランザクションインタフェースを使用すると、複数のミニバッチのデータを必要に応じてマージし、`/api/transaction/commit`操作を呼び出して1つのトランザクション内でまとめて送信することができます。そのため、ロードする必要があるデータバージョンが少なくなり、ロードのパフォーマンスが向上します。
 
 ## 制限
 
-ストリームロードトランザクションインターフェースには、以下の制限があります:
+Stream Loadトランザクションインタフェースには以下の制限があります。
 
-- **単一のデータベース単一のテーブル** トランザクションのみがサポートされています。**複数のデータベース複数のテーブル** トランザクションのサポートは開発中です。
-
-- **1つのクライアントからの同時データ書き込みのみ** がサポートされています。**複数のクライアントからの同時データ書き込み** のサポートは開発中です。
-
-- `/api/transaction/load` 操作は1つのトランザクション内で複数回呼び出すことができます。この場合、呼び出される `/api/transaction/load` 操作のすべてのパラメータ設定は同じでなければなりません。
-
-- ストリームロードトランザクションインターフェースを使用してCSV形式のデータをロードする場合、データファイル内の各データレコードが行区切り記号で終了するようにしてください。
+- **単一データベース単一テーブル**トランザクションのみがサポートされています。**複数データベース複数テーブル**トランザクションのサポートが開発中です。
+- **1つのクライアントからの同時データ書き込み**のみがサポートされています。**複数クライアントからの同時データ書き込み**のサポートが開発中です。
+- `/api/transaction/load`操作は1つのトランザクション内で複数回呼び出すことができます。この場合、呼び出されたすべての`/api/transaction/load`操作に指定されたパラメータ設定は同じである必要があります。
+- Stream Loadトランザクションインタフェースを使用してCSV形式のデータをロードする場合、データファイル内の各データレコードが行区切り記号で終了することを確認してください。
 
 ## 注意事項
 
-- `/api/transaction/begin`、`/api/transaction/load`、または `/api/transaction/prepare` 操作を呼び出した場合にエラーが返されると、トランザクションは失敗し、自動的にロールバックされます。
-
-- 新しいトランザクションを開始するために `/api/transaction/begin` 操作を呼び出す際、ラベルを指定することができます。ラベルを指定しない場合、StarRocksはトランザクションのためにラベルを生成します。なお、その後続する `/api/transaction/load`、`/api/transaction/prepare`、`/api/transaction/commit` 操作は、`/api/transaction/begin` 操作と同じラベルを使用しなければなりません。
-
-- 以前のトランザクションのラベルを使用して新しいトランザクションの開始に `/api/transaction/begin` 操作を呼び出した場合、前のトランザクションは失敗し、ロールバックされます。
-
-- StarRocksがCSV形式のデータでサポートしているデフォルトの列区切り記号と行区切り記号は、`\t` と `\n` です。データファイルがデフォルトの列区切り記号または行区切り記号を使用していない場合は、`"/api/transaction/load"` 操作を呼び出す際に、データファイルで実際に使用されている列区切り記号または行区切り記号を指定するために、`"column_separator: <column_separator>"` または `"row_delimiter: <row_delimiter>"` を使用する必要があります。
+- 呼び出した`/api/transaction/begin`、`/api/transaction/load`、または`/api/transaction/prepare`操作がエラーを返した場合、トランザクションは失敗し、自動的にロールバックされます。
+- 新しいトランザクションを開始するために`/api/transaction/begin`操作を呼び出す際に、ラベルを指定するオプションがあります。ラベルを指定しない場合、StarRocksはトランザクションのためにラベルを生成します。なお、その後の`/api/transaction/load`、`/api/transaction/prepare`、`/api/transaction/commit`操作は、`/api/transaction/begin`操作と同じラベルを使用する必要があります。
+- 前のトランザクションのラベルを使用して新しいトランザクションを開始するために`/api/transaction/begin`操作を呼び出すと、前のトランザクションは失敗し、ロールバックされます。
+- StarRocksがCSV形式のデータをサポートするデフォルトの列区切り記号と行区切り記号は`\t`および`\n`です。データファイルがデフォルトの列区切り記号や行区切り記号を使用していない場合は、`/api/transaction/load`操作を呼び出す際に、データファイルで実際に使用されている列区切り記号や行区切り記号を指定するために`"column_separator: <column_separator>"`または`"row_delimiter: <row_delimiter>"`を使用する必要があります。
 
 ## 基本操作
 
 ### サンプルデータの準備
 
-本トピックでは、CSV形式のデータを使用します。
+このトピックでは、CSV形式のデータを例として使用します。
 
-1. ローカルファイルシステムの `/home/disk1/` パスに、 `example1.csv` という名前のCSVファイルを作成します。ファイルは、ユーザーID、ユーザー名、およびユーザースコアを順番に表す3つの列で構成されています。
+1. ローカルファイルシステムの`/home/disk1/`パスに、`example1.csv`という名前のCSVファイルを作成します。このファイルは、ユーザーID、ユーザー名、およびユーザースコアを順に表す3つの列から構成されています。
 
    ```Plain
    1,Lily,23
@@ -99,7 +93,7 @@ v2.4以降、StarRocksでは、Apache Flink® や Apache Kafka® などの外部
    4,Julia,25
    ```
 
-2. StarRocksデータベース `test_db` で、 `table1` という名前のプライマリキー表を作成します。この表は、 `id`、 `name`、および `score` の3つの列で構成されており、`id` がプライマリキーとなっています。
+2. StarRocksデータベース`test_db`で、`table1`というプライマリキー付きテーブルを作成します。このテーブルは、`id`、`name`、`score`の3つの列で構成されており、`id`がプライマリキーです。
 
    ```SQL
    CREATE TABLE `table1`
@@ -135,11 +129,11 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
 
 > **注意**
 >
-> この例では、トランザクションのラベルとして `streamload_txn_example1_table1` が指定されています。
+> この例では、トランザクションのラベルとして`streamload_txn_example1_table1`が指定されています。
 
-#### 返却結果
+#### 戻り結果
 
-- トランザクションが正常に開始された場合、次の結果が返されます:
+- トランザクションが正常に開始された場合、以下の結果が返されます：
 
   ```Bash
   {
@@ -151,7 +145,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- トランザクションが重複するラベルにバインドされている場合、次の結果が返されます:
+- トランザクションが重複するラベルにバインドされている場合、以下の結果が返されます：
 
   ```Bash
   {
@@ -161,7 +155,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- 重複するラベル以外のエラーが発生した場合、次の結果が返されます:
+- 重複ラベル以外のエラーが発生した場合、以下の結果が返されます：
 
   ```Bash
   {
@@ -184,7 +178,7 @@ curl --location-trusted -u <username>:<password> -H "label:<label_name>" \
 
 > **注意**
 >
-> `/api/transaction/load` 操作を呼び出す際は、 `<file_path>` を使用してロードしたいデータファイルの保存パスを指定する必要があります。
+> `/api/transaction/load`操作を呼び出す際に、`<file_path>`を使用してロードしたいデータファイルの保存パスを指定する必要があります。
 
 #### 例
 
@@ -196,13 +190,13 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
     -H "column_separator: ," \
     -XPUT http://<fe_host>:<fe_http_port>/api/transaction/load
 ```
-> **注記**
+> **注意**
 >
-> この例では、データファイル`example1.csv`で使用される列区切り記号は、StarRocksのデフォルトの列区切り記号（`\t`）ではなく、コンマ（`,`）です。したがって、`/api/transaction/load`操作を呼び出す際には、「`column_separator: <column_separator>`」を使用して、列区切り記号としてコンマ（`,`）を指定する必要があります。
+> この例では、データファイル `example1.csv` で使用されるカラムの区切り文字は、StarRocksのデフォルトのカラム区切り文字 (`\t`) の代わりにカンマ (`,`) が使用されます。そのため、`/api/transaction/load` 操作を呼び出す際には、カラムの区切り文字としてカンマ (`,`) を指定するために `"column_separator: <column_separator>"` を使用する必要があります。
 
-#### 戻り結果
+#### 戻り値
 
-- データ書き込みが成功した場合、次の結果が返されます:
+- データの書き込みが成功した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -218,11 +212,11 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
       "LoadBytes": 10737418067,
       "LoadTimeMs": 418778,
       "StreamLoadPutTimeMs": 68,
-      "ReceivedDataTimeMs": 38964
+      "ReceivedDataTimeMs": 38964,
   }
   ```
 
-- トランザクションが不明と見なされた場合、次の結果が返されます:
+- トランザクションが不明と判断された場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -233,7 +227,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- トランザクションが無効な状態と見なされた場合、次の結果が返されます:
+- トランザクションが無効な状態と見なされた場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -244,7 +238,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- 不明なトランザクションや無効な状態以外のエラーが発生した場合、次の結果が返されます:
+- 不明なトランザクションと無効な状態以外のエラーが発生した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -255,7 +249,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-### トランザクションを事前にコミットする
+### トランザクションの事前コミット
 
 #### 構文
 
@@ -275,9 +269,9 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
     -XPOST http://<fe_host>:<fe_http_port>/api/transaction/prepare
 ```
 
-#### 戻り結果
+#### 戻り値
 
-- 事前コミットが成功した場合、次の結果が返されます:
+- 事前コミットが成功した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -293,12 +287,12 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
       "LoadTimeMs": 418778,
       "StreamLoadPutTimeMs": 68,
       "ReceivedDataTimeMs": 38964,
-      "WriteDataTimeMs": 417851,
+      "WriteDataTimeMs": 417851
       "CommitAndPublishTimeMs": 1393
   }
   ```
 
-- トランザクションが存在しないと見なされた場合、次の結果が返されます:
+- トランザクションが存在しないと見なされた場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -309,18 +303,18 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- 事前コミットがタイムアウトした場合、次の結果が返されます:
+- 事前コミットがタイムアウトした場合は、以下の結果が返されます:
 
   ```Bash
   {
       "TxnId": 1,
       "Label": "streamload_txn_example1_table1",
       "Status": "FAILED",
-      "Message": "commit timeout"
+      "Message": "commit timeout",
   }
   ```
 
-- 存在しないトランザクションや事前コミットのタイムアウト以外のエラーが発生した場合、次の結果が返されます:
+- 存在しないトランザクションと事前コミットのタイムアウト以外のエラーが発生した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -331,7 +325,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-### トランザクションをコミットする
+### トランザクションのコミット
 
 #### 構文
 
@@ -351,9 +345,9 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
     -XPOST http://<fe_host>:<fe_http_port>/api/transaction/commit
 ```
 
-#### 戻り結果
+#### 戻り値
 
-- コミットが成功した場合、次の結果が返されます:
+- コミットが成功した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -369,23 +363,23 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
       "LoadTimeMs": 418778,
       "StreamLoadPutTimeMs": 68,
       "ReceivedDataTimeMs": 38964,
-      "WriteDataTimeMs": 417851,
+      "WriteDataTimeMs": 417851
       "CommitAndPublishTimeMs": 1393
   }
   ```
 
-- トランザクションが既にコミットされている場合、次の結果が返されます:
+- トランザクションが既にコミットされている場合は、以下の結果が返されます:
 
   ```Bash
   {
       "TxnId": 1,
       "Label": "streamload_txn_example1_table1",
       "Status": "OK",
-      "Message": "Transaction already commited"
+      "Message": "Transaction already commited",
   }
   ```
 
-- トランザクションが存在しないと見なされた場合、次の結果が返されます:
+- トランザクションが存在しないと見なされた場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -396,18 +390,18 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- コミットがタイムアウトした場合、次の結果が返されます:
+- コミットがタイムアウトした場合は、以下の結果が返されます:
 
   ```Bash
   {
       "TxnId": 1,
       "Label": "streamload_txn_example1_table1",
       "Status": "FAILED",
-      "Message": "commit timeout"
+      "Message": "commit timeout",
   }
   ```
 
-- データの公開がタイムアウトした場合、次の結果が返されます:
+- データの公開がタイムアウトした場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -419,7 +413,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- 存在しないトランザクションやタイムアウト以外のエラーが発生した場合、次の結果が返されます:
+- 存在しないトランザクションおよびタイムアウト以外のエラーが発生した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -430,7 +424,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-### トランザクションをロールバックする
+### トランザクションのロールバック
 
 #### 構文
 
@@ -450,9 +444,9 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
     -XPOST http://<fe_host>:<fe_http_port>/api/transaction/rollback
 ```
 
-#### 戻り結果
+#### 戻り値
 
-- ロールバックが成功した場合、次の結果が返されます:
+- ロールバックが成功した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -463,7 +457,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- トランザクションが存在しないと見なされた場合、次の結果が返されます:
+- トランザクションが存在しないと見なされた場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -474,7 +468,7 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   }
   ```
 
-- 存在しないトランザクション以外のエラーが発生した場合、次の結果が返されます:
+- 存在しないトランザクション以外のエラーが発生した場合は、以下の結果が返されます:
 
   ```Bash
   {
@@ -486,17 +480,8 @@ curl --location-trusted -u <jack>:<123456> -H "label:streamload_txn_example1_tab
   ```
 
 ## 参照
+```
+For information about the suitable application scenarios and supported data file formats of Stream Load and about how Stream Load works, see [Loading from a local file system via Stream Load](../loading/StreamLoad.md#loading-from-a-local-file-system-via-stream-load).
 
-```
-    + {R}
-      + {R}
-    + {R}
-  + {R}
-```
-
-```
-    + {T}
-      + {T}
-    + {T}
-  + {T}
+For information about the syntax and parameters for creating Stream Load jobs, see [STREAM LOAD](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md).
 ```

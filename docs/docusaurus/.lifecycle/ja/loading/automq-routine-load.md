@@ -1,19 +1,19 @@
-# AutoMQ Kafkaからデータを連続して読み込む
+# AutoMQ Kafkaからデータを連続的にロードする
 
-[AutoMQ for Kafka](https://docs.automq.com/docs/automq-s3kafka/YUzOwI7AgiNIgDk1GJAcu6Uanog)は、クラウド環境向けに再設計されたKafkaのクラウドネイティブバージョンです。
-AutoMQ Kafkaは[オープンソース](https://github.com/AutoMQ/automq-for-kafka)であり、Kafkaプロトコルと完全に互換性があり、クラウドの利点を十分に活用しています。
-自己管理型のApache Kafkaと比較して、AutoMQ Kafkaはクラウドネイティブアーキテクチャを持ち、容量の自動スケーリング、ネットワークトラフィックの自己バランシング、パーティションの瞬時の移動などの機能を提供しています。これらの機能により、ユーザーの総所有コスト（TCO）が大幅に低下します。
+[AutoMQ for Kafka](https://docs.automq.com/docs/automq-s3kafka/YUzOwI7AgiNIgDk1GJAcu6Uanog) は、クラウド環境向けに再設計されたKafkaのクラウドネイティブバージョンです。
+AutoMQ Kafka は [オープンソース](https://github.com/AutoMQ/automq-for-kafka) であり、Kafkaプロトコルと完全な互換性があり、クラウドの恩恵を十分に活用しています。
+セルフマネージドのApache Kafkaと比較して、クラウドネイティブなアーキテクチャを持つAutoMQ Kafkaには、容量の自動スケーリング、ネットワークトラフィックの自己バランシング、秒単位でのパーティションの移動などの機能があります。これらの機能により、ユーザーの総所有コスト（TCO）が大幅に低下します。
 
-本記事では、StarRocks Routine Loadを使用してデータをAutoMQ Kafkaにインポートする方法について説明します。
-Routine Loadの基本原則については、Routine Load Fundamentalsのセクションを参照してください。
+この記事では、StarRocks Routine Loadを使用してデータをAutoMQ Kafkaにインポートする方法について説明します。
+ルーチンロードの基本原則については、「ルーチンロードの基礎」のセクションを参照してください。
 
 ## 環境の準備
 
 ### StarRocksとテストデータの準備
 
-稼働中のStarRocksクラスターがあることを確認してください。デモンストレーション目的で、この記事ではLinuxマシン上にDockerを使用してStarRocksクラスターをインストールするための[デプロイガイド](../quick_start/deploy_with_docker.md)に従います。
+動作しているStarRocksクラスターがあることを確認してください。デモの目的で、この記事ではLinuxマシン上にDockerを使用してStarRocksクラスターをインストールする [展開ガイド](../quick_start/deploy_with_docker.md) に従います。
 
-以下のプライマリキーモデルを持つデータベースとテストテーブルを作成してください：
+プライマリキーモデルを持つデータベースとテストテーブルの作成:
 
 ```sql
 create database automq_db;
@@ -32,22 +32,22 @@ PROPERTIES (
 
 ## AutoMQ Kafkaとテストデータの準備
 
-AutoMQ Kafka環境とテストデータを準備するには、AutoMQ[クイックスタート](https://docs.automq.com/docs/automq-s3kafka/VKpxwOPvciZmjGkHk5hcTz43nde)ガイドに従ってAutoMQ Kafkaクラスターをデプロイしてください。StarRocksが直接AutoMQ Kafkaサーバーに接続できることを確認してください。
+AutoMQ Kafka環境とテストデータを準備するために、AutoMQ [クイックスタート](https://docs.automq.com/docs/automq-s3kafka/VKpxwOPvciZmjGkHk5hcTz43nde) ガイドに従ってAutoMQ Kafkaクラスターを展開します。StarRocksがAutoMQ Kafkaサーバーに直接接続できることを確認してください。
 
-AutoMQ Kafkaで`example_topic`というトピックを素早く作成し、テストJSONデータを書き込むために、以下の手順に従ってください：
+AutoMQ Kafkaで `example_topic` というトピックをすばやく作成して、テストJSONデータを書き込むには、次の手順に従います:
 
 ### トピックの作成
 
-Kafkaのコマンドラインツールを使用してトピックを作成してください。Kafka環境にアクセス権があり、Kafkaサービスが実行されていることを確認してください。
-以下はトピックを作成するためのコマンドです：
+Kafkaのコマンドラインツールを使用してトピックを作成してください。Kafka環境にアクセスでき、Kafkaサービスが実行されていることを確認してください。
+以下はトピックを作成するためのコマンドです:
 
 ```shell
 ./kafka-topics.sh --create --topic example_topic --bootstrap-server 10.0.96.4:9092 --partitions 1 --replication-factor 1
 ```
 
-> 注：`topic`と`bootstrap-server`をKafkaサーバーアドレスに置き換えてください。
+> 注意: `topic` と `bootstrap-server` をKafkaサーバーアドレスに置き換えてください。
 
-トピック作成の結果をチェックするには、次のコマンドを使用してください：
+トピック作成の結果を確認するには、次のコマンドを使用します:
 
 ```shell
 ./kafka-topics.sh --describe example_topic --bootstrap-server 10.0.96.4:9092
@@ -55,7 +55,7 @@ Kafkaのコマンドラインツールを使用してトピックを作成して
 
 ### テストデータの生成
 
-シンプルなJSON形式のテストデータを生成してください
+シンプルなJSON形式のテストデータを生成します
 
 ```json
 {
@@ -68,15 +68,15 @@ Kafkaのコマンドラインツールを使用してトピックを作成して
 
 ### テストデータの書き込み
 
-Kafkaのコマンドラインツールまたはプログラミング方法を使用して、`example_topic`にテストデータを書き込んでください。以下はコマンドラインツールを使用した例です：
+コマンドラインツールまたはプログラミング方法を使用して、 `example_topic` にテストデータを書き込みます。以下はコマンドラインツールを使用した例です:
 
 ```shell
 echo '{"id": 1, "name": "testuser", "timestamp": "2023-11-10T12:00:00", "status": "active"}' | sh kafka-console-producer.sh --broker-list 10.0.96.4:9092 --topic example_topic
 ```
 
-> 注：`topic`と`bootstrap-server`をKafkaサーバーアドレスに置き換えてください。
+> 注意: `topic` と `bootstrap-server` をKafkaサーバーアドレスに置き換えてください。
 
-最近書き込まれたトピックデータを表示するには、以下のコマンドを使用してください：
+最近書き込まれたトピックデータを表示するには、次のコマンドを使用します:
 
 ```shell
 sh kafka-console-consumer.sh --bootstrap-server 10.0.96.4:9092 --topic example_topic --from-beginning
@@ -84,7 +84,7 @@ sh kafka-console-consumer.sh --bootstrap-server 10.0.96.4:9092 --topic example_t
 
 ## ルーチンロードタスクの作成
 
-StarRocksコマンドラインで、AutoMQ Kafkaトピックからデータを連続してインポートするために、ルーチンロードタスクを作成してください：
+StarRocksコマンドラインで、AutoMQ Kafkaトピックからデータを連続的にインポートするためのルーチンロードタスクを作成します:
 
 ```sql
 CREATE ROUTINE LOAD automq_example_load ON users
@@ -104,28 +104,28 @@ FROM KAFKA
 );
 ```
 
-> 注：`kafka_broker_list`をKafkaサーバーアドレスに置き換えてください。
+> 注意: `kafka_broker_list` をKafkaサーバーアドレスに置き換えてください。
 
 ### パラメータの説明
 
-#### データの形式
+#### データフォーマット
 
-PROPERTIES句の"format" = "json"でデータ形式をJSONとして指定してください。
+PROPERTIES句の "format" = "json" でデータ形式をJSONとして指定します。
 
 #### データの抽出と変換
 
-ソースデータとターゲットテーブルの間のマッピングおよび変換関係を指定するには、COLUMNSおよびjsonpathsパラメータを構成してください。COLUMNS内の列名は、ターゲットテーブルの列名に対応し、その順序はソースデータの列の順序に対応します。jsonpathsパラメータは、JSONデータから必要なフィールドデータを抽出するために使用され、新しく生成されたCSVデータに類似します。次に、COLUMNSパラメータは、jsonpaths内のフィールドに一時的に名前を付けます。データ変換の詳細については、[Import中のデータ変換](./Etl_in_loading.md)を参照してください。
-> 注：各JSONオブジェクトごとに1行に1つのキー名と数量（順序は必要ありません）が対応し、これがターゲットテーブルの列に対応している場合は、COLUMNSを構成する必要はありません。
+ソースデータとターゲットテーブルのマッピングおよび変換関係を指定するには、COLUMNSおよびjsonpathsパラメータを設定します。 COLUMNSの列名は、ターゲットテーブルの列名に対応し、その順序はソースデータの列の順序に対応します。 jsonpathsパラメータは、JSONデータから必要なフィールドデータを抽出するために使用され、新しく生成されたCSVデータと同様です。次に、COLUMNSパラメータは、jsonpaths内のフィールドに一時的に名前を付けます。 データ変換の詳細については、[インポート時のデータ変換](./Etl_in_loading.md) を参照してください。
+> 注意: 各行ごとのJSONオブジェクトに、ターゲットテーブルの列に対応するキー名と数量（順序は必要ありません）がある場合は、COLUMNSを構成する必要はありません。
 
 ## データインポートの検証
 
-まず、Routine Loadのインポートジョブを確認し、Routine Loadのインポートタスクのステータスが実行中であることを確認してください。
+まず、Routine Loadのインポートジョブをチェックし、Routine Loadのインポートタスクのステータスが実行中であることを確認します。
 
 ```sql
 show routine load\G;
 ```
 
-その後、StarRocksデータベース内の対応するテーブルをクエリし、データが正常にインポートされていることを確認できます。
+次に、StarRocksデータベースで対応するテーブルをクエリし、データが正常にインポートされたことを確認できます。
 
 ```sql
 StarRocks > select * from users;

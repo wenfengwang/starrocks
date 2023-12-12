@@ -6,11 +6,11 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-複数の配列を連結して、すべての配列内の要素を含む配列を生成します。
+複数の配列を連結して、それらの配列内の要素をすべて含む配列を作成します。
 
-連結する配列の要素は同じタイプでも異なるタイプでも構いません。ただし、同じタイプの要素を使用することを推奨します。
+連結する配列の要素は、同じ型であることも異なる型であることもできます。ただし、要素は同じ型であることをお勧めします。
 
-ヌル値は通常の値として処理されます。
+NULL は通常の値として処理されます。
 
 ## 構文
 
@@ -20,15 +20,15 @@ array_concat(input0, input1, ...)
 
 ## パラメータ
 
-`input`: 連結したい1つ以上の配列を指定します。`(input0, input1, ...)`の形式で配列を指定します。この関数は、次のタイプの配列要素をサポートしています：BOOLEAN、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、VARCHAR、DECIMALV2、DATETIME、DATE、およびJSON。**JSONは2.5からサポートされています。**
+`input`: 連結したい1つ以上の配列。`(input0, input1, ...)` の形式で配列を指定します。この関数は、次の種類の配列要素をサポートしています: BOOLEAN、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、VARCHAR、DECIMALV2、DATETIME、DATE、および JSON。**JSON は 2.5 からサポートされています。**
 
 ## 戻り値
 
-`input`パラメータで指定された配列内のすべての要素を含む配列を返します。返される配列の要素は、入力配列の要素と同じデータ型です。さらに、返される配列の要素は、入力配列およびその要素の順序に従います。
+`input` パラメータで指定された配列内のすべての要素を含む配列を返します。返される配列の要素は、入力配列の要素と同じデータ型です。さらに、返される配列の要素は、入力配列とその要素の順序に従います。
 
 ## 例
 
-例1: 数値要素を含む配列を連結します。
+例 1: 数値要素を含む配列を連結します。
 
 ```plaintext
 select array_concat([57.73,97.32,128.55,null,324.2], [3], [5]) as res;
@@ -44,7 +44,7 @@ select array_concat([57.73,97.32,128.55,null,324.2], [3], [5]) as res;
 +-------------------------------------+
 ```
 
-例2: 文字列要素を含む配列を連結します。
+例 2: 文字列要素を含む配列を連結します。
 
 ```plaintext
 select array_concat(["sql","storage","execute"], ["Query"], ["Vectorized", "cbo"]);
@@ -60,7 +60,7 @@ select array_concat(["sql","storage","execute"], ["Query"], ["Vectorized", "cbo"
 +----------------------------------------------------------------------------+
 ```
 
-例3: 異なるタイプの2つの配列を連結します。
+例 3: 異なる型の2つの配列を連結します。
 
 ```plaintext
 select array_concat([57,65], ["pear","apple"]);
@@ -71,7 +71,7 @@ select array_concat([57,65], ["pear","apple"]);
 +-------------------------------------------+
 ```
 
-例4: ヌル値を通常の値として処理します。
+例 4: NULL を通常の値として処理します。
 
 ```plaintext
 select array_concat(["sql",null], [null], ["Vectorized", null]);

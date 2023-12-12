@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-グループ化後のビットマップの交差を計算するために使用される集約関数。ユーザーの保持率のような一般的な使用シナリオがあります。
+集約関数。グループ化後のビットマップの積集合を計算するために使用されます。ユーザーの継続率など、一般的な使用シナリオがあります。
 
 ## 構文
 
@@ -14,7 +14,7 @@ displayed_sidebar: "Japanese"
 BITMAP BITMAP_INTERSECT(BITMAP value)
 ```
 
-ビットマップ値のセットを入力し、そのビットマップ値のセットの交わりを見つけて結果を返します。
+ビットマップの値の集合を入力し、この集合のビットマップの積集合を見つけて結果を返します。
 
 ## 例
 
@@ -26,7 +26,7 @@ Columns: tag varchar, date datetime, user_id bitmap bitmap_union
 ```
 
 ```SQL
--- 異なるタグのユーザーの保持を計算する。 
+-- 異なるタグで今日と昨日のユーザーの継続を計算します。
 select tag, bitmap_intersect(user_id)
 from (
     select tag, date, bitmap_union(user_id) user_id
@@ -36,10 +36,10 @@ from (
 group by tag;
 ```
 
-bitmap_to_string関数を使用して、交差部分の特定のデータを取得する方法。
+bitmap_to_string 関数と組み合わせて、積集合の特定のデータを取得します。
 
 ```SQL
--- 異なるタグのユーザーの保持を知る。 
+-- 異なるタグで今日と昨日のユーザーの継続を把握します。
 select tag, bitmap_to_string(bitmap_intersect(user_id))
 from (
     select tag, date, bitmap_union(user_id) user_id

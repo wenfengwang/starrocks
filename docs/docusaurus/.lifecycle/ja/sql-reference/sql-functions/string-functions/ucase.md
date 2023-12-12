@@ -4,17 +4,17 @@ displayed_sidebar: "Japanese"
 
 # ucase
 
-## 説明
+## Description
 
-この関数は文字列を大文字に変換します。これは、関数upperに類似しています。
+この関数は文字列を大文字に変換します。これは関数upperに類似しています。
 
-## 構文
+## Syntax
 
 ```Haskell
 VARCHAR ucase(VARCHAR str)
 ```
 
-## 例
+## Examples
 
 ```Plain Text
 mysql> SELECT ucase("AbC123");
@@ -25,6 +25,6 @@ mysql> SELECT ucase("AbC123");
 +-----------------+
 ```
 
-## キーワード
+## keyword
 
 UCASE

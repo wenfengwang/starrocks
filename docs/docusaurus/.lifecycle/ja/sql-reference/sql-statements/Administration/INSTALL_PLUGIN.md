@@ -6,45 +6,45 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-この文は、プラグインをインストールするために使用されます。
+このステートメントは、プラグインをインストールするために使用されます。
 
-構文：
+構文:
 
 ```sql
-INSTALL PLUGIN FROM [ソース] [PROPERTIES("key"="value", ...)]
+INSTALL PLUGIN FROM [ソース] [PROPERTIES ("key"="value", ...)]
 ```
 
-3種類のソースがサポートされています：
+3つの種類のソースがサポートされています:
 
 ```plain text
-1. zipファイルを指す絶対パス
-2. プラグインディレクトリを指す絶対パス
-3. zipファイルを指すhttpまたはhttpsのダウンロードリンク
+1. zipファイルへの絶対パス
+2. プラグインディレクトリへの絶対パス
+3. zipファイルへのhttpまたはhttpsのダウンロードリンク
 ```
 
-PROPERTIESは、zipファイルのmd5sum値の設定など、プラグインのいくつかの設定をサポートしています。
+PROPERTIESは、プラグインのいくつかの設定を行うことができます。例えば、zipファイルのmd5sum値の設定などがあります。
 
 ## 例
 
-1. ローカルのzipファイルからプラグインをインストールする：
+1. ローカルのzipファイルからプラグインをインストールする場合:
 
     ```sql
     INSTALL PLUGIN FROM "/home/users/starrocks/auditdemo.zip";
     ```
 
-2. ローカル内のパスからプラグインをインストールする：
+2. ローカルのinpathからプラグインをインストールする場合:
 
     ```sql
     INSTALL PLUGIN FROM "/home/users/starrocks/auditdemo/";
     ```
 
-3. プラグインをダウンロードしてインストールする：
+3. プラグインをダウンロードしてインストールする場合:
 
     ```sql
     INSTALL PLUGIN FROM "http://mywebsite.com/plugin.zip";
     ```
 
-4. プラグインをダウンロードしてインストールします。同時に、zipファイルのmd5sum値を設定します：
+4. プラグインをダウンロードしてインストールします。同時に、zipファイルのmd5sum値を設定します:
 
     ```sql
     INSTALL PLUGIN FROM "http://mywebsite.com/plugin.zip" PROPERTIES("md5sum" = "73877f6029216f4314d712086a146570");

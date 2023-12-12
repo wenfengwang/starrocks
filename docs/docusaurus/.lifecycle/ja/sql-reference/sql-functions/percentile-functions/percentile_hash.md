@@ -3,11 +3,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# パーセンタイルハッシュ
+# percentile_hash（パーセンタイルハッシュ）
 
 ## 説明
 
-PERCENTILE値としてDOUBLE値を構築します。
+DOUBLE 値を PERCENTILE 値として構築します。
 
 ## 構文
 
@@ -15,13 +15,13 @@ PERCENTILE値としてDOUBLE値を構築します。
 PERCENTILE_HASH(x);
 ```
 
-## パラメータ
+## パラメーター
 
-`x`: サポートされているデータ型はDOUBLEです。
+`x`: サポートされているデータ型は DOUBLE です。
 
 ## 戻り値
 
-PERCENTILE値を返します。
+PERCENTILE 値を返します。
 
 ## 例
 
@@ -32,5 +32,5 @@ mysql> select percentile_approx_raw(percentile_hash(234.234), 0.99);
 +-------------------------------------------------------+
 |                                    234.23399353027344 |
 +-------------------------------------------------------+
-1 row in set (0.00 sec)
+1 行をセット (0.00 秒)
 ```

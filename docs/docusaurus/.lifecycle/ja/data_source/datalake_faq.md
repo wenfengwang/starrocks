@@ -4,13 +4,13 @@ displayed_sidebar: "Japanese"
 
 # データレイク関連FAQ
 
-このトピックでは、データレイクに関するよくある質問（FAQ）について説明し、これらの問題の解決策を提供します。このトピックで言及されているいくつかのメトリクスは、SQLクエリのプロファイルからのみ取得できます。SQLクエリのプロファイルを取得するには、`set enable_profile=true`を指定する必要があります。
+このトピックでは、データレイクに関するよくある質問（FAQ）について説明し、これらの問題への解決策を提供します。このトピックで言及されている一部のメトリクスは、SQLクエリのプロファイルからのみ取得できます。SQLクエリのプロファイルを取得するには、 `set enable_profile=true` を指定する必要があります。
 
-## 遅いHDFSノード
+## HDFSノードの遅延
 
 ### 問題の説明
 
-HDFSクラスタに保存されているデータファイルにアクセスすると、実行したSQLクエリのプロファイルから`__MAX_OF_FSIOTime`および`__MIN_OF_FSIOTime`メトリクスの値に大きな差がある場合、HDFSノードが遅いことを示しています。以下は、HDFSノードの遅延の問題を示す典型的なプロファイルの例です：
+HDFSクラスタに保存されているデータファイルにアクセスする際、実行したSQLクエリのプロファイルから`__MAX_OF_FSIOTime`と`__MIN_OF_FSIOTime`の値の差が大きい場合、それはHDFSノードの遅延を示しています。以下は、HDFSノードの遅延の問題を示す典型的なプロファイルの例です：
 
 ```plaintext
  - InputStream: 0
@@ -36,10 +36,10 @@ HDFSクラスタに保存されているデータファイルにアクセスす�
 
 ### 解決策
 
-この問題を解決するために、以下のいずれかの解決策を利用できます：
+この問題を解決するために、以下のいずれかの解決策を使用できます：
 
-- **[推奨]** [データキャッシュ](../data_source/data_cache.md)機能を有効にし、外部ストレージシステムからデータを自動的にStarRocksクラスタのBEにキャッシュすることで、遅いHDFSノードがクエリに与える影響を取り除きます。
-- [Hedged Read](https://hadoop.apache.org/docs/r2.8.3/hadoop-project-dist/hadoop-common/release/2.4.0/RELEASENOTES.2.4.0.html)機能を有効にします。この機能を有効にすると、ブロックの読み取りが遅い場合、StarRocksはオリジナルの読み取りと並行して別のブロックレプリカを読み取る新しい読み取りを開始します。2つの読み取りのうちどちらかが返ってきた時点で、もう一方の読み取りはキャンセルされます。**Hedged Read機能は読み取りを加速するのに役立ちますが、Java仮想マシン（JVM）のヒープメモリ消費量を大幅に増加させます。そのため、物理マシンのメモリ容量が小さい場合は、Hedged Read機能を有効にしないことをお勧めします。**
+- **[推奨]** [データキャッシュ](../data_source/data_cache.md)機能を有効にする。これにより、外部ストレージシステムからデータを自動的にStarRocksクラスタのBEにキャッシュし、遅延しているHDFSノードのクエリへの影響を排除します。
+- [Hedged Read](https://hadoop.apache.org/docs/r2.8.3/hadoop-project-dist/hadoop-common/release/2.4.0/RELEASENOTES.2.4.0.html)機能を有効にする。この機能を有効にすると、特定のブロックからの読み出しが遅い場合、StarRocksは他のブロックレプリカに対して並行して新しい読み出しを開始し、元の読み出しと並行して実行します。2つの読み出しがいずれか1つが返ってくると、もう1つの読み出しはキャンセルされます。**Hedged Read機能は読み出しを加速するのに役立ちますが、Java仮想マシン（JVM）のヒープメモリ消費量も大幅に増加させます。そのため、物理マシンのメモリ容量が小さい場合は、Hedged Read機能を有効にしないことをお勧めします。**
 
 #### [推奨] データキャッシュ
 
@@ -47,18 +47,18 @@ HDFSクラスタに保存されているデータファイルにアクセスす�
 
 #### Hedged Read
 
-HDFSクラスタのBE構成ファイル`be.conf`で以下のパラメータ（v3.0以降でサポート）を使用して、HDFSクラスタでHedged Read機能を有効にし、構成できます。
+HDFSクラスタでHedged Read機能を有効にして設定するために、BE構成ファイル`be.conf`で以下のパラメータ（v3.0以降でサポート）を使用してください。
 
-| パラメータ                               | デフォルト値 | 説明                                                                    |
-| ---------------------------------------- | ------------- | ----------------------------------------------------------------------- |
-| hdfs_client_enable_hedged_read           | false         | Hedged Read機能を有効にするかどうかを指定します。                     |
-| hdfs_client_hedged_read_threadpool_size  | 128           | HDFSクライアントでHedged Readスレッドプールのサイズを指定します。スレッドプールサイズは、HDFSクライアントで実行されるHedged Readのスレッド数を制限します。このパラメータは、HDFSクラスタの`hdfs-site.xml`ファイルの`dfs.client.hedged.read.threadpool.size`パラメータに相当します。 |
-| hdfs_client_hedged_read_threshold_millis | 2500          | Hedged Readを開始するまでの待機時間（ミリ秒）を指定します。たとえば、このパラメータを`30`に設定した場合、ブロックからの読み取りが30ミリ秒以内に返ってこない場合、HDFSクライアントはすぐに別のブロックレプリカに対してHedged Readを開始します。このパラメータは、HDFSクラスタの`hdfs-site.xml`ファイルの`dfs.client.hedged.read.threshold.millis`パラメータに相当します。 |
+| パラメータ                                | デフォルト値 | 説明                                                         |
+| ---------------------------------------- | ------------- | ---------------------------------------------------------- |
+| hdfs_client_enable_hedged_read           | false         | Hedged Read機能を有効にするかどうかを指定します。                                |
+| hdfs_client_hedged_read_threadpool_size  | 128           | HDFSクライアントでHedged Readスレッドプールのサイズを指定します。スレッドプールのサイズは、HDFSクライアントで実行するHedged Readのスレッド数を制限します。このパラメータは、HDFSクラスタの`hdfs-site.xml`ファイルの`dfs.client.hedged.read.threadpool.size`パラメータに相当します。 |
+| hdfs_client_hedged_read_threshold_millis | 2500          | Hedged Readを開始するまでのミリ秒数を指定します。たとえば、このパラメータを`30`に設定した場合、特定のブロックからの読み出しが30ミリ秒以内に返ってこない場合、HDFSクライアントは別のブロックレプリカに対してHedged Readを直ちに開始します。このパラメータは、HDFSクラスタの`hdfs-site.xml`ファイルの`dfs.client.hedged.read.threshold.millis`パラメータに相当します。 |
 
 クエリプロファイルの以下のメトリクスのいずれかの値が`0`を超える場合、Hedged Read機能が有効になっています。
 
-| メトリクス                      | 説明                                           |
-| ------------------------------ | ---------------------------------------------- |
-| TotalHedgedReadOps             | 開始されたHedged Readの数。                        |
-| TotalHedgedReadOpsInCurThread  | Hedged Readスレッドプールが`hdfs_client_hedged_read_threadpool_size`パラメータで指定された最大サイズに達したため、StarRocksが現在のスレッドでHedged Readを開始する必要がある場合の回数。 |
-| TotalHedgedReadOpsWin          | Hedged Readが元の読み取りを打ち負かした回数。                 |
+| メトリクス                         | 説明                                                   |
+| ------------------------------ | ------------------------------------------------------ |
+| TotalHedgedReadOps             | 開始されたHedged Readの数。                               |
+| TotalHedgedReadOpsInCurThread  | 現在のスレッドでHedged Readを新しいスレッドではなく開始する回数。これは`hdfs_client_hedged_read_threadpool_size`パラメータによって指定された最大サイズに達した場合に行われます。 |
+| TotalHedgedReadOpsWin          | Hedged Readが元の読み出しを上回った回数。                  |

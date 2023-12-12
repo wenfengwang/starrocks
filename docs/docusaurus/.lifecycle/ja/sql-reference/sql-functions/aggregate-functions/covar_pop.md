@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-2つの式の母集団共分散を返します。この関数はv2.5.10からサポートされています。ウィンドウ関数としても使用することができます。
+2つの式の母集団共分散を返します。この関数はv2.5.10からサポートされています。ウィンドウ関数としても使用できます。
 
 ## 構文
 
@@ -16,13 +16,13 @@ COVAR_POP(expr1, expr2)
 
 ## パラメータ
 
-`expr1` と `expr2` は、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
+`expr1`と`expr2`は、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
 
-`expr1` と `expr2` がテーブルの列である場合、この関数はこれら2つの列の母集団共分散を計算します。
+もし`expr1`と`expr2`がテーブルの列である場合、この関数はこれらの2つの列の母集団共分散を計算します。
 
 ## 戻り値
 
-DOUBLE値を返します。以下はその式であり、ここで `n` はテーブルの行数を表します：
+DOUBLE値を返します。以下は式です。ここで`n`はテーブルの行数を表します:
 
 ![covar_pop formula](../../../assets/covar_pop_formula.png)
 
@@ -32,13 +32,13 @@ $$-->
 
 ## 使用上の注意
 
-- 2つの列が非NULL値である場合にのみデータ行がカウントされます。それ以外の場合、このデータ行は結果から除外されます。
+- 2つの列が非NULL値である行のみがカウントされます。それ以外の場合は、そのデータ行は結果から削除されます。
 
-- 入力がいずれか1つでもNULLである場合、NULLが返されます。
+- どちらかの入力がNULLの場合、NULLが返されます。
 
 ## 例
 
-テーブル `agg` が次のデータを持っているとします：
+`agg`テーブルに以下のデータがあるとします:
 
 ```plaintext
 mysql> select * from agg;
@@ -53,7 +53,7 @@ mysql> select * from agg;
 +------+-------+-------+
 ```
 
-`k` と `v` 列の母集団共分散を計算します：
+`k`列と`v`列の母集団共分散を計算します:
 
 ```plaintext
 mysql> select no,COVAR_POP(k,v) from agg group by no;

@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# cast
+# cast（キャスト）
 
 ## 説明
 
-JSON型とSQL型の間で値を変換します。
+JSONタイプとSQLタイプの間の値を変換します。
 
 ## 構文
 
@@ -24,15 +24,15 @@ cast(sql_expr AS JSON)
 
 ## パラメータ
 
-- `json_expr`: JSON値をSQL値に変換したい式。
+- `json_expr`：JSON値をSQL値に変換する式。
+  
+- `sql_data_type`：JSON値を変換するSQLデータ型。STRING、VARCHAR、CHAR、BOOLEAN、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、DOUBLE、およびFLOATデータ型のみがサポートされています。
 
-- `sql_data_type`: JSON値を変換したいSQLデータ型。STRING、VARCHAR、CHAR、BOOLEAN、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、DOUBLE、およびFLOATのデータ型のみがサポートされています。
-
-- `sql_expr`: SQL値をJSON値に変換したい式。このパラメータは、`sql_data_type`パラメータでサポートされているすべてのSQLデータ型をサポートしています。
+- `sql_expr`：JSON値をSQL値に変換する式。このパラメータは、`sql_data_type`パラメータでサポートされているすべてのSQLデータ型をサポートしています。
 
 ## 戻り値
 
-- `cast(json_expr AS sql_data_type)`構文を使用すると、キャスト関数は`sql_data_type`パラメータで指定されたSQLデータ型の値を返します。
+- `cast(json_expr AS sql_data_type)`構文を使用すると、キャスト関数は、`sql_data_type`パラメータで指定されたSQLデータ型の値を返します。
 
 - `cast(sql_expr AS JSON)`構文を使用すると、キャスト関数はJSON値を返します。
 
@@ -40,25 +40,25 @@ cast(sql_expr AS JSON)
 
 - SQLからJSONへの変換
 
-  - JSONがサポートする精度を超えるSQL値の場合、算術オーバーフローを防ぐために、キャスト関数は`NULL`を返します。
+  - SQL値がJSONでサポートされている精度を超える場合、算術オーバーフローを防ぐため、キャスト関数は`NULL`を返します。
 
-  - SQL値が`NULL`の場合、キャスト関数はSQL値`NULL`をJSON値`NULL`に変換しません。返り値はやはりSQL値`NULL`です。
+  - SQL値が`NULL`の場合、キャスト関数はSQL値`NULL`をJSON値`NULL`に変換しません。返り値は引き続きSQL値`NULL`です。
 
 - JSONからSQLへの変換
 
-  - キャスト関数は、互換性のあるJSONおよびSQLデータ型間の変換のみをサポートしています。たとえば、JSON文字列をSQL文字列に変換できます。
+  - キャスト関数は、互換性のあるJSONデータ型とSQLデータ型間のみの変換をサポートしています。たとえば、JSON文字列をSQL文字列に変換することができます。
 
-  - キャスト関数は、互換性のないJSONおよびSQLデータ型間の変換をサポートしていません。たとえば、JSON数値をSQL文字列に変換すると、関数は`NULL`を返します。
+  - キャスト関数は、互換性のないJSONデータ型とSQLデータ型間の変換をサポートしていません。たとえば、JSON数値をSQL文字列に変換すると、関数は`NULL`を返します。
 
-  - 算術オーバーフローが発生した場合、キャスト関数はSQL値`NULL`を返します。
+  - 算術オーバーフローが発生すると、キャスト関数はSQL値`NULL`を返します。
 
   - JSON値`NULL`をSQL値に変換すると、関数はSQL値`NULL`を返します。
 
-  - JSON文字列をVARCHAR値に変換すると、関数は二重引用符(")で囲まれていないVARCHAR値を返します。
+  - JSON文字列をVARCHAR値に変換すると、関数は二重引用符（"）で囲まれていないVARCHAR値を返します。
 
 ## 例
 
-例 1: JSON値をSQL値に変換する。
+例1：JSON値をSQL値に変換する。
 
 ```plaintext
 -- JSON値をINT値に変換する。
@@ -94,7 +94,7 @@ mysql> select cast(parse_json('[1,2,3]') as varchar);
 +----------------------------------------+
 ```
 
-例 2: SQL値をJSON値に変換する。
+例2：SQL値をJSON値に変換する。
 
 ```plaintext
 -- INT値をJSON値に変換する。

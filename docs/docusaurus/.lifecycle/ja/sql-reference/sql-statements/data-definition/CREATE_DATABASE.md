@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-このステートメントはデータベースを作成するために使用されます。
+この文はデータベースを作成するために使用されます。
 
 ## 構文
 
@@ -16,7 +16,7 @@ CREATE DATABASE [IF NOT EXISTS] <db_name>
 
 ## 例
 
-1. `db_test`というデータベースを作成する。
+1. `db_test`というデータベースを作成します。
 
     ```sql
     CREATE DATABASE db_test;

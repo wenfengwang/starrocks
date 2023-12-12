@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-ビットマップの最大値を取得します。ビットマップが `NULL` の場合、この関数は `NULL` を返します。ビットマップが空の場合、この関数はデフォルトで `NULL` を返します。
+ビットマップの最大値を取得します。ビットマップが `NULL` の場合、この関数は `NULL` を返します。ビットマップが空の場合、デフォルトで `NULL` を返します。
 
 ## 構文
 
@@ -16,7 +16,7 @@ bitmap_max(bitmap)
 
 ## パラメータ
 
-`bitmap`: 取得したいビットマップの最大値。BITMAPデータ型のみがサポートされています。[bitmap_from_string](bitmap_from_string.md)などの関数を使用して構築したビットマップを指定できます。
+`bitmap`: 取得したいビットマップの最大値。BITMAPデータ型のみをサポートしています。 [bitmap_from_string](bitmap_from_string.md) などの関数を使用して構築したビットマップを指定できます。
 
 ## 戻り値
 

@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定されたバイナリ形式（`binary_type`）に基づいてバイナリ値をVARCHAR文字列に変換します。次のバイナリ形式がサポートされています：`hex`、`encode64`、`utf8`。`binary_type`が指定されていない場合、デフォルトで `hex` が使用されます。
+指定されたバイナリ形式（`binary_type`）に基づいて、バイナリ値をVARCHAR文字列に変換します。次のバイナリ形式がサポートされています: `hex`、`encode64`、`utf8`。`binary_type` が指定されていない場合、`hex` がデフォルトです。
 
 ## 構文
 
@@ -14,15 +14,15 @@ displayed_sidebar: "Japanese"
 from_binary(binary[, binary_type])
 ```
 
-## パラメーター
+## パラメータ
 
 - `binary`: 変換する入力バイナリ、必須。
 
-- `binary_type`: 変換のためのバイナリ形式、オプション。
+- `binary_type`: 変換用のバイナリ形式、オプション。
 
-  - `hex`（デフォルト）：`from_binary` は入力バイナリをVARCHAR文字列にエンコードするために `hex` メソッドを使用します。
-  - `encode64`：`from_binary` は入力バイナリをVARCHAR文字列にエンコードするために `base64` メソッドを使用します。
-  - `utf8`：`from_binary` は入力バイナリを変換せずにVARCHAR文字列に変換します。
+  - `hex`（デフォルト）: `from_binary` は入力バイナリをVARCHAR文字列にエンコードするために `hex` メソッドを使用します。
+  - `encode64`: `from_binary` は入力バイナリをVARCHAR文字列にエンコードするために `base64` メソッドを使用します。
+  - `utf8`: `from_binary` は入力バイナリを変換せずに、VARCHAR文字列に変換します。
 
 ## 戻り値
 

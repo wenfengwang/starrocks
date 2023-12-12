@@ -4,11 +4,11 @@ displayed_sidebar: "Japanese"
 
 # date_slice
 
-## 説明
+## Description
 
-指定された時間単位に基づいて、指定された時刻を時間間隔の始まりまたは終わりに変換します。
+指定された時点を、指定された時間単位に基づいて時間間隔の開始または終了に変換します。
 
-この機能はv2.5からサポートされています。
+この機能は v2.5 以降でサポートされています。
 
 ## 構文
 
@@ -16,25 +16,25 @@ displayed_sidebar: "Japanese"
 DATE date_slice(DATE dt, INTERVAL N type[, boundary])
 ```
 
-## パラメーター
+## パラメータ
 
-- `dt`: 変換する時間、DATE。
+- `dt`: 変換する時刻、DATE。
 - `INTERVAL N type`: 時間単位、例: `interval 5 day`。
-  - `N`は時間間隔の長さです。INT値である必要があります。
-  - `type`は単位で、YEAR、QUARTER、MONTH、WEEK、DAYであることができます。DATE値の場合、`type`をHOUR、MINUTE、またはSECONDに設定するとエラーが返されます。
-- `boundary`: オプションです。時間間隔の始まり（`FLOOR`）または終わり（`CEIL`）を返すかどうかを指定するために使用されます。有効な値: `FLOOR`、`CEIL`。このパラメーターが指定されていない場合、`FLOOR`がデフォルトです。
+  - `N` は時間間隔の長さです。INT値である必要があります。
+  - `type` は単位です。YEAR、QUARTER、MONTH、WEEK、DAY などがあります。DATE値の場合、`type` を HOUR、MINUTE、または SECOND に設定するとエラーが返されます。
+- `boundary`: オプションです。時間間隔の開始(`FLOOR`)または終了(`CEIL`)を返すかどうかを指定するために使用されます。有効な値: FLOOR、CEIL。このパラメータが指定されていない場合、デフォルトは `FLOOR` です。
 
-## 返り値
+## 戻り値
 
 DATE型の値を返します。
 
 ## 使用上の注意
 
-時間間隔は西暦`0001-01-01 00:00:00`から開始します。
+時間間隔は西暦 `0001-01-01 00:00:00` から開始します。
 
 ## 例
 
-例1: `boundary`パラメーターを指定せずに、指定された時間を5年間隔の始まりに変換します。
+例 1: `boundary` パラメータを指定せずに、指定された時刻を5年間隔の開始時刻に変換します。
 
 ```Plaintext
 select date_slice('2022-04-26', interval 5 year);
@@ -45,7 +45,7 @@ select date_slice('2022-04-26', interval 5 year);
 +--------------------------------------------------+
 ```
 
-例2: 指定された時間を5日間隔の終わりに変換します。
+例 2: 指定された時刻を5日間隔の終了時刻に変換します。
 
 ```Plaintext
 select date_slice('0001-01-07', interval 5 day, CEIL);
@@ -56,7 +56,7 @@ select date_slice('0001-01-07', interval 5 day, CEIL);
 +------------------------------------------------+
 ```
 
-次の例は`test_all_type_select`テーブルに基づいて提供されています。
+以下の例は、`test_all_type_select` テーブルを基にしています。
 
 ```Plaintext
 select * from test_all_type_select order by id_int;
@@ -72,7 +72,7 @@ select * from test_all_type_select order by id_int;
 5 rows in set (0.06 sec)
 ```
 
-例3: 指定されたDATE値を5秒間隔の始まりに変換します。
+例 3: 指定したDATE値を5秒間隔の開始時刻に変換します。
 
 ```Plaintext
 select date_slice(id_date, interval 5 second, FLOOR)
@@ -81,9 +81,9 @@ order by id_int;
 ERROR 1064 (HY000): can't use date_slice for date with time(hour/minute/second)
 ```
 
-DATE値の2部分をシステムが見つけることができないため、エラーが返されます。
+DATE値の2番目の部分がシステムで見つからないため、エラーが返されます。
 
-例4: 指定されたDATE値を5日間隔の始まりに変換します。
+例 4: 指定したDATE値を5日間隔の開始時刻に変換します。
 
 ```Plaintext
 select date_slice(id_date, interval 5 day, FLOOR)
@@ -101,7 +101,7 @@ order by id_int;
 5 rows in set (0.14 sec)
 ```
 
-例5: 指定されたDATE値を5日間隔の終わりに変換します。
+例 5: 指定したDATE値を5日間隔の終了時刻に変換します。
 
 ```Plaintext
 select date_slice(id_date, interval 5 day, CEIL)

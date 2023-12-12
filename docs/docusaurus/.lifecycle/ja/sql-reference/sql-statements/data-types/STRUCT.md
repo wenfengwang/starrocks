@@ -6,15 +6,15 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-STRUCTは、複雑なデータ型を表現するために広く使用されています。これは、例えば、`<a INT, b STRING>`のような異なるデータ型の要素（またはフィールドとも呼ばれます）のコレクションを表します。
+STRUCT は複雑なデータ型を表現するために広く使用されます。それは、例えば `<a INT, b STRING>` のように、異なるデータ型を持つ要素（またはフィールドとも呼ばれる）のコレクションを表します。
 
-STRUCT内のフィールド名はユニークである必要があります。フィールドはプリミティブデータ型（数値、文字列、日付など）または複雑なデータ型（ARRAYやMAPなど）であることができます。
+struct 内のフィールド名は一意である必要があります。フィールドはプリミティブなデータ型（数値、文字列、または日付など）または複雑なデータ型（ARRAY や MAP など）であることができます。
 
-STRUCT内のフィールドは、別のSTRUCT、ARRAY、またはMAPであることもでき、これにより入れ子になったデータ構造を作成することができます。例えば、`STRUCT<a INT, b STRUCT<c INT, d INT>, c MAP<INT, INT>, d ARRAY<INT>>`のようになります。
+struct 内のフィールドは、さらに別の STRUCT や ARRAY、または MAP にすることができ、これにより入れ子構造のデータ構造を作成することができます。例えば、 `STRUCT<a INT, b STRUCT<c INT, d INT>, c MAP<INT, INT>, d ARRAY<INT>>`。
 
-STRUCTデータ型はv3.1からサポートされています。v3.1では、StarRocksテーブルを作成し、そのテーブルにSTRUCTデータをロードし、MAPデータをクエリすることができます。
+STRUCT データ型は v3.1 からサポートされています。v3.1 では、StarRocks テーブルを作成し、そのテーブルに STRUCT データをロードし、MAP データをクエリすることができます。
 
-v2.5以降、StarRocksはデータレイクから複雑なデータ型MAPおよびSTRUCTのクエリをサポートしています。Apache Hive™、Apache Hudi、Apache Icebergから提供されているStarRocksの外部カタログを使用して、MAPおよびSTRUCTデータをクエリすることができます。ORCおよびParquetファイルからのみデータをクエリすることができます。外部カタログを使用して外部データソースをクエリする方法の詳細については、[カタログの概要](../../../data_source/catalog/catalog_overview.md)および必要なカタログタイプに関連するトピックを参照してください。
+v2.5 以降、StarRocks はデータレイクからの複雑なデータ型 MAP および STRUCT のクエリをサポートしています。Apache Hive™、Apache Hudi、および Apache Iceberg から提供される外部カタログを使用して、ORC および Parquet ファイルから MAP および STRUCT データをクエリすることができます。外部カタログを使用して外部データソースをクエリする方法の詳細については、[カタログ概要](../../../data_source/catalog/catalog_overview.md) および必要なカタログタイプに関連するトピックを参照してください。
 
 ## 構文
 
@@ -22,29 +22,29 @@ v2.5以降、StarRocksはデータレイクから複雑なデータ型MAPおよ�
 STRUCT<name, type>
 ```
 
-- `name`: フィールド名。CREATE TABLEステートメントで定義されたカラム名と同じです。
-- `type`: フィールドの型。サポートされている任意の型であることができます。
+- `name`: フィールド名であり、CREATE TABLE 文で定義されている列の名前と同じです。
+- `type`: フィールド型であり、サポートされている任意の型であることができます。
 
-## StarRocksでのSTRUCTカラムの定義
+## StarRocks で STRUCT 列を定義する
 
-テーブルを作成し、このカラムにSTRUCTデータをロードする際にSTRUCTカラムを定義することができます。
+テーブルを作成し、STRUCT データをこの列にロードするときに STRUCT 列を定義することができます。
 
 ```SQL
--- 一次元のstructを定義する。
+-- 1 次元の struct を定義する。
 CREATE TABLE t0(
   c0 INT,
   c1 STRUCT<a INT, b INT>
 )
 DUPLICATE KEY(c0);
 
--- 複雑なstructを定義する。
+-- 複雑な struct を定義する。
 CREATE TABLE t1(
   c0 INT,
   c1 STRUCT<a INT, b STRUCT<c INT, d INT>, c MAP<INT, INT>, d ARRAY<INT>>
 )
 DUPLICATE KEY(c0);
 
--- NOT NULLなstructを定義する。
+-- NOT NULL struct を定義する。
 CREATE TABLE t2(
   c0 INT,
   c1 STRUCT<a INT, b INT> NOT NULL
@@ -52,35 +52,35 @@ CREATE TABLE t2(
 DUPLICATE KEY(c0);
 ```
 
-STRUCT型のカラムには次の制限があります:
+STRUCT 型の列には以下の制限があります。
 
-- テーブルでキーカラムとして使用することはできません。値カラムとしてのみ使用できます。
-- テーブルでのパーティションキーカラム（PARTITION BYに続く）として使用することはできません。
-- テーブルでのバケティングカラム（DISTRIBUTED BYに続く）として使用することはできません。
-- [集計テーブル](../../../table_design/table_types/aggregate_table.md)で値カラムとして使用する場合、replace()関数のみをサポートしています。
+- テーブルのキー列として使用することはできません。値列としてのみ使用できます。
+- テーブルのパーティションキー列（PARTITION BY の後に従う）として使用することはできません。
+- テーブルのバケット列（DISTRIBUTED BY の後に従う）として使用することはできません。
+- [集計テーブル](../../../table_design/table_types/aggregate_table.md) で値列として使用される場合、replace() 関数のみをサポートします。
 
-## SQLでのstructの構築
+## SQL で struct を構築する
 
-SQLでは、[row, struct](../../sql-functions/struct-functions/row.md)および[named_struct](../../sql-functions/struct-functions/named_struct.md)という関数を使用してSTRUCTを構築することができます。struct()はrow()のエイリアスです。
+SQL で struct を構築するには、以下の関数を使用します：[row, struct](../../sql-functions/struct-functions/row.md)、[named_struct](../../sql-functions/struct-functions/named_struct.md)。struct() は row() のエイリアスです。
 
-- `row`および`struct`は、無名のstructをサポートします。フィールド名を指定する必要はありません。StarRocksは自動的にカラム名（`col1`、`col2`など）を生成します。
-- `named_struct`は、名前付きstructをサポートします。名前および値の式はペアで指定する必要があります。
+- `row` および `struct` は匿名の struct をサポートしています。フィールド名を指定する必要はありません。StarRocks は自動的に列名、例えば `col1`, `col2`... を生成します。
+- `named_struct` は名前付きの struct をサポートします。名前と値の式はペアでなければなりません。
 
-StarRocksは、入力値に基づいてstructの型を自動的に決定します。
+StarRocks は、入力値に基づいて struct の型を自動的に決定します。
 
 ```SQL
-select row(1, 2, 3, 4) as numbers; -- {"col1":1,"col2":2,"col3":3,"col4":4}を返します。
-select row(1, 2, null, 4) as numbers; -- {"col1":1,"col2":2,"col3":null,"col4":4}を返します。
-select row(null) as nulls; -- {"col1":null}を返します。
-select struct(1, 2, 3, 4) as numbers; -- {"col1":1,"col2":2,"col3":3,"col4":4}を返します。
-select named_struct('a', 1, 'b', 2, 'c', 3, 'd', 4) as numbers; -- {"a":1,"b":2,"c":3,"d":4}を返します。
+select row(1, 2, 3, 4) as numbers; -- {"col1":1,"col2":2,"col3":3,"col4":4} を返す。
+select row(1, 2, null, 4) as numbers; -- {"col1":1,"col2":2,"col3":null,"col4":4} を返す。
+select row(null) as nulls; -- {"col1":null} を返す。
+select struct(1, 2, 3, 4) as numbers; -- {"col1":1,"col2":2,"col3":3,"col4":4} を返す。
+select named_struct('a', 1, 'b', 2, 'c', 3, 'd', 4) as numbers; -- {"a":1,"b":2,"c":3,"d":4} を返す。
 ```
 
-## STRUCTデータのロード
+## STRUCT データのロード
 
-STRUCTデータをStarRocksにロードする方法は、[INSERT INTO](../../../loading/InsertInto.md)と[ORC/Parquet loading](../data-manipulation/BROKER_LOAD.md)の2つの方法があります。
+STRUCT データは、[INSERT INTO](../../../loading/InsertInto.md) および [ORC/Parquet ローディング](../data-manipulation/BROKER_LOAD.md) の 2 つの方法で StarRocks にロードすることができます。
 
-StarRocksはデータの型を対応するSTRUCT型に自動的にキャストします。
+StarRocks はデータ型を対応する STRUCT 型に自動的にキャストします。
 
 ### INSERT INTO
 
@@ -101,13 +101,13 @@ SELECT * FROM t0;
 +------+---------------+
 ```
 
-### ORC/ParquetファイルからSTRUCTデータをロード
+### ORC/Parquet ファイルから STRUCT データをロードする
 
-StarRocksのSTRUCTデータ型は、ORCまたはParquet形式の入れ子のカラム構造に対応しています。追加仕様は必要ありません。[ORC/Parquet loading](../data-manipulation/BROKER_LOAD.md)の手順に従って、ORCまたはParquetファイルからSTRUCTデータをロードすることができます。
+StarRocks の STRUCT データ型は、ORC や Parquet 形式の入れ子の列構造に対応しています。追加の仕様は必要ありません。[ORC/Parquet ローディング](../data-manipulation/BROKER_LOAD.md) の手順に従って、ORC または Parquet ファイルから STRUCT データをロードすることができます。
 
-## STRUCTフィールドのアクセス
+## STRUCT フィールドへのアクセス
 
-STRUCTのサブフィールドをクエリするには、そのフィールド名によって値をクエリするためにドット（`.`）演算子を使用するか、インデックスによって値を呼び出すために`[]`を使用することができます。
+struct のサブフィールドをクエリするには、ドット (`.`) 演算子を使用してフィールド名によって値をクエリするか、インデックスによって値を呼び出すために `[]` を使用することができます。
 
 ```Plain Text
 mysql> select named_struct('a', 1, 'b', 2, 'c', 3, 'd', 4).a;

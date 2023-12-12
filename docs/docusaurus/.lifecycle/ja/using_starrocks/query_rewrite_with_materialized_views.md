@@ -2,53 +2,53 @@
 displayed_sidebar: "Japanese"
 ---
 
-# マテリアライズドビューを使用したクエリの書き換え
+# マテリアライズドビューを使用したクエリのリライト
 
-このトピックでは、StarRocksの非同期マテリアライズドビューを活用してクエリを書き換え、加速させる方法について説明します。
+このトピックでは、StarRocksの非同期マテリアライズドビューを活用してクエリのリライトと高速化を行う方法について説明します。
 
 ## 概要
 
-StarRocksの非同期マテリアライズドビューは、SPJG（select-project-join-group-by）形式に基づく透過的なクエリ書き換えアルゴリズムを使用しています。クエリ文を変更する必要なしに、StarRocksはベーステーブルに対するクエリを自動的に、事前に計算された結果を含むマテリアライズドビューに対するクエリに書き換えることができます。その結果、マテリアライズドビューは計算コストを大幅に削減し、クエリの実行を大幅に加速するのに役立ちます。
+StarRocksの非同期マテリアライズドビューは、SPJG（select-project-join-group-by）形式に基づく透過的なクエリリライトアルゴリズムを利用しています。クエリ文を変更することなく、StarRocksはベーステーブルに対するクエリを、事前に計算された結果を含む対応するマテリアライズドビューに対するクエリに自動的に書き換えることができます。その結果、マテリアライズドビューは計算コストを大幅に削減し、クエリの実行を大幅に高速化するのに役立ちます。
 
-非同期マテリアライズドビューに基づくクエリ書き換え機能は、特に以下のシナリオで有用です:
+非同期マテリアライズドビューに基づくクエリリライト機能は、以下のシナリオで特に有用です。
 
-- **メトリクスの事前集約**
+- **メトリクスの事前集計**
 
-  データの次元が高い場合、マテリアライズドビューを使用して事前に集約されたメトリクス層を作成できます。
+  高次元のデータを扱う場合、マテリアライズドビューを使用して事前に集計されたメトリクスレイヤーを作成できます。
 
 - **ワイドテーブルの結合**
 
-  マテリアライズドビューを使用すると、複雑なシナリオで複数の大規模なワイドテーブルを結合したクエリを透過的に高速化することができます。
+  マテリアライズドビューを使用することで、複雑なシナリオにおける複数の大規模なワイドテーブルの結合を透過的に高速化することができます。
 
-- **データレイクでのクエリの加速**
+- **データレイクでのクエリ高速化**
 
-  外部カタログベースのマテリアライズドビューを構築することで、データレイクのデータに対するクエリを簡単に高速化することができます。
+  外部カタログベースのマテリアライズドビューを構築することで、データレイク内のデータに対するクエリを簡単に高速化できます。
 
   > **注意**
   >
-  > JDBCカタログ上のベーステーブルに作成された非同期マテリアライズドビューは、クエリの書き換えをサポートしません。
+  > JDBCカタログ上のベーステーブルに作成された非同期マテリアライズドビューは、クエリリライトをサポートしていません。
 
-### 特徴
+### 機能
 
-StarRocksの非同期マテリアライズドビューに基づく自動クエリ書き換え機能は、以下の属性を持っています:
+StarRocksの非同期マテリアライズドビューに基づく自動クエリリライト機能には、以下の属性があります。
 
-- **強力なデータの整合性**: ベーステーブルがネイティブテーブルの場合、StarRocksはマテリアライズドビューに基づくクエリ書き換えを通じて得られた結果が、ベーステーブルに対する直接のクエリから返される結果と整合性があることを保証します。
-- **古さの書き直し**: StarRocksは古さの書き直しをサポートし、頻繁なデータ変更のシナリオに対処するために、ある程度のデータの有効期限を許容することができます。
-- **複数テーブルの結合**: StarRocksの非同期マテリアライズドビューは、View Delta JoinsやDerivable Joinsなどの複雑な結合シナリオを含むさまざまな結合タイプをサポートし、大規模なワイドテーブルを含むシナリオでのクエリの加速を可能にします。
-- **集約の書き直し**: StarRocksは集約を伴うクエリを書き直して、レポートのパフォーマンスを向上させることができます。
-- **ネストしたマテリアライズドビュー**: StarRocksは、ネストしたマテリアライズドビューに基づく複雑なクエリを書き直すことができ、書き直せるクエリの範囲を拡大することができます。
-- **Unionの書き直し**: Unionの書き直し機能とマテリアライズドビューのパーティションのTTL（有効期限）を組み合わせることで、ホットデータとコールドデータの分離を実現し、マテリアライズドビューからホットデータをクエリし、ベーステーブルから過去のデータを取得することができます。
-- **ビュー上のマテリアライズドビュー**: ビューに基づくデータモデリングシナリオでのクエリを高速化することができます。
-- **外部カタログ上のマテリアライズドビュー**: データレイクでのクエリを高速化することができます。
-- **複雑な式の書き直し**: 関数呼び出しや演算など、複雑な式を処理することができ、高度な分析や計算要件に対応することができます。
+- **強力なデータ整合性**: ベーステーブルがネイティブのテーブルである場合、StarRocksは、マテリアライズドビューに基づくクエリリライトで得られる結果が、ベーステーブルに直接クエリした結果と整合することを保証します。
+- **陳腐化リライト**: StarRocksは陳腐化リライトをサポートし、頻繁なデータ変更のシナリオに対処するために一定レベルのデータの有効期限を許容します。
+- **複数テーブル結合**: StarRocksの非同期マテリアライズドビューは、ビューデルタ結合や導出可能な結合などの一部の複雑な結合シナリオを含め、さまざまなタイプの結合をサポートし、大規模なワイドテーブルを含むシナリオでのクエリの高速化を可能にします。
+- **集計リライト**: StarRocksは、集計を含むクエリをリライトしてレポートのパフォーマンスを改善することができます。
+- **入れ子のマテリアライズドビュー**: StarRocksは入れ子のマテリアライズドビューに基づく複雑なクエリをリライトすることができ、リライト可能なクエリの範囲を拡大することができます。
+- **UNIONリライト**: マテリアライズドビューのパーティションのTTL（Time-to-Live）とUNIONリライト機能を組み合わせることで、ホットデータとコールドデータを分離してクエリを高速化することができます。これにより、マテリアライズドビューからホットデータをクエリし、ベーステーブルから履歴データをクエリすることができます。
+- **ビュー上のマテリアライズドビュー**: ビューに基づくデータモデリングのシナリオでクエリを高速化することができます。
+- **外部カタログ上のマテリアライズドビュー**: データレイク内でのクエリを高速化することができます。
+- **複雑な式のリライト**: 関数呼び出しや算術演算を含む複雑な式を処理することができ、高度な解析および計算要件に対応することができます。
 
-これらの特徴は、次のセクションで詳しく説明されます。
+これらの機能については、次のセクションで詳しく説明します。
 
-## 結合の書き直し
+## 結合リライト
 
-StarRocksは、内部結合、クロス結合、左外部結合、右外部結合、セミ結合、アンチ結合など、さまざまなタイプの結合を含むクエリを書き直すことをサポートしています。
+StarRocksは、Inner Join、Cross Join、Left Outer Join、Full Outer Join、Right Outer Join、Semi Join、Anti Joinなど、さまざまなタイプの結合を含むクエリをリライトすることをサポートしています。
 
-以下は、結合を含むクエリを書き直す例です。次のように2つのベーステーブルを作成します:
+以下は、結合を含むクエリのリライトの例です。次のように2つのベーステーブルを作成します。
 
 ```SQL
 CREATE TABLE customer (
@@ -87,7 +87,7 @@ DUPLICATE KEY(lo_orderkey)
 DISTRIBUTED BY HASH(lo_orderkey) BUCKETS 48;
 ```
 
-上記のベーステーブルを使用して、次のようにマテリアライズドビューを作成できます:
+上記のベーステーブルを使用して、次のようにマテリアライズドビューを作成できます。
 
 ```SQL
 CREATE MATERIALIZED VIEW join_mv1
@@ -98,7 +98,7 @@ FROM lineorder INNER JOIN customer
 ON lo_custkey = c_custkey;
 ```
 
-このようなマテリアライズドビューは、次のクエリを書き換えることができます:
+このようなマテリアライズドビューは、以下のクエリをリライトすることができます。
 
 ```SQL
 SELECT lo_orderkey, lo_linenumber, lo_revenue, c_name, c_address
@@ -106,9 +106,9 @@ FROM lineorder INNER JOIN customer
 ON lo_custkey = c_custkey;
 ```
 
-![Rewrite-1](../assets/Rewrite-1.png)
+![リライト-1](../assets/Rewrite-1.png)
 
-StarRocksは、演算、文字列関数、日付関数、CASE WHEN式、OR述語など、複雑な式を含む結合クエリを書き直すことがサポートしています。例えば、上記のマテリアライズドビューは、次のクエリを書き換えることができます:
+StarRocksは、算術演算、文字列関数、日付関数、CASE WHEN式、およびOR述語などの複雑な式を含む結合をリライトすることをサポートしています。たとえば、上記のマテリアライズドビューは、以下のクエリをリライトすることができます。
 
 ```SQL
 SELECT 
@@ -121,13 +121,13 @@ FROM lineorder INNER JOIN customer
 ON lo_custkey = c_custkey;
 ```
 
-従来のシナリオに加えて、StarRocksはさらに複雑なシナリオでの結合クエリの書き直しをサポートしています。
+従来のシナリオに加えて、StarRocksはさらに複雑なシナリオでの結合を含むクエリのリライトをサポートしています。
 
-### クエリデルタ結合の書き直し
+### クエリデルタ結合リライト
 
-クエリデルタ結合とは、クエリで結合されるテーブルがマテリアライズドビューで結合されるテーブルの上位集合であるシナリオを指します。例えば、次のような3つのテーブル `lineorder`, `customer`, `part` を結合するクエリを考えます。マテリアライズドビュー `join_mv1` には `lineorder` と `customer` の結合のみが含まれる場合、StarRocksはこのクエリを `join_mv1` を使用して書き換えることができます。
+クエリデルタ結合とは、クエリで結合されるテーブルが、マテリアライズドビューで結合されるテーブルの超集合であるシナリオを指します。たとえば、次のクエリを考えてみてください。このクエリは、`lineorder`、`customer`、`part`の結合を含みます。マテリアライズドビュー`join_mv1`には、`lineorder`と`customer`の結合のみが含まれている場合、StarRocksは`join_mv1`を使用してクエリをリライトすることができます。
 
-例:
+例：
 
 ```SQL
 SELECT lo_orderkey, lo_linenumber, lo_revenue, c_name, c_address, p_name
@@ -136,19 +136,17 @@ FROM
     INNER JOIN part ON lo_partkey = p_partkey;
 ```
 
-その元のクエリプランと書き換え後のクエリプランは次のとおりです:
+元のクエリのプランとリライト後のクエリのプランは次のとおりです。
 
-![Rewrite-2](../assets/Rewrite-2.png)
+![リライト-2](../assets/Rewrite-2.png)
 
-### ビューデルタ結合の書き直し
+### ビューデルタ結合リライト
 
-ビューデルタ結合とは、クエリで結合されるテーブルがマテリアライズドビューで結合されるテーブルのサブセットであるシナリオを指します。この機能は、通常は大規模なワイドテーブルを含むシナリオで使用されます。例えば、Star Schema Benchmark（SSB）のコンテキストでは、すべてのテーブルを結合するマテリアライズドビューを作成してクエリのパフォーマンスを向上させることができます。テストの結果、複数テーブルを結合するクエリのパフォーマンスは、マテリアライズドビューを介してクエリを透過的に書き換えた後も、対応する大規模なワイドテーブルをクエリするレベルと同程度になることがわかりました。
+ビューデルタ結合とは、クエリで結合されるテーブルが、マテリアライズドビューで結合されるテーブルの部分集合であるシナリオを指します。この機能は通常、大規模なワイドテーブルを含むシナリオで使用されます。たとえば、Star Schema Benchmark（SSB）のコンテキストでは、すべてのテーブルを結合するマテリアライズドビューを作成して、クエリパフォーマンスを向上させることができます。テストの結果、マルチテーブル結合のクエリパフォーマンスは、マテリアライズドビューを通じてクエリを透過的にリライトすることで、対応する大規模なワイドテーブルをクエリする場合とほぼ同じレベルのパフォーマンスが得られることがわかっています。
 
-ビューデルタ結合を行うためには、マテリアライズドビューには、クエリに存在しない1:1の標準保存結合が含まれている必要があります。以下に、標準保存結合と見なされる9種類の結合と、それらのいずれかを満たすことでビューデルタ結合の書き直しが可能となります:
+ビューデルタ結合リライトを行うためには、マテリアライズドビューには、クエリに存在しない1:1の基数保存結合が含まれている必要があります。基数保存結合と見なされる9種類の結合のうち、いずれか1つを満たすことでビューデルタ結合リライトが可能となります。
 
-![Rewrite-3](../assets/Rewrite-3.png)
-
-SSBテストを例にとって、次のようにベーステーブルを作成します:
+SSBテストを例として、次のベーステーブルを作成します。
 
 ```SQL
 CREATE TABLE customer (
@@ -164,7 +162,7 @@ CREATE TABLE customer (
 DUPLICATE KEY(c_custkey)
 DISTRIBUTED BY HASH(c_custkey) BUCKETS 12
 PROPERTIES (
-"unique_constraints" = "c_custkey"   -- 一意の制約を指定します。
+"unique_constraints" = "c_custkey"   -- ユニーク制約を指定します。
 );
 
 CREATE TABLE dates (
@@ -180,6 +178,9 @@ CREATE TABLE dates (
   d_daynuminyear     INT(11)       NOT NULL,
   d_monthnuminyear   INT(11)       NOT NULL,
 ```SQL
+実行するマテリアライズド・ヴュー `lineorder_flat_mv` を作成します。このマテリアライズド・ヴューは `lineorder`、 `customer`、 `supplier`、 `part`、および `dates` を結合します。
+
+```SQL
 CREATE MATERIALIZED VIEW lineorder_flat_mv
 DISTRIBUTED BY HASH(LO_ORDERDATE, LO_ORDERKEY) BUCKETS 48
 PARTITION BY LO_ORDERDATE
@@ -187,7 +188,7 @@ REFRESH MANUAL
 PROPERTIES (
     "partition_refresh_number"="1"
 )
-AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refresh operation.
+AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- リフレッシュ操作のタイムアウトを設定します。
        l.LO_ORDERDATE        AS LO_ORDERDATE,
        l.LO_ORDERKEY         AS LO_ORDERKEY,
        l.LO_LINENUMBER       AS LO_LINENUMBER,
@@ -248,23 +249,43 @@ AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refres
        INNER JOIN part       AS p ON p.P_PARTKEY = l.LO_PARTKEY
        INNER JOIN dates      AS d ON l.LO_ORDERDATE = d.D_DATEKEY;    
 ```
-同様に、SSBの他のクエリも`lineorder_flat_mv`を使用して透過的に書き換えることができ、クエリのパフォーマンスを最適化できます。
 
-### 結合可能リライト
+SSB Q2.1 は4つのテーブルを結合しますが、マテリアライズド・ヴュー `lineorder_flat_mv` と比較して `customer` テーブルがありません。`lineorder_flat_mv` では `lineorder INNER JOIN customer` は基本的にクラーディナリティー保存結合です。したがって、論理的にはこの結合を取り除いてもクエリーの結果に影響を与えません。その結果、Q2.1 は `lineorder_flat_mv` を使用して書き換えることができます。
 
-結合可能性リライトとは、マテリアライズド ビューとクエリの結合タイプが一致しないが、マテリアライズド ビューの結合結果にはクエリの結合結果が含まれているシナリオを指します。現在は、3つ以上のテーブルを結合するシナリオと、2つのテーブルを結合するシナリオの2つのシナリオがサポートされています。
+SSB Q2.1:
 
-- **シナリオ1：3つ以上のテーブルを結合する**
+```SQL
+SELECT sum(lo_revenue) AS lo_revenue, d_year, p_brand
+FROM lineorder
+JOIN dates ON lo_orderdate = d_datekey
+JOIN part ON lo_partkey = p_partkey
+JOIN supplier ON lo_suppkey = s_suppkey
+WHERE p_category = 'MFGR#12' AND s_region = 'AMERICA'
+GROUP BY d_year, p_brand
+ORDER BY d_year, p_brand;
+```
 
-  たとえば、マテリアライズド ビューにはテーブル `t1` と `t2` の Left Outer Join およびテーブル `t2` と `t3` の Inner Join が含まれているとします。両方の結合で、結合条件には `t2` の列が含まれています。
+その元のクエリープランと書き換え後のクエリープランは以下の通りです:
 
-  一方、クエリには、t1 と t2 の Inner Join および t2 と t3 の Inner Join が含まれています。両方の結合で、結合条件には t2 の列が含まれています。
+![Rewrite-4](../assets/Rewrite-4.png)
+```
+同様に、SSBの他のクエリも`lineorder_flat_mv`を使用して透過的に書き直すことができ、クエリのパフォーマンスを最適化できます。
 
-  この場合、クエリはマテリアライズド ビューを使用して書き換えることができます。なぜなら、マテリアライズド ビューでは、Left Outer Join が最初に実行され、後に Inner Join が続きます。Left Outer Join によって生成された右側のテーブルには結果がない（つまり、右側のテーブルの列は NULL です）。これらの結果は次に Inner Join でフィルタリングされます。したがって、マテリアライズド ビューとクエリの論理は等価であり、クエリを書き換えることができます。
+### Join Derivability rewrite
+
+Join Derivabilityとは、マテリアライズド・ビューとクエリの結合タイプが一致していないが、マテリアライズド・ビューの結合結果がクエリの結合結果を含んでいる状況を指します。現在、この特徴は3つ以上のテーブルを結合するシナリオと、2つのテーブルを結合するシナリオの2つをサポートしています。
+
+- **シナリオ1: 3つ以上のテーブルを結合する場合**
+
+  例えば、マテリアライズド・ビューにはテーブル`t1`と`t2`の左外部結合、およびテーブル`t2`と`t3`の内部結合が含まれているとします。両方の結合で、結合条件には`t2`の列が含まれています。
+
+  一方、クエリにはt1とt2の内部結合、およびt2とt3の内部結合が含まれています。両方の結合で、結合条件にはt2の列が含まれています。
+
+  この場合、クエリはマテリアライズド・ビューを使用して書き直すことができます。これは、マテリアライズド・ビューでは、左外部結合が最初に実行され、その後に内部結合が行われます。左外部結合によって生成された右テーブルには、一致する結果がない（すなわち、右テーブルの列がNULLである）ため、これらの結果は内部結合中にフィルタリングされます。そのため、マテリアライズド・ビューとクエリの論理は同等であり、クエリは書き直すことができます。
 
   例：
 
-  マテリアライズド ビュー `join_mv5` を作成します：
+  マテリアライズド・ビュー`join_mv5`を作成する:
 
   ```SQL
   CREATE MATERIALIZED VIEW join_mv5
@@ -281,7 +302,7 @@ AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refres
   ON p_partkey = lo_partkey;
   ```
 
-  `join_mv5` は次のクエリを書き換えることができます：
+  `join_mv5`は、以下のクエリを書き直すことができます:
 
   ```SQL
   SELECT lo_orderkey, lo_orderdate, lo_linenumber, lo_revenue, c_custkey, c_address, p_name
@@ -291,19 +312,19 @@ AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refres
   ON p_partkey = lo_partkey;
   ```
 
-  書き換え前のクエリプランと書き換え後のクエリプランは次のようになります：
+  書き直し前と書き直し後のクエリプランは以下の通りです:
 
   ![Rewrite-5](../assets/Rewrite-5.png)
 
-  同様に、マテリアライズド ビューが `t1 INNER JOIN t2 INNER JOIN t3` と定義され、クエリが `LEFT OUTER JOIN t2 INNER JOIN t3` である場合、クエリも書き換えることができます。さらに、この書き換え機能は3つ以上のテーブルを含むシナリオにも拡張されます。
+  同様に、マテリアライズド・ビューが`t1 INNER JOIN t2 INNER JOIN t3`と定義されており、クエリが`LEFT OUTER JOIN t2 INNER JOIN t3`である場合、クエリも書き直すことができます。さらに、この書き直し機能は3つ以上のテーブルを含むシナリオにも拡張されます。
 
-- **シナリオ2：2つのテーブルを結合する**
+- **シナリオ2: 2つのテーブルを結合する場合**
 
-  2つのテーブルを関連付ける結合可能性リライト機能は、特定のケースをサポートしています：
+  2つのテーブルを結合するJoin Derivability Rewrite機能は、以下の特定のケースをサポートしています:
 
   ![Rewrite-6](../assets/Rewrite-6.png)
 
-  ケース1から9では、意味的等価性を確保するために、書き換えられた結果にフィルタリング述語を追加する必要があります。たとえば、次のようにマテリアライズド ビューを作成します：
+  ケース1から9では、意味的な同等性が確保されるように書き直し結果にフィルタリング述語を追加する必要があります。例えば、次のようにマテリアライズド・ビューを作成します:
 
   ```SQL
   CREATE MATERIALIZED VIEW join_mv3
@@ -314,7 +335,7 @@ AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refres
   ON lo_custkey = c_custkey;
   ```
 
-  次のクエリは`join_mv3`を使用して書き換えることができ、書き換え結果には `c_custkey IS NOT NULL` というフィルタリング述語が追加されます：
+  次のクエリは、`join_mv3`を使用して書き直すことができ、書き直し結果に述語`c_custkey IS NOT NULL`が追加されます:
 
   ```SQL
   SELECT lo_orderkey, lo_linenumber, lo_revenue, c_custkey, c_address
@@ -322,11 +343,11 @@ AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refres
   ON lo_custkey = c_custkey;
   ```
 
-  書き換え前のクエリプランと書き換え後のクエリプランは次のようになります：
+  書き直し前と書き直し後のクエリプランは以下の通りです:
 
   ![Rewrite-7](../assets/Rewrite-7.png)
 
-  ケース10では、Left Outer Join クエリに右側のテーブルにフィルタリング述語 `IS NOT NULL` を含める必要があります。たとえば、次のようにマテリアライズド ビューを作成します：
+  ケース10では、左外部結合クエリは、例えば`=`、`<>`、`>`、`<`、`<=`、`>=`、`LIKE`、`IN`、`NOT LIKE`、または`NOT IN`のフィルタリング述語`IS NOT NULL`を右テーブルに含める必要があります。例えば、以下のようにマテリアライズド・ビューを作成します:
 
   ```SQL
   CREATE MATERIALIZED VIEW join_mv4
@@ -337,7 +358,7 @@ AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refres
   ON lo_custkey = c_custkey;
   ```
 
-  `join_mv4`は次のクエリを書き換えることができ、`customer.c_address = "Sb4gxKs7"` がフィルタリング述語 `IS NOT NULL` です：
+  `join_mv4`は、以下のクエリを書き直すことができます。ここでのフィルタリング述語`IS NOT NULL`は`customer.c_address = "Sb4gxKs7"`です:
 
   ```SQL
   SELECT lo_orderkey, lo_linenumber, lo_revenue, c_custkey, c_address
@@ -346,13 +367,13 @@ AS SELECT /*+ SET_VAR(query_timeout = 7200) */     -- Set timeout for the refres
   WHERE customer.c_address = "Sb4gxKs7";
   ```
 
-  書き換え前のクエリプランと書き換え後のクエリプランは次のようになります：
+  書き直し前と書き直し後のクエリプランは以下の通りです:
 
   ![Rewrite-8](../assets/Rewrite-8.png)
 
-## 集約リライト
+## Aggregation rewrite
 
-StarRocks の非同期マテリアライズド ビューは、bitmap_union、hll_union、およびpercentile_unionを含むすべての利用可能な集約関数を持つ複数テーブルの集計クエリを書き換えることができます。たとえば、次のようにマテリアライズド ビューを作成します：
+StarRocksの非同期マテリアライズド・ビューは、bitmap_union、hll_union、percentile_unionなどの利用可能なすべての集計関数を含む複数テーブルの集計クエリを書き直すことをサポートしています。例えば、次のようにマテリアライズド・ビューを作成します:
 
 ```SQL
 CREATE MATERIALIZED VIEW agg_mv1
@@ -369,7 +390,7 @@ ON lo_custkey = c_custkey
 GROUP BY lo_orderkey, lo_linenumber, c_name;
 ```
 
-これは次のクエリを書き換えることができます：
+これは、以下のクエリを書き直すことができます:
 
 ```SQL
 SELECT 
@@ -383,15 +404,15 @@ ON lo_custkey = c_custkey
 GROUP BY lo_orderkey, lo_linenumber, c_name;
 ```
 
-書き換え前のクエリプランと書き換え後のクエリプランは次のようになります：
+書き直し前と書き直し後のクエリプランは以下の通りです:
 
 ![Rewrite-9](../assets/Rewrite-9.png)
 
-次のセクションでは、集約リライト機能が有用なシナリオについて詳しく説明します。
+次のセクションでは、Aggregation Rewrite機能が有用なシナリオについて詳しく説明します。
 
-### 集約ロールアップリライト
+### Aggregation Rollup rewrite
 
-StarRocks は、集計ロールアップを含むクエリを書き換える場合をサポートしています。つまり、StarRocks は、`GROUP BY a` 句を使用して作成された非同期マテリアライズド ビューを使用して `GROUP BY a,b` 句を使用して作成された集計クエリを書き換えることができます。たとえば、次のクエリは`agg_mv1`を使用して書き換えることができます：
+StarRocksは、Aggregation Rollupを持つクエリを書き直すことをサポートしており、つまり、`GROUP BY a`句を使用して作成された非同期マテリアライズドビューを使用して`GROUP BY a,b`句を持つ集計クエリを書き直すことができます。例えば、以下のクエリは`agg_mv1`を使用して書き直すことができます:
 
 ```SQL
 SELECT 
@@ -404,39 +425,52 @@ ON lo_custkey = c_custkey
 GROUP BY lo_orderkey, c_name;
 ```
 
-書き換え前のクエリプランと書き換え後のクエリプランは次のようになります：
+書き直し前と書き直し後のクエリプランは以下の通りです:
 
 ![Rewrite-10](../assets/Rewrite-10.png)
 
 > **注意**
 >
-> 現在、グループ化セット、GROUPING SET with ROLLUP、または GROUPING SET with CUBE を書き換えることはサポートされていません。
+> 現在、グルーピングセット、グルーピングセットのロールアップ、またはグルーピングセットのキューブを書き直すことはサポートされていません。
 
-一部の集約関数のみが集約ロールアップでクエリを書き換えることをサポートしています。前述の例では、`count(distinct client_id)` の代わりに `bitmap_union(to_bitmap(client_id))` を使用するマテリアライズド ビュー `order_agg_mv` がある場合、StarRocks は集計ロールアップを持つクエリを書き換えることができません。
+一部の集計関数のみがAggregate Rollupと一緒にクエリを書き直すことができます。前述の例では、マテリアライズド・ビュー`order_agg_mv`が`bitmap_union(to_bitmap(client_id))`の代わりに`count(distinct client_id)`を使用している場合、StarRocksはAggergate Rollupを持つクエリを書き直すことはできません。
 
-次の表は、オリジナルのクエリの集約関数と、マテリアライズド ビューで使用される集約関数の対応関係を示しています。ビジネスシナリオに応じて、適切な集約関数を選択してマテリアライズド ビューを構築することができます。
+次の表に、元のクエリでサポートされている集計関数と、マテリアライズド・ビューのために使用される集計関数の対応関係を示します。ビジネスシナリオに応じて、対応する集計関数を選択してマテリアライズド・ビューを構築することができます。
 
-| **オリジナル クエリでサポートされる集約関数** | **マテリアライズド ビューでサポートされる集約関数** |
-| ---------------------------------------- | -------------------------------------------- |
-| sum                                      | sum                                          |
-| count                                    | count                                        |
-| min                                      | min                                          |
-| max                                      | max                                          |
-| avg                                      | sum / count                                  |
-| bitmap_union, bitmap_union_count, count(distinct) | bitmap_union                       |
-| hll_raw_agg, hll_union_agg, ndv, approx_count_distinct | hll_union                          |
-| percentile_approx, percentile_union      | percentile_union                             |
+| **元のクエリでサポートされている集計関数** | **マテリアライズド・ビューにおけるAggregate Rollupがサポートする関数** |
+| -------------------------------------------- | --------------------------------------------------------- |
+| sum                                          | sum                                                       |
+| count                                        | count                                                     |
+| min                                          | min                                                       |
+| max                                          | max                                                       |
+| avg                                          | sum / count                                               |
+| bitmap_union, bitmap_union_count, count(distinct) | bitmap_union                        |
+| hll_raw_agg, hll_union_agg, ndv, approx_count_distinct | hll_union                                           |
+| percentile_approx, percentile_union          | percentile_union                                          |
 
-対応する GROUP BY 列がない場合、DISTINCT 集約は集約ロールアップを持つクエリを書き換えることはできません。ただし、StarRocks v3.1以降では、集約ロールアップDISTINCT集約関数を持つクエリがGROUP BY列を持たずに等しい述語を持つ場合、関連するマテリアライズド ビューによっても書き換えることが可能です。以下の例では、StarRocks は`order_agg_mv1`を使用してクエリを書き換えることができます。
+対応するGROUP BY列のないDISTINCT集計は、Aggregate Rollupで書き直すことができません。ただし、StarRocks v3.1以降では、Aggregate RollupのDISTINCT集計関数を使用するクエリがGROUP BY列を持たず、等しい述語を持つ場合は、関連するマテリアライズド・ビューによって書き直すことができます。以下の例では、StarRocksは`order_agg_mv1`を使用してクエリを書き直すことができます。
+
+```SQL
+CREATE MATERIALIZED VIEW order_agg_mv1
+DISTRIBUTED BY HASH(`order_id`) BUCKETS 12
+REFRESH ASYNC START('2022-09-01 10:00:00') EVERY (interval 1 day)
+AS
+SELECT
+    order_date,
+    count(distinct client_id) 
+FROM order_list 
+GROUP BY order_date;
+
+```
 -- Query
 SELECT
     order_date,
     count(distinct client_id) 
 FROM order_list WHERE order_date='2023-07-03';
 
-### COUNT DISTINCT rewrite
+### COUNT DISTINCTの書き換え
 
-StarRocksは、COUNT DISTINCTの計算をビットマップベースの計算に書き換えることをサポートしており、マテリアライズドビューを使用して高性能かつ正確な重複排除を可能にします。たとえば、次のようにマテリアライズドビューを作成します。
+StarRocksはCOUNT DISTINCTの計算をビットマップベースの計算に書き換えることをサポートしており、マテリアライズドビューを使用して高性能で正確な重複排除を実現しています。例えば、次のようにマテリアライズドビューを作成します。
 
 ```SQL
 CREATE MATERIALIZED VIEW distinct_mv
@@ -447,7 +481,7 @@ FROM lineorder
 GROUP BY lo_orderkey;
 ```
 
-これにより次のクエリが書き換えられます。
+これにより次のクエリを書き換えることができます。
 
 ```SQL
 SELECT lo_orderkey, count(distinct lo_custkey) 
@@ -457,7 +491,7 @@ GROUP BY lo_orderkey;
 
 ## ネストされたマテリアライズドビューの書き換え
 
-StarRocksは、ネストされたマテリアライズドビューを使用するクエリを書き換えることをサポートしています。たとえば、次のようにマテリアライズドビュー`join_mv2`、`agg_mv2`、`agg_mv3`を作成します。
+StarRocksはネストされたマテリアライズドビューを使用してクエリを書き換えることをサポートしています。例えば、以下のようにマテリアライズドビュー`join_mv2`、`agg_mv2`、`agg_mv3`を作成します。
 
 ```SQL
 CREATE MATERIALIZED VIEW join_mv2
@@ -491,7 +525,11 @@ FROM agg_mv2
 GROUP BY lo_orderkey;
 ```
 
-これにより、`agg_mv3`が次のクエリを書き換えることができます。
+それらの関係は以下の通りです。
+
+![Rewrite-11](../assets/Rewrite-11.png)
+
+`agg_mv3`は以下のクエリを書き換えることができます。
 
 ```SQL
 SELECT 
@@ -503,15 +541,17 @@ ON lo_custkey = c_custkey
 GROUP BY lo_orderkey;
 ```
 
-その元のクエリプランと書き換え後のものは次のようになります。
+元のクエリプランと書き換え後のクエリプランは以下の通りです。
 
-## 連合の書き換え
+![Rewrite-12](../assets/Rewrite-12.png)
 
-### 述語の連合の書き換え
+## Unionの書き換え
 
-マテリアライズドビューの述語範囲がクエリの述語範囲のサブセットである場合、クエリはUNION演算を使用して書き換えることができます。
+### プレディケートUnionの書き換え
 
-たとえば、次のようにマテリアライズドビューを作成します。
+マテリアライズドビューのプレディケートの範囲がクエリのプレディケートの範囲のサブセットである場合、クエリはUNION演算を使用して書き換えることができます。
+
+例えば、次のようにマテリアライズドビューを作成します。
 
 ```SQL
 CREATE MATERIALIZED VIEW agg_mv4
@@ -526,7 +566,7 @@ WHERE lo_orderkey < 300000000
 GROUP BY lo_orderkey;
 ```
 
-これにより次のクエリが書き換えられます。
+これにより次のクエリを書き換えることができます。
 
 ```SQL
 select 
@@ -537,13 +577,17 @@ FROM lineorder
 GROUP BY lo_orderkey;
 ```
 
-その元のクエリプランと書き換え後のものは次のようになります。
+元のクエリプランと書き換え後のクエリプランは以下の通りです。
 
-## パーティションの連合の書き換え
+![Rewrite-13](../assets/Rewrite-13.png)
 
-テーブルのパーティションに基づいたパーティション化されたマテリアライズドビューを作成したとします。クエリでスキャンされる書き換え可能なクエリが最も最近のパーティション範囲のサブセットである場合、クエリはUNION演算を使用して書き換えられます。
+このコンテキストでは、`agg_mv5`には`lo_orderkey < 300000000`のデータが含まれています。`lo_orderkey >= 300000000`のデータはベーステーブル`lineorder`から直接取得されます。最後に、これら2つのデータセットがUNION演算を使用して結合され、最終結果を取得します。
 
-たとえば、次のようにマテリアライズドビュー`agg_mv4`を作成します。そのベーステーブル`lineorder`は現在`p1`から`p7`のパーティションを含んでおり、マテリアライズドビューも`p1`から`p7`のパーティションを含んでいます。
+### パーティションUnionの書き換え
+
+パーティションされたテーブルを基にしたパーティションされたマテリアライズドビューを作成した場合を考えます。書き換え可能なクエリがスキャンしたパーティション範囲がマテリアライズドビューの最新のパーティション範囲の上位集合である場合、クエリはUNION演算を使用して書き換えられます。
+
+例えば、以下のようなマテリアライズドビュー`agg_mv4`を考えます。そのベーステーブル`lineorder`には現在、`p1`から`p7`までのパーティションが含まれており、マテリアライズドビューにも`p1`から`p7`までのパーティションが含まれています。
 
 ```SQL
 CREATE MATERIALIZED VIEW agg_mv5
@@ -560,7 +604,7 @@ FROM lineorder
 GROUP BY lo_orderkey;
 ```
 
-もし新しい`p8`というパーティションが`lineorder`に追加された場合、次のクエリはUNION演算を使用して書き換えることができます。
+`lineorder`に新しいパーティション`p8`が追加された場合（このパーティションの範囲は`[("19990101"), ("20000101"))`であるとします）、次のクエリはUNION演算を使用して書き換えることができます。
 
 ```SQL
 SELECT 
@@ -572,13 +616,17 @@ FROM lineorder
 GROUP BY lo_orderkey;
 ```
 
-その元のクエリプランと書き換え後のものは次のようになります。
+元のクエリプランと書き換え後のクエリプランは以下の通りです。
 
-## ビューに基づいたマテリアライズドビューの書き換え
+![Rewrite-14](../assets/Rewrite-14.png)
 
-StarRocksは、ビューに基づいてマテリアライズドビューを作成することをサポートしており、ビューに対する後続のクエリは透過的に書き換えることができます。
+上記ように、`agg_mv5`には`p1`から`p7`までのデータが含まれており、パーティション`p8`のデータは`lineorder`から直接クエリされます。最後に、これら2つのデータセットがUNION演算を使用して結合されます。
 
-たとえば、次のようなビューを作成します。
+## ビューに基づくマテリアライズドビューの書き換え
+
+StarRocksはビューに基づいたマテリアライズドビューの作成をサポートしています。その後、ビューに対するクエリは透過的に書き換えることができます。
+
+例えば、以下のようなビューを作成します。
 
 ```SQL
 CREATE VIEW customer_view1 
@@ -592,7 +640,7 @@ SELECT lo_orderkey, lo_linenumber, lo_custkey, lo_revenue
 FROM lineorder;
 ```
 
-次に、次のようなビューに基づいたマテリアライズされたビューを作成します。
+次に、これらのビューに基づいたマテリアライズドビューを作成します。
 
 ```SQL
 CREATE MATERIALIZED VIEW join_mv1
@@ -603,46 +651,76 @@ FROM lineorder_view1 INNER JOIN customer_view1
 ON lo_custkey = c_custkey;
 ```
 
-クエリの書き換え中、`customer_view1`や`lineorder_view1`に対するクエリは自動的に基本テーブルに展開され、透過的にマッチングおよび書き換えされます。
+クエリの書き換え中に、`customer_view1`と`lineorder_view1`へのクエリは自動的にベーステーブルに展開され、透過的に一致して書き換えられます。
 
-## 外部カタログに基づいたマテリアライズドビューの書き換え
+## 外部カタログに基づくマテリアライズドビューの書き換え
 
-StarRocksは、Hiveカタログ、Hudiカタログ、Icebergカタログ上に非同期マテリアライズドビューを構築し、これらを使用してクエリを透過的に書き換えることをサポートしています。外部カタログに基づくマテリアライズドビューは、クエリの書き換えについてほとんどの機能をサポートしていますが、いくつかの制限があります。
+StarRocksはHiveカタログ、Hudiカタログ、Icebergカタログに非同期のマテリアライズドビューの作成をサポートし、クエリの透過的な書き換えを行います。外部カタログに基づくマテリアライズドビューはほとんどのクエリの書き換え機能をサポートしていますが、いくつかの制限があります。
 
-- Hudi、Iceberg、またはJDBCカタログベースのマテリアライズドビューは、連合の書き換えをサポートしていません。
-- Hudi、Iceberg、またはJDBCカタログベースのマテリアライズドビューは、ビューデルタジョインの書き換えをサポートしていません。
-- Hudi、Iceberg、またはJDBCカタログベースのマテリアライズドビューは、パーティションの増分更新をサポートしていません。
+- Hudi、Iceberg、またはJDBCカタログに基づくマテリアライズドビューはUnionの書き換えをサポートしていません。
+- Hudi、Iceberg、またはJDBCカタログに基づくマテリアライズドビューはビューデルタ結合の書き換えをサポートしていません。
+- Hudi、Iceberg、またはJDBCカタログに基づくマテリアライズドビューはパーティションの増分更新をサポートしていません。
 
-## クエリの書き換えを構成する
+## クエリの書き換えの構成
 
-非同期マテリアライズドビューのクエリの書き換えは、以下のセッション変数を使用して構成することができます。
+非同期のマテリアライズドビューのクエリの書き換えは以下のセッション変数を使用して構成することができます:
 
-| **変数**                                      | **デフォルト** | **説明**                                                      |
+| **変数**                                      | **デフォルト** | **説明**                                       |
 | ------------------------------------------- | ----------- | ------------------------------------------------------------ |
-| enable_materialized_view_union_rewrite      | true        | マテリアライズドビューのUNIONクエリ書き換えを有効にするかどうかを制御するブール値。 |
-| enable_rule_based_materialized_view_rewrite | true        | 単一テーブルクエリ書き換えで使用されるブール値。 |
-| nested_mv_rewrite_max_level                 | 3           | クエリ書き換えに使用されるネストされたマテリアライズドビューの最大レベル。タイプ：INT。範囲：[1、+∞)。 `1`の値は、他のマテリアライズドビュー上に作成されたマテリアライズドビューがクエリの書き換えに使用されないことを示します。 |
+| enable_materialized_view_union_rewrite      | true        | マテリアライズドビューのUnionクエリの書き換えを有効にするかどうかを制御するブール値。 |
+| enable_rule_based_materialized_view_rewrite | true        | ルールに基づくマテリアライズドビューのクエリの書き換えを有効にするかどうかを制御するブール値。この変数は主に単一テーブルのクエリの書き換えに使用されます。 |
+| nested_mv_rewrite_max_level                 | 3           | クエリの書き換えに使用できるネストされたマテリアライズドビューの最大レベル。タイプ: INT。範囲: [1, +∞)。`1`の値は他のマテリアライズドビュー上に作成されたマテリアライズドビューがクエリの書き換えに使用されないことを示します。|
 
-## クエリが書き換えられたかどうかを確認する
+## クエリが書き換えられたかどうかの確認
 
-EXPLAINステートメントを使用してクエリのクエリプランを表示することで、クエリが書き換えられたかどうかを確認することができます。`OlapScanNode`セクションの`TABLE`フィールドが対応するマテリアライズドビューの名前を示している場合、クエリはマテリアライズドビューを基に書き換えられたことを意味します。
+EXPLAINステートメントを使用してクエリプランを表示することで、クエリが書き換えられたかどうかを確認することができます。`OlapScanNode`セクションの`TABLE`フィールドが対応するマテリアライズドビューの名前を表示する場合、クエリはマテリアライズドビューに基づいて書き換えられたことを意味します。
+
+```Plain
+mysql> EXPLAIN SELECT 
+    order_id, sum(goods.price) AS total 
+    FROM order_list INNER JOIN goods 
+    ON goods.item_id1 = order_list.item_id2 
+    GROUP BY order_id;
++------------------------------------+
+| Explain String                     |
++------------------------------------+
+| PLAN FRAGMENT 0                    |
+|  OUTPUT EXPRS:1: order_id | 8: sum |
+|   PARTITION: RANDOM                |
+|                                    |
+|   RESULT SINK                      |
+|                                    |
+|   1:Project                        |
+|   |  <slot 1> : 9: order_id        |
+|   |  <slot 8> : 10: total          |
+|   |                                |
+|   0:OlapScanNode                   |
+|      TABLE: order_mv               |
+|      PREAGGREGATION: ON            |
+|      partitions=1/1                |
+|      rollup: order_mv              |
+|      tabletRatio=0/12              |
+|      tabletList=                   |
+|      cardinality=3                 |
+|      avgRowSize=4.0                |
+|      numNodes=0                    |
++------------------------------------+
+20 行でセットされました（0.01 秒）
+
 ```
-20 rows in set (0.01 sec)
-```
+## クエリの書き換えを無効にする
 
-## クエリ書き換えの無効化
+StarRocks では、デフォルトカタログを基に作成された非同期マテリアライズドビューに対して、デフォルトでクエリの書き換えが有効になっています。セッション変数 `enable_materialized_view_rewrite` を `false` に設定することで、この機能を無効にすることができます。
 
-デフォルトでは、StarRocksはデフォルトカタログに基づいて作成された非同期マテリアライズドビューに対してクエリの書き換えを有効にします。セッション変数 `enable_materialized_view_rewrite` を `false` に設定することで、この機能を無効にすることができます。
-
-外部カタログに基づいて作成された非同期マテリアライズドビューに対しては、[ALTER MATERIALIZED VIEW](../sql-reference/sql-statements/data-definition/ALTER_MATERIALIZED_VIEW.md) を使用して、マテリアライズドビュープロパティ `force_external_table_query_rewrite` を `false` に設定することで、この機能を無効にすることができます。
+外部カタログを基に作成された非同期マテリアライズドビューに対しては、[ALTER MATERIALIZED VIEW](../sql-reference/sql-statements/data-definition/ALTER_MATERIALIZED_VIEW.md) を使用して、マテリアライズドビューのプロパティ `force_external_table_query_rewrite` を `false` に設定することで、この機能を無効にすることができます。
 
 ## 制限事項
 
-マテリアライズドビューに基づくクエリの書き換えに関して、StarRocksには現在、次の制限事項があります。
+マテリアライズドビューに基づくクエリの書き換えに関して、StarRocks には現在以下の制限事項があります:
 
-- StarRocksは、rand、random、uuid、sleep を含む非決定論的な関数を使用したクエリの書き換えをサポートしていません。
-- StarRocksはウィンドウ関数を使用したクエリの書き換えをサポートしていません。
-- LIMIT、ORDER BY、UNION、EXCEPT、INTERSECT、MINUS、GROUPING SETS、WITH CUBE、または WITH ROLLUP を含むステートメントで定義されたマテリアライズドビューは、クエリの書き換えに使用することはできません。
-- 外部カタログに基づくベーステーブルとそれに構築されたマテリアライズドビュー間のクエリ結果の強力な整合性は保証されません。
-- JDBCカタログで作成されたベーステーブルに対する非同期マテリアライズドビューは、クエリの書き換えをサポートしていません。
+- StarRocks は、rand、random、uuid、および sleep を含む非決定論的関数を使用したクエリの書き換えをサポートしていません。
+- StarRocks は、ウィンドウ関数を使用したクエリの書き換えをサポートしていません。
+- LIMIT、ORDER BY、UNION、EXCEPT、INTERSECT、MINUS、GROUPING SETS、WITH CUBE、または WITH ROLLUP を含むステートメントで定義されたマテリアライズドビューは、クエリの書き換えに使用できません。
+- 外部カタログ上に構築されたベーステーブルとマテリアライズドビューのクエリ結果の強力な整合性は保証されていません。
+- JDBC カタログ内のベーステーブルに作成された非同期マテリアライズドビューは、クエリの書き換えをサポートしていません。
 ```

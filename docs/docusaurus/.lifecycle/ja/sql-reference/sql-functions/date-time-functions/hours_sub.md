@@ -11,18 +11,18 @@ displayed_sidebar: "Japanese"
 ## 構文
 
 ```Haskell
-DATETIME hours_sub(DATETIME|DATE 日付, INT 時間);
+DATETIME hours_sub(DATETIME|DATE date, INT hours);
 ```
 
 ## パラメータ
 
-* `日付`: 有効なDATEまたはDATETIME式である必要があります。
+* `date`: 有効なDATEまたはDATETIME式でなければなりません。
 
-* `時間`: 減算する時間数。サポートされているデータ型はINTです。
+* `hours`: 減算する時間数です。サポートされているデータ型はINTです。
 
 ## 戻り値
 
-DATETIME値を返します。たとえば、日付が存在しない場合（例： `2022-21-01`）や日付がDATEまたはDATETIME値でない場合、NULLが返されます。
+DATETIME値を返します。たとえば、日付が存在しない場合（例： `2022-21-01`）、または日付がDATEまたはDATETIME値でない場合、NULLが返されます。
 
 ## 例
 
@@ -55,7 +55,7 @@ select hours_sub('2022-01-01', -1);
 | 2022-01-01 01:00:00         |
 +-----------------------------+
 
-エラーケース:
+エラーケース：
 select hours_sub('2022-21-01', -1);
 +--------------------------------------+
 | hours_sub('2022-21-01', -1) |

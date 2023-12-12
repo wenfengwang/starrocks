@@ -2,15 +2,15 @@
 displayed_sidebar: "Japanese"
 ---
 
-# カタログを表示
+# カタログの表示
 
 ## 説明
 
-現在のStarRocksクラスターにあるすべてのカタログ、内部カタログと外部カタログを問い合わせます。
+現在のStarRocksクラスターですべてのカタログを問い合わせます。内部カタログと外部カタログを含みます。
 
-> **注**
+> **注意**
 >
-> SHOW CATALOGSは、外部カタログのUSAGE権限を持つユーザーに外部カタログを返します。ユーザーまたはロールがどの外部カタログにもこの権限を持っていない場合、このコマンドはdefault_catalogのみを返します。
+> SHOW CATALOGSは、その外部カタログにUSAGE権限を持つユーザーに外部カタログを返します。外部カタログへのUSAGE権限がユーザーやロールにない場合、このコマンドはdefault_catalogのみを返します。
 
 ## 構文
 
@@ -22,34 +22,34 @@ SHOW CATALOGS
 
 ```SQL
 +----------+--------+----------+
-| カタログ  | タイプ   | コメント  |
+| カタログ  | タイプ | コメント |
 +----------+--------+----------+
 ```
 
-次の表は、このステートメントによって返されるフィールドを説明しています。
+次の表は、この文によって返されるフィールドを説明します。
 
 | **フィールド** | **説明**                                              |
 | ------------- | ------------------------------------------------------------ |
 | カタログ       | カタログ名。                                            |
-| タイプ          | カタログのタイプ。`default_catalog`の場合は`Internal`が返されます。他の外部カタログの場合は、`Hive`、`Hudi`、または`Iceberg`などの対応するカタログタイプが返されます。 |
-| コメント       | カタログのコメント。StarRocksは外部カタログへのコメントの追加をサポートしていないため、外部カタログの場合は値が`NULL`になります。`default_catalog`の場合、コメントはデフォルトで`An internal catalog contains this cluster's self-managed tables.`になります。`default_catalog`は、StarRocksクラスターにおける唯一の内部カタログです。 |
+| タイプ          | カタログのタイプ。カタログが`default_catalog`の場合は`Internal`が返されます。`Hive`、`Hudi`、`Iceberg`などの外部カタログの場合、対応するカタログタイプが返されます。 |
+| コメント       | カタログのコメント。StarRocksは外部カタログにコメントを追加することをサポートしていません。したがって、外部カタログの場合、値は`NULL`です。カタログが`default_catalog`の場合は、コメントはデフォルトで`An internal catalog contains this cluster's self-managed tables.`です。`default_catalog`はStarRocksクラスターの唯一の内部カタログです。|
 
 ## 例
 
-現在のクラスターにあるすべてのカタログを問い合わせる。
+現在のクラスターですべてのカタログを問い合わせます。
 
 ```SQL
 SHOW CATALOGS\G
-*************************** 1. row ***************************
-Catalog: default_catalog
-   Type: Internal
-Comment: An internal catalog contains this cluster's self-managed tables.
-*************************** 2. row ***************************
-Catalog: hudi_catalog
-   Type: Hudi
-Comment: NULL
-*************************** 3. row ***************************
-Catalog: iceberg_catalog
-   Type: Iceberg
-Comment: NULL
+*************************** 1. 行 ***************************
+カタログ: default_catalog
+   タイプ: Internal
+コメント: An internal catalog contains this cluster's self-managed tables.
+*************************** 2. 行 ***************************
+カタログ: hudi_catalog
+   タイプ: Hudi
+コメント: NULL
+*************************** 3. 行 ***************************
+カタログ: iceberg_catalog
+   タイプ: Iceberg
+コメント: NULL
 ```

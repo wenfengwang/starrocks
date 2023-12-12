@@ -1,8 +1,9 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# プロパティを設定する
+# プロパティの設定
 
 ## 説明
 
@@ -12,23 +13,23 @@ displayed_sidebar: "Japanese"
 SET PROPERTY [FOR 'ユーザー'] 'キー' = '値' [, 'キー' = '値']
 ```
 
-ユーザーに割り当てられるリソースなどを含むユーザー属性を設定します。ここでのユーザープロパティとは、`user_identity` の属性ではなく、ユーザーの属性を指します。つまり、CREATE USER ステートメントを使用して 'jack'@'%' および 'jack'@'192.%' の 2 つのユーザーを作成した場合、SET PROPERTY ステートメントは 'jack' ユーザーにのみ使用でき、'jack'@'%' や 'jack'@'192.%' には使用できません。
+ユーザーのリソースなどを含むユーザー属性を設定します。ここでのユーザープロパティは、ユーザー識別属性ではなく、ユーザー自身の属性を指します。つまり、'jack'@'%' と 'jack'@'192.%' の2つのユーザーが CREATE USER ステートメントを通じて作成された場合、SET PROPERTY ステートメントは 'jack'@'%' や 'jack'@'192.%' ではなく、ユーザー jack にのみ使用できます。
 
 キー:
 
 スーパーユーザー権限:
 
 ```plain text
-max_user_connections: 最大接続数
-resource.cpu_share: CPU リソース割り当て
+max_user_connections: 接続の最大数
+resource.cpu_share: CPU リソースの割り当て
 ```
 
 一般ユーザー権限:
 
 ```plain text
-quota.normal: 通常レベルのリソース割り当て
-quota.high: 高レベルのリソース割り当て
-quota.low: 低レベルのリソース割り当て
+quota.normal: 通常レベルでのリソース割り当て
+quota.high: 高レベルでのリソース割り当て
+quota.low: 低レベルでのリソース割り当て
 ```
 
 ## 例
@@ -50,3 +51,4 @@ quota.low: 低レベルのリソース割り当て
     ```SQL
     SET PROPERTY FOR 'jack' 'quota.normal' = '400';
     ```
+```

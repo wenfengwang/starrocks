@@ -1,81 +1,81 @@
 ---
 displayed_sidebar: "Japanese"
 sidebar_position: 3
-description: Apache Iceberg を使用した Data Lakehouse
+description: Apache Icebergを使用したData Lakehouse
 toc_max_heading_level: 2
 ---
 
-# Apache Iceberg を使用した Data Lakehouse
-import Clients from '../assets/quick-start/_clientsCompose.mdx'
+# Apache Icebergを使用したData Lakehouse
+../assets/quick-start/_clientsCompose.mdxからClientsをインポート
 
 ## 概要
 
-- Docker compose を使用して Object Storage、Apache Spark、Iceberg カタログ、StarRocks をデプロイします
-- Iceberg データレイクに 2023 年 5 月のニューヨーク市の緑のタクシーデータをロードします
-- StarRocks を Iceberg カタログにアクセスできるように構成します
-- データが存在する場所で StarRocks を使用してデータをクエリします
+- Docker composeを使用してオブジェクトストレージ、Apache Spark、Icebergカタログ、およびStarRocksを展開します
+- 2023年5月のニューヨークシティグリーンタクシーデータをIcebergデータレイクにロードします
+- StarRocksを構成してIcebergカタログにアクセスします
+- データの問い合わせはデータが配置されている場所でStarRocksを使用します
 
-## 前提条件
+## 必要条件
 
 ### Docker
 
 - [Docker](https://docs.docker.com/engine/install/)
-- Docker に割り当てられた RAM が 5 GB
-- Docker に割り当てられた空きディスク容量が 20 GB
+- Dockerに割り当てられたRAMが5GB
+- Dockerに割り当てられた空きディスク容量が20GB
 
-### SQL クライアント
+### SQLクライアント
 
-Docker 環境で提供される SQL クライアントを使用するか、システム上の SQL クライアントを使用します。多くの MySQL 互換クライアントが動作します。本ガイドでは DBeaver および MySQL WorkBench の構成について説明します。
+Docker環境で提供されるSQLクライアントを使用するか、またはシステム上のクライアントを使用してください。多くのMySQL互換のクライアントが動作しますが、このガイドではDBeaverとMySQL WorkBenchの構成について説明します。
 
 ### curl
 
-`curl` はデータセットをダウンロードするために使用されます。OS プロンプトで `curl` または `curl.exe` を実行してインストールされているかどうかを確認します。curl がインストールされていない場合は、[ここから curl を取得してください](https://curl.se/dlwiz/?type=bin)。
+`curl`はデータセットをダウンロードするために使用されます。OSプロンプトで`curl`または`curl.exe`を実行してインストールされているかどうかを確認してください。curlがインストールされていない場合は、[ここでcurlを取得してください](https://curl.se/dlwiz/?type=bin) 。
 
 ---
 
-## StarRocks の用語
+## StarRocks用語
 
 ### FE
-フロントエンドノードはメタデータ管理、クライアント接続管理、クエリプランニング、およびクエリスケジューリングに責任を持ちます。各 FE は、そのメモリにメタデータの完全なコピーを保存・維持するため、F E 間のサービスは無差別です。
+フロントエンドノードは、メタデータ管理、クライアント接続管理、クエリプランニング、およびクエリスケジューリングを担当します。各FEはそのメモリにメタデータの完全なコピーを保持および維持し、これによりFE間の無差別サービスが保証されます。
 
 ### BE
-バックエンドノードは共有なしのデプロイメントでのデータ保存およびクエリプランの実行に責任を持ちます。このガイドで使用されている Iceberg カタログのような外部カタログを使用する場合、ローカルデータのみが BE ノードに保存されます。
+バックエンドノードは、共有無しデプロイメントでのデータストレージおよびクエリプランの実行を担当します。このガイドで使用されるIcebergカタログのような外部カタログを使用する場合、ローカルのデータのみがBEノード（複数）に保存されます。
 
 ---
 
 ## 環境
 
-このガイドでは 6 つのコンテナ（サービス）が使用され、すべてが Docker compose で展開されています。サービスおよびそれぞれの責任は次のとおりです:
+このガイドでは、Docker composeで展開される6つのコンテナ（サービス）が使用され、それぞれが以下の責任を持ちます。
 
-| サービス               | 責任                                                    |
-|----------------------|----------------------------------------------------------|
-| **`starrocks-fe`**   | メタデータ管理、クライアント接続、クエリプランおよびスケジューリング |
-| **`starrocks-be`**   | クエリプランの実行                                      |
-| **`rest`**            | Iceberg カタログ (メタデータサービス) の提供                   |
-| **`spark-iceberg`**  | Apache Spark 環境で PySpark を実行する                      |
-| **`mc`**             | MinIO 構成 (MinIO コマンドラインクライアント)                  |
-| **`minio`**          | MinIO オブジェクトストレージ                                  |
+| サービス           | 責任                                                              |
+|-------------------|-------------------------------------------------------------------|
+| **`starrocks-fe`**| メタデータ管理、クライアント接続、クエリプランとスケジューリング|
+| **`starrocks-be`**| クエリプランの実行                                              |
+| **`rest`**        | Icebergカタログ（メタデータサービス）の提供                                              |
+| **`spark-iceberg`**| PySparkを実行するためのApache Spark環境                        |
+| **`mc`**          | MinIO構成（MinIOコマンドラインクライアント）                    |
+| **`minio`**       | MinIOオブジェクトストレージ                                      |
 
-## Docker 構成と NYC グリーンタクシーデータをダウンロード
+## Docker構成およびNYC Green Taxiデータのダウンロード
 
-StarRocks は Docker compose ファイルを提供し、3 つの必要なコンテナを含む環境を提供するためにデータセットをダウンロードします。
+このガイドで必要な3つのコンテナを提供するために、StarRocksはDocker composeファイルを提供し、curlでそのファイルとデータセットをダウンロードします。
 
-Docker compose ファイル:
+Docker composeファイル：
 ```bash
 mkdir iceberg
 cd iceberg
 curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-samples/iceberg/docker-compose.yml
 ```
 
-データセット:
+そしてデータセット：
 ```bash
 curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-samples/iceberg/datasets/green_tripdata_2023-05.parquet
 ```
 
-## Docker 環境を起動する
+## Dockerで環境を起動する
 
 :::tip
-このコマンドおよび他の `docker compose` コマンドはすべて、`docker-compose.yml` ファイルを含むディレクトリから実行します。
+このコマンドと他の`docker compose`コマンドは、`docker-compose.yml`ファイルを含むディレクトリから実行してください。
 :::
 
 ```bash
@@ -85,22 +85,22 @@ docker compose up -d
 ```plaintext
 [+] Building 0.0s (0/0)                     docker:desktop-linux
 [+] Running 6/6
- ✔ コンテナ iceberg-rest   Started                         0.0s
- ✔ コンテナ minio          Started                         0.0s
- ✔ コンテナ starrocks-fe   Started                         0.0s
- ✔ コンテナ mc             Started                         0.0s
- ✔ コンテナ spark-iceberg  Started                         0.0s
- ✔ コンテナ starrocks-be   Started
+ ✔ Container iceberg-rest   Started                         0.0s
+ ✔ Container minio          Started                         0.0s
+ ✔ Container starrocks-fe   Started                         0.0s
+ ✔ Container mc             Started                         0.0s
+ ✔ Container spark-iceberg  Started                         0.0s
+ ✔ Container starrocks-be   Started
 ```
 
-## 環境のステータスを確認する
+## 環境の状態を確認する
 
-サービスの進捗状況を確認します。FE および BE が健全になるまで約 30 秒かかるはずです。
+サービスの進捗状況を確認してください。FEとBEの健全性を確認するには、約30秒かかります。
 
-FE および BE が `healthy` の状態を表示するまで `docker compose ps` を実行します。その他のサービスにはヘルスチェックの構成がありませんが、これらとやり取りしているため、その状況を把握します:
+FEとBEが`健全`の状態を示すまで`docker compose ps`を実行してください。他のサービスにはヘルスチェックの構成がされていませんが、それらとやり取りすることになり、それが機能しているかどうかがわかります。
 
 :::tip
-`jq` がインストールされており、`docker compose ps` からの短いリストを希望する場合は次のコマンドを試してください:
+`jq`をインストール済みで`docker compose ps`から短いリストを希望する場合は以下をお試しください。
 
 ```bash
 docker compose ps --format json | jq '{Service: .Service, State: .State, Status: .Status}'
@@ -114,31 +114,32 @@ docker compose ps
 
 ```bash
 SERVICE         CREATED         STATUS                   PORTS
-rest            4 分前         Up 4 分                   0.0.0.0:8181->8181/tcp
-mc              4 分前         Up 4 分
-minio           4 分前         Up 4 分                   0.0.0.0:9000-9001->9000-9001/tcp
-spark-iceberg   4 分前         Up 4 分                   0.0.0.0:8080->8080/tcp, 0.0.0.0:8888->8888/tcp, 0.0.0.0:10000-10001->10000-10001/tcp
-starrocks-be    4 分前         Up 4 分 (healthy)         0.0.0.0:8040->8040/tcp
-starrocks-fe    4 分前         Up 4 分 (healthy)         0.0.0.0:8030->8030/tcp, 0.0.0.0:9020->9020/tcp, 0.0.0.0:9030->9030/tcp
+rest            4 minutes ago   Up 4 minutes             0.0.0.0:8181->8181/tcp
+mc              4 minutes ago   Up 4 minutes
+minio           4 minutes ago   Up 4 minutes             0.0.0.0:9000-9001->9000-9001/tcp
+spark-iceberg   4 minutes ago   Up 4 minutes             0.0.0.0:8080->8080/tcp, 0.0.0.0:8888->8888/tcp, 0.0.0.0:10000-10001->10000-10001/tcp
+starrocks-be    4 minutes ago   Up 4 minutes (healthy)   0.0.0.0:8040->8040/tcp
+starrocks-fe    4 minutes ago   Up 4 minutes (healthy)   0.0.0.0:8030->8030/tcp, 0.0.0.0:9020->9020/tcp, 0.0.0.0:9030->9030/tcp
 ```
 
 ---
 
 ## PySpark
 
-Iceberg とやり取りするためにはいくつかの方法がありますが、このガイドでは PySpark を使用します。PySpark が馴染みがない場合は、「詳細情報」からリンクされたドキュメントをご覧ください。ただし、実行するすべてのコマンドが以下に提供されています。
+Icebergとのインタラクションには複数の方法がありますが、このガイドではPySparkを使用しています。PySparkをご存じでない場合は、追加情報セクションからリンクされたドキュメントをご覧ください。ただし、実行する必要のあるすべてのコマンドは以下に記載されています。
 
 ### グリーンタクシーデータセット
 
-データを spark-iceberg コンテナにコピーします。このコマンドは、データセットファイルを `spark-iceberg` サービスの `/opt/spark/` ディレクトリにコピーします:
+データをspark-icebergコンテナにコピーします。このコマンドは、データセットファイルを`spark-iceberg`サービスの`/opt/spark/`ディレクトリにコピーします。
 
 ```bash
-docker compose cp green_tripdata_2023-05.parquet spark-iceberg:/opt/spark/
+docker compose \
+cp green_tripdata_2023-05.parquet spark-iceberg:/opt/spark/
 ```
 
-### PySpark を起動する
+### PySparkを起動
 
-このコマンドは `spark-iceberg` サービスに接続し、`pyspark` コマンドを実行します:
+このコマンドは`spark-iceberg`サービスに接続し、`pyspark`コマンドを実行します。
 
 ```bash
 docker compose exec -it spark-iceberg pyspark
@@ -159,14 +160,14 @@ SparkSession available as 'spark'.
 >>>
 ```
 
-### データセットをデータフレームに読み込む
+### データフレームにデータセットを読み込む
 
-データフレームは Spark SQL の一部であり、データベーステーブルやスプレッドシートに類似したデータ構造を提供します。
+データフレームはSpark SQLの一部であり、データベーステーブルやスプレッドシートに類似したデータ構造を提供します。
 
-グリーンタクシーデータは NYC Taxi and Limousine Commission によって Parquet 形式で提供されます。`df` という名前のデータフレームにファイルを `/opt/spark` ディレクトリから読み込み、データの最初の数行と最初の数列のスキーマを表示します。これらのコマンドは `pyspark` セッションで実行する必要があります。コマンド:
+グリーンタクシーデータはParquet形式でNYC Taxi and Limousine Commissionが提供しています。ディスクからファイルを`df`という名前のデータフレームに読み込み、データの最初の数行の最初の数列を選択して最初の数行のデータのスキーマを表示します。これらのコマンドは`pyspark`セッションで実行する必要があります。
 
-- ディスクからデータセットファイルを `df` という名前のデータフレームに読み込む
-- Parquet ファイルのスキーマを表示する
+- データセットファイルをデータフレーム`df`に読み込む
+- Parquetファイルのスキーマを表示
 
 ```py
 df = spark.read.parquet("/opt/spark/green_tripdata_2023-05.parquet")
@@ -198,7 +199,7 @@ root
 
 >>>
 ```
-データの最初の数列の最初の数行を表示します:
+最初の数行の最初の数列を選択して最初の数行のデータを表示：
 
 ```python
 df.select(df.columns[:7]).show(3)
@@ -211,11 +212,11 @@ df.select(df.columns[:7]).show(3)
 |       2| 2023-05-01 00:29:49|  2023-05-01 00:50:11|                 N|         1|          33|         100|
 |       2| 2023-05-01 00:25:19|  2023-05-01 00:32:12|                 N|         1|         244|         244|
 +--------+--------------------+---------------------+------------------+----------+------------+------------+
-表示している3行のみ
+only showing top 3 rows
 ```
 ### テーブルに書き込む
 
-この手順で作成されたテーブルは、次の手順でStarRocksで利用可能になるカタログになります。
+このステップで作成されたテーブルは、次のステップでStarRocksで利用可能になるカタログに入ります。
 
 - カタログ: `demo`
 - データベース: `nyc`
@@ -225,9 +226,26 @@ df.select(df.columns[:7]).show(3)
 df.writeTo("demo.nyc.greentaxis").create()
 ```
 
-## StarRocksへのアクセスを構成する
+## StarRocksにIcebergカタログへのアクセスを設定する
 
-PySparkから抜けることもできますし、新しいターミナルを開いてSQLコマンドを実行することもできます。他のクライアントを使用している場合は、そのクライアントを開いてください。
+PySparkからログアウトするか、新しいターミナルを開いてSQLコマンドを実行することができます。別のターミナルを開いた場合は、続行する前に`docker-compose.yml`ファイルを含む`quickstart`ディレクトリに移動してください。
+
+### SQLクライアントでStarRocksに接続する
+
+#### SQLクライアント
+
+<Clients />
+
+---
+
+PySparkセッションを終了してStarRocksに接続できます。
+
+:::tip
+
+このコマンドを`docker-compose.yml`ファイルを含むディレクトリから実行してください。
+
+mysql CLI以外のクライアントを使用している場合は、そのクライアントを開いてください。
+:::
 
 ```bash
 docker compose exec starrocks-fe \
@@ -240,7 +258,7 @@ StarRocks >
 
 ### 外部カタログを作成する
 
-外部カタログは、StarRocksがStarRocksデータベースとテーブル内にあるかのようにIcebergデータ上で操作するための構成です。
+外部カタログは、StarRocksがIcebergデータをStarRocksデータベースとテーブルで操作できるようにする構成です。個々の構成プロパティは、コマンドの後に詳細が記載されます。
 
 ```sql
 CREATE EXTERNAL CATALOG 'iceberg'
@@ -260,17 +278,17 @@ PROPERTIES
 
 #### PROPERTIES
 
-|    Property                      |     Description                                                                               |
+|    プロパティ                      |     説明                                                                               |
 |:---------------------------------|:----------------------------------------------------------------------------------------------|
-|`type`                            | In this example the type is `iceberg`. Other options include Hive, Hudi, Delta Lake, and JDBC.|
-|`iceberg.catalog.type`            | In this example `rest` is used. Tabular provides the Docker image used and Tabular uses REST.|
-|`iceberg.catalog.uri`             | The REST server endpoint.|
-|`iceberg.catalog.warehouse`       | The identifier of the Iceberg catalog. In this case the warehouse name specified in the compose file is `warehouse`. |
-|`aws.s3.access_key`               | The MinIO key. In this case the key and password are set in the compose file to `admin` |
-|`aws.s3.secret_key`               | and `password`. |
-|`aws.s3.endpoint`                 | The MinIO endpoint. |
-|`aws.s3.enable_path_style_access` | When using MinIO for Object Storage this is required. MinIO expects this format `http://host:port/<bucket_name>/<key_name>` |
-|`client.factory`                  | By setting this property to use `iceberg.IcebergAwsClientFactory` the `aws.s3.access_key` and `aws.s3.secret_key` parameters are used for authentication. |
+|`type`                            | この例では`iceberg`タイプです。その他のオプションには、Hive、Hudi、Delta Lake、JDBCなどがあります。|
+|`iceberg.catalog.type`            | この例では`rest`が使用されています。Tabularは使用されるDockerイメージを提供し、TabularはRESTを使用します。|
+|`iceberg.catalog.uri`             | RESTサーバーエンドポイント。|
+|`iceberg.catalog.warehouse`       | Icebergカタログの識別子。この例ではコンポーズファイルで指定された倉庫の名前は`warehouse`です。 |
+|`aws.s3.access_key`               | MinIOキー。この場合、キーとパスワードは`admin`に設定されています。|
+|`aws.s3.secret_key`               | および`password`です。 |
+|`aws.s3.endpoint`                 | MinIOエンドポイント。|
+|`aws.s3.enable_path_style_access` | オブジェクトストレージとしてMinIOを使用する場合、これが必要です。MinIOはこのフォーマット`http://host:port/<bucket_name>/<key_name>`を期待しています。 |
+|`client.factory`                  | このプロパティを`iceberg.IcebergAwsClientFactory`を使用するように設定すると、認証に`aws.s3.access_key`と`aws.s3.secret_key`パラメータが使用されます。 |
 
 ```sql
 SHOW CATALOGS;
@@ -280,7 +298,7 @@ SHOW CATALOGS;
 +-----------------+----------+------------------------------------------------------------------+
 | Catalog         | Type     | Comment                                                          |
 +-----------------+----------+------------------------------------------------------------------+
-| default_catalog | Internal | An internal catalog contains this cluster's self-managed tables. |
+| default_catalog | Internal | 内部カタログには、このクラスターのセルフマネージドテーブルが含まれています。 |
 | iceberg         | Iceberg  | NULL                                                             |
 +-----------------+----------+------------------------------------------------------------------+
 2 rows in set (0.03 sec)
@@ -293,6 +311,9 @@ SET CATALOG iceberg;
 ```sql
 SHOW DATABASES;
 ```
+:::tip
+表示されるデータベースは、PySparkで作成されました。`iceberg`カタログを追加すると、StarRocksで`nyc`データベースが表示されます。
+:::
 
 ```plaintext
 +----------+
@@ -308,7 +329,10 @@ USE nyc;
 ```
 
 ```plaintext
-Database changed
+次のテーブルデータベースの補完情報のためにテーブルと列名の読み取りをオフにできます
+
+この機能をオフにして起動時間を短縮するには、-Aを使用できます
+データベースが変更されました
 ```
 
 ```sql
@@ -327,6 +351,10 @@ SHOW TABLES;
 ```sql
 DESCRIBE greentaxis;
 ```
+
+:::tip
+StarRocksが使用するスキーマと、以前のPySparkセッションの`df.printSchema()`の出力を比較してください。Sparkの`timestamp_ntz`データ型はStarRocksの`DATETIME`などとして表されます。
+:::
 
 ```plaintext
 +-----------------------+------------------+------+-------+---------+-------+
@@ -356,9 +384,15 @@ DESCRIBE greentaxis;
 20 rows in set (0.04 sec)
 ```
 
+:::tip
+StarRocksのドキュメントの一部のSQLクエリはセミコロンではなく、 `\G`で終わります。 `\G`はmysql CLIにクエリ結果を垂直にレンダリングさせます。
+
+多くのSQLクライアントは垂直フォーマット出力を解釈しないため、mysql CLIを使用していない場合は、`\G`を`;`に置き換える必要があります。
+:::
+
 ## StarRocksでクエリを実行する
 
-### ピックアップの日時の形式を確認する
+### ピックアップの日時形式を検証する
 
 ```sql
 SELECT lpep_pickup_datetime FROM greentaxis LIMIT 10;
@@ -376,7 +410,7 @@ SELECT lpep_pickup_datetime FROM greentaxis LIMIT 10;
 | 2023-05-01 00:51:54  |
 | 2023-05-01 00:27:46  |
 | 2023-05-01 00:27:14  |
-```plaintext
+```
 | 2023-05-01 00:24:14  |
 | 2023-05-01 00:46:55  |
 +----------------------+
@@ -385,7 +419,7 @@ SELECT lpep_pickup_datetime FROM greentaxis LIMIT 10;
 
 #### 忙しい時間を見つける
 
-このクエリは、一日の中の時刻ごとにトリップを集計し、一番忙しい時間が18:00であることを示しています。
+このクエリは、日中のトリップを集計し、その日の一番忙しい時間が18:00であることを示しています。
 
 ```sql
 SELECT COUNT(*) AS trips,
@@ -429,21 +463,21 @@ ORDER BY trips DESC;
 
 ---
 
-## 要約
+## サマリ
 
-このチュートリアルでは、StarRocks外部カタログの使用とIceberg RESTカタログを使用してデータをクエリすることができることを示しました。Hive、Hudi、Delta Lake、およびJDBCカタログを使用した多くの他の統合も利用可能です。
+このチュートリアルでは、StarRocksの外部カタログの使用方法を紹介しました。これにより、Iceberg RESTカタログを使用してデータをそのままクエリできることがわかります。Hive、Hudi、Delta Lake、JDBCカタログを使用した多くの他の統合も利用できます。
 
-このチュートリアルでは：
+このチュートリアルでは、次のことを行いました。
 
-- StarRocksとIceberg/PySpark/MinIO環境をDockerに展開しました
+- DockerでStarRocksとIceberg/PySpark/MinIO環境をデプロイしました
 - StarRocks外部カタログを構成してIcebergカタログへのアクセスを提供しました
-- ニューヨーク市の提供するタクシーデータをIcebergデータレイクにロードしました
-- データをデータレイクからコピーすることなくStarRocksでSQLを使用してデータをクエリしました
+- ニューヨーク市が提供するタクシーデータをIcebergデータレイクにロードしました
+- StarRocksでデータをデータレイクからコピーすることなくSQLでクエリしました
 
-## さらに詳しい情報
+## もっと情報
 
 [StarRocksカタログ](../data_source/catalog/catalog_overview.md)
 
-[Apache Icebergドキュメント](https://iceberg.apache.org/docs/latest/)および[クイックスタート（PySparkを含む）](https://iceberg.apache.org/spark-quickstart/)
+[Apache Icebergドキュメント](https://iceberg.apache.org/docs/latest/) および [クイックスタート（PySparkを含む）](https://iceberg.apache.org/spark-quickstart/)
 
-[グリーンタクシートリップレコード](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)データセットは、これらの[利用条件](https://www.nyc.gov/home/terms-of-use.page)および[プライバシーポリシー](https://www.nyc.gov/home/privacy-policy.page)に準拠してニューヨーク市によって提供されています。
+[グリーンタクシートリップレコード](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) データセットは、ニューヨーク市が提供し、これらの[利用条件](https://www.nyc.gov/home/terms-of-use.page) と[プライバシーポリシー](https://www.nyc.gov/home/privacy-policy.page) に従います。

@@ -1,8 +1,8 @@
 ---
-displayed_sidebar: "English"
+displayed_sidebar: "Japanese"
 ---
 
-# bitnot
+# bitnot（ビットノット）
 
 ## 説明
 
@@ -16,11 +16,11 @@ BITNOT(x);
 
 ## パラメータ
 
-`x`: この式は、次のデータ型のいずれかに評価する必要があります：TINYINT, SMALLINT, INT, BIGINT, LARGEINT。
+`x`: この式は次のいずれかのデータ型に評価される必要があります：TINYINT, SMALLINT, INT, BIGINT, LARGEINT。
 
 ## 戻り値
 
-戻り値は `x` と同じタイプです。どちらかの値がNULLの場合、結果もNULLです。
+戻り値は `x` と同じ型です。値が NULL の場合、結果も NULL です。
 
 ## 例
 

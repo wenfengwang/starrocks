@@ -4,19 +4,19 @@ displayed_sidebar: "Japanese"
 
 # xx_hash3_64
 
-## 説明
+## Description
 
-入力文字列の64ビットxxhash3ハッシュ値を返します。 xx_hash3_64は、AVX2命令を使用して[murmur_hash3_32](./murmur_hash3_32.md)よりも優れたパフォーマンスを持ち、多くのソフトウェアに広く統合されている最新のハッシュ品質を持っています。
+入力文字列の64ビットxxhash3ハッシュ値を返します。 xx_hash3_64はAVX2命令を使用して[murmur_hash3_32](./murmur_hash3_32.md)よりも優れたパフォーマンスを持ち、多くのソフトウェアで広く統合されている最新のハッシュ品質を持っています。
 
 この関数はv3.2.0からサポートされています。
 
-## 構文
+## Syntax
 
 ```Haskell
 BIGINT XX_HASH3_64(VARCHAR input, ...)
 ```
 
-## 例
+## Examples
 
 ```Plain Text
 MySQL > select xx_hash3_64(null);
@@ -41,6 +41,6 @@ MySQL > select xx_hash3_64("hello", "world");
 +-------------------------------+
 ```
 
-## キーワード
+## keyword
 
-XX_HASH3_64,ハッシュ,xxHash3
+XX_HASH3_64,HASH,xxHash3

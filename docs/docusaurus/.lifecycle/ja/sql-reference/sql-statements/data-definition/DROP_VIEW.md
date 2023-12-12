@@ -17,7 +17,7 @@ DROP VIEW [IF EXISTS]
 
 ## 例
 
-1. もし存在する場合は、example_dbのexample_viewというビューを削除します。
+1. 存在する場合は、example_dbのexample_viewを削除します。
 
     ```sql
     DROP VIEW IF EXISTS example_db.example_view;

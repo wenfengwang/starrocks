@@ -2,10 +2,10 @@
 displayed_sidebar: "Japanese"
 ---
 
-# STRING
+# 文字列
 
-## Description
+## 説明
 
-STRING
+文字列
 
-変数長の文字列で、最大長は65533バイトです。
+可変長の文字列で、最大長は65533バイトです

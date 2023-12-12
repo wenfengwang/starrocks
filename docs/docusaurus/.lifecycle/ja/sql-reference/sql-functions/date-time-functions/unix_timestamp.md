@@ -6,17 +6,17 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-DATEまたはDATETIMEの値をUNIXタイムスタンプに変換します。
+DATEまたはDATETIME値をUNIXタイムスタンプに変換します。
 
-パラメータが指定されていない場合、この関数は現在の時刻をUNIXタイムスタンプに変換します。
+パラメータが指定されていない場合、この関数は現在の時間をUNIXタイムスタンプに変換します。
 
-`date`パラメータはDATEまたはDATETIMEタイプである必要があります。
+`date`パラメータはDATEまたはDATETIMEタイプでなければなりません。
 
-1970-01-01 00:00:00よりも前または2038-01-19 11:14:07よりも後の時刻の場合、この関数は0を返します。
+1970-01-01 00:00:00より前または2038-01-19 11:14:07より後の時刻の場合、この関数は0を返します。
 
-日付形式の詳細については、[date_format](./date_format.md)を参照してください。
+日付のフォーマットの詳細については、[date_format](./date_format.md)を参照してください。
 
-この関数は異なるタイムゾーンに対して異なる結果を返す場合があります。詳細については、[タイムゾーンの設定](../../../administration/timezone.md)を参照してください。
+この関数は異なるタイムゾーンで異なる結果を返す可能性があります。詳細については、[タイムゾーンの設定](../../../administration/timezone.md)を参照してください。
 
 ## 構文
 
@@ -67,4 +67,4 @@ MySQL > select unix_timestamp('1969-01-01 00:00:00');
 
 ## キーワード
 
-UNIX_TIMESTAMP,UNIX,TIMESTAMP
+UNIX_TIMESTAMP, UNIX, TIMESTAMP

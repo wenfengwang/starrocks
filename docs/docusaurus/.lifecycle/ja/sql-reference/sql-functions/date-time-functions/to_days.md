@@ -6,9 +6,9 @@ displayed_sidebar: "Japanese"
 
 ## Description
 
-日付と0000-01-01との間の日数を返します。
+0000-01-01との日数を返します。
 
-`date`パラメータはDATEまたはDATETIME型でなければなりません。
+`date`パラメータはDATEかDATETIME型でなければなりません。
 
 ## Syntax
 

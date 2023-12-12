@@ -8,7 +8,7 @@ displayed_sidebar: "Japanese"
 
 指定された日付の分を返します。返り値の範囲は0から59までです。
 
-`date`パラメータはDATE型またはDATETIME型でなければなりません。
+`date` パラメータは DATE または DATETIME のタイプでなければなりません。
 
 ## 構文
 
@@ -29,4 +29,4 @@ MySQL > select minute('2018-12-31 23:59:59');
 
 ## キーワード
 
-分
+MINUTE

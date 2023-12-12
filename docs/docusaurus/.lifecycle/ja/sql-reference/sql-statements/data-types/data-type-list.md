@@ -2,9 +2,9 @@
 displayed_sidebar: "英語"
 ---
 
-# データタイプの概要
+# データ型の概要
 
-StarRocksは以下のデータタイプをサポートしています：[数値](#numeric)、[文字列](#string)、[日付](#date)、[セミストラクチャード](#semi-structured)、そして[その他](#others)。テーブルの作成時にこれらのタイプのカラムを定義したり、これらのカラムにデータをロードしたり、データのクエリを実行することができます。
+StarRocksは、次のデータ型をサポートしています：[数値](#numeric)、[文字列](#string)、[日付](#date)、[半構造化](#semi-structured)、および [その他](#others)。これらの型の列をテーブル作成時に定義し、これらの列にデータをロードし、データをクエリします。
 
 ## 数値
 
@@ -31,7 +31,7 @@ StarRocksは以下のデータタイプをサポートしています：[数値]
 - [DATE](../data-types/DATE.md)
 - [DATETIME](../data-types/DATETIME.md)
 
-## セミストラクチャード
+## 半構造化
 
 - [ARRAY](../data-types/Array.md)
 - [JSON](../data-types/JSON.md)

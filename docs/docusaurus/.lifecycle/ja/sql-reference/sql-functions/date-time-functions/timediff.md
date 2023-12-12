@@ -6,11 +6,11 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-2つのDATETIME式の差を返します。
+2つのDATETIME式の時間差を返します。
 
 返り値はTIME型でなければなりません。
 
-## 構文
+## 文法
 
 ```Haskell
 TIME TIMEDIFF(DATETIME expr1, DATETIME expr2)`

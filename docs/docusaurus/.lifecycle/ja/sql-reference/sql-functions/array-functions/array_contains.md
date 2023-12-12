@@ -2,16 +2,16 @@
 displayed_sidebar: "Japanese"
 ---
 
-# array_contains
+# array_contains（配列_含む）
 
 ## 説明
 
-配列が特定の要素を含んでいるかどうかを確認します。含んでいる場合は1を返し、含んでいない場合は0を返します。
+配列が指定された要素を含むかどうかを確認します。含む場合は1を返し、含まない場合は0を返します。
 
 ## 構文
 
 ```Haskell
-array_contains(any_array, any_element)
+array_contains(任意の配列, 任意の要素)
 ```
 
 ## 例
@@ -26,7 +26,7 @@ mysql> select array_contains(["apple","orange","pear"], "orange");
 1 row in set (0.01 sec)
 ```
 
-また、配列がNULLを含んでいるかどうかも確認できます。
+また、配列がNULLを含むかどうかも確認できます。
 
 ```plain text
 mysql> select array_contains([1, NULL], NULL);
@@ -38,7 +38,7 @@ mysql> select array_contains([1, NULL], NULL);
 1 row in set (0.00 sec)
 ```
 
-多次元配列が特定のサブ配列を含んでいるかどうかも確認できます。この場合、サブ配列の要素が完全に一致することを確認する必要があります。要素の配置順も含む。
+多次元配列が特定のサブ配列を含むかどうかも確認できます。この場合、サブ配列の要素が正確に一致し、要素の配置順序も含まれていることを確認する必要があります。
 
 ```plain text
 mysql> select array_contains([[1,2,3], [4,5,6]], [4,5,6]);

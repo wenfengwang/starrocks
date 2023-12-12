@@ -8,7 +8,7 @@ displayed_sidebar: "Japanese"
 
 日付の年部分を返し、1000から9999までの値を返します。
 
-`date` パラメータは DATE もしくは DATETIME タイプである必要があります。
+`date`パラメータはDATEまたはDATETIMEタイプである必要があります。
 
 ## 構文
 

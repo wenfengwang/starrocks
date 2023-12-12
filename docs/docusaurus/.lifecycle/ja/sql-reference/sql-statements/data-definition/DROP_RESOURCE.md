@@ -1,4 +1,3 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -7,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-この文は既存のリソースを削除するために使用されます。ルートユーザーまたはスーパーユーザーのみがリソースを削除できます。
+この文は、既存のリソースを削除するために使用されます。ルートユーザーまたはスーパーユーザーのみがリソースを削除できます。
 
 構文:
 
@@ -17,14 +16,14 @@ DROP RESOURCE 'resource_name'
 
 ## 例
 
-1. スパークリソースであるspark0を削除します。
+1. spark0という名前のSparkリソースを削除します。
 
-    ```SQL
+    ```SQL   
     DROP RESOURCE 'spark0';
     ```
 
-2. Hiveリソースであるhive0を削除します。
+2. hive0という名前のHiveリソースを削除します。
 
-    ```SQL
+    ```SQL   
     DROP RESOURCE 'hive0';
     ```

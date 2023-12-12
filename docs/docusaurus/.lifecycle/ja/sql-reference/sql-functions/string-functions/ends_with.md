@@ -1,4 +1,4 @@
-```---
+---
 displayed_sidebar: "Japanese"
 ---
 
@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定された接尾辞で文字列が終わる場合、`true`を返します。それ以外の場合は、`false`を返します。引数がNULLの場合、結果はNULLになります。
+指定された接尾辞で文字列が終わる場合は`true`を返します。そうでない場合は`false`を返します。引数がNULLの場合、結果もNULLになります。
 
 ## 構文
 
@@ -35,4 +35,3 @@ MySQL > select ends_with("Hello starrocks", "Hello");
 ## キーワード
 
 ENDS_WITH
-```

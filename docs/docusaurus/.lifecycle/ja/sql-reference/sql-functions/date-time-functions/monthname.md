@@ -2,13 +2,13 @@
 displayed_sidebar: "Japanese"
 ---
 
-# monthname（月名）
+# monthname
 
 ## 説明
 
-指定された日付の月の名前を返します。
+与えられた日付の月の名前を返します。
 
-`date`パラメータはDATE型またはDATETIME型でなければなりません。
+`date` パラメータは DATE 型または DATETIME 型である必要があります。
 
 ## 構文
 

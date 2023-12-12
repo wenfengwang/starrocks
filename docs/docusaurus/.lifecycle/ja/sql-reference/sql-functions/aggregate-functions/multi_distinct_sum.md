@@ -1,27 +1,26 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # multi_distinct_sum
 
-## 説明
+## Description
 
-`expr` の異なる値の合計を返します。これは sum(distinct expr) と同等です。
+`expr`の重複のない値の合計を返します。これはsum(distinct expr)に相当します。
 
-## 構文
+## Syntax
 
 ```Haskell
 multi_distinct_sum(expr)
 ```
 
-## パラメータ
+## Parameters
 
-- `expr`: 計算に関与する列。列の値は次の型にできます：TINYINT、SMALLINT、INT、LARGEINT、FLOAT、DOUBLE、または DECIMAL。
+- `expr`: 計算に関与する列。列の値は、TINYINT、SMALLINT、INT、LARGEINT、FLOAT、DOUBLE、またはDECIMALのいずれかの型であることができます。
 
-## 戻り値
+## Return value
 
-列値と戻り値の型の対応は次のとおりです：
+列の値と戻り値の型とのマッピングは次のとおりです。
 
 - BOOLEAN -> BIGINT
 - TINYINT -> BIGINT
@@ -36,9 +35,9 @@ multi_distinct_sum(expr)
 - DECIMAL64 -> DECIMAL128
 - DECIMAL128 -> DECIMAL128
 
-## 例
+## Examples
 
-1. `k0` を INT フィールドとして持つ表を作成します。
+1. `k0`をINTフィールドとするテーブルを作成します。
 
     ```sql
     CREATE TABLE tabl
@@ -52,14 +51,14 @@ multi_distinct_sum(expr)
     );
     ```
 
-2. 表に値を挿入します。
+2. テーブルに値を挿入します。
 
     ```sql
     -- 
     INSERT INTO tabl VALUES ('0'), ('1'), ('1'), ('1'), ('2'), ('2');
     ```
 
-3. multi_distinct_sum() を使用して、`k0` 列の異なる値の合計を計算します。
+3. multi_distinct_sum()を使用して、`k0`列の重複のない値の合計を計算します。
 
     ```plain text
     MySQL > select multi_distinct_sum(k0) from tabl;
@@ -68,8 +67,7 @@ multi_distinct_sum(expr)
     +------------------------+
     |                      3 |
     +------------------------+
-    1 行が返されました (0.03 秒)
+    1 row in set (0.03 sec)
     ```
 
-    `k0` の異なる値は 0、1、2 であり、これらを合計することで 3 を得ることができます。
-```
+    `k0`の重複のない値は0、1、2であり、これらを合計すると3になります。

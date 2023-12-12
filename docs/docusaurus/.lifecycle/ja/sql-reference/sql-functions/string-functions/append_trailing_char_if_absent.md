@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-文字列strが空でなく、末尾にtrailing_char文字が含まれていない場合、末尾にtrailing_char文字を追加します。trailing_charには1文字しか含めることができません。複数の文字が含まれている場合、この関数はNULLを返します。
+文字列strが空でなく、末尾にtrailing_char文字が含まれていない場合、trailing_char文字を末尾に追加します。trailing_charには1文字しか含めることができません。複数の文字が含まれている場合、この関数はNULLを返します。
 
 ## 構文
 

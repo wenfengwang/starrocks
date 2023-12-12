@@ -1,4 +1,4 @@
-```markdown
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -9,8 +9,8 @@ displayed_sidebar: "Japanese"
 
 パイプを中断または再開します：
 
-- ロードジョブが進行中（つまり`RUNNING`状態）の場合、ジョブのための`SUSPEND`パイプはジョブを中断します。
-- ロードジョブでエラーが発生した場合、ジョブのための`RESUME`パイプではエラーのあるジョブを実行し続けます。
+- ロードジョブが進行中の場合（つまり、「RUNNING」の状態である場合）、ジョブのためにパイプを中断（「SUSPEND」）すると、ジョブが中断されます。
+- ロードジョブでエラーが発生した場合は、そのジョブのためにパイプを再開（「RESUME」）すると、エラーを起こしたジョブが続行されます。
 
 ## 構文
 
@@ -22,29 +22,29 @@ ALTER PIPE [ IF EXISTS ] <pipe_name> { SUSPEND | RESUME [ IF SUSPENDED ] }
 
 ### pipe_name
 
-パイプの名前です。
+パイプの名前。
 
 ## 例
 
 ### パイプを中断する
 
-データベース`mydatabase`内で`RUNNING`状態にある`user_behavior_replica`という名前のパイプを中断します：
+データベース「mydatabase」で（「RUNNING」の状態にある）名前が「user_behavior_replica」のパイプを中断します：
 
 ```SQL
 USE mydatabase;
 ALTER PIPE user_behavior_replica SUSPEND;
 ```
 
-パイプを問い合わせるために[SHOW PIPES](../../../sql-reference/sql-statements/data-manipulation/SHOW_PIPES.md)を使用すると、その状態が`SUSPEND`に変わったことがわかります。
+[SHOW PIPES](../../../sql-reference/sql-statements/data-manipulation/SHOW_PIPES.md)を使用してパイプをクエリすると、その状態が「SUSPEND」に変更されていることがわかります。
 
 ### パイプを再開する
 
-データベース`mydatabase`内で`user_behavior_replica`という名前のパイプを再開します：
+データベース「mydatabase」で名前が「user_behavior_replica」のパイプを再開します：
 
 ```SQL
 USE mydatabase;
 ALTER PIPE user_behavior_replica RESUME;
 ```
 
-パイプを問い合わせるために[SHOW PIPES](../../../sql-reference/sql-statements/data-manipulation/SHOW_PIPES.md)を使用すると、その状態が`RUNNING`に変わったことがわかります。
+[SHOW PIPES](../../../sql-reference/sql-statements/data-manipulation/SHOW_PIPES.md)を使用してパイプをクエリすると、その状態が「RUNNING」に変更されていることがわかります。
 ```

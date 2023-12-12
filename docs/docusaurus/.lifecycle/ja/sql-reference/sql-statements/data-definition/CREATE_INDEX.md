@@ -1,4 +1,3 @@
-```markdown
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -7,23 +6,23 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-このステートメントはインデックスを作成するために使用されます。
+このステートメントは、インデックスを作成するために使用されます。
 
 構文:
 
 ```sql
-CREATE INDEX インデックス名 ON テーブル名 (列 [, ...],) [BITMAPを使用] [COMMENT 'バラバラ']
+CREATE INDEX インデックス名 ON テーブル名 (カラム [, ...],) [USING BITMAP] [COMMENT'balabala']
 ```
 
-注:
+注意:
 
-1. 現在のバージョンでは、ビットマップインデックスのみがサポートされています。
-2. 単一の列にのみBITMAPインデックスを作成できます。
+1. 現在のバージョンではビットマップインデックスのみがサポートされています。
+2. 1つの列にのみビットマップインデックスを作成できます。
 
 ## 例
 
-1. `table1` の `siteid` にビットマップインデックスを作成します。
+1. `table1` の `siteid` に対してビットマップインデックスを作成します。
 
     ```sql
-    CREATE INDEX インデックス名 ON table1 (siteid) BITMAPを使用 COMMENT 'バラバラ';
+    CREATE INDEX インデックス名 ON table1 (siteid) USING BITMAP COMMENT 'balabala';
     ```

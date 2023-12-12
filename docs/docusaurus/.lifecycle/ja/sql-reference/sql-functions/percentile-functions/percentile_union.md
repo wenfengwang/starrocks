@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-PERCENTILE データを集計します。
+PERCENTILEデータを集計します。
 
 ## 構文
 
@@ -16,15 +16,15 @@ percentile_union(expr);
 
 ## パラメータ
 
-`expr`: サポートされているデータ型は PERCENTILE です。
+`expr`: サポートされるデータ型はPERCENTILEです。
 
 ## 戻り値
 
-PERCENTILE 値を返します。
+PERCENTILE値を返します。
 
 ## 例
 
-例1: 材料化されたビューでパーセンタイルデータを使用します。
+例1：マテリアライズドビューでパーセンタイルデータを使用します。
 
 テーブルを作成します。
 
@@ -39,7 +39,7 @@ CREATE TABLE sales_records(
 PROPERTIES ("replication_num" = "3");
 ```
 
-テーブルの `sale_amt` 列に基づいて材料化ビューを作成します。
+テーブルの `sale_amt` 列を基にしたマテリアライズドビューを作成します。
 
 ```sql
 create materialized view mv as
@@ -48,9 +48,9 @@ from sales_records
 group by store_id;
 ```
 
-例2: PERCENTILE データをロードします。
+例2：PERCENTILEデータをロードします。
 
-PERCENTILE 列 `sale_amt_per` を含む集計テーブルを作成します。
+PERCENTILE列 `sale_amt_per` を含む集計テーブルを作成します。
 
 ```sql
 CREATE TABLE sales_records(
@@ -74,7 +74,7 @@ PROPERTIES (
 select percentile_approx_raw(percentile_union(sale_amt_per), 0.99) from sales_records;
 ```
 
-PERCENTILE データを含むデータを `sales_records` テーブルにロードします。
+PERCENTILEデータを含むデータを `sales_records` テーブルにロードします。
 
 ```sql
 curl --location-trusted -u root

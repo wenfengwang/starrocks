@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-StarRocksにビットマップデータをインポートする前に、データをシリアライズし、データをBase64文字列としてエンコードする必要があります。StarRocksにBase64文字列をインポートする際には、文字列をビットマップデータに変換する必要があります。
+StarRocksにビットマップデータをインポートする前に、データをシリアライズし、Base64文字列としてエンコードする必要があります。Base64文字列をStarRocksにインポートする際、文字列をビットマップデータに変換する必要があります。
 この関数は、Base64文字列をビットマップデータに変換するために使用されます。
 
 この関数はv2.3からサポートされています。
@@ -19,25 +19,25 @@ BITMAP base64_to_bitmap(VARCHAR bitmap)
 
 ## パラメータ
 
-`bitmap`: サポートされるデータ型はVARCHARです。StarRocksにBitmapデータをロードする前に、JavaやC++を使用して[BitmapValueオブジェクトを作成](https://github.com/StarRocks/starrocks/blob/main/fe/spark-dpp/src/test/java/com/starrocks/load/loadv2/dpp/BitmapValueTest.java)し、要素を追加し、データをシリアライズし、データをBase64文字列としてエンコードすることができます。その後、この関数に入力パラメータとしてBase64文字列を渡します。
+`bitmap`: サポートされているデータ型はVARCHARです。BitmapデータをStarRocksにロードする前に、JavaまたはC ++を使用して[BitmapValueオブジェクトを作成](https://github.com/StarRocks/starrocks/blob/main/fe/spark-dpp/src/test/java/com/starrocks/load/loadv2/dpp/BitmapValueTest.java)し、要素を追加し、データをシリアライズし、データをBase64文字列としてエンコードすることができます。その後、この関数に入力パラメータとしてBase64文字列を渡します。
 
 ## 戻り値
 
-BITMAP型の値を返します。
+BITMAPタイプの値を返します。
 
 ## 例
 
-`bitmapdb`という名前のデータベースと`bitmap`という名前のテーブルを作成します。JSONデータを`bitmap_table`にインポートするために、このプロセス中に、JSONファイル内のBase64文字列をビットマップデータに変換するためにbase64_to_bitmapを使用します。
+データベース`bitmapdb`とテーブル`bitmap`を作成します。JSONデータを`bitmap_table`にインポートする際、このプロセス中にbase64_to_bitmapを使用してJSONファイル内のBase64文字列をビットマップデータに変換します。
 
-1. StarRocksでデータベースとテーブルを作成します。この例では、主キーのテーブルが作成されます。
+1. StarRocksでデータベースとテーブルを作成します。この例では、プライマリキーテーブルが作成されます。
 
     ```SQL
     CREATE database bitmapdb;
     USE bitmapdb;
     CREATE TABLE `bitmap_table` (
-    `tagname` varchar(65533) NOT NULL COMMENT "Tag name",
-    `tagvalue` varchar(65533) NOT NULL COMMENT "Tag value",
-    `userid` bitmap NOT NULL COMMENT "User ID"
+    `tagname` varchar(65533) NOT NULL COMMENT "タグ名",
+    `tagvalue` varchar(65533) NOT NULL COMMENT "タグ値",
+    `userid` bitmap NOT NULL COMMENT "ユーザーID"
     ) ENGINE=OLAP
     PRIMARY KEY(`tagname`, `tagvalue`)
     COMMENT "OLAP"
@@ -50,7 +50,7 @@ BITMAP型の値を返します。
 
 2. [Stream Load](../../../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)を使用してJSONデータを`bitmap_table`にインポートします。
 
-    **simpledata**という名前のJSONファイルがあるとします。このファイルには以下の内容が含まれており、`userid`はBase64エンコードされた文字列です。
+    `simpledata`という名前のJSONファイルがあるとします。このファイルには以下の内容があり、`userid`はBase64でエンコードされた文字列です。
 
     ```JSON
     {

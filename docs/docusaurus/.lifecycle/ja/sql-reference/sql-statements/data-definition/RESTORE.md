@@ -6,14 +6,14 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定されたデータベース、テーブル、またはパーティションにデータを復元します。現在、StarRocksはOLAPテーブルへのデータのみを復元することができます。詳細については、[データのバックアップとリストア](../../../administration/Backup_and_restore.md)を参照してください。
+指定されたデータベース、テーブル、またはパーティションにデータを復元します。現時点では、StarRocksはOLAPテーブルにのみデータを復元することができます。詳細については、[データのバックアップと復元](../../../administration/Backup_and_restore.md)を参照してください。
 
-RESTOREは非同期操作です。RESTOREジョブの状態は[SHOW RESTORE](../data-manipulation/SHOW_RESTORE.md)を使用して確認できます。また、[CANCEL RESTORE](../data-definition/CANCEL_RESTORE.md)を使用してRESTOREジョブをキャンセルすることもできます。
+RESTOREは非同期操作です。[SHOW RESTORE](../data-manipulation/SHOW_RESTORE.md)を使用してRESTOREのジョブのステータスを確認したり、[CANCEL RESTORE](../data-definition/CANCEL_RESTORE.md)を使用してRESTOREのジョブをキャンセルすることができます。
 
 > **注意**
 >
-> - 管理権限を持つユーザーのみがデータを復元できます。
-> - 各データベースにつき、同時に実行されているバックアップまたはリストアジョブは1つだけです。それ以外の場合、StarRocksはエラーを返します。
+> - ADMIN権限を持つユーザーのみがデータを復元できます。
+> - 各データベースでは、実行中のBACKUPまたはRESTOREジョブは1つだけ許可されています。そうでない場合、StarRocksはエラーを返します。
 
 ## 構文
 
@@ -27,18 +27,18 @@ PROPERTIES ("key"="value", ...)
 
 ## パラメーター
 
-| **パラメーター** | **説明**                                                      |
+| **パラメーター** | **説明**                                                     |
 | --------------- | ------------------------------------------------------------ |
 | db_name         | データを復元するデータベースの名前。                            |
-| snapshot_name   | データスナップショットの名前。                                    |
-| repository_name | リポジトリの名前。                                              |
+| snapshot_name   | データスナップショットの名前。                                 |
+| repository_name | リポジトリの名前。                                            |
 | ON              | 復元するテーブルの名前。このパラメーターが指定されていない場合、データベース全体が復元されます。 |
-| PARTITION       | 復元するパーティションの名前。このパラメーターが指定されていない場合、テーブル全体が復元されます。パーティション名は[SHOW PARTITIONS](../data-manipulation/SHOW_PARTITIONS.md)で確認できます。 |
-| PROPERTIES      | RESTORE操作のプロパティ。有効なキー：<ul><li>`backup_timestamp`: バックアップのタイムスタンプ。 **必須**。[SHOW SNAPSHOT](../data-manipulation/SHOW_SNAPSHOT.md)でバックアップのタイムスタンプを確認できます。</li><li>`replication_num`: 復元するレプリカの数を指定します。デフォルト: `3`。</li><li>`meta_version`: このパラメーターは、以前のバージョンのStarRocksでバックアップされたデータを復元するための一時的な解決策としてのみ使用されます。最新バージョンのバックアップされたデータには既に`meta version`が含まれており、それを指定する必要はありません。</li><li>`timeout`: タスクのタイムアウト。単位：秒。デフォルト: `86400`。</li></ul> |
+| PARTITION       | 復元するパーティションの名前。このパラメーターが指定されていない場合、テーブル全体が復元されます。パーティション名は[SHOW PARTITIONS](../data-manipulation/SHOW_PARTITIONS.md)を使用して表示できます。 |
+| PROPERTIES      | RESTORE操作のプロパティ。有効なキー：<ul><li>`backup_timestamp`：バックアップのタイムスタンプ。**必須**。[SHOW SNAPSHOT](../data-manipulation/SHOW_SNAPSHOT.md)を使用してバックアップタイムスタンプを表示できます。</li><li>`replication_num`：復元するレプリカの数を指定します。デフォルト：`3`。</li><li>`meta_version`：このパラメーターは、StarRocksの以前のバージョンでバックアップされたデータを復元するための一時的な解決策としてのみ使用されます。最新バージョンのバックアップデータにはすでに`meta version`が含まれており、これを指定する必要はありません。</li><li>`timeout`：タスクのタイムアウト。単位：秒。デフォルト：`86400`。</li></ul> |
 
 ## 例
 
-例1：`example_repo`リポジトリからスナップショット`snapshot_label1`のテーブル`backup_tbl`を`example_db`データベースに、バックアップタイムスタンプが`2018-05-04-16-45-08`である1つのレプリカを復元します。
+例1：`example_repo`リポジトリからデータベース`example_db`に含まれるスナップショット`snapshot_label1`のテーブル`backup_tbl`をバックアップタイムスタンプ`2018-05-04-16-45-08`で1つのレプリカを復元します。
 
 ```SQL
 RESTORE SNAPSHOT example_db.snapshot_label1
@@ -51,7 +51,7 @@ PROPERTIES
 );
 ```
 
-例2：`example_repo`から`snapshot_label2`のテーブル`backup_tbl`のパーティション`p1`および`p2`、テーブル`backup_tbl2`（`new_tbl`に名前変更）を`example_db`データベースに、バックアップタイムスタンプが`2018-05-04-17-11-01`である3つのレプリカをデフォルトで復元します。
+例2：`example_repo`から`snapshot_label2`のテーブル`backup_tbl`のパーティション`p1`および`p2`、および`backup_tbl2`テーブルをデータベース`example_db`に、`new_tbl`に名前変更してバックアップタイムスタンプ`2018-05-04-17-11-01`でデフォルトで3つのレプリカを復元します。
 
 ```SQL
 RESTORE SNAPSHOT example_db.snapshot_label2

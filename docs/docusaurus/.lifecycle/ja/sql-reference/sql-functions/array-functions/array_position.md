@@ -14,18 +14,18 @@ displayed_sidebar: "Japanese"
 array_position(any_array, any_element)
 ```
 
-## パラメーター
+## パラメータ
 
-- `any_array`: 検索対象の配列です。
-- `any_element`: 配列内の要素と一致する式です。
+- `any_array`: 検索対象の配列。
+- `any_element`: 配列内の要素に一致する式。
 
-## 戻り値
+## 返り値
 
-指定された要素の位置を返します。指定された要素が配列内で見つかる場合はその位置を返し、要素が配列内で見つからない場合は0を返します。
+指定された要素の位置を返し、指定された配列内で要素を見つけられない場合は0を返します。
 
 ## 例
 
-- 例1：配列内の要素の位置を取得します。
+- 例1：配列内の要素の位置を取得する。
 
 ```plaintext
 mysql> select array_position(["apple","orange","pear"], "orange");
@@ -43,7 +43,7 @@ mysql> select array_position(["apple","orange","pear"], "orange");
 1 row in set (0.01 sec)
 ```
 
-- 例2：配列内で`NULL`の位置を取得します。
+- 例2：配列内の`NULL`の位置を取得する。
 
 ```sql
 mysql> select array_position([1, NULL], NULL);
@@ -63,7 +63,7 @@ mysql> select array_position([1, NULL], NULL);
 1 row in set (0.00 sec)
 ```
 
-- 例3：多次元配列内のサブ配列の位置を取得します。指定されたサブ配列と同じ順序で同じ要素からなるサブ配列が多次元配列内で見つかる場合のみ位置を返します。
+- 例3：多次元配列内のサブ配列の位置を取得する。指定されたサブ配列と同じ順序で同じ要素から構成されるサブ配列が多次元配列内に見つかる場合にのみ位置を返すことができます。
 
 ```Lua
 mysql> select array_position([[1,2,3], [4,5,6]], [4,5,6]);

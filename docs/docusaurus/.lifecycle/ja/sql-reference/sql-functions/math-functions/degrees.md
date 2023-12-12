@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# 度
+# degrees
 
 ## 説明
 
@@ -14,9 +14,9 @@ displayed_sidebar: "Japanese"
 DEGREES(x);
 ```
 
-## パラメータ
+## パラメーター
 
-`x`: ラジアンでの角度。DOUBLE がサポートされています。
+`x`: ラジアン単位の角度。DOUBLE がサポートされています。
 
 ## 戻り値
 

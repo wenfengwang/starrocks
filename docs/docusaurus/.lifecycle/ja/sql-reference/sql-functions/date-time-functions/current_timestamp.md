@@ -2,21 +2,21 @@
 displayed_sidebar: "Japanese"
 ---
 
-# current_timestamp
+# current_timestamp（現在のタイムスタンプ）
 
-## Description
+## 説明
 
-現在の日付を取得し、DATETIME型の値を返します。
+現在の日付を取得し、DATETIME型の値で返します。
 
 v3.1以降、結果はマイクロ秒まで正確です。
 
-## Syntax
+## 構文
 
 ```Haskell
 DATETIME CURRENT_TIMESTAMP()
 ```
 
-## Examples
+## 例
 
 ```Plain Text
 MySQL > select current_timestamp();
@@ -35,6 +35,6 @@ MySQL > select current_timestamp();
 +----------------------------+
 ```
 
-## keyword
+## キーワード
 
-CURRENT_TIMESTAMP,CURRENT,TIMESTAMP
+CURRENT_TIMESTAMP, CURRENT, TIMESTAMP

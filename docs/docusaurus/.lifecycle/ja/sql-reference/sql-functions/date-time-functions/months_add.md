@@ -6,9 +6,9 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-日付に指定した月数を追加し、月単位で正確な演算を行います。
+指定された月数を日付に加算し、月単位で正確です。
 
-[add_months](./add_months.md) 関数は似たような機能を提供します。
+[add_months](./add_months.md) 関数は類似の機能を提供します。
 
 ## 構文
 
@@ -16,15 +16,15 @@ displayed_sidebar: "Japanese"
 DATETIME months_add(DATETIME expr1, INT expr2);
 ```
 
-## パラメータ
+## パラメーター
 
-- `expr1`: 開始時刻。DATETIME または DATE 型である必要があります。
+- `expr1`： 開始時刻。DATETIME または DATE 型でなければなりません。
 
-- `expr2`: 追加する月数。INT 型である必要があります。ゼロ以上またはゼロ以下の値が可能です。負の値は `date` から月を減算します。
+- `expr2`： 追加する月数。INT 型でなければなりません。ゼロ以上、またはゼロ以下の値であることができます。負の値は `date` から月を減算します。
 
 ## 戻り値
 
-DATETIME 型の値を返します。
+DATETIME 値を返します。
 
 ## 例
 

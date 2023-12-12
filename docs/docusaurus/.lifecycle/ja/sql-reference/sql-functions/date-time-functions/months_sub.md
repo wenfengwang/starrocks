@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-指定された月数を日付から引く。
+指定された月数を日付から引きます。
 
 ## 構文
 
@@ -14,11 +14,11 @@ displayed_sidebar: "Japanese"
 DATETIME months_sub(DATETIME expr1, INT expr2);
 ```
 
-## パラメータ
+## パラメーター
 
-- `expr1`: 指定された日付。DATETIMEまたはDATEタイプでなければなりません。
+- `expr1`：指定された日付。DATETIMEまたはDATEタイプである必要があります。
 
-- `expr2`: 引く月数。INTタイプでなければなりません。
+- `expr2`：引き算する月。INTタイプである必要があります。
 
 ## 戻り値
 

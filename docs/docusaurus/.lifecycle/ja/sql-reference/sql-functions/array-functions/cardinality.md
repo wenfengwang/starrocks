@@ -6,21 +6,21 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-配列内の要素数を返します。結果の型はINTです。入力パラメータがNULLの場合、結果もNULLです。NULL要素も長さに含まれます。
+配列内の要素の数を返します。結果の型はINTです。入力パラメータがNULLの場合、結果もNULLになります。NULLの要素も長さに含まれます。
 
-これは、[array_length()](array_length.md) のエイリアスです。
+これは[array_length()](array_length.md)の別名です。
 
-この機能はv3.0以降でサポートされています。
+この関数はv3.0以降でサポートされています。
 
 ## 構文
 
 ```Haskell
-INT cardinality(any_array)
+INT カーディナリティ(any_array)
 ```
 
 ## パラメータ
 
-`any_array`: 要素数を取得したいARRAY値です。
+`any_array`: 要素の数を取得したいARRAY値です。
 
 ## 戻り値
 
@@ -55,4 +55,4 @@ mysql> select cardinality([[1,2], [3,4]]);
 
 ## キーワード
 
-CARDINALITY, ARRAY_LENGTH, ARRAY
+カーディナリティ, ARRAY_LENGTH, ARRAY

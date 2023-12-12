@@ -4,15 +4,15 @@ displayed_sidebar: "Japanese"
 
 # 情報スキーマ
 
-StarRocksの`information_schema`は、各StarRocksインスタンス内にあるデータベースです。`information_schema`には、StarRocksインスタンスが保持するすべてのオブジェクトの詳細なメタデータ情報を格納するいくつかの読み取り専用のシステム定義テーブルが含まれています。
+StarRocksの`information_schema`は、StarRocksの各インスタンス内にあるデータベースです。`information_schema`には、StarRocksインスタンスが保持するすべてのオブジェクトの詳細なメタデータ情報を格納するいくつかの読み取り専用のシステム定義テーブルが含まれています。
 
-v3.2以降、StarRocksは`information_schema`を介して外部カタログメタデータを表示することがサポートされています。
+v3.2以降、StarRocksは`information_schema`を介して外部カタログメタデータを表示することをサポートしています。
 
-## Information Schemaを介したメタデータの表示
+## 情報スキーマを介したメタデータの表示
 
-`information_schema`内のテーブルのコンテンツをクエリすることで、StarRocksインスタンス内のメタデータ情報を表示できます。
+`information_schema`のテーブルのコンテンツをクエリして、StarRocksインスタンス内のメタデータ情報を表示することができます。
 
-次の例では、テーブル`tables`をクエリして、StarRocks内のテーブル`sr_member`に関するメタデータ情報を表示しています。
+次の例は、テーブル`tables`をクエリして、StarRocks内のテーブル`sr_member`に関するメタデータ情報を表示しています。
 
 ```Plain
 mysql> SELECT * FROM information_schema.tables WHERE TABLE_NAME like 'sr_member'\G
@@ -41,133 +41,133 @@ TABLE_COLLATION: utf8_general_ci
 1 row in set (1.04 sec)
 ```
 
-## Information Schemaテーブル
+## 情報スキーマテーブル
 
-StarRocksは、`information_schema`内で提供されるテーブル`tables`, `tables_config`, `load_tracking_logs`のメタデータ情報を最適化しており、v3.1以降では`loads`テーブルを提供しています。
+StarRocksは、`information_schema`内のテーブル`tables`、`tables_config`、`load_tracking_logs`のメタデータ情報を最適化しており、v3.1以降から`loads`テーブルを提供しています。
 
-| **Information Schema table name** | **Description**                                              |
+| **情報スキーマテーブル名** | **説明**                                                     |
 | --------------------------------- | ------------------------------------------------------------ |
 | [tables](#tables)                            | テーブルの一般的なメタデータ情報を提供します。             |
-| [tables_config](#tables_config)                     | StarRocks固有の追加のテーブルメタデータ情報を提供します。  |
-| [load_tracking_logs](#load_tracking_logs)                | ロードジョブのエラー情報（あれば）を提供します。              |
-| [loads](#loads)                             | v3.1以降でサポートされているロードジョブの結果を提供します。現在、このテーブルからは[Broker Load](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)と[Insert](../sql-reference/sql-statements/data-manipulation/INSERT.md)ジョブの結果のみを表示できます。                 |
+| [tables_config](#tables_config)                     | StarRocks固有の追加のテーブルメタデータ情報を提供します。 |
+| [load_tracking_logs](#load_tracking_logs)                | ロードジョブのエラー情報（あれば）を提供します。      |
+| [loads](#loads)                             | v3.1以降でサポートされる、ロードジョブの結果を提供します。現時点では、このテーブルから[BROKER_LOAD](../sql-reference/sql-statements/data-manipulation/BROKER_LOAD.md)および[INSERT](../sql-reference/sql-statements/data-manipulation/INSERT.md)ジョブの結果を表示することができます。                 |
 
 ### loads
 
-`loads`で提供されるフィールドは次のとおりです：
+`loads`では、以下のフィールドが提供されています：
 
-| **Field**            | **Description**                                              |
+| **フィールド**            | **説明**                                               |
 | -------------------- | ------------------------------------------------------------ |
-| JOB_ID               | StarRocksがロードジョブを識別するために割り当てた一意のIDです。  |
-| LABEL                | ロードジョブのラベル。                                        |
-| DATABASE_NAME        | ディスティネーションのStarRocksテーブルが属するデータベースの名前です。 |
-| STATE                | ロードジョブの状態。有効な値：<ul><li>`PENDING`：ロードジョブが作成されました。</li><li>`QUEUEING`：ロードジョブがスケジュールされるのを待っています。</li><li>`LOADING`：ロードジョブが実行中です。</li><li>`PREPARED`：トランザクションがコミットされました。</li><li>`FINISHED`：ロードジョブが成功しました。</li><li>`CANCELLED`：ロードジョブが失敗しました。</li></ul>詳細については、[非同期読み込み](../loading/Loading_intro.md#asynchronous-loading)を参照してください。 |
-| PROGRESS             | ロードジョブのETLステージとLOADINGステージの進捗状況です。      |
-| TYPE                 | ロードジョブの種類。Broker Loadの場合、返り値は`BROKER`です。INSERTの場合、返り値は`INSERT`です。 |
-| PRIORITY             | ロードジョブの優先度。有効な値：`HIGHEST`、`HIGH`、`NORMAL`、`LOW`、`LOWEST`。 |
-| SCAN_ROWS            | スキャンされたデータ行の数。                                    |
-| FILTERED_ROWS        | データ品質が十分でないためにフィルタリングされたデータ行の数。     |
-| UNSELECTED_ROWS      | WHERE句で指定された条件によってフィルタリングされたデータ行の数。  |
-| SINK_ROWS            | 読み込まれたデータ行の数。                                       |
-| ETL_INFO             | ロードジョブのETLの詳細。Spark Loadの場合のみ非空の値が返されます。他のタイプのロードジョブの場合、空の値が返されます。 |
-| TASK_INFO            | ロードジョブのタスク実行の詳細、例えば`timeout`や`max_filter_ratio`の設定です。 |
-| CREATE_TIME          | ロードジョブが作成された時刻。フォーマット：`yyyy-MM-dd HH:mm:ss`。例：`2023-07-24 14:58:58`。 |
-| ETL_START_TIME       | ロードジョブのETLステージの開始時刻。フォーマット：`yyyy-MM-dd HH:mm:ss`。例：`2023-07-24 14:58:58`。 |
-| ETL_FINISH_TIME      | ロードジョブのETLステージの終了時刻。フォーマット：`yyyy-MM-dd HH:mm:ss`。例：`2023-07-24 14:58:58`。 |
-| LOAD_START_TIME      | ロードジョブのLOADINGステージの開始時刻。フォーマット：`yyyy-MM-dd HH:mm:ss`。例：`2023-07-24 14:58:58`。 |
-| LOAD_FINISH_TIME     | ロードジョブのLOADINGステージの終了時刻。フォーマット：`yyyy-MM-dd HH:mm:ss`。例：`2023-07-24 14:58:58`。 |
-| JOB_DETAILS          | ロードされたデータの詳細、例えばバイト数やファイル数です。 |
-| ERROR_MSG            | ロードジョブのエラーメッセージ。エラーがない場合は、`NULL`が返されます。  |
-| TRACKING_URL         | ロードジョブで検出された不適格データ行にアクセスできるURLです。`curl`や`wget`コマンドを使用してURLにアクセスし、不適格データ行を取得できます。不適格データがない場合は、`NULL`が返されます。 |
-| TRACKING_SQL         | ロードジョブのトラッキングログをクエリするために使用できるSQLステートメントです。不適格データ行が関与するロードジョブの場合のみ、SQLステートメントが返されます。不適格データ行が関与しない場合は、`NULL`が返されます。 |
-| REJECTED_RECORD_PATH | ロードジョブでフィルタリングされたすべての不適格データ行にアクセスできるパスです。`log_rejected_record_num`パラメータで設定された不適格データ行の数によってログに記録される不適格データ行の数が決まります。`wget`コマンドを使用してパスにアクセスできます。不適格データが関与しない場合は、`NULL`が返されます。 |
+| JOB_ID               | StarRocksがロードジョブを識別するために割り当てた一意のIDです。 |
+| LABEL                | ロードジョブのラベルです。                                    |
+| DATABASE_NAME        | 対象のStarRocksテーブルが所属するデータベースの名前です。     |
+| STATE                | ロードジョブの状態です。有効な値:<ul><li>`PENDING`: ロードジョブが作成されています。</li><li>`QUEUEING`: ロードジョブがスケジュール待ちのキューにあります。</li><li>`LOADING`: ロードジョブが実行されています。</li><li>`PREPARED`: トランザクションがコミットされました。</li><li>`FINISHED`: ロードジョブが成功しました。</li><li>`CANCELLED`: ロードジョブが失敗しました。</li></ul>詳細については、[非同期ロード](../loading/Loading_intro.md#asynchronous-loading)を参照してください。 |
+| PROGRESS             | ロードジョブのETLステージとLOADINGステージの進行状況です。          |
+| TYPE                 | ロードジョブのタイプです。Broker Loadの場合、戻り値は`BROKER`です。INSERTの場合、戻り値は`INSERT`です。 |
+| PRIORITY             | ロードジョブの優先度です。有効な値:`HIGHEST`、`HIGH`、`NORMAL`、`LOW`、`LOWEST`。 |
+| SCAN_ROWS            | スキャンされたデータ行の数です。                                  |
+| FILTERED_ROWS        | データ品質が不十分でフィルタリングされたデータ行の数です。     |
+| UNSELECTED_ROWS      | WHERE句で指定された条件によってフィルタリングされたデータ行の数です。 |
+| SINK_ROWS            | ロードされたデータ行の数です。                                     |
+| ETL_INFO             | ロードジョブのETLの詳細です。Spark Loadの場合のみ、空でない値が返されます。その他の種類のロードジョブでは、空の値が返されます。 |
+| TASK_INFO            | ロードジョブのタスク実行の詳細（`timeout`、`max_filter_ratio`の設定など）です。 |
+| CREATE_TIME          | ロードジョブの作成時刻です。フォーマット:`yyyy-MM-dd HH:mm:ss`。例:`2023-07-24 14:58:58`。 |
+| ETL_START_TIME       | ロードジョブのETLステージの開始時刻です。フォーマット:`yyyy-MM-dd HH:mm:ss`。例:`2023-07-24 14:58:58`。 |
+| ETL_FINISH_TIME      | ロードジョブのETLステージの終了時刻です。フォーマット:`yyyy-MM-dd HH:mm:ss`。例:`2023-07-24 14:58:58`。 |
+| LOAD_START_TIME      | ロードジョブのLOADINGステージの開始時刻です。フォーマット:`yyyy-MM-dd HH:mm:ss`。例:`2023-07-24 14:58:58`。 |
+| LOAD_FINISH_TIME     | ロードジョブのLOADINGステージの終了時刻です。フォーマット:`yyyy-MM-dd HH:mm:ss`。例:`2023-07-24 14:58:58`。 |
+| JOB_DETAILS          | 読み込まれたデータの詳細（バイト数やファイル数など）です。    |
+| ERROR_MSG            | ロードジョブのエラーメッセージです。ロードジョブにエラーがない場合は、`NULL`が返されます。 |
+| TRACKING_URL         | ロードジョブで検出された不適格なデータ行へアクセスできるURLです。`curl`または`wget`コマンドを使用してURLにアクセスし、不適格なデータ行のサンプルを取得できます。不適格なデータが検出されない場合は、`NULL`が返されます。 |
+| TRACKING_SQL         | ロードジョブの追跡ログをクエリするために使用できるSQL文です。ロードジョブが不適格なデータ行を含む場合のみ、SQL文が返されます。ロードジョブが不適格なデータ行を含まない場合は、`NULL`が返されます。 |
+| REJECTED_RECORD_PATH | ロードジョブでフィルタリングされたすべての不適格なデータ行にアクセスできるパスです。`log_rejected_record_num`パラメータで設定された不適格なデータ行の数によって、記録された不適格なデータ行の数が決定されます。`wget`コマンドを使用してパスにアクセスできます。ロードジョブが不適格なデータ行を含まない場合は、`NULL`が返されます。 |
 
 ### tables
 
-`tables`で提供されるフィールドは次のとおりです：
+`tables`では、以下のフィールドが提供されています：
 
-| **Field**       | **Description**                                              |
+| **フィールド**       | **説明**                                               |
 | --------------- | ------------------------------------------------------------ |
-| TABLE_CATALOG   | テーブルを格納するカタログの名前。                             |
-| TABLE_SCHEMA    | テーブルを格納するデータベースの名前。                        |
-| TABLE_NAME      | テーブルの名前。                                             |
-| TABLE_TYPE      | テーブルのタイプ。有効な値："BASE TABLE"または"VIEW"。          |
-| ENGINE          | テーブルのエンジンタイプ。有効な値："StarRocks"、"MySQL"、"MEMORY"、または空の文字列。 |
-| VERSION         | StarRocksで利用可能な機能に適用されます。                        |
-| ROW_FORMAT      | StarRocksで利用可能な機能に適用されます。                        |
-| TABLE_ROWS      | テーブルの行数。                                              |
-| AVG_ROW_LENGTH  | テーブルの平均行長（サイズ）。`DATA_LENGTH` / `TABLE_ROWS`と等価です。単位：バイト。 |
-| DATA_LENGTH     | テーブルのデータ長さ（サイズ）。単位：バイト。                  |
-| MAX_DATA_LENGTH | StarRocksで利用可能な機能に適用されます。                        |
-| INDEX_LENGTH    | StarRocksで利用可能な機能に適用されます。                        |
-| DATA_FREE       | StarRocksで利用可能な機能に適用されます。                        |
-| AUTO_INCREMENT  | StarRocksで利用可能な機能に適用されます。                        |
-| CREATE_TIME     | テーブルが作成された時刻。                                       |
-| UPDATE_TIME     | テーブルが最後に更新された時刻。                                  |
-| CHECK_TIME      | テーブルで一貫性チェックが実行された最後の時刻。                    |
-| TABLE_COLLATION | テーブルのデフォルト照合順序。                                    |
-| CHECKSUM        | StarRocksで利用可能な機能に適用されます。                        |
-| CREATE_OPTIONS  | StarRocksで利用可能な機能に適用されます。                        |
-| TABLE_COMMENT   | テーブルに関するコメント。                                       |
+| TABLE_CATALOG   | テーブルを格納するカタログの名前です。                    |
+| TABLE_SCHEMA    | テーブルを格納するデータベースの名前です。                |
+| TABLE_NAME      | テーブルの名前です。                                      |
+| TABLE_TYPE      | テーブルの種類です。有効な値:「BASE TABLE」または「VIEW」。      |
+| ENGINE          | テーブルのエンジンタイプです。有効な値:「StarRocks」、「MySQL」、「MEMORY」、または空の文字列。 |
+| VERSION         | StarRocksで使用できない機能に適用されます。                      |
+| ROW_FORMAT      | StarRocksで使用できない機能に適用されます。                      |
+| TABLE_ROWS      | テーブルの行数です。                                         |
+| AVG_ROW_LENGTH  | テーブルの平均行長（サイズ）です。`DATA_LENGTH` / `TABLE_ROWS`と同等です。単位: バイト。 |
+| DATA_LENGTH     | テーブルのデータ長（サイズ）です。単位: バイト。                |
+| MAX_DATA_LENGTH | StarRocksで使用できない機能に適用されます。                      |
+| INDEX_LENGTH    | StarRocksで使用できない機能に適用されます。                      |
+| DATA_FREE       | StarRocksで使用できない機能に適用されます。                      |
+| AUTO_INCREMENT  | StarRocksで使用できない機能に適用されます。                      |
+| CREATE_TIME     | テーブルが作成された時刻です。                                 |
+| UPDATE_TIME     | テーブルが最後に更新された時刻です。                            |
+| CHECK_TIME      | テーブルについての整合性チェックが最後に実行された時刻です。            |
+| TABLE_COLLATION | テーブルのデフォルト照合順序です。                            |
+| CHECKSUM        | StarRocksで使用できない機能に適用されます。                      |
+| CREATE_OPTIONS  | StarRocksで使用できない機能に適用されます。                      |
+| TABLE_COMMENT   | テーブルのコメントです。                                      |
 
 ### tables_config
 
-`tables_config`で提供されるフィールドは次のとおりです：
+`tables_config`では、以下のフィールドが提供されています：
 
-| **Field**        | **Description**                                              |
+| **フィールド**        | **説明**                                               |
 | ---------------- | ------------------------------------------------------------ |
-| TABLE_SCHEMA     | テーブルを格納するデータベースの名前。                        |
-| TABLE_NAME       | テーブルの名前。                                             |
-| TABLE_ENGINE     | テーブルのエンジンタイプ。                                    |
-| TABLE_MODEL      | テーブルのタイプ。有効な値："DUP_KEYS"、"AGG_KEYS"、"UNQ_KEYS"、"PRI_KEYS"。 |
+| TABLE_SCHEMA     | テーブルを格納するデータベースの名前です。                |
+| TABLE_NAME       | テーブルの名前です。                                      |
+| TABLE_ENGINE     | テーブルのエンジンタイプです。                               |
+| TABLE_MODEL      | テーブルの種類です。有効な値:「DUP_KEYS」、「AGG_KEYS」、「UNQ_KEYS」、「PRI_KEYS」。 |
 | PRIMARY_KEY      | Primary KeyテーブルまたはUnique Keyテーブルのプライマリキー。テーブルがPrimary KeyテーブルまたはUnique Keyテーブルでない場合は空の文字列が返されます。 |
-| PARTITION_KEY    | テーブルのパーティション列。                         |
-| DISTRIBUTE_KEY   | テーブルのバケット化された列。                          |
-| DISTRIBUTE_TYPE  | テーブルのデータ分散方法。                    |
-| DISTRIBUTE_BUCKET | テーブル内のバケット数。                              |
-| SORT_KEY         | テーブルのソートキー。                                   |
-| PROPERTIES       | テーブルのプロパティ。                                   |
-| TABLE_ID         | テーブルのID。                                             |
+| PARTITION_KEY    | テーブルのパーティショニング列。                                  |
+| DISTRIBUTE_KEY   | テーブルのバケット化列。                                         |
+| DISTRIBUTE_TYPE  | テーブルのデータ分散方法。                                      |
+| DISTRIBUTE_BUCKET | テーブル内のバケット数。                                         |
+| SORT_KEY         | テーブルのソートキー。                                            |
+| PROPERTIES       | テーブルのプロパティ。                                            |
+| TABLE_ID         | テーブルのID。                                                    |
 
 ## load_tracking_logs
 
-この機能はStarRocks v3.0からサポートされています。
+この機能はStarRocks v3.0以降でサポートされています。
 
-`load_tracking_logs`には次のフィールドがあります:
+`load_tracking_logs`には、次のフィールドが提供されます:
 
 | **Field**     | **Description**                                                                       |
 |---------------|---------------------------------------------------------------------------------------|
-| JOB_ID        | ロードジョブのID。                                                               |
-| LABEL         | ロードジョブのラベル。                                                            |
-| DATABASE_NAME | ロードジョブが属するデータベース。                                            |
+| JOB_ID        | ロードジョブのID。                                                                     |
+| LABEL         | ロードジョブのラベル。                                                                 |
+| DATABASE_NAME | ロードジョブが属するデータベース。                                                    |
 | TRACKING_LOG  | ロードジョブのエラーログ（あれば）。                                                  |
-| Type          | ロードジョブのタイプ。有効な値: BROKER, INSERT, ROUTINE_LOAD, STREAM_LOAD。 |
+| Type          | ロードジョブのタイプ。有効な値: BROKER、INSERT、ROUTINE_LOAD、およびSTREAM_LOAD。  |
 
 ## materialized_views
 
-`materialized_views`には次のフィールドがあります:
+`materialized_views`には、次のフィールドが提供されます:
 
 | **Field**                            | **Description**                                              |
 | ------------------------------------ | ------------------------------------------------------------ |
-| MATERIALIZED_VIEW_ID                 | マテリアライズドビューのID                                  |
-| TABLE_SCHEMA                         | マテリアライズドビューが存在するデータベース                |
-| TABLE_NAME                           | マテリアライズドビューの名前                                |
-| REFRESH_TYPE                         | マテリアライズドビューのリフレッシュタイプ、`ROLLUP`、`ASYNC`、`MANUAL`を含む |
-| IS_ACTIVE                            | マテリアライズドビューがアクティブかどうかを示す。非アクティブなマテリアライズドビューはリフレッシュやクエリができません。 |
-| INACTIVE_REASON                      | マテリアライズドビューが非アクティブである理由            |
-| PARTITION_TYPE                       | マテリアライズドビューのパーティション戦略のタイプ      |
-| TASK_ID                              | マテリアライズドビューのリフレッシュを担当するタスクのID  |
-| TASK_NAME                            | マテリアライズドビューのリフレッシュを担当するタスクの名前  |
-| LAST_REFRESH_START_TIME              | 最新のリフレッシュタスクの開始時刻                  |
-| LAST_REFRESH_FINISHED_TIME           | 最新のリフレッシュタスクの終了時刻                    |
-| LAST_REFRESH_DURATION                | 最新のリフレッシュタスクの期間                    |
-| LAST_REFRESH_STATE                   | 最新のリフレッシュタスクのステータス                    |
-| LAST_REFRESH_FORCE_REFRESH           | 最新のリフレッシュが強制リフレッシュであるかどうかを示す |
-| LAST_REFRESH_START_PARTITION         | 最新のリフレッシュタスクの開始パーティション            |
-| LAST_REFRESH_END_PARTITION           | 最新のリフレッシュタスクの終了パーティション            |
+| MATERIALIZED_VIEW_ID                 | マテリアライズドビューのID                                   |
+| TABLE_SCHEMA                         | マテリアライズドビューが存在するデータベース                 |
+| TABLE_NAME                           | マテリアライズドビューの名前                                 |
+| REFRESH_TYPE                         | マテリアライズドビューのリフレッシュタイプ。`ROLLUP`、`ASYNC`、`MANUAL`を含む |
+| IS_ACTIVE                            | マテリアライズドビューがアクティブかどうかを示します。非アクティブなマテリアライズドビューはリフレッシュやクエリができません。 |
+| INACTIVE_REASON                      | マテリアライズドビューが非アクティブになっている理由        |
+| PARTITION_TYPE                       | マテリアライズドビューのパーティション戦略のタイプ          |
+| TASK_ID                              | マテリアライズドビューのリフレッシュを担当するタスクのID     |
+| TASK_NAME                            | マテリアライズドビューのリフレッシュを担当するタスクの名前   |
+| LAST_REFRESH_START_TIME              | 最新のリフレッシュタスクの開始時間                           |
+| LAST_REFRESH_FINISHED_TIME           | 最新のリフレッシュタスクの終了時間                           |
+| LAST_REFRESH_DURATION                | 最新のリフレッシュタスクの所要時間                           |
+| LAST_REFRESH_STATE                   | 最新のリフレッシュタスクの状態                               |
+| LAST_REFRESH_FORCE_REFRESH           | 最新のリフレッシュタスクが強制リフレッシュであるかどうかを示します |
+| LAST_REFRESH_START_PARTITION         | 最新のリフレッシュタスクの開始パーティション                 |
+| LAST_REFRESH_END_PARTITION           | 最新のリフレッシュタスクの終了パーティション                 |
 | LAST_REFRESH_BASE_REFRESH_PARTITIONS | 最新のリフレッシュタスクに関与するベーステーブルのパーティション |
 | LAST_REFRESH_MV_REFRESH_PARTITIONS   | 最新のリフレッシュタスクでリフレッシュされたマテリアライズドビューのパーティション |
-| LAST_REFRESH_ERROR_CODE              | 最新のリフレッシュタスクのエラーコード                |
-| LAST_REFRESH_ERROR_MESSAGE           | 最新のリフレッシュタスクのエラーメッセージ             |
-| TABLE_ROWS                           | マテリアライズドビュー内のデータ行数（おおよそのバックグラウンド統計に基づく） |
-| MATERIALIZED_VIEW_DEFINITION         | マテリアライズドビューのSQL定義                    |
+| LAST_REFRESH_ERROR_CODE              | 最新のリフレッシュタスクのエラーコード                       |
+| LAST_REFRESH_ERROR_MESSAGE           | 最新のリフレッシュタスクのエラーメッセージ                   |
+| TABLE_ROWS                           | マテリアライズドビュー内のデータ行数（おおまかなバックグラウンド統計に基づく） |
+| MATERIALIZED_VIEW_DEFINITION         | マテリアライズドビューのSQL定義                             |

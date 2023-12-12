@@ -1,34 +1,34 @@
 ---
-displayed_sidebar: "English"
+displayed_sidebar: "Japanese"
 ---
 
 # 関数リスト
 
-StarRocksは、データクエリや分析を行うための豊富な関数セットを提供しています。一般的に使用される関数に加えて、StarRocksはARRAY、JSON、MAP、STRUCT関数のような半構造化した関数をサポートしています。また、高階[Lambda関数](Lambda_expression.md)もサポートしています。これらの関数がビジネス要件を満たすことができない場合は、[Java UDF](JAVA_UDF.md)を使用して関数をコンパイルすることができます。
+StarRocksはデータクエリと解析を容易にする豊富な関数セットを提供します。よく使われる関数に加えて、StarRocksはARRAY、JSON、MAP、およびSTRUCT関数などの半構造化関数をサポートしています。また、高階関数の[Lambda functions](Lambda_expression.md) もサポートしています。これらの関数がビジネス要件を満たさない場合は、[Java UDF](JAVA_UDF.md)を使用して関数をコンパイルできます。
 
-以下のカテゴリーに基づいて関数を探すことができます：
+次のカテゴリに基づいて関数を見つけることができます:
 
-- [関数リスト](#function-list)
-  - [集約関数](#aggregate-functions)
-  - [配列関数](#array-functions)
-  - [バイナリ関数](#binary-functions)
-  - [ビット関数](#bit-functions)
-  - [ビットマップ関数](#bitmap-functions)
-  - [条件関数](#conditional-functions)
-  - [暗号関数](#cryptographic-functions)
-  - [日付関数](#date-functions)
-  - [地理関数](#geographic-functions)
-  - [ハッシュ関数](#hash-functions)
-  - [JSON関数](#json-functions)
-  - [文字列関数](#string-functions)
-  - [マップ関数](#map-functions)
-  - [数学関数](#math-functions)
-  - [パターンマッチング関数](#pattern-matching-functions)
-  - [パーセンタイル関数](#percentile-functions)
-  - [スカラー関数](#scalar-functions)
-  - [構造関数](#struct-functions)
-  - [テーブル関数](#table-functions)
-  - [ユーティリティ関数](#utility-functions)
+- [関数リスト](#関数リスト)
+  - [集約関数](#集約関数)
+  - [配列関数](#配列関数)
+  - [バイナリ関数](#バイナリ関数)
+  - [ビット関数](#ビット関数)
+  - [ビットマップ関数](#ビットマップ関数)
+  - [条件付き関数](#条件付き関数)
+  - [暗号関数](#暗号関数)
+  - [日付関数](#日付関数)
+  - [地理関数](#地理関数)
+  - [ハッシュ関数](#ハッシュ関数)
+  - [JSON関数](#JSON関数)
+  - [文字列関数](#文字列関数)
+  - [マップ関数](#マップ関数)
+  - [数学関数](#数学関数)
+  - [パターンマッチング関数](#パターンマッチング関数)
+  - [パーセンタイル関数](#パーセンタイル関数)
+  - [スカラー関数](#スカラー関数)
+  - [STRUCT関数](#STRUCT関数)
+  - [テーブル関数](#テーブル関数)
+  - [ユーティリティ関数](#ユーティリティ関数)
 
 ## 集約関数
 
@@ -146,7 +146,7 @@ StarRocksは、データクエリや分析を行うための豊富な関数セ�
 - [sub_bitmap](./bitmap-functions/sub_bitmap.md)
 - [to_bitmap](./bitmap-functions/to_bitmap.md)
 
-## 条件関数
+## 条件付き関数
 
 - [case](./condition-functions/case_when.md)
 - [coalesce](./condition-functions/coalesce.md)
@@ -176,6 +176,7 @@ StarRocksは、データクエリや分析を行うための豊富な関数セ�
 - [current_date，curdate](./date-time-functions/curdate.md)
 - [current_time，curtime](./date-time-functions/curtime.md)
 - [current_timestamp](./date-time-functions/current_timestamp.md)
+
 - [date](./date-time-functions/date.md)
 - [date_add](./date-time-functions/date_add.md)
 - [date_diff](./date-time-functions/date_diff.md)
@@ -248,7 +249,7 @@ StarRocksは、データクエリや分析を行うための豊富な関数セ�
 - [years_diff](./date-time-functions/years_diff.md)
 - [years_sub](./date-time-functions/years_sub.md)
 
-## 地理関数
+## Geographic functions
 
 - [ST_AsText, ST_AsWKT](./spatial-functions/st_astext.md)
 - [st_circle](./spatial-functions/st_circle.md)
@@ -261,17 +262,17 @@ StarRocksは、データクエリや分析を行うための豊富な関数セ�
 - [st_x](./spatial-functions/st_x.md)
 - [st_y](./spatial-functions/st_y.md)
 
-## ハッシュ関数
+## Hash functions
 
 - [murmur_hash3_32](./hash-functions/murmur_hash3_32.md)
 - [xx_hash3_64](./hash-functions/xx_hash3_64.md)
 
-## JSON関数
+## JSON functions
 
 - [json_array](./json-functions/json-constructor-functions/json_array.md)
 - [json_object](./json-functions/json-constructor-functions/json_object.md)
 - [parse_json](./json-functions/json-constructor-functions/parse_json.md)
-- [矢印関数](./json-functions/json-query-and-processing-functions/arrow-function.md)
+- [Arrow function](./json-functions/json-query-and-processing-functions/arrow-function.md)
 - [cast](./json-functions/json-query-and-processing-functions/cast.md)
 - [get_json_double](./json-functions/json-query-and-processing-functions/get_json_double.md)
 - [get_json_int](./json-functions/json-query-and-processing-functions/get_json_int.md)
@@ -284,7 +285,7 @@ StarRocksは、データクエリや分析を行うための豊富な関数セ�
 - [json_string](./json-functions/json-query-and-processing-functions/json_string.md)
 - [to_json](./json-functions/json-query-and-processing-functions/to_json.md)
 
-## 文字列関数
+## String functions
 
 - [append_trailing_char_if_absent](./string-functions/append_trailing_char_if_absent.md)
 - [ascii](./string-functions/ascii.md)
@@ -331,7 +332,7 @@ StarRocksは、データクエリや分析を行うための豊富な関数セ�
 - [url_decode](./string-functions/url_decode.md)
 - [url_encode](./string-functions/url_encode.md)
 
-## マップ関数
+## Map functions
 
 - [cardinality](./map-functions/cardinality.md)
 - [distinct_map_keys](./map-functions/distinct_map_keys.md)
@@ -393,7 +394,7 @@ StarRocksは、データクエリや分析を行うための豊富な関数セ�
 - [tanh](./math-functions/tanh.md)
 - [truncate](./math-functions/truncate.md)
 
-## パターンマッチング関数
+## パターンマッチ関数
 
 - [like](./like-predicate-functions/like.md)
 - [regexp](./like-predicate-functions/regexp.md)

@@ -6,15 +6,15 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-ユーザーまたはロールから特定の権限またはロールを取り消します。 StarRocksがサポートする権限については、[StarRocksでサポートされる権限](../../../administration/privilege_item.md)を参照してください。
+特定の権限またはロールをユーザーまたはロールから取り消します。StarRocksでサポートされている権限については、[StarRocksでサポートされている権限](../../../administration/privilege_item.md)を参照してください。
 
-> 注：この操作は `user_admin` ロールのみ実行できます。
+> 注意：この操作は`user_admin`ロールのみが実行できます。
 
 ## 構文
 
-### 権限を取り消す
+### 権限の取り消し
 
-取り消すことができる権限はオブジェクトに固有です。以下に、オブジェクトに基づいた構文を示します。
+取り消すことができる権限はオブジェクトによって異なります。以下はオブジェクトに基づいた構文の説明です。
 
 #### システム
 
@@ -86,7 +86,7 @@ REVOKE
     FROM { ROLE | USER} {<role_name>|<user_identity>}
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
+* このコマンドを実行する前に、まずSET CATALOGを実行する必要があります。
 
 #### テーブル
 
@@ -99,8 +99,8 @@ REVOKE
     FROM { ROLE | USER} {<role_name>|<user_identity>}
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* テーブルを表すには、db.tbl を使用することもできます。
+* このコマンドを実行する前に、まずSET CATALOGを実行する必要があります。
+* テーブルを表すために、db.tblを使用することもできます。
 
   ```SQL
   REVOKE <priv> ON TABLE db.tbl FROM {ROLE <role_name> | USER <user_identity>}
@@ -117,8 +117,8 @@ REVOKE
     FROM { ROLE | USER} {<role_name>|<user_identity>}
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* ビューを表すには、db.view を使用することもできます。
+* このコマンドを実行する前に、まずSET CATALOGを実行する必要があります。
+* ビューを表すために、db.viewを使用することもできます。
 
   ```SQL
   REVOKE <priv> ON VIEW db.view FROM {ROLE <role_name> | USER <user_identity>}
@@ -135,8 +135,8 @@ REVOKE
     FROM { ROLE | USER} {<role_name>|<user_identity>}
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* マテリアライズドビューを表すには、db.mv を使用することもできます。
+* このコマンドを実行する前に、まずSET CATALOGを実行する必要があります。
+* マテリアライズドビューを表すために、db.mvを使用することもできます。
 
   ```SQL
   REVOKE <priv> ON MATERIALIZED VIEW db.mv FROM {ROLE <role_name> | USER <user_identity>}
@@ -153,8 +153,8 @@ REVOKE
     FROM { ROLE | USER} {<role_name>|<user_identity>}
 ```
 
-* このコマンドを実行する前に、まず SET CATALOG を実行する必要があります。
-* 関数を表すには、db.function を使用することもできます。
+* このコマンドを実行する前に、まずSET CATALOGを実行する必要があります。
+* 関数を表すために、db.functionを使用することもできます。
 
   ```SQL
   REVOKE <priv> ON FUNCTION db.function FROM {ROLE <role_name> | USER <user_identity>}
@@ -174,39 +174,39 @@ REVOKE
     FROM { ROLE | USER} {<role_name>|<user_identity>}
 ```
 
-### ロールを取り消す
+### ロールの取り消し
 
 ```SQL
 REVOKE <role_name> [,<role_name>, ...] FROM ROLE <role_name>
 REVOKE <role_name> [,<role_name>, ...] FROM USER <user_identity>
 ```
 
-## パラメーター
+## パラメータ
 
-| **パラメーター**  | **説明**                           |
-| ----------------- | ---------------------------------- |
-| role_name         | ロール名                           |
-| user_identity     | 例：'jack'@'192.%' のようなユーザーID  |
-| resourcegroup_name| リソースグループ名                 |
-| resource_name     | リソース名                         |
-| function_name     | 関数名                             |
-| catalog_name      | 外部カタログ名                     |
-| database_name     | データベース名                     |
-| table_name        | テーブル名                         |
-| view_name         | ビュー名                           |
-| mv_name           | マテリアライズドビュー名           |
+| **パラメータ**      | **説明**                            |
+| ------------------ | ---------------------------------- |
+| role_name          | ロール名。                           |
+| user_identity      | ユーザーアイデンティティ。例：'jack'@'192.%' |
+| resourcegroup_name | リソースグループ名                    |
+| resource_name      | リソース名。                         |
+| function_name      | 関数名。                            |
+| catalog_name       | 外部カタログの名前。                 |
+| database_name      | データベース名。                     |
+| table_name         | テーブル名。                         |
+| view_name          | ビュー名。                           |
+| mv_name            | マテリアライズドビューの名前。       |
 
 ## 例
 
 ### 権限の取り消し
 
-テーブル `sr_member` からユーザー `jack` の SELECT 権限を取り消す：
+テーブル`sr_member`でユーザー`jack`からSELECT権限を取り消す：
 
 ```SQL
 REVOKE SELECT ON TABLE sr_member FROM USER 'jack'@'192.%'
 ```
 
-リソース `spark_resource` からロール `test_role` の USAGE 権限を取り消す：
+リソース`spark_resource`でロール`test_role`からのUSAGE権限を取り消す：
 
 ```SQL
 REVOKE USAGE ON RESOURCE 'spark_resource' FROM ROLE 'test_role';
@@ -214,13 +214,13 @@ REVOKE USAGE ON RESOURCE 'spark_resource' FROM ROLE 'test_role';
 
 ### ロールの取り消し
 
-ユーザー `jack` からロール `example_role` を取り消す：
+ユーザー`jack`からロール`example_role`を取り消す：
 
 ```SQL
 REVOKE example_role FROM 'jack'@'%';
 ```
 
-ロール `test_role` からロール `example_role` を取り消す：
+ロール`test_role`からロール`example_role`を取り消す：
 
 ```SQL
 REVOKE example_role FROM ROLE 'test_role';

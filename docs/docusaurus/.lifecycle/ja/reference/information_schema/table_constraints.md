@@ -1,18 +1,18 @@
 ---
-displayed_sidebar: "英語"
+displayed_sidebar: "Japanese"
 ---
 
 # table_constraints
 
-`table_constraints`は、制約が存在するテーブルについて記述します。
+`table_constraints`は、どのテーブルに制約があるかを記述しています。
 
-以下のフィールドが`table_constraints`に提供されています：
+`table_constraints`には次のフィールドが提供されています。
 
-| **フィールド**       | **説明**                                                   |
-| -------------------- | ----------------------------------------------------------- |
-| CONSTRAINT_CATALOG   | 制約が属しているカタログの名前です。この値は常に`def`になります。   |
-| CONSTRAINT_SCHEMA    | 制約が属しているデータベースの名前です。                      |
-| CONSTRAINT_NAME      | 制約の名前です。                                           |
-| TABLE_SCHEMA         | テーブルが属しているデータベースの名前です。                 |
-| TABLE_NAME           | テーブルの名前です。                                       |
-| CONSTRAINT_TYPE      | 制約のタイプです。                                         |
+| **Field**          | **Description**                                              |
+| ------------------ | ------------------------------------------------------------ |
+| CONSTRAINT_CATALOG | 制約が属するカタログの名前。この値は常に `def` です。        |
+| CONSTRAINT_SCHEMA  | 制約が属するデータベースの名前。                             |
+| CONSTRAINT_NAME    | 制約の名前。                                                 |
+| TABLE_SCHEMA       | テーブルが属するデータベースの名前。                         |
+| TABLE_NAME         | テーブルの名前。                                              |
+| CONSTRAINT_TYPE    | 制約の種類。                                                 |

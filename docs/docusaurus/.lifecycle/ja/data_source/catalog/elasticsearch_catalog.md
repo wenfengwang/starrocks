@@ -6,11 +6,11 @@ displayed_sidebar: "Japanese"
 
 StarRocks は v3.1 以降で Elasticsearch カタログをサポートしています。
 
-StarRocks と Elasticsearch はどちらも個々の利点を持つ人気のある解析システムです。StarRocks は大規模な分散コンピューティングを得意とし、外部テーブルを介して Elasticsearch からデータをクエリすることができます。一方、Elasticsearch はその全文検索能力で知られています。StarRocks と Elasticsearch を組み合わせることで、より包括的な OLAP ソリューションが提供されます。Elasticsearch カタログを使用すると、データ移行の必要なく、StarRocks 上で SQL ステートメントを使用して Elasticsearch クラスタ内のすべてのインデックス化されたデータを直接分析することができます。
+StarRocks と Elasticsearch は、それぞれ独自の強みを持つ人気のある解析システムです。StarRocks は大規模で分散した計算に優れ、外部テーブルを介して Elasticsearch からデータをクエリすることができます。Elasticsearch は全文検索の機能で知られています。StarRocks と Elasticsearch の組み合わせは、より包括的な OLAP ソリューションを提供します。Elasticsearch カタログを使用すると、データの移行を必要とせずに StarRocks 上で SQL ステートメントを使用して Elasticsearch クラスタ内のすべてのインデックス化されたデータを直接分析することができます。
 
-他のデータソースのカタログとは異なり、Elasticsearch カタログは作成時に `default` という名前のデータベースしか持ちません。各 Elasticsearch インデックスは自動的にテーブルにマッピングされ、`default` データベースにマウントされます。
+他のデータソースのカタログとは異なり、Elasticsearch カタログには作成時に `default` という名前のデータベースのみが含まれます。各 Elasticsearch インデックスは自動的にデータテーブルにマップされ、`default` データベースにマウントされます。
 
-## Elasticsearch カタログの作成
+## Elasticsearch カタログを作成
 
 ### 構文
 
@@ -24,10 +24,10 @@ PROPERTIES ("key"="value", ...)
 
 #### `catalog_name`
 
-Elasticsearch カタログの名前。以下の命名規則に従います:
+Elasticsearch カタログの名前。以下の名前の規則に従います。
 
-- 名前は英字、数字 (0-9)、アンダースコア (_) を含めることができます。英字から始まる必要があります。
-- 名前は大文字と小文字を区別し、長さが1023文字を超えてはいけません。
+- 名前には、文字、数字 (0-9)、アンダースコア (_) を含めることができます。文字で始める必要があります。
+- 名前は大文字と小文字を区別し、1023 文字を超えることはできません。
 
 #### `comment`
 
@@ -35,23 +35,23 @@ Elasticsearch カタログの説明。このパラメータはオプションで
 
 #### PROPERTIES
 
-Elasticsearch カタログのプロパティ。以下の表は Elasticsearch カタログでサポートされているプロパティを示しています。
+Elasticsearch カタログのプロパティ。以下の表には Elasticsearch カタログでサポートされているプロパティについて説明されています。
 
-| パラメータ             | 必須    | デフォルト値 | 説明                                                          |
-| -------------------- | ------ | ---------- | ------------------------------------------------------------ |
-| hosts                | はい    | None       | Elasticsearch クラスタの接続アドレス。1つまたは複数のアドレスを指定できます。StarRocks はこのアドレスから Elasticsearch のバージョンやインデックスのシャード割り当てを抽出することができます。StarRocks は `GET /_nodes/http` API 操作から返されたアドレスに基づいて Elasticsearch クラスタと通信します。そのため、`hosts` パラメータの値は `GET /_nodes/http` API 操作によって返されたアドレスと同じである必要があります。そうでない場合、BEs は Elasticsearch クラスタと通信できなくなる可能性があります。 |
-| type                 | はい    | None       | データソースのタイプ。Elasticsearch カタログを作成する際にはこのパラメータを `es` に設定します。 |
-| user                 | いいえ  | 空         | HTTP 基本認証を有効にした Elasticsearch クラスタにログインするためのユーザー名。`/cluster/state/nodes/http` などのパスへのアクセス権があることを確認してください。 |
-| password             | いいえ  | 空         | Elasticsearch クラスタにログインするためのパスワード。 |
-| es.type              | いいえ  | _doc       | インデックスのタイプ。Elasticsearch 8 以降のバージョンでデータをクエリしたい場合、このパラメータを構成する必要はありません。なぜならば Elasticsearch 8 以降のバージョンではマッピングタイプが削除されているためです。 |
-| es.nodes.wan.only    | いいえ  | FALSE      | StarRocks が Elasticsearch クラスタにアクセスしデータをフェッチする際、`hosts` で指定されたアドレスのみを使用するかどうかを指定します。<ul><li>`true`: StarRocks は Elasticsearch クラスタ内のデータノードのアドレスにアクセスし、データをフェッチする際にシャードが存在するデータノードに対してデータをスニッフィングしません。StarRocks が Elasticsearch クラスタ内のデータノードのアドレスにアクセスできない場合、このパラメータを `true` に設定する必要があります。</li><li>`false`: StarRocks は Elasticsearch クラスタ内のデータノードのアドレスを使用して、インデックスのシャードからデータをフェッチするためにクエリ実行プランが生成された後、BEs は Elasticsearch クラスタ内のデータノードに直接アクセスします。StarRocks が Elasticsearch クラスタ内のデータノードのアドレスにアクセスできる場合、デフォルト値 `false` を維持することをお勧めします。</li></ul> |
-| [es.net](http://es.net).ssl | いいえ  | FALSE      | HTTPS プロトコルを使用して Elasticsearch クラスタにアクセスできるかどうかを指定します。これは StarRocks v2.4 以降しかサポートしていません。<ul><li>`true`: HTTPS および HTTP プロトコルの両方を使用して Elasticsearch クラスタにアクセスできます。</li><li>`false`: HTTP プロトコルのみを使用して Elasticsearch クラスタにアクセスできます。</li></ul> |
-| enable_docvalue_scan | いいえ  | TRUE       | Elasticsearch カラムストレージから対象フィールドの値を取得するかどうかを指定します。ほとんどの場合、カラムストレージからデータを読み取る方がロウストレージからデータを読み取るよりもパフォーマンスが優れています。 |
-| enable_keyword_sniff | いいえ  | TRUE       | キーワード型フィールドをベースに TEXT 型フィールドをスニッフィングするかどうかを指定します。このパラメータを `false` に設定すると、StarRocks はトークン化後に一致を行います。 |
+| パラメータ                     | 必須     | デフォルト値 | 説明                                                   |
+| --------------------------- | -------- | ------------- | ------------------------------------------------------------ |
+| hosts                       | Yes      | None          | Elasticsearch クラスタの接続アドレスです。1 つ以上のアドレスを指定できます。StarRocks はこのアドレスから Elasticsearch のバージョンやインデックスのシャード割り当てを解析することができます。StarRocks は `GET /_nodes/http` API 操作で返されたアドレスに基づいて Elasticsearch クラスタと通信します。そのため、`hosts` パラメータの値は `GET /_nodes/http` API 操作で返されたアドレスと同じである必要があります。さもないと、BE (バックエンド プロセス) は Elasticsearch クラスタと通信できない場合があります。 |
+| type                        | Yes      | None          | データソースの種類です。Elasticsearch カタログを作成するときにこのパラメータを `es` に設定します。 |
+| user                        | No       | Empty         | HTTP ベーシック認証が有効になっている Elasticsearch クラスタにログインするために使用するユーザー名です。`/cluster/state/ nodes/http` などへのアクセス権があることを確認してください。 |
+| password                    | No       | Empty         | Elasticsearch クラスタにログインするために使用するパスワードです。 |
+| es.type                     | No       | _doc          | インデックスの種類です。Elasticsearch 8 以降ではマッピングタイプが削除されているため、Elasticsearch 8 以降のバージョンでデータをクエリする場合にはこのパラメータを構成する必要はありません。 |
+| es.nodes.wan.only           | No       | FALSE         | StarRocks が `hosts` で指定したアドレスのみを使用して Elasticsearch クラスタにアクセスしデータを取得するかを指定します。<ul><li>`true`: StarRocks は Elasticsearch クラスタのデータノードのアドレスにアクセスし、その上で Elasticsearch インデックスのシャードが存在するデータノードをプロットしません。StarRocks が Elasticsearch クラスタのデータノードのアドレスにアクセスできない場合は、このパラメータを `true` に設定する必要があります。</li><li>`false`: StarRocks は Elasticsearch クラスタ内のデータノードのアドレスを探し、その後 StarRocks がクエリ実行プランを生成した後、BE が直接インデックスのシャードからデータを取得するため、デフォルト値 `false` を維持することをお勧めします。</li></ul> |
+| [es.net](http://es.net).ssl | No       | FALSE         | HTTPS プロトコルを使用して Elasticsearch クラスタにアクセスするかを指定します。StarRocks v2.4 以降のみがこのパラメータの構成をサポートしています。<ul><li>`true`: HTTPS プロトコルおよび HTTP プロトコルの両方を使用して Elasticsearch クラスタにアクセスできます。</li><li>`false`: HTTP プロトコルのみで Elasticsearch クラスタにアクセスできます。</li></ul> |
+| enable_docvalue_scan        | No       | TRUE          | Elasticsearch のカラム ストレージから対象フィールドの値を取得するかどうかを指定します。大抵の場合、カラム ストレージからデータを読むほうがロウ ストレージから読むよりもパフォーマンスが向上します。 |
+| enable_keyword_sniff        | No       | TRUE          | KEYWORD タイプのフィールドに基づいて Elasticsearch の TEXT タイプのフィールドを嗅ぐかどうかを指定します。このパラメータを `false` に設定すると、StarRocks はトークン化の後にマッチングを実行します。 |
 
 ### 例
 
-次の例は `es_test` という名前の Elasticsearch カタログを作成します:
+次の例では、`es_test` という名前の Elasticsearch カタログを作成します。
 
 ```SQL
 CREATE EXTERNAL CATALOG es_test
@@ -68,26 +68,26 @@ PROPERTIES
 );
 ```
 
-## プレディケートのプッシュダウン
+## プレディケート プッシュダウン
 
-StarRocks は、クエリで指定されたプレディケートを Elasticsearch テーブルに対して Elasticsearch にプッシュすることをサポートしています。これにより、クエリエンジンとストレージソースの間の距離を最小限に抑え、クエリのパフォーマンスが向上します。次の表に、Elasticsearch にプッシュダウンできる演算子をリストします。
+StarRocks は、クエリで指定された述語を Elasticsearch テーブルに対して Elasticsearch にダウンプッシュして実行できます。これにより、クエリエンジンとストレージ ソースとの間の距離を短くし、クエリ パフォーマンスを向上させます。次の表に、Elasticsearch にプッシュダウンできる演算子を示します。
 
 | SQL 構文   | Elasticsearch 構文  |
-| ---------- | ------------------- |
-| `=`          | term クエリ            |
-| `in`         | terms クエリ           |
-| `>=, <=, >, <` | range                |
-| `and`        | bool.filter          |
-| `or`         | bool.should          |
-| `not`        | bool.must_not        |
-| `not in`     | bool.must_not +  terms |
-| `esquery`    | ES クエリ DSL           |
+| ------------ | --------------------- |
+| `=`            | term query            |
+| `in`           | terms query           |
+| `>=, <=, >, <` | range                 |
+| `and`          | bool.filter           |
+| `or`           | bool.should           |
+| `not`          | bool.must_not         |
+| `not in`       | bool.must_not + terms |
+| `esquery`      | ES Query DSL          |
 
 ## クエリの例
 
-`esquery()` 関数を使用して、SQL で表現できない match や geoshape クエリなどの Elasticsearch クエリを Elasticsearch にプッシュしてフィルタリングおよび処理することができます。 `esquery()` 関数では、最初のパラメータで列名を指定し、2番目のパラメータでは Elasticsearch クエリの Elasticsearch クエリ DSL ベースの JSON 表現を波括弧 (`{}`) で囲んで使用します。JSON 表現は `match` や `geo_shape`、`bool` などのルートキーを 1 つだけ持つことができます。 
+`esquery()` 関数を使用して、SQL で表現できないマッチやジオシェイプ クエリなどの Elasticsearch クエリを Elasticsearch にダウンプッシュしてフィルタリングや処理を行うことができます。`esquery()` 関数では、カラム名を指定する最初のパラメータがインデックスと関連付けられ、2 番目のパラメータは波括弧 (`{}`) で囲まれた Elasticsearch クエリの Elasticsearch Query DSL ベースの JSON 表現です。JSON 表現には `match`、`geo_shape`、`bool` などのルートキーが 1 つだけ含まれている必要があります。
 
-- Match クエリ
+- マッチ クエリ
 
   ```SQL
   SELECT * FROM es_table WHERE esquery(k4, '{
@@ -97,7 +97,7 @@ StarRocks は、クエリで指定されたプレディケートを Elasticsearc
   }');
   ```
 
-- Geoshape クエリ
+- ジオシェイプ クエリ
 
   ```SQL
   SELECT * FROM es_table WHERE esquery(k4, '{
@@ -122,7 +122,7 @@ StarRocks は、クエリで指定されたプレディケートを Elasticsearc
   }');
   ```
 
-- ブールクエリ
+- ブール クエリ
 
   ```SQL
   SELECT * FROM es_table WHERE esquery(k4, ' {
@@ -150,6 +150,6 @@ StarRocks は、クエリで指定されたプレディケートを Elasticsearc
 
 ## 使用上の注意
 
-- v5.x 以降では、Elasticsearch は異なるデータ走査方式を採用しています。StarRocks は Elasticsearch v5.x およびそれ以降のバージョンからのデータのクエリのみをサポートしています。
-- StarRocks は HTTP 基本認証が有効になっている Elasticsearch クラスタからのデータのクエリのみをサポートします。
-- `count()` を含む一部のクエリは、要求されたデータをフィルタリングする必要なく、クエリ条件を満たすドキュメントの数に関連するメタデータを直接読み取るため、Elasticsearch は StarRocks よりもはるかに遅く実行されます。
+- Elasticsearch は v5.x 以降で異なるデータ走査方法を採用しています。StarRocks は Elasticsearch v5.x 以降からのデータクエリのみをサポートしています。
+- StarRocks は、HTTP ベーシック認証が有効になっている Elasticsearch クラスタからのデータクエリのみをサポートしています。
+- `count()` を含む一部のクエリは、条件を満たすドキュメントの数に関連するメタデータをフィルタリングする必要がないため、Elasticsearch が直接関連するデータを読むことができるため、StarRocks で実行されると Elasticsearch よりもはるかに遅くなります。

@@ -4,21 +4,21 @@ displayed_sidebar: "Japanese"
 
 # seconds_add
 
-## description
+## 説明
 
-### Syntax
+### 構文
 
 ```Haskell
 DATETIME SECONDS_ADD(DATETIME expr1,INT expr2)
 ```
 
-指定された時間間隔を日付に追加します。単位は秒です。
+日付に指定した時間間隔を追加します。単位は秒です。
 
-expr1パラメータは有効な日付時刻式です。
+expr1パラメータは有効な日時式です。
 
 expr2パラメータは追加したい秒数です。
 
-## example
+## 例
 
 ```Plain Text
 select seconds_add('2010-11-30 23:50:50', 2);
@@ -36,6 +36,6 @@ select seconds_add('2010-11-30', 2);
 +------------------------------+
 ```
 
-## keyword
+## キーワード
 
 SECONDS_ADD,ADD

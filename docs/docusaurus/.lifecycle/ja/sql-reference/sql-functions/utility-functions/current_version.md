@@ -4,11 +4,11 @@ displayed_sidebar: "Japanese"
 
 # current_version
 
-## 説明
+## Description
 
-StarRocksの現在のバージョンを返します。異なるクライアントとの互換性のために、2つの構文が提供されています。
+StarRocksの現在のバージョンを返します。さまざまなクライアントとの互換性のために、2つの構文が提供されています。
 
-## 構文
+## Syntax
 
 ```Haskell
 current_version();
@@ -16,15 +16,15 @@ current_version();
 @@version_comment;
 ```
 
-## パラメータ
+## Parameters
 
 なし
 
-## 戻り値
+## Return value
 
-VARCHAR型の値を返します。
+VARCHARタイプの値が返されます。
 
-## 例
+## Examples
 
 ```Plain Text
 mysql> select current_version();

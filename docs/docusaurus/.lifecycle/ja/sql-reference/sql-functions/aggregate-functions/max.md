@@ -1,5 +1,5 @@
 ---
-displayed_sidebar: "英語"
+displayed_sidebar: "Japanese"
 ---
 
 # max

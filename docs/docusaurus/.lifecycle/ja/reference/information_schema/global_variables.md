@@ -8,7 +8,7 @@ displayed_sidebar: "Japanese"
 
 `global_variables`には次のフィールドが提供されています:
 
-| **フィールド**      | **説明**        |
+| **フィールド**  | **説明**              |
 | -------------- | ---------------------- |
-| VARIABLE_NAME  | 変数の名前。  |
-| VARIABLE_VALUE | 変数の値。 |
+| VARIABLE_NAME  | 変数の名前。          |
+| VARIABLE_VALUE | 変数の値。            |

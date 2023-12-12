@@ -1,32 +1,31 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # bitmap_to_array
 
-## Description
+## 説明
 
 BITMAPをBIGINT配列に変換します。
 
-## Syntax
+## 構文
 
 ```Haskell
  ARRAY<BIGINT> BITMAP_TO_ARRAY (bitmap)
 ```
 
-## Parameters
+## パラメータ
 
 `bitmap`: 変換したいビットマップです。
 
-## Return value
+## 戻り値
 
 BIGINT配列を返します。
 
-## Examples
+## 例
 
 ```Plain
-select bitmap_to_array(bitmap_from_string("1, 7"));
+select bitmap_to_array(bitmap_from_string('1, 7'));
 +----------------------------------------------+
 | bitmap_to_array(bitmap_from_string('1, 7'))  |
 +----------------------------------------------+

@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# concat_ws（コンカットWS）
+# concat_ws
 
 ## 説明
 
-この関数は、最初の引数sepを区切り文字として使用し、2番目以降を結合して文字列を形成します。区切り文字がNULLの場合、結果もNULLになります。 concat_wsは空の文字列をスキップしませんが、NULL値はスキップします。
+この関数は、第1引数sepを区切り文字として使用し、2番目以降を結合して文字列を形成します。区切り文字がNULLの場合、結果もNULLになります。concat_wsは空の文字列をスキップしませんが、NULLの値はスキップします。
 
 ## 構文
 
@@ -43,4 +43,4 @@ MySQL > StarRocks > select concat_ws("Rock", "Star", NULL, "s");
 
 ## キーワード
 
-CONCAT_WS,CONCAT,WS
+CONCAT_WS, CONCAT, WS

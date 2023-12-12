@@ -1,4 +1,3 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -7,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-与えられた文字列を2つの区切り文字を使用してキーと値のペアに分割し、分割されたペアのマップを返します。
+指定された文字列を2つの区切り文字を使用してキーと値のペアに分割し、分割されたペアのマップを返します。
 
 この関数はv3.1以降でサポートされています。
 
@@ -17,11 +16,11 @@ displayed_sidebar: "Japanese"
 MAP<VARCHAR, VARCHAR> str_to_map(VARCHAR content[, VARCHAR delimiter[, VARCHAR map_delimiter]])
 ```
 
-## パラメーター
+## パラメータ
 
-- `content`: 必須、分割する文字列式。
-- `delimiter`: オプション、`content`をキーと値のペアに分割するために使用される区切り記号。デフォルトは`,`です。
-- `map_delimiter`: オプション、各キーと値のペアを区切るために使用される区切り記号。デフォルトは`:`です。
+- `content`: 必須, 分割する文字列式。
+- `delimiter`: オプション, `content`をキーと値のペアに分割するために使用される区切り文字、デフォルトは`,`です。
+- `map_delimiter`: オプション, 各キーと値のペアを区別するために使用される区切り文字、デフォルトは`:`です。
 
 ## 戻り値
 
@@ -76,4 +75,3 @@ mysql> SELECT str_to_map('a:1,b:2,c:null') as map;
 ## キーワード
 
 STR_TO_MAP
-```

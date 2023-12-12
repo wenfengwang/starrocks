@@ -1,13 +1,13 @@
 ---
-displayed_sidebar: "Japanese"
+displayed_sidebar: "日本語"
 ---
 
 # CloudCanalを使用してデータをロードする
 
 ## はじめに
 
-CloudCanal Community Editionは、[ClouGence Co., Ltd](https://www.cloudcanalx.com)によって公開された無料のデータ移行および同期プラットフォームであり、スキーマ移行、フルデータ移行、検証、修正、およびリアルタイムの増分同期を統合しています。
-CloudCanalはユーザーが簡単な方法でモダンなデータスタックを構築するのに役立ちます。
+CloudCanal コミュニティ版は、[ClouGence Co., Ltd](https://www.cloudcanalx.com) によって公開されている無料のデータ移行および同期プラットフォームであり、Schema Migration、Full Data Migration、検証、修正、およびリアルタイムのIncremental Synchronization を統合しています。
+CloudCanal は、ユーザーが簡単な方法でモダンなデータスタックを構築するのを支援します。
 ![image.png](../assets/3.11-1.png)
 
 ## ダウンロード
@@ -16,79 +16,79 @@ CloudCanalはユーザーが簡単な方法でモダンなデータスタック�
 
 [CloudCanalクイックスタート](https://www.cloudcanalx.com/us/cc-doc/quick/quick_start)
 
-## 機能の説明
+## 機能説明
 
-- StarRocksに効率的なデータをインポートするには、CloudCanalバージョン2.2.5.0以上を利用することを強くお勧めします。
-- StarRocksへの**増分データ**のインポート時には、CloudCanalを使用する際にデータの書き込み頻度を制御することをお勧めします。CloudCanalからStarRocksにデータを書き込むためのデフォルトのインポート頻度は、デフォルトで10秒に設定されている `realFlushPauseSec` パラメータを調整することができます。
-- 現在のコミュニティ版では、最大メモリ構成が2GBであり、DataJobsがOOM例外や著しいGCの一時停止に遭遇した場合、バッチサイズを減らしてメモリ使用量を最小限に抑えることをお勧めします。
-  - Full Dataタスクの場合、`fullBatchSize` および `fullRingBufferSize` パラメータを調整することができます。
-  - 増分Dataタスクの場合、`increBatchSize` および `increRingBufferSize` パラメータを適切に調整することができます。
+- StarRocks に効率的にデータをインポートするために、CloudCanal バージョン 2.2.5.0 以上を利用することを強くお勧めします。
+- StarRocks への**インクリメンタルデータ**のインポート時には、データの書き込み頻度を制御することを推奨します。CloudCanal から StarRocks へのデータの書き込みのデフォルトの頻度は、`realFlushPauseSec` パラメータで調整できます。デフォルトでは、10秒に設定されています。
+- 現在のコミュニティ版では、最大メモリ構成が2GBであり、DataJobs がOOM例外や大きなGC停止を遭遇した場合、メモリ使用量を最小限に抑えるためにバッチサイズを減らすことをお勧めします。
+  - Full DataTask の場合、`fullBatchSize` および `fullRingBufferSize` パラメータを調整できます。
+  - Incremental DataTask の場合、`increBatchSize` および `increRingBufferSize` パラメータをそれぞれ調整できます。
 - サポートされているソースエンドポイントと機能：
 
-  | ソースエンドポイント \ 機能 | スキーマ移行 | フルデータ | 増分 | 検証 |
+  | ソースエンドポイント \ 機能 | Schema Migration | Full Data | Incremental | Verification |
     | --- | --- | --- | --- | --- |
-  | Oracle                   | はい | はい | はい | はい |
-  | PostgreSQL               | はい | はい | はい | はい |
-  | Greenplum                | はい | はい | いいえ | はい |
-  | MySQL                    | はい | はい | はい | はい |
-  | Kafka                    | いいえ | いいえ | はい | いいえ |
-  | OceanBase                | はい | はい | はい | はい |
-  | MySQLのためのPolarDb      | はい | はい | はい | はい |
-  | Db2                      | はい | はい | はい | はい |
+  | Oracle                     | はい | はい | はい | はい |
+  | PostgreSQL                 | はい | はい | はい | はい |
+  | Greenplum                  | はい | はい | いいえ | はい |
+  | MySQL                      | はい | はい | はい | はい |
+  | Kafka                      | いいえ | いいえ | はい | いいえ |
+  | OceanBase                  | はい | はい | はい | はい |
+  | PolarDb for MySQL          | はい | はい | はい | はい |
+  | Db2                        | はい | はい | はい | はい |
 
 ## 典型的な例
 
-CloudCanalを使用すると、ユーザーは視覚インタフェースで操作を行うことができ、データソースを簡単に追加し、ビジュアルインタフェースを使用してデータジョブを作成することができます。これにより、自動的なスキーマ移行、フルデータ移行、およびリアルタイムの増分同期が可能になります。以下の例は、MySQLからStarRocksへのデータの移行および同期方法を示しています。手順は、他のデータソースとStarRocksの間でのデータ同期にも同様です。
+CloudCanal を使用すると、ユーザーはビジュアルインタフェースで操作を行うことができ、そこでユーザーはシームレスにDataSourcesを追加し、ビジュアルインタフェースを介してDataJobsを作成できます。これにより、自動的なスキーマ移行、フルデータ移行、およびリアルタイムのインクリメンタル同期が可能になります。以下の例は、MySQL から StarRocks へのデータの移行と同期方法を示しており、プロシージャは他のデータソースと StarRocks 間のデータ同期についても類似しています。
 
-### 必要条件
+### 前提条件
 
-まず、[CloudCanalクイックスタート](https://www.cloudcanalx.com/us/cc-doc/quick/quick_start)を参照して、CloudCanalコミュニティ版のインストールと展開を完了してください。
+まず、[CloudCanalクイックスタート](https://www.cloudcanalx.com/us/cc-doc/quick/quick_start) を参照して、CloudCanalコミュニティ版のインストールと展開を完了してください。
 
-### データソースの追加
+### DataSourceの追加
 
 - CloudCanalプラットフォームにログインします
-- **データソース管理**に移動し、**データソースの追加**を選択します
+- **DataSource Management** -> **Add DataSource** に移動します
 - オプションから**StarRocks**を選択します
 
 ![image.png](../assets/3.11-2.png)
 
 > ヒント：
 >
-> - クライアントアドレス：StarRocksサーバのMySQLクライアントサービスポートのアドレス。CloudCanalは、主にこのアドレスを使用してデータベーステーブルのメタデータ情報を問い合わせます。
+> - クライアントアドレス: StarRocksサーバーのMySQLクライアントサービスポートのアドレスです。CloudCanalは主にこのアドレスを使用してデータベーステーブルのメタデータ情報をクエリします。
 >
-> - HTTPアドレス：HTTPアドレスは、CloudCanalからのデータのインポートリクエストを受け取るために主に使用されます。
+> - HTTPアドレス: HTTPアドレスは、CloudCanalからのデータインポートリクエストを受信するために主に使用されます。
 
-### データジョブの作成
+### DataJobの作成
 
-データソースが正常に追加されたら、データ移行および同期データジョブを作成するために、以下の手順に従うことができます。
+DataSourceが正常に追加されたら、データ移行および同期のDataJobを作成するために次の手順に従ってください。
 
-- CloudCanalに移動し、**データジョブ管理** -> **データジョブの作成**に移動します
-- データジョブのソースおよびターゲットデータベースを選択します
-- 次へをクリックします
+- CloudCanalに移動し、**DataJob Management** -> **Create DataJob** に移動します
+- DataJobのソースおよびターゲットデータベースを選択します
+- 次のステップをクリックします
 
 ![image.png](../assets/3.11-3.png)
 
-- **増分**を選択し、**フルデータ**を有効にします
+- **Incremental**を選択し、**Full Data**を有効にします
 - DDL Syncを選択します
-- 次へをクリックします
+- 次のステップをクリックします
 
 ![image.png](../assets/3.11-4.png)
 
-- 購読するソーステーブルを選択します。スキーマ移行後に自動的にプライマリキーのテーブルとなるStarRocksテーブルに対して、プライマリキーのないソーステーブルは現在サポートされていません**
+- 購読するソーステーブルを選択します。スキーマ移行後のターゲットのStarRocksテーブルは主キーテーブルなので、主キーのないソーステーブルは現在サポートされていません**
 
-- 次へをクリックします
+- 次のステップをクリックします
 
 ![image.png](../assets/3.11-5.png)
 
 - カラムマッピングを構成します
-- 次へをクリックします
+- 次のステップをクリックします
 
 ![image.png](../assets/3.11-6.png)
 
-- データジョブを作成します
+- DataJobを作成します
 
 ![image.png](../assets/3.11-7.png)
 
-- データジョブのステータスを確認します。データジョブは、作成後に自動的にスキーマ移行、フルデータ、および増分のステージを経ていきます
+- DataJobのステータスを確認します。DataJobは作成されると自動的にスキーマ移行、フルデータ、およびインクリメンタルの段階を経ていきます
 
 ![image.png](../assets/3.11-8.png)

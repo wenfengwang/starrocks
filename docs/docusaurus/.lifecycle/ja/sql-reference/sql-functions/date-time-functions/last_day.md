@@ -1,15 +1,14 @@
-```markdown
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# last_day
+# last_day（最終日）
 
 ## 説明
 
-指定された日付部分に基づいて、入力したDATEまたはDATETIME表現の最終日を返します。たとえば、`last_day('2023-05-10', 'month')`は'2023-05-10'が含まれる月の最終日を返します。
+指定された日付部分に基づいて、入力されたDATEまたはDATETIME式の最終日を返します。たとえば、`last_day('2023-05-10', 'month')` は、'2023-05-10' が含まれる月の最終日を返します。
 
-日付部分が指定されていない場合、この関数は指定された日付の月の最終日を返します。
+日付部分が指定されていない場合、この関数は与えられた日付の月の最終日を返します。
 
 この関数はv3.1からサポートされています。
 
@@ -21,9 +20,9 @@ DATE last_day(DATETIME|DATE date_expr[, VARCHAR unit])
 
 ## パラメータ
 
-- `date_expr`: 必須のDATEまたはDATETIME表現です。
+- `date_expr`: DATEまたはDATETIME式、必須。
 
-- `unit`: 日付部分、任意。`month`、`quarter`、`year`などの有効な値が含まれます。デフォルトは`month`です。`unit`が無効な場合、エラーが返されます。
+- `unit`: 日付部分、オプションです。`month`、`quarter`、`year`などの有効な値があり、デフォルトは`month`です。`unit`が無効な場合、エラーが返されます。
 
 ## 戻り値
 
@@ -64,4 +63,3 @@ MySQL > select last_day('2023-05-10', 'year');
 ## キーワード
 
 LAST_DAY, LAST
-```

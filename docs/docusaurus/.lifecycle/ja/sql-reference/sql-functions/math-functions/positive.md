@@ -1,8 +1,9 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# ポジティブ
+# positive
 
 ## 説明
 
@@ -14,7 +15,7 @@ displayed_sidebar: "Japanese"
 POSITIVE(x);
 ```
 
-## パラメータ
+## パラメーター
 
 `x`: BIGINT、DOUBLE、DECIMALV2、DECIMAL32、DECIMAL64、およびDECIMAL128のデータ型をサポートしています。
 
@@ -31,7 +32,7 @@ mysql> select positive(3);
 +-------------+
 |           3 |
 +-------------+
-1行がセットされました (0.01秒)
+1 row in set (0.01 sec)
 
 mysql> select positive(cast(3.14 as decimalv2));
 +--------------------------------------+
@@ -39,5 +40,5 @@ mysql> select positive(cast(3.14 as decimalv2));
 +--------------------------------------+
 |                                 3.14 |
 +--------------------------------------+
-1行がセットされました (0.01秒)
+1 row in set (0.01 sec)
 ```

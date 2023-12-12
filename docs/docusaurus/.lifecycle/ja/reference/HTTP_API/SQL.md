@@ -1,14 +1,15 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# HTTP SQL API（HTTP SQL API）
+# HTTP SQL API
 
 ## 説明
 
-StarRocks v3.2.0 では、HTTP SQL API が導入され、ユーザーは HTTP を使用してさまざまな種類のクエリを実行できます。現在、このAPIはSELECT、SHOW、EXPLAIN、およびKILLステートメントをサポートしています。
+StarRocks v3.2.0 では、ユーザーがHTTPを使用してさまざまな種類のクエリを実行するためのHTTP SQL APIが導入されます。現時点では、このAPIはSELECT、SHOW、EXPLAIN、KILLステートメントをサポートしています。
 
-curlコマンドを使用した構文:
+curlコマンドを使用した構文：
 
 ```shell
 curl -X POST 'http://<fe_ip>:<fe_http_port>/api/v1/catalogs/<catalog_name>/databases/<database_name>/sql' \
@@ -24,20 +25,20 @@ curl -X POST 'http://<fe_ip>:<fe_http_port>/api/v1/catalogs/<catalog_name>/datab
 POST 'http://<fe_ip>:<fe_http_port>/api/v1/catalogs/<catalog_name>/databases/<database_name>/sql'
 ```
 
-| フィールド         | 説明                                                  |
-| ---------------- | :----------------------------------------------------------- |
-|  fe_ip           | FEノードのIPアドレス。                                                |
-|  fe_http_port    | FE HTTPポート。                                           |
-|  catalog_name    | カタログ名。現在、このAPIは内部テーブルのクエリのみをサポートしているため、「<catalog_name>」は「default_catalog」にのみ設定できます。 |
-|  database_name   | データベース名。リクエストラインでデータベース名が指定されていない場合、SQLクエリでテーブル名が使用される場合は、テーブル名をそのデータベース名で接頭辞として付ける必要があります。たとえば、`database_name.table_name`。
+| フィールド                 | 説明                                                        |
+| ------------------------ | :----------------------------------------------------------- |
+|  fe_ip                   | FEノードIPアドレス。                                                  |
+|  fe_http_port            | FE HTTPポート。                                           |
+|  catalog_name            | カタログ名。現在、このAPIは内部テーブルのクエリのみをサポートしているため、`<catalog_name>` は`default_catalog`のみに設定できます。 |
+|  database_name           | データベース名。リクエストラインにデータベース名が指定されていない場合、SQLクエリでテーブル名を使用する場合は、テーブル名をそのデータベース名と共に接頭辞として付ける必要があります。例：`database_name.table_name`。 |
 
-- 指定されたカタログ内のデータベースを横断してデータをクエリします。SQLクエリでテーブルが使用される場合、テーブル名をそのデータベース名で接頭辞として付ける必要があります。
+- 指定されたカタログ内の複数のデータベースをクエリする。SQLクエリでテーブルを使用する場合、テーブル名をそのデータベース名と共に接頭辞として付ける必要があります。
 
    ```shell
    POST /api/v1/catalogs/<catalog_name>/sql
    ```
 
-- 指定されたカタログおよびデータベースからデータをクエリします。
+- 指定されたカタログとデータベースからデータをクエリする。
 
    ```shell
    POST /api/v1/catalogs/<catalog_name>/databases/<database_name>/sql
@@ -49,7 +50,7 @@ POST 'http://<fe_ip>:<fe_http_port>/api/v1/catalogs/<catalog_name>/databases/<da
 Authorization: Basic <credentials>
 ```
 
-基本認証を使用し、`<credentials>` にユーザー名とパスワードを入力します（`-u '<username>:<password>'`）。ユーザー名に対してパスワードが設定されていない場合は、`<username>:` のみを入力し、パスワードを空白のままにします。たとえば、ルートアカウントを使用する場合は、`-u 'root:'` と入力します。
+Basic認証が使用されます。つまり、`credentials`にユーザー名とパスワードを入力します（`-u '<username>:<password>'`）。ユーザー名のパスワードが設定されていない場合、`<username>:` だけを渡してパスワードを空白のままにしてください。たとえば、rootアカウントを使用する場合、`-u 'root:'` と入力できます。
 
 ### リクエストボディ
 
@@ -57,42 +58,42 @@ Authorization: Basic <credentials>
 -d '{"query": "<sql_query>;", "sessionVariables":{"<var_name>":<var_value>}}'
 ```
 
-| フィールド         | 説明                                                  |
-| ---------------- | :----------------------------------------------------------- |
-| query            | SQLクエリ（STRING形式）。SELECT、SHOW、EXPLAIN、KILLステートメントのみをサポートしています。1つのHTTPリクエストにつき1つのSQLクエリのみを実行できます。 |
-| sessionVariables | JSON形式でクエリに設定したい [セッション変数](../System_variable.md)。このフィールドはオプションです。デフォルトは空です。設定したセッション変数は同じ接続に対して有効であり、接続が閉じられると無効になります。 |
+| フィールド                 | 説明                                                        |
+| ------------------------ | :----------------------------------------------------------- |
+| query                    | SQLクエリ（STRING形式）。SELECT、SHOW、EXPLAIN、KILLステートメントのみがサポートされています。HTTPリクエストに対して1つのSQLクエリのみを実行できます。 |
+| sessionVariables         | クエリのために設定したい[セッション変数](../System_variable.md)、JSON形式。このフィールドはオプションです。デフォルトは空です。設定したセッション変数は同じ接続に対して有効であり、接続が閉じられると無効になります。|
 
-### リクエストヘッダー
+### リクエストヘッダ
 
 ```shell
 --header "Content-Type: application/json"
 ```
 
-このヘッダーは、リクエストボディがJSON文字列であることを示します。
+このヘッダは、リクエストボディがJSON文字列であることを示しています。
 
 ## レスポンスメッセージ
 
 ### ステータスコード
 
 - 200: HTTPリクエストが成功し、データがクライアントに送信される前のサーバーが正常であることを示します。
-- 4xx: HTTPリクエストエラー。クライアントエラーを示します。
-- `500 Internal Server Error`: HTTPリクエストが成功しましたが、データがクライアントに送信される前にサーバーでエラーが発生しました。
-- 503: HTTPリクエストが成功しましたが、FEがサービスを提供できません。
+- 4xx: HTTPリクエストエラー、クライアントエラーを示します。
+- `500 Internal Server Error`: HTTPリクエストが成功しましたが、サーバーがクライアントにデータを送信する前にエラーが発生しました。
+- 503: HTTPリクエストは成功しましたが、FEがサービスを提供できません。
 
-### レスポンスヘッダー
+### レスポンスヘッダ
 
-`content-type` は、レスポンスボディの形式を示します。改行区切りのJSONが使用され、これによりレスポンスボディは複数のJSONオブジェクトで構成され、それらは`\n` で区切られます。
+`content-type`は、レスポンスボディの形式を示します。Newline delimited JSONが使用され、レスポンスボディは`\n`で区切られた複数のJSONオブジェクトで構成されています。
 
-|                      | 説明                                                  |
+|                      | 説明                                                        |
 | -------------------- | :----------------------------------------------------------- |
-| content-type         | 形式は改行区切りのJSONで、デフォルトは "application/x-ndjson charset=UTF-8" です。 |
+| content-type         | フォーマットは、Newline delimited JSON で、デフォルトは "application/x-ndjson charset=UTF-8" です。 |
 | X-StarRocks-Query-Id | クエリID。                                                          |
 
 ### レスポンスボディ
 
 #### リクエストが送信される前に失敗した場合
 
-リクエストがクライアント側で失敗したか、サーバーがクライアントにデータを返す前にエラーが発生した場合のレスポンスボディは以下の形式です。ここで、`msg` はエラー情報です。
+クライアント側でリクエストが失敗したか、サーバーがクライアントにデータを返す前にエラーが発生した場合、レスポンスボディは次の形式になります。`msg`はエラー情報です。
 
 ```json
 {
@@ -101,27 +102,27 @@ Authorization: Basic <credentials>
 }
 ```
 
-#### リクエストが通信後に失敗した場合
+#### リクエストが送信された後に失敗した場合
 
-一部の結果が返され、HTTPステータスコードが200である場合。データ送信が中断され、接続が閉じられ、エラーがログに記録されます。
+一部の結果が返され、HTTPステータスコードが200になります。データ送信が中断され、接続が閉じられ、エラーがログに記録されます。
 
 #### 成功した場合
 
-レスポンスメッセージの各行はJSONオブジェクトです。JSONオブジェクトは`\n` で区切られます。
+レスポンスメッセージの各行はJSONオブジェクトです。JSONオブジェクトは`\n`で区切られます。
 
 - SELECTステートメントの場合、次のJSONオブジェクトが返されます。
 
-| オブジェクト        | 説明                                                  |
-| -------------- | :----------------------------------------------------------- |
-| `connectionId` | 接続ID。時間がかかるクエリをキャンセルするには、KILL `<connectionId>` を呼び出します。 |
-| `meta`         | 列を表します。キーは `meta` で、値は列を表すJSON配列です。 |
-| `data`         | データ行で、キーは `data` で、値はデータ行を含むJSON配列です。 |
+| オブジェクト       | 説明                                                        |
+| ------------ | :----------------------------------------------------------- |
+| `connectionId` | 接続ID。長時間保留されたクエリをKILL `<connectionId>` を呼び出すことでキャンセルできます。 |
+| `meta`        | 列を表します。キーは`meta`で、値は各列を表すJSON配列です。 |
+| `data`         | データ行です。キーは`data`で、値はデータの行を含むJSON配列です。 |
 | `statistics`   | クエリの統計情報。                                       |
 
-- SHOWステートメントの場合、`meta`、`data`、`statistics` が返されます。
-- EXPLAINステートメントの場合、クエリの詳細な実行計画を示す `explain` オブジェクトが返されます。
+- SHOWステートメントの場合、`meta`、`data`、`statistics`が返されます。
+- EXPLAINステートメントの場合、クエリの詳細な実行計画を示す`explain`オブジェクトが返されます。
 
-以下の例では、`\n` を区切りとして使用しています。StarRocksはHTTPチャンクモードを使用してデータを送信します。各FEがデータチャンクを取得するたびに、データチャンクをクライアントにストリーミングします。クライアントは行ごとにデータを解析できるため、データのキャッシュやデータ全体の待機をする必要がなく、クライアントのメモリ消費を削減できます。
+下記の例は、区切り文字として`\n`を使用しています。StarRocksはHTTPのチャンクモードを使用してデータを転送します。FEはデータチャンクを取得するたびに、それをクライアントにストリームします。クライアントは新しいレコードごとにデータをパースできますので、データのキャッシュやデータの完全な待ちの必要がなくなり、クライアントのメモリ消費が低減されます。
 
 ```json
 {"connectionId": 7}\n
@@ -147,17 +148,17 @@ Authorization: Basic <credentials>
 
 ## 例
 
-### SELECTクエリを実行する
+### SELECTクエリの実行
 
 ```shell
 curl -X POST 'http://127.0.0.1:8030/api/v1/catalogs/default_catalog/databases/test/sql' -u 'root:' -d '{"query": "select * from agg;"}' --header "Content-Type: application/json"
 ```
 
-結果:
+結果：
 
 ```json
 {"connectionId":49}
-{"meta":[{"name":"no","type":"int(11)"},{"name":"k","type":"decimal64(10, 2)"},{"name":"v","type":"decimal64(10, 2)"]}
+{"meta":[{"name":"no","type":"int(11)"},{"name":"k","type":"decimal64(10, 2)"},{"name":"v","type":"decimal64(10, 2)"}]}
 {"data":[1,"10.00",null]}
 {"data":[2,"10.00","11.00"]}
 {"data":[2,"20.00","22.00"]}
@@ -166,23 +167,23 @@ curl -X POST 'http://127.0.0.1:8030/api/v1/catalogs/default_catalog/databases/te
 {"statistics":{"scanRows":0,"scanBytes":0,"returnRows":5}}
 ```
 
-### クエリをキャンセルする
+### クエリのキャンセル
 
-予期しない長時間実行されたクエリをキャンセルするには、接続を閉じます。StarRocks は、接続が閉じられるとこのクエリをキャンセルします。
+予期せず長時間実行されるクエリをキャンセルするには、接続を閉じることができます。StarRocksは接続が閉じられたと検出すると、このクエリをキャンセルします。
 
-また、KILL `connectionId` を呼び出して、このクエリをキャンセルすることもできます。例:
+また、KILL `connectionId` を呼び出してこのクエリをキャンセルすることもできます。例：
 
 ```shell
 curl -X POST 'http://127.0.0.1:8030/api/v1/catalogs/default_catalog/databases/test/sql' -u 'root:' -d '{"query": "kill 17;"}' --header "Content-Type: application/json"
 ```
 
-`connectionId` は、レスポンスボディから取得するか、SHOW PROCESSLIST を呼び出すことで取得できます。例:
+レスポンスボディまたはSHOW PROCESSLISTを呼び出すことで、`connectionId` を取得することができます。例：
 
 ```shell
 curl -X POST 'http://127.0.0.1:8030/api/v1/catalogs/default_catalog/databases/test/sql' -u 'root:' -d '{"query": "show processlist;"}' --header "Content-Type: application/json"
 ```
 
-### セッション変数を設定してクエリを実行する
+### セッション変数を設定してクエリを実行
 
 ```shell
 curl -X POST 'http://127.0.0.1:8030/api/v1/catalogs/default_catalog/databases/test/sql' -u 'root:'  -d '{"query": "SHOW VARIABLES;", "sessionVariables":{"broadcast_row_limit":14000000}}'  --header "Content-Type: application/json"

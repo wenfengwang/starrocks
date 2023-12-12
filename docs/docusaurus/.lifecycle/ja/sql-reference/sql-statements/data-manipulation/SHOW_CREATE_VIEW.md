@@ -1,14 +1,15 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
-# SHOW CREATE VIEW
+# SHOW CREATE VIEW（ビューの作成文を表示）
 
-指定されたビューを作成するために使用されたCREATEステートメントを返します。CREATE VIEWステートメントは、ビューがどのように定義されているかを理解し、ビューを変更または再構築するための参照を提供します。SHOW CREATE VIEWステートメントを使用するには、ビューとビューが作成される基になるテーブルの`SELECT`権限を持っている必要があります。
+指定したビューを作成したCREATE文を返します。CREATE VIEW文を使用すると、ビューがどのように定義されているかを理解し、ビューを変更または再構築するための参照点を提供します。SHOW CREATE VIEW文は、ビューおよびそのビューが基づいているテーブルに対する`SELECT`権限を持っている必要があります。
 
-v2.5.4以降、**マテリアライズドビュー**をクエリするためにSHOW CREATE VIEWを使用できます。
+v2.5.4以降、SHOW CREATE VIEWを使用して、**マテリアライズド・ビュー**の作成文をクエリできます。
 
-## Syntax
+## 構文
 
 ```SQL
 SHOW CREATE VIEW [db_name.]view_name
@@ -17,9 +18,9 @@ SHOW CREATE VIEW [db_name.]view_name
 ## パラメータ
 
 | **パラメータ** | **必須** | **説明**                                                     |
-| ------------- | -------- | ------------------------------------------------------------ |
-| db_name       | いいえ   | データベース名。このパラメータが指定されていない場合、現在のデータベースの指定されたビューのCREATE VIEWステートメントがデフォルトで返されます。 |
-| view_name     | はい     | ビューの名前。                                              |
+| ------------- | ------------ | ------------------------------------------------------------ |
+| db_name       | いいえ           | データベース名。このパラメータが指定されていない場合、デフォルトで現在のデータベース内の指定したビューのCREATE VIEW文が返されます。 |
+| view_name     | はい          | ビュー名。                                               |
 
 ## 出力
 
@@ -29,18 +30,18 @@ SHOW CREATE VIEW [db_name.]view_name
 +---------+--------------+----------------------+----------------------+
 ```
 
-次のテーブルは、このステートメントによって返されるパラメータを説明しています。
+次の表は、この文によって返されるパラメータを説明します。
 
 | **パラメータ**        | **説明**                                                     |
 | -------------------- | ------------------------------------------------------------ |
-| View                 | ビューの名前。                                               |
-| Create View          | ビューのCREATE VIEWステートメント。                           |
-| character_set_client | クライアントがStarRocksにステートメントを送信するために使用する文字セット。 |
-| collation_connection | 文字セット内の文字を比較するためのルール。                 |
+| View                 | ビュー名。                                               |
+| Create View          | ビューのCREATE VIEW文。                       |
+| character_set_client | クライアントがStarRocksにステートメントを送信する際に使用する文字セット。 |
+| collation_connection | 文字セット内での文字の比較規則。       |
 
 ## 例
 
-`example_table`という名前のテーブルを作成する。
+`example_table`という名前のテーブルを作成します。
 
 ```SQL
 CREATE TABLE example_table
@@ -55,14 +56,14 @@ AGGREGATE KEY(k1, k2)
 DISTRIBUTED BY HASH(k1);
 ```
 
-`example_table`をベースにして`example_view`という名前のビューを作成する。
+`example_table`を基に`example_view`という名前のビューを作成します。
 
 ```SQL
 CREATE VIEW example_view (k1, k2, k3, v1)
 AS SELECT k1, k2, k3, v1 FROM example_table;
 ```
 
-`example_view`のCREATE VIEWステートメントを表示する。
+`example_view`のCREATE VIEW文を表示します。
 
 ```Plain
 SHOW CREATE VIEW example_db.example_view;

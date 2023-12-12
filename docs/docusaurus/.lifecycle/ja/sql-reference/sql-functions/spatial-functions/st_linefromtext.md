@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# ST_LineFromText、ST_LineStringFromText
+# ST_LineFromText,ST_LineStringFromText
 
 ## 説明
 
-WKT（Well Known Text）をラインのメモリ表現に変換します。
+WKT（Well Known Text）をLineの形式のメモリ表現に変換します。
 
 ## 構文
 
@@ -27,4 +27,4 @@ MySQL > SELECT ST_AsText(ST_LineFromText("LINESTRING (1 1, 2 2)"));
 
 ## キーワード
 
-ST_LINEFROMTEXT, ST_LINESTRINGFROMTEXT, ST, LINEFROMTEXT, LINESTRINGFROMTEXT
+ST_LINEFROMTEXT,ST_LINESTRINGFROMTEXT,ST,LINEFROMTEXT,LINESTRINGFROMTEXT

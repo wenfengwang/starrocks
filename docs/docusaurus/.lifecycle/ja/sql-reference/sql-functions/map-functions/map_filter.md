@@ -6,9 +6,9 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-マップ内のキーと値のペアを、ブール配列または[ラムダ式](../Lambda_expression.md)を各々のキーと値のペアに適用してフィルタリングします。`true` と評価されるペアが返されます。
+ブール配列または[ラムダ式](../Lambda_expression.md)を利用してマップ内のキーと値のペアをフィルタリングします。`true`と評価されるペアが返されます。
 
-この関数はv3.1以降でサポートされています。
+この機能はv3.1以降でサポートされています。
 
 ## 構文
 
@@ -19,35 +19,35 @@ MAP map_filter(lambda_func, any_map)
 
 - `map_filter(any_map, array<boolean>)`
 
-  `any_map`内のキーと値のペアを `array<boolean>` に対して一つずつ評価し、`true` と評価されるキーと値のペアを返します。
+  `any_map`内のキーと値のペアを一つずつ`array<boolean>`と比較し、`true`と評価されたキーと値のペアを返します。
 
 - `map_filter(lambda_func, any_map)`
 
-  `any_map`内のキーと値のペアに対して `lambda_func` を適用し、結果が`true`となるキーと値のペアを返します。
+  `lambda_func`を`any_map`内のキーと値のペアに一つずつ適用し、結果が`true`となるキーと値のペアを返します。
 
 ## パラメータ
 
-- `any_map`: マップの値。
+- `any_map`: マップの値です。
 
-- `array<boolean>`: マップの値を評価するために使用されるブール配列。
+- `array<boolean>`: マップの値を評価するために使用されるブール配列です。
 
-- `lambda_func`: マップの値を評価するために使用されるラムダ式。
+- `lambda_func`: マップの値を評価するために使用されるラムダ式です。
 
 ## 戻り値
 
-データ型が`any_map`と同じであるマップが返されます。
+データ型が`any_map`と同じであるマップを返します。
 
 `any_map`がNULLの場合、NULLが返されます。`array<boolean>`がnullの場合、空のマップが返されます。
 
 マップの値のキーまたは値がNULLの場合、NULLは通常の値として処理されます。
 
-ラムダ式には2つのパラメータが必要です。最初のパラメータはキーを表し、2番目のパラメータは値を表します。
+ラムダ式は2つのパラメータを持つ必要があります。最初のパラメータはキーを表し、2番目のパラメータは値を表します。
 
 ## 例
 
-### `array<boolean>`の使用
+### `array<boolean>`を使用
 
-次の例では、[map_from_arrays()](map_from_arrays.md)を使用して、マップの値 `{1:"ab",3:"cdd",2:null,null:"abc"}` を生成します。その後、それぞれのキーと値のペアを`array<boolean>`に対して評価し、結果が`true`となるペアが返されます。
+次の例では、[map_from_arrays()](map_from_arrays.md)を使用してマップ値`{1:"ab",3:"cdd",2:null,null:"abc"}`を生成します。それぞれのキーと値のペアを`array<boolean>`と比較し、結果が`true`となるペアが返されます。
 
 ```SQL
 mysql> select map_filter(col_map, array<boolean>[0,0,0,1,1]) from (select map_from_arrays([1,3,null,2,null],['ab','cdd',null,null,'abc']) as col_map)A;
@@ -75,9 +75,9 @@ mysql> select map_filter(col_map, null) from (select map_from_arrays([1,3,null,2
 1 行が返されました (0.01 秒)
 ```
 
-### ラムダ式の使用
+### ラムダ式を使用
 
-次の例では、map_from_array()を使用して、マップの値 `{1:"ab",3:"cdd",2:null,null:"abc"}` を生成します。その後、それぞれのキーと値のペアをラムダ式に対して評価し、値がNULLでないキーと値のペアが返されます。
+次の例では、map_from_arrays()を使用してマップ値`{1:"ab",3:"cdd",2:null,null:"abc"}`を生成します。それぞれのキーと値のペアをラムダ式と比較し、値がnullでないキーと値のペアが返されます。
 
 ```SQL
 mysql> select map_filter((k,v) -> v is not null,col_map) from (select map_from_arrays([1,3,null,2,null],['ab','cdd',null,null,'abc']) as col_map)A;

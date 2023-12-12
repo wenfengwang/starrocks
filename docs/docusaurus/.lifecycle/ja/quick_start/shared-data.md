@@ -1,36 +1,36 @@
 ---
 displayed_sidebar: "Japanese"
 sidebar_position: 2
-description: コンピューティングとストレージを分離
+description: コンピュートとストレージを分離
 ---
 
-# ストレージとコンピューティングを分離する
+# ストレージとコンピュートを分離する
 import DDL from '../assets/quick-start/_DDL.mdx'
 import Clients from '../assets/quick-start/_clientsCompose.mdx'
 import SQL from '../assets/quick-start/_SQL.mdx'
 import Curl from '../assets/quick-start/_curl.mdx'
 
 
-コンピューティングからストレージを分離するシステムでは、データはAmazon S3、Google Cloud Storage、Azure Blob Storageなどの低コストで信頼性の高いリモートストレージシステムやMinIOなどの他のS3互換ストレージに保存されます。ホットデータはローカルにキャッシュされます。キャッシュがヒットすると、クエリのパフォーマンスはストレージとコンピューティングが結合されたアーキテクチャと比較して同等です。コンピューティングノード（CN）は、数秒で追加または削除できます。このアーキテクチャは、ストレージコストを削減し、より良いリソースの分離を確認し、弾力性とスケーラビリティを提供します。
+ストレージをコンピュートから分離するシステムでは、データは低コストで信頼性の高いリモートストレージシステムに保存されます。Amazon S3、Google Cloud Storage、Azure Blob Storage、およびMinIOなどの他のS3互換ストレージのような場所です。ホットデータはローカルにキャッシュされ、キャッシュがヒットすると、クエリのパフォーマンスはストレージとコンピュートが結合したアーキテクチャと比較しても同等になります。コンピュートノード（CN）は、数秒で追加または削除できます。このアーキテクチャはストレージコストを削減し、より良いリソース分離を保証し、弾力性とスケーラビリティを提供します。
 
-このチュートリアルでは、以下の内容がカバーされています。
+このチュートリアルでは以下の項目をカバーしています:
 
-- DockerコンテナーでStarRocksを実行する
-- オブジェクトストレージとしてMinIOを使用する
-- 共有データのStarRocksの構成
-- 2つの公開データセットをロード
-- SELECTおよびJOINでデータを分析
-- データの基本的な変換（ETLの「T」）
+- DockerコンテナでStarRocksを実行する
+- オブジェクトストレージにMinIOを使用する
+- 共有データのためにStarRocksを構成する
+- 2つのパブリックデータセットをロードする
+- SELECTとJOINでデータを分析する
+- ベーシックなデータ変換（ETLのT）
 
-使用されているデータは、NYC OpenDataおよびNOAAのNational Centers for Environmental Informationによって提供されています。
+使用するデータは、NYC OpenDataおよびNOAAのNational Centers for Environmental Informationによって提供されています。
 
-これらのデータセットは非常に大きいため、このチュートリアルはStarRocksと連携する作業に慣れるのを手助けすることを目的としているため、過去120年間のデータをロードすることはありません。Dockerイメージを実行し、このデータをDockerに割り当てられた4 GBのRAMのマシンにロードできます。より大規模な耐障害性とスケーラブルな展開については、他のドキュメントがあり、後で提供されます。
+これらのデータセットは非常に大きいため、このチュートリアルでは過去120年間のデータをロードしないようにしています。4 GBのRAMがDockerに割り当てられたマシンでDockerイメージを実行し、このデータをロードできます。より大規模で耐障害性とスケーラブルな展開については、後で別のドキュメンテーションを提供します。
 
-この文書には多くの情報が含まれており、最初にステップバイステップの内容で提示され、最後に技術的な詳細が示されています。これは、次の順序でこれらの目的を果たすために行われています。
+このドキュメントには多くの情報が含まれており、最初にステップバイステップの内容、最後に技術的な詳細が表示されています。これは次の順序でそれぞれの目的に対応するために行われています:
 
-1. 読者に共有データの展開でデータをロードし、そのデータを分析する機会を提供する
-2. 共有データ展開の構成詳細を提供する
-3. ロード中のデータ変換の基本を説明する
+1. 読者に共有データの展開でデータをロードし、そのデータを分析することを許可する
+2. 共有データの展開の構成詳細を提供する
+3. ロード中の基本的なデータ変換を説明する
 
 ---
 
@@ -39,47 +39,47 @@ import Curl from '../assets/quick-start/_curl.mdx'
 ### Docker
 
 - [Docker](https://docs.docker.com/engine/install/)
-- Dockerに割り当てられた4 GB RAM
-- Dockerに割り当てられた10 GBの空きディスクスペース
+- Dockerに割り当てられた4 GBのRAM
+- Dockerに割り当てられた10 GBの空きディスク領域
 
 ### SQLクライアント
 
-Docker環境で提供されているSQLクライアントを使用するか、システム上のSQLクライアントを使用できます。多くのMySQL互換のクライアントが動作し、このガイドではDBeaverとMySQL WorkBenchの構成をカバーしています。
+Docker環境で提供されているSQLクライアントを使用するか、独自のシステム上のものを使用できます。多くのMySQL互換クライアントが動作するため、このガイドはDBeaverとMySQL WorkBenchの構成に関して説明します。
 
 ### curl
 
-`curl`は、データロードジョブをStarRocksに発行したり、データセットをダウンロードしたりするために使用されます。OSプロンプトで`curl`または`curl.exe`を実行してインストールされているかどうかを確認してください。curlがインストールされていない場合は、[ここからcurlを取得してください](https://curl.se/dlwiz/?type=bin)。
+`curl`はStarRocksにデータロードジョブを発行し、データセットをダウンロードするために使用されます。OSプロンプトで`curl`または`curl.exe`を実行してインストールされているかどうかを確認してください。curlがインストールされていない場合は、[ここからcurlを入手してください](https://curl.se/dlwiz/?type=bin)。
 
 ---
 
 ## 用語
 
 ### FE
-フロントエンドノードは、メタデータ管理、クライアント接続管理、クエリプランニング、クエリスケジューリングを担当しています。各FEは、そのメモリにメタデータの完全なコピーを保存および維持し、FE間のサービスの均一性を保証します。
+フロントエンドノードは、メタデータ管理、クライアント接続管理、クエリプランニング、およびクエリスケジューリングを担当しています。各FEはメモリ内のメタデータの完全なコピーを格納し、FE間で均一なサービスを保証します。
 
 ### CN
-コンピューティングノードは、共有データ展開でクエリプランを実行する責任を持っています。
+コンピュートノードは、共有データ展開でのクエリプランの実行を担当しています。
 
 ### BE
-バックエンドノードは、共有ナッシング展開でデータストレージとクエリプランの実行を担当しています。
+バックエンドノードは、共有なしデータ展開でのデータの格納とクエリプランの実行を担当しています。
 
 :::note
-このガイドではBEは使用しません。BEとCNの違いを理解するためにこの情報がここに含まれています。
+このガイドではBEは使用していませんが、BEとCNの違いを理解していただくためにこの情報を含めています。
 :::
 
 ---
 
 ## StarRocksを起動する
 
-オブジェクトストレージを使用して共有データでStarRocksを実行するには、次のものが必要です。
+Object Storageを使用して共有データでStarRocksを実行するには、次のものが必要です:
 
 - フロントエンドエンジン（FE）
-- コンピューティングノード（CN）
+- コンピュートノード（CN）
 - オブジェクトストレージ
 
-このガイドでは、GNU Affero General Public Licenseの下で提供されているS3互換のオブジェクトストレージであるMinIOを使用しています。
+このガイドでは、GNU Affero General Public Licenseの下で提供されているS3互換のオブジェクトストレージであるMinIOを使用します。
 
-これら3つの必要なコンテナを備えた環境を提供するために、StarRocksはDockerコンポーズファイルを提供しています。
+これら3つの必要なコンテナを提供するために、StarRocksはDockerコンポーズファイルを提供しています。
 
 ```bash
 mkdir quickstart
@@ -91,9 +91,9 @@ curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-sa
 docker compose up -d
 ```
 
-サービスの進捗状況を確認します。FEとCNが健全になるまでに約30秒かかります。MinIOコンテナにはヘルスインジケータが表示されませんが、MinIOウェブUIを使用してその健全性を確認します。
+サービスの進行状況を確認します。FEとCNのhealthyになるまで約30秒かかります。MinIOコンテナはヘルスインジケータは表示されませんが、MinIOウェブUIを使用して健全性を確認できます。
 
-FEとCNがステータスを `healthy` に表示するまで、`docker compose ps`を実行します。
+FEとCNが`healthy`の状態になるまで`docker compose ps`を実行します:
 
 ```bash
 docker compose ps
@@ -108,20 +108,20 @@ minio          25 seconds ago   Up 24 seconds             0.0.0.0:9000-9001->900
 
 ---
 
-## MinIOの資格情報を生成する
+## MinIOの認証情報を生成する
 
-StarRocksでMinIOを使用するには、**アクセスキー**を生成する必要があります。
+StarRocksでMinIOを使用するためには、アクセスキーを生成する必要があります。
 
 ### MinIOウェブUIを開く
 
-http://localhost:9001/access-keys にアクセスします。ユーザー名とパスワードは、Dockerコンポーズファイルで指定されており、`minioadmin`と`minioadmin`です。まだアクセスキーがないことを確認できるはずです。**Create access key +**をクリックします。
+http://localhost:9001/access-keys に移動します。ユーザー名とパスワードはDockerコンポーズファイルで指定され、`minioadmin`と`minioadmin`です。まだアクセスキーがないことを確認できます。**Create access key +** をクリックします。
 
-MinIOはキーを生成し、**Create**をクリックしてキーをダウンロードします。
+MinIOはキーを生成し、**Create** をクリックしてキーをダウンロードします。
 
-![Make sure to click create](../assets/quick-start/MinIO-create.png)
+![ユーザーがCreateをクリックすることを確認](../assets/quick-start/MinIO-create.png)
 
 :::note
-アクセスキーは、**Create**をクリックするまで保存されません。キーをコピーしてページから移動しないでください
+アクセスキーはクリックして**Create**をクリックするまで保存されません。キーをコピーしてページを移動しないでください。
 :::
 
 ---
@@ -138,7 +138,7 @@ MinIOはキーを生成し、**Create**をクリックしてキーをダウン�
 
 ### FEコンテナでシェルを開く
 
-シェルを開き、ダウンロードされたファイルのためのディレクトリを作成します。
+シェルを開き、ダウンロードしたファイル用のディレクトリを作成します:
 
 ```bash
 docker compose exec starrocks-fe bash
@@ -155,7 +155,7 @@ cd quickstart
 curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-samples/quickstart/datasets/NYPD_Crash_Data.csv
 ```
 
-### 天気データ
+### 天候データ
 
 ```bash
 curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-samples/quickstart/datasets/72505394728.csv
@@ -163,17 +163,17 @@ curl -O https://raw.githubusercontent.com/StarRocks/demo/master/documentation-sa
 
 ---
 
-## 共有データのStarRocksの構成
+## 共有データのためにStarRocksを構成する
 
-この時点で、StarRocksが実行されており、MinIOが実行されています。MinIOのアクセスキーは、StarRocksとMinioを接続するために使用されます。
+この時点で、StarRocksとMinIOが実行中である状態にあります。MinIOのアクセスキーはStarRocksと接続するために使用されます。
 
-### SQLクライアントでStarRocksに接続
+### SQLクライアントでStarRocksに接続する
 
-:::tip
+::tip
 
-`docker-compose.yml` ファイルが含まれているディレクトリからこのコマンドを実行してください。
+`docker-compose.yml`ファイルが含まれているディレクトリからこのコマンドを実行します。
 
-mysql CLI以外のクライアントを使用している場合は、今すぐ開いてください。
+mysql CLI以外のクライアントを使用している場合は、そのクライアントを開いてください。
 :::
 
 ```sql
@@ -183,20 +183,19 @@ mysql -P9030 -h127.0.0.1 -uroot --prompt="StarRocks > "
 
 ### ストレージボリュームを作成する
 
-以下に示す構成の詳細:
+以下に表示される構成の詳細:
 
-- MinIOサーバーはURL `http://minio:9000` で利用可能
+- MinIOサーバーはURL `http://minio:9000` で利用可能です
 - 作成したバケットは `starrocks` と呼ばれます
-- このボリュームに書き込まれるデータは、バケット `starrocks` 内の `shared` という名前のフォルダに保存されます
+- このボリュームに書き込まれるデータは、バケット `starrocks` 内の `shared` というフォルダに保存されます
 :::tip
-`shared` フォルダは、このボリュームに初めてデータを書き込むときに作成されます
+初めてデータがボリュームに書き込まれると、`shared` フォルダが作成されます
 :::
 - MinIOサーバーはSSLを使用していません
-- MinIO鍵とシークレットは、`aws.s3.access_key` および `aws.s3.secret_key` として入力されます。前述のMinIOウェブUIで作成したアクセスキーを使用します。
-- `shared` ボリュームがデフォルトボリュームです
-
+- MinIOのキーとシークレットは `aws.s3.access_key` と `aws.s3.secret_key` として入力されます。以前にMinIOのウェブUIで作成したアクセスキーを使用してください。
+- ボリューム `shared` がデフォルトのボリュームです
 :::tip
-コマンドを実行する前に、ハイライトされたアクセスキー情報を、MinIOで作成したアクセスキーとシークレットに置き換えてください。
+コマンドを実行する前に、強調表示されているアクセスキー情報をMinIOで作成したアクセスキーとシークレットに置き換えてください。
 :::
 
 ```bash
@@ -224,9 +223,7 @@ DESC STORAGE VOLUME shared\G
 ```
 
 :::tip
-この文書のSQLの一部、およびStarRocksドキュメントの多くの他の文書は、 `;`の代わりに `\G`を使用しています。` `\G` はmysql CLIにクエリ結果を縦に描画するように指示します。
-
-多くのSQLクライアントは、垂直書式の出力を解釈しないため、`\G` を `;` に置き換える必要があります。
+このドキュメントや、StarRocksドキュメントの多くのSQLは、`;\G` として表示されます。`\G` はmysql CLIがクエリ結果を縦に表示するようにするために使用されます。ほとんどのSQLクライアントは縦方向のフォーマット出力を解釈しないため、`\G` を `;` に置き換える必要があります。
 :::
 
 ```plaintext
@@ -244,32 +241,32 @@ IsDefault: true
 ```
 
 :::note
-`shared`フォルダにデータが書き込まれるまで、MinIOオブジェクトリストで `shared` フォルダは表示されません。
+「shared」フォルダには、バケットにデータが書き込まれるまで、MinIOオブジェクトリストに表示されません。
 :::
 
 ---
 
-## いくつかのテーブルを作成する
+## いくつかのテーブルを作成します
 
 <DDL />
 
 ---
 
-## データセットを2つロードする
+## 2つのデータセットを読み込む
 
-StarRocksにデータをロードする方法はたくさんあります。このチュートリアルでは、最も簡単な方法として、curlとStarRocks Stream Loadを使用します。
+StarRocksにデータを読み込む方法はいくつかあります。このチュートリアルでは、最も単純な方法として、curlとStarRocks Stream Loadを使用します。
 
 :::tip
 
-これらのcurlコマンドは、データセットをダウンロードしたディレクトリ内のFEシェルから実行します。
+これらのcurlコマンドを、データセットをダウンロードしたディレクトリで、FEシェルから実行してください。
 
-パスワードを入力します。おそらくMySQLの `root` ユーザーにパスワードを割り当てていない場合は、Enter キーを押します。
+パスワードが要求されます。おそらくMySQL「root」ユーザにパスワードを割り当てていないでしょうから、単にEnterキーを押してください。
 
 :::
 
-`curl` コマンドは複雑に見えますが、このチュートリアルの最後で詳しく説明します。今のところ、コマンドを実行してデータを解析し、その後データロードの詳細について読むことをお勧めします。
+`curl`コマンドは複雑に見えますが、このチュートリアルの終わりに詳細を説明しています。今のところは、コマンドを実行し、データを分析するためのいくつかのSQLを実行し、その後データの読み込みの詳細を読むことをお勧めします。
 
-### ニューヨーク市の衝突データ - 事故
+### ニューヨーク市の衝突データ - クラッシュ
 
 ```bash
 curl --location-trusted -u root             \
@@ -279,11 +276,11 @@ curl --location-trusted -u root             \
     -H "skip_header:1"                      \
     -H "enclose:\""                         \
     -H "max_filter_ratio:1"                 \
-    -H "columns:tmp_CRASH_DATE, tmp_CRASH_TIME, CRASH_DATE=str_to_date(concat_ws(' ', tmp_CRASH_DATE, tmp_CRASH_TIME), '%m/%d/%Y %H:%i'),BOROUGH,ZIP_CODE,LATITUDE,LONGITUDE,LOCATION,ON_STREET_NAME,CROSS_STREET_NAME,OFF_STREET_NAME,NUMBER_OF_PERSONS_INJURED,NUMBER_OF_PERSONS_KILLED,NUMBER_OF_PEDESTRIANS_INJURED,NUMBER_OF_PEDESTRIANS_KILLED,NUMBER_OF_CYCLIST_INJURED,NUMBER_OF_CYCLIST_KILLED,NUMBER_OF_MOTORIST_INJURED,NUMBER_OF_MOTORIST_KILLED,CONTRIBUTING_FACTOR_VEHICLE_1,CONTRIBUTING_FACTOR_VEHICLE_2,CONTRIBUTING_FACTOR_VEHICLE_3,CONTRIBUTING_FACTOR_VEHICLE_4,CONTRIBUTING_FACTOR_VEHICLE_5,COLLISION_ID,VEHICLE_TYPE_CODE_1,VEHICLE_TYPE_CODE_2,VEHICLE_TYPE_CODE_3,VEHICLE_TYPE_CODE_4,VEHICLE_TYPE_CODE_5" \
+    -H "columns:tmp_CRASH_DATE, tmp_CRASH_TIME, CRASH_DATE=str_to_date(concat_ws(' ', tmp_CRASH_DATE, tmp_CRASH_TIME), '%m/%d/%Y %H:%i'),BOROUGH,ZIP_CODE,LATITUDE,LONGITUDE,LOCATION,ON_STREET_NAME,CROSS_STREET_NAME,OFF_STREET_NAME,NUMBER_OF_PERSONS_INJURED,NUMBER_OF_PERSONS_KILLED,NUMBER_OF_PEDESTRIANS_INJURED,NUMBER_OF_PERSONS_KILLED,NUMBER_OF_CYCLIST_INJURED,NUMBER_OF_CYCLIST_KILLED,NUMBER_OF_MOTORIST_INJURED,NUMBER_OF_MOTORIST_KILLED,CONTRIBUTING_FACTOR_VEHICLE_1,CONTRIBUTING_FACTOR_VEHICLE_2,CONTRIBUTING_FACTOR_VEHICLE_3,CONTRIBUTING_FACTOR_VEHICLE_4,CONTRIBUTING_FACTOR_VEHICLE_5,COLLISION_ID,VEHICLE_TYPE_CODE_1,VEHICLE_TYPE_CODE_2,VEHICLE_TYPE_CODE_3,VEHICLE_TYPE_CODE_4,VEHICLE_TYPE_CODE_5" \
     -XPUT http://localhost:8030/api/quickstart/crashdata/_stream_load
 ```
 
-上記のコマンドの出力は以下の通りです。最初の強調表示されたセクションは、期待される表示（OK および行を挿入した結果を除くすべてのもの）を示しています。1行は正しい列数を持っていないためにフィルタリングされました。
+上記のコマンドの出力は次のとおりです。最初の強調表示されたセクションは、期待される出力（OK、および行を1行除いてすべて挿入）を示しています。1行は適切な列数を含んでいないためにフィルタリングされました。
 
 ```bash
 Enter host password for user 'root':
@@ -311,17 +308,17 @@ Enter host password for user 'root':
 }%
 ```
 
-エラーが発生した場合、出力にはエラーメッセージを確認するためのURLが示されます。コンテナにプライベートIPアドレスがあるため、コンテナからcurlを実行して表示する必要があります。
+エラーがある場合、出力にはエラーメッセージを表示するURLが提供されます。コンテナにプライベートIPアドレスがあるため、コンテナからcurlを実行して表示する必要があります。
 
 ```bash
-curl http://10.5.0.3:8040/api/_load_error_log<details from ErrorURL>
+curl http://10.5.0.3:8040/api/_load_error_log<エラーURLからの詳細>
 ```
 
-このチュートリアルを開発中に見たコンテンツのサマリーを展開します：
+このチュートリアルの作成中に見た内容の要約を展開します。
 
 <details>
 
-<summary>ブラウザでエラーメッセージを読む</summary>
+<summary>ブラウザでエラーメッセージを表示する</summary>
 
 ```bash
 Error: Value count does not match column count. Expect 29, but got 32.
@@ -332,9 +329,9 @@ Column delimiter: 44,Row delimiter: 10.. Row: 09/06/2015,14:15,,,40.6722269,-74.
 
 </details>
 
-### 天気データ
+### 天候データ
 
-衝突データと同じ方法で天気データセットをロードします。
+クラッシュデータと同じ方法で天候データセットを読み込んでください。
 
 ```bash
 curl --location-trusted -u root             \
@@ -353,29 +350,29 @@ curl --location-trusted -u root             \
 
 ## MinIOにデータが保存されていることを確認する
 
-MinIO [http://localhost:9001/browser/starrocks/](http://localhost:9001/browser/starrocks/) を開き、`starrocks/shared/` の各ディレクトリに`data`、`metadata`、`schema`のエントリがあることを確認してください。
+MinIO [http://localhost:9001/browser/starrocks/](http://localhost:9001/browser/starrocks/) を開き、`starrocks/shared/` ディレクトリ以下の各ディレクトリに `data`、`metadata`、`schema` のエントリがあることを確認してください。
 
 :::tip
-`starrocks/shared/` の下のフォルダ名はデータをロードすると生成されます。`shared`の下に1つのディレクトリがあり、その下に2つのディレクトリがさらにあります。それぞれのディレクトリの中にはデータ、メタデータ、およびスキーマのエントリがあります。
+`starrocks/shared/` 以下のフォルダ名はデータをロードする際に生成されます。`shared` の下に1つのディレクトリがあり、その下に2つのディレクトリがあります。それぞれのディレクトリの中にはデータ、メタデータ、スキーマのエントリがあります。
 
 ![MinIO object browser](../assets/quick-start/MinIO-data.png)
 :::
 
 ---
 
-## いくつかの質問に回答する
+## いくつかの質問に答える
 
 <SQL />
 
 ---
 
-## 共有データのStarRocksの構成
+## 共有データ用にStarRocksを構成する
 
-共有データを使用したStarRocksの経験を得たので、構成を理解することが重要です。
+共有データを使用したStarRocksの使用方法を体験したので、構成を理解することが重要です。
 
 ### CN構成
 
-ここで使用されているCN構成はデフォルトのものであり、CNは共有データの使用を目的として設計されています。デフォルトの構成は以下の通りです。変更する必要はありません。
+ここで使用されているCN構成はデフォルトです。CNは共有データの使用を想定して設計されています。デフォルトの構成は以下の通りです。変更する必要はありません。
 
 ```bash
 sys_log_level = INFO
@@ -388,9 +385,9 @@ brpc_port = 8060
 
 ### FE構成
 
-FE構成は、デフォルトとは少し異なります。なぜなら、FEはBEノードのローカルディスクではなく、オブジェクトストレージにデータが保存されることを想定して構成されている必要があるからです。
+FE構成は、デフォルトとは少し異なります。なぜなら、FEはデータがBEノード上のローカルディスクではなくオブジェクトストレージに保存されることを想定して構成される必要があるからです。
 
-`docker-compose.yml`ファイルはFE構成を`command`に生成します。
+`docker-compose.yml` ファイルはFE構成を `command` で生成します。
 
 ```yml
     command: >
@@ -422,24 +419,24 @@ query_port = 9030
 edit_log_port = 9010
 mysql_service_nio_enabled = true
 
-# highlight-start
+# ハイライト開始
 run_mode=shared_data
 aws_s3_path=starrocks
 aws_s3_endpoint=minio:9000
 aws_s3_use_instance_profile=false
 cloud_native_storage_type=S3
 aws_s3_use_aws_sdk_default_behavior=true
-# highlight-end
+# ハイライト終了
 ```
 
 :::note
-この構成ファイルには、デフォルトのエントリと共有データ用の追加エントリが含まれています。共有データのエントリはハイライト表示されています。
+この構成ファイルにはデフォルトのエントリと共有データの追加が含まれています。共有データのエントリはハイライトされています。
 :::
 
-非デフォルトのFE構成設定:
+デフォルトでないFE構成設定:
 
 :::note
-多くの構成パラメータは`s3_`で始まります。この接頭辞は、すべてのAmazon S3互換のストレージタイプ（例: S3、GCS、MinIO）に使用されます。Azure Blob Storageを使用する場合、接頭辞は`azure_`です。
+多くの構成パラメータは `s3_` で始まります。この接頭辞はAmazon S3互換のストレージタイプ（例：S3、GCS、MinIO）すべてで使用されます。Azure Blob Storageを使用する場合、この接頭辞は `azure_` になります。
 :::
 
 #### `run_mode=shared_data`
@@ -452,15 +449,15 @@ aws_s3_use_aws_sdk_default_behavior=true
 
 #### `aws_s3_endpoint=minio:9000`
 
-ポート番号を含むMinIOのエンドポイントです。
+MinIOのエンドポイント（ポート番号を含む）です。
 
 #### `aws_s3_use_instance_profile=false`
 
-MinIOを使用する際にはアクセスキーを使用するため、インスタンスプロファイルは使用しません。
+MinIOを使用する場合、アクセスキーが使用されるため、インスタンスプロファイルは使用されません。
 
 #### `cloud_native_storage_type=S3`
 
-これは、S3互換のストレージまたはAzure Blob Storageが使用されているかどうかを指定します。MinIOの場合、これは常にS3です。
+これは、S3互換のストレージまたはAzure Blob Storageが使用されているかを指定します。MinIOの場合、常にS3になります。
 
 #### `aws_s3_use_aws_sdk_default_behavior=true`
 
@@ -468,19 +465,19 @@ MinIOを使用する場合、このパラメータは常にtrueに設定され�
 
 ---
 
-## 要約
+## まとめ
 
-このチュートリアルでは以下のことを行いました：
+このチュートリアルでは、以下を行いました：
 
-- StarRocksとMinioをDockerでデプロイしました
-- MinIOのアクセスキーを作成しました
+- DockerでStarRocksとMinioを展開しました
+- MinIOアクセスキーを作成しました
 - MinIOを使用するStarRocksストレージボリュームを構成しました
-- ニューヨーク市が提供するクラッシュデータおよびNOAAが提供する気象データをロードしました
-- 低視界または凍結した通りでの運転は良くないことを発見するためにSQL JOINを使用してデータを分析しました
+- ニューヨーク市の提供するクラッシュデータとNOAAの提供する天候データをロードしました
+- 低い視界や凍結した道路で運転することが悪いことを見つけるためにSQL JOINを使用してデータを解析しました
 
-これから学ぶことは他にもあります；わざとStream Load中に行われるデータ変換については意図的に省略しました。これに関する詳細は以下のcurlコマンドに関する注釈にあります。
+さらに学ぶことがあります。私たちは意図的に、ストリームロード中に行われるデータ変換については省略しました。その詳細は以下のcurlコマンドのノートにあります。
 
-## curlコマンドに関する注釈
+## curlコマンドのノート
 
 <Curl />
 
@@ -490,9 +487,9 @@ MinIOを使用する場合、このパラメータは常にtrueに設定され�
 
 [マテリアライズドビュー](../cover_pages/mv_use_cases.mdx)
 
-[Stream Load](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)
+[ストリームロード](../sql-reference/sql-statements/data-manipulation/STREAM_LOAD.md)
 
-[モータービークルコリジョン-クラッシュ](https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95)データセットは、これらの[使用条件](https://www.nyc.gov/home/terms-of-use.page)および[プライバシーポリシー](https://www.nyc.gov/home/privacy-policy.page)に従ってニューヨーク市が提供しています。
+[モータービークルコリジョン - クラッシュ](https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95) データセットは、これらの[利用条件](https://www.nyc.gov/home/terms-of-use.page)および[プライバシーポリシー](https://www.nyc.gov/home/privacy-policy.page)に従ってニューヨーク市が提供しています。
 
-[Local Climatological Data](https://www.ncdc.noaa.gov/cdo-web/datatools/lcd)(LCD)は、NOAAによって[this disclaimer](https://www.noaa.gov/disclaimer)および[this privacy policy](https://www.noaa.gov/protecting-your-privacy)と共に提供されています。
+[ローカル気象データ](https://www.ncdc.noaa.gov/cdo-web/datatools/lcd)（LCD）は、NOAAがこの[免責事項](https://www.noaa.gov/disclaimer)とこの[プライバシーポリシー](https://www.noaa.gov/protecting-your-privacy)に従って提供しています。
 ```

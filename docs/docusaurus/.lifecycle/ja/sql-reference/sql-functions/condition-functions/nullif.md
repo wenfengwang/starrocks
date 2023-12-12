@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-`expr1` が `expr2` と等しい場合は NULL を返します。それ以外の場合は `expr1` を返します。
+`expr1` が `expr2` と等しい場合、NULL を返します。それ以外の場合は `expr1` を返します。
 
 ## 構文
 
@@ -14,13 +14,13 @@ displayed_sidebar: "Japanese"
 nullif(expr1,expr2);
 ```
 
-## パラメーター
+## パラメータ
 
-`expr1` と `expr2` はデータ型で互換性が必要です。
+`expr1` と `expr2` はデータ型が互換性がある必要があります。
 
 ## 戻り値
 
-戻り値のデータ型は `expr1` と同じです。
+戻り値は `expr1` と同じタイプです。
 
 ## 例
 

@@ -2,7 +2,7 @@
 displayed_sidebar: "Japanese"
 ---
 
-# array_remove（配列削除）
+# array_remove
 
 ## 説明
 
@@ -11,13 +11,13 @@ displayed_sidebar: "Japanese"
 ## 構文
 
 ```Haskell
-array_remove(任意の配列, 任意の要素)
+array_remove(any_array, any_element)
 ```
 
 ## パラメーター
 
-- `任意の配列`: 検索される配列です。
-- `任意の要素`: 配列内の要素に一致する式です。
+- `any_array`: 検索対象の配列。
+- `any_element`: 配列内の要素に一致する式。
 
 ## 戻り値
 
@@ -38,7 +38,7 @@ mysql> select array_remove([1,2,3,null,3], 3);
 
 +---------------------------------+
 
-1 行が返されました（0.01 秒）
+1 row in set (0.01 sec)
 ```
 
 ## キーワード

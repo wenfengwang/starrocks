@@ -6,39 +6,39 @@ displayed_sidebar: "Japanese"
 
 ## ユーザー接続数
 
-`Property` はユーザーの細かい設定です。Client と FE の間の最大接続数を設定するには、次のコマンドを使用します。
+`Property` はユーザーの細かい設定です。Client と FE 間の最大接続数を設定するには、次のコマンドを使用してください。
 
 ```sql
 SET PROPERTY [FOR 'user'] 'key' = 'value' [, 'key' = 'value']
 ```
 
-ユーザープロパティには、ユーザーに割り当てられたリソースが含まれます。ここで設定されるプロパティは `user_identity` ではなく、ユーザー自体のものです。つまり、`CREATE USER` ステートメントによって `jack'@'%` と `jack'@'192.%` の2つのユーザーが作成された場合、`SET PROPERTY` ステートメントは `jack'@'%' や `jack'@'192.%` ではなく、ユーザー `jack` に対して機能します。
+ユーザープロパティにはユーザーに割り当てられたリソースが含まれます。ここで設定されたプロパティは`user_identity`ではなく、ユーザーに対して設定されます。つまり、`CREATE USER` ステートメントで `jack'@'%` と `jack'@'192.%` の2つのユーザーが作成された場合、`SET PROPERTY` ステートメントは `jack` ユーザーに対して動作します。`jack'@'%` や `jack'@'192.%` には動作しません。
 
 例1:
 
 ```sql
-ユーザー `jack` の最大接続数を1000に変更します
+ユーザー `jack` の最大接続数を1000に変更する
 SET PROPERTY FOR 'jack' 'max_user_connections' = '1000';
 
-ルートユーザーの接続制限をチェックします
+root ユーザーの接続制限を確認する
 SHOW PROPERTY FOR 'root'; 
 ```
 
 ## クエリ関連のセッション変数
 
-セッション変数は 'key' = 'value' で設定でき、現在のセッションでクエリの並行性、メモリおよびその他のクエリパラメータを制限できます。例:
+セッション変数は 'key' = 'value' で設定でき、現在のセッションでクエリパラメータを制限できます。例えば：
 
 - parallel_fragment_exec_instance_num
 
-  デフォルト値が1のクエリの並列処理です。それは各 BE のフラグメントインスタンスの数を示します。BE のCPUコアの半分に設定することでクエリのパフォーマンスを向上させることができます。
+  デフォルト値が1のクエリの並列処理です。BE 上のフラグメントインスタンスの数を示します。BE の CPU コア数の半分に設定することで、クエリのパフォーマンスを向上させることができます。
 
 - query_mem_limit
 
-  クエリのメモリ制限で、クエリが十分なメモリを報告したときに調整できます。
+  クエリのメモリ制限で、クエリがメモリ不足を報告した場合に調整できます。
 
 - load_mem_limit
 
-  インポートのためのメモリ制限で、インポートジョブが十分なメモリを報告したときに調整できます。
+  インポートのためのメモリ制限で、インポートジョブがメモリ不足を報告した場合に調整できます。
 
 例2:
 
@@ -47,15 +47,15 @@ set parallel_fragment_exec_instance_num  = 8;
 set query_mem_limit  = 137438953472;
 ```
 
-## データベースストレージの容量クォータ
+## データベースストレージの容量割り当て
 
-データベースストレージの容量クォータはデフォルトで無制限です。そして、`alter database` を使用してクォータ値を変更できます。
+データベースストレージの容量割り当てはデフォルトで無制限です。`alter database` を使用して割り当てる値を変更できます。
 
 ```sql
 ALTER DATABASE db_name SET DATA QUOTA quota;
 ```
 
-クォータの単位は: B/K/KB/M/MB/G/GB/T/TB/P/PB です。
+割り当ての単位は: B/K/KB/M/MB/G/GB/T/TB/P/PB
 
 例3:
 
@@ -63,15 +63,15 @@ ALTER DATABASE db_name SET DATA QUOTA quota;
 ALTER DATABASE example_db SET DATA QUOTA 10T;
 ```
 
-## クエリの削除
+## クエリの終了
 
-特定の接続上でクエリを終了するには、次のコマンドを使用してください:
+特定の接続でクエリを終了するには、次のコマンドを使用してください:
 
 ```sql
 kill connection_id;
 ```
 
-`connection_id` は `show processlist;` または `select connection_id();` で確認できます。
+`connection_id` は `show processlist;` や `select connection_id();` で確認できます。
 
 ```plain text
  show processlist;
@@ -100,4 +100,5 @@ mysql> select connection_id();
 
 mysql> kill 114;
 Query OK, 0 rows affected (0.02 sec)
+
 ```

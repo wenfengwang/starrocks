@@ -2,24 +2,24 @@
 displayed_sidebar: "Japanese"
 ---
 
-# 全てのステートメント
+# すべてのステートメント
 
-このトピックでは、StarRocksでサポートされている全てのSQLステートメントをリストし、それらの機能に応じてカテゴリ分けしています。
+このトピックでは、StarRocksでサポートされているすべてのSQLステートメントをリストし、これらのステートメントを機能ごとにカテゴリ分けしています。
 
-- [全てのステートメント](#all-statements)
+- [すべてのステートメント](#all-statements)
   - [ユーザーアカウントの管理](#user-account-management)
-  - [クラスタの管理](#cluster-management)
-    - [FE, BE, CN, ブローカー, プロセス](#fe-be-cn-broker-process)
+  - [クラスター管理](#cluster-management)
+    - [FE、BE、CN、Broker、プロセス](#fe-be-cn-broker-process)
     - [リソースグループ](#resource-group)
     - [ストレージボリューム](#storage-volume)
-    - [テーブル, タブレット, レプリカ](#table-tablet-replica)
-    - [ファイル, インデックス, 変数](#file-index-variable)
+    - [テーブル、タブレット、レプリカ](#table-tablet-replica)
+    - [ファイル、インデックス、変数](#file-index-variable)
     - [SQLブラックリスト](#sql-blacklist)
     - [プラグイン](#plugin)
-  - [ロード、アンロード](#loading-unloading)
+  - [ローディング、アンローディング](#loading-unloading)
     - [ルーチンロード](#routine-load)
     - [その他のロード](#other-load)
-    - [アンロード](#unloading)
+    - [アンローディング](#unloading)
     - [ETLタスク](#etl-task)
   - [カタログ、データベース、リソース](#catalog-database-resource)
     - [カタログ](#catalog)
@@ -29,14 +29,14 @@ displayed_sidebar: "Japanese"
   - [ビュー、マテリアライズドビュー](#view-materialized-view)
     - [ビュー](#view)
     - [マテリアライズドビュー](#materialized-view)
-  - [関数、SELECT](#function-select)
+  - [ファンクション、SELECT](#function-select)
   - [CBO統計情報](#cbo-statistics)
   - [バックアップとリストア](#backup-and-restore)
   - [ユーティリティコマンド](#utility-commands)
 
 ## ユーザーアカウントの管理
 
-ユーザー、ロール、特権を管理します。
+ユーザー、ロール、特権の管理。
 
 - [ALTER USER](./account-management/ALTER_USER.md)
 - [CREATE ROLE](./account-management/CREATE_ROLE.md)
@@ -56,11 +56,11 @@ displayed_sidebar: "Japanese"
 - [SHOW ROLES](./account-management/SHOW_ROLES.md)
 - [SHOW USERS](./account-management/SHOW_USERS.md)
 
-## クラスタの管理
+## クラスター管理
 
-FE、BE、CN、ブローカー、リソースグループ、ストレージボリューム、テーブル、タブレット、レプリカ、ファイル、インデックス、変数、プラグインを含むクラスタを管理します。
+FE、BE、計算ノード、ブローカー、リソースグループ、ストレージボリューム、テーブル、タブレット、レプリカ、ファイル、インデックス、変数、プラグインなどのクラスターを管理します。
 
-### FE, BE, CN, ブローカー, プロセス
+### FE、BE、CN、Broker、プロセス
 
 - [ADMIN SET CONFIG](./Administration/ADMIN_SET_CONFIG.md)
 - [ADMIN SHOW CONFIG](./Administration/ADMIN_SHOW_CONFIG.md)
@@ -127,7 +127,7 @@ FE、BE、CN、ブローカー、リソースグループ、ストレージボ�
 - [SHOW PLUGINS](./Administration/SHOW_PLUGINS.md)
 - [UNINSTALL PLUGIN](./Administration/UNINSTALL_PLUGIN.md)
 
-## ロード、アンロード
+## ローディング、アンローディング
 
 ### ルーチンロード
 
@@ -150,7 +150,7 @@ FE、BE、CN、ブローカー、リソースグループ、ストレージボ�
 - [SPARK LOAD](./data-manipulation/SPARK_LOAD.md)
 - [STREAM LOAD](./data-manipulation/STREAM_LOAD.md)
 
-### アンロード
+### アンローディング
 
 - [EXPORT](./data-manipulation/EXPORT.md)
 - [CANCEL EXPORT](./data-manipulation/CANCEL_EXPORT.md)
@@ -207,7 +207,7 @@ FE、BE、CN、ブローカー、リソースグループ、ストレージボ�
 - [SHOW TABLET](./data-manipulation/SHOW_TABLET.md)
 - [UPDATE](./data-manipulation/UPDATE.md)
 
-## View, materialized view
+## ビュー、マテリアライズドビュー
 
 ### ビュー
 
@@ -216,7 +216,7 @@ FE、BE、CN、ブローカー、リソースグループ、ストレージボ�
 - [SHOW CREATE VIEW](./data-manipulation/SHOW_CREATE_VIEW.md)
 - [DROP VIEW](./data-definition/DROP_VIEW.md)
 
-### マテリアライズド・ビュー
+### マテリアライズドビュー
 
 - [ALTER MATERIALIZED VIEW](./data-definition/ALTER_MATERIALIZED_VIEW.md)
 - [CREATE MATERIALIZED VIEW](./data-definition/CREATE_MATERIALIZED_VIEW.md)
@@ -259,7 +259,7 @@ FE、BE、CN、ブローカー、リソースグループ、ストレージボ�
 - [SHOW RESTORE](./data-manipulation/SHOW_RESTORE.md)
 - [SHOW SNAPSHOT](./data-manipulation/SHOW_SNAPSHOT.md)
 
-## ユーティリティ・コマンド
+## ユーティリティコマンド
 
 - [DESC](./Utility/DESCRIBE.md)
 - [EXPLAIN](./Administration/EXPLAIN.md)

@@ -2,44 +2,45 @@
 displayed_sidebar: "Japanese"
 ---
 
-# スケールインとアウト
+# 拡大縮小
 
-このトピックでは、StarRocksのノードをスケールインおよびスケールアウトする方法について説明します。
+このトピックでは、StarRocksのノードを拡大縮小する方法について説明します。
 
-## FEのスケールインとアウト
+## FEの拡大縮小
 
-StarRocksには、FollowerとObserverの2種類のFEノードがあります。Followerは選挙投票や書き込みに関与します。Observerはログを同期し、読み取りパフォーマンスを向上させるために使用されます。
+StarRocksには、FollowerとObserverの2種類のFEノードがあります。Followerは選挙投票および書き込みに関与します。Observerはログを同期し読み取り性能を向上させるために使用されます。
 
-> * フォロワーFE（リーダーを含む）の数は奇数でなければならず、3つのノードを展開して高可用性（HA）モードを構築することを推奨します。
-> * FEが高可用性展開（1つのリーダー、2つのフォロワー）の場合、より良い読み取りパフォーマンスのためにObserver FEを追加することを推奨します。* 通常、1つのFEノードは10〜20のBEノードと連携できます。FEノードの総数は10より少ないことが推奨されます。ほとんどの場合、3つで十分です。
+> * Follower FEの数（リーダーを含む）は奇数でなければならず、高可用性（HA）モードを形成するために3つのFEを展開することが推奨されます。
+> * FEが高可用性展開（1つのリーダーと2つのFollower）されている場合、良好な読み取り性能のためにObserver FEを追加することを推奨します。
+> * 通常、1つのFEノードは10〜20のBEノードと連携することができます。FEノードの合計数は10未満であることを推奨します。ほとんどの場合、3つで十分です。
 
-### FEのスケールアウト
+### FEの拡大
 
-FEノードを展開してサービスを開始した後、次のコマンドを実行してFEをスケーリングアウトします。
+FEノードを展開しサービスを開始した後、次のコマンドを実行してFEノードを拡大します。
 
 ~~~sql
 alter system add follower "fe_host:edit_log_port";
 alter system add observer "fe_host:edit_log_port";
 ~~~
 
-### FEのスケールイン
+### FEの縮小
 
-FEのスケールインはスケールアウトと同様です。次のコマンドを実行してFEをスケーリングインします。
+FEの縮小は拡大と同様です。FEを縮小するには、次のコマンドを実行します。
 
 ~~~sql
 alter system drop follower "fe_host:edit_log_port";
 alter system drop observer "fe_host:edit_log_port";
 ~~~
 
-拡張と収縮の後、ノードの情報は`show proc '/frontends';`を実行することで表示できます。
+拡大と縮小の後、`show proc '/frontends';` を実行してノード情報を表示できます。
 
-## BEのスケールインとアウト
+## BEの拡大縮小
 
-BEがスケーリングインまたはスケーリングアウトされると、StarRocksは全体のパフォーマンスに影響を与えることなく自動的に負荷分散を行います。
+BEを拡大または縮小した後、StarRocksは全体のパフォーマンスに影響を与えることなく自動的に負荷分散を行います。
 
-### BEのスケールアウト
+### BEの拡大
 
-BEをスケーリングアウトするには、次のコマンドを実行します。
+BEを拡大するには、次のコマンドを実行します。
 
 ~~~sql
 alter system add backend 'be_host:be_heartbeat_service_port';
@@ -51,13 +52,13 @@ BEの状態を確認するには、次のコマンドを実行します。
 show proc '/backends';
 ~~~
 
-### BEのスケールイン
+### BEの縮小
 
-BEノードをスケーリングインする方法は2つあります - `DROP`と`DECOMMISSION`。
+BEノードを縮小するには、`DROP`および`DECOMMISSION`の2つの方法があります。
 
-`DROP`はBEノードをただちに削除し、失われた重複はFEのスケジューリングによって補われます。 `DECOMMISSION`はまず重複が補われ、その後BEノードを削除します。 `DECOMMISSION`はよりフレンドリーであり、BEのスケールインには推奨されます。
+`DROP`はBEノードを直ちに削除し、失われた重複はFEのスケジューリングによって補われます。 `DECOMMISSION`は重複がまず補われ、その後BEノードが削除されることを確認します。 `DECOMMISSION`はよりフレンドリーであり、BEの縮小に推奨されます。
 
-両方の方法のコマンドは類似しています:
+両方の方法のコマンドは似ています:
 
 * `alter system decommission backend "be_host:be_heartbeat_service_port";`
 * `alter system drop backend "be_host:be_heartbeat_service_port";`

@@ -2,11 +2,11 @@
 displayed_sidebar: "Japanese"
 ---
 
-# stddev_samp (標本標準偏差)
+# stddev_samp
 
 ## 説明
 
-式の標本標準偏差を返します。v2.5.10以降、この関数はウィンドウ関数としても使用できます。
+式のサンプル標準偏差を返します。v2.5.10以降、この関数はウィンドウ関数としても使用できます。
 
 ## 構文
 
@@ -14,9 +14,9 @@ displayed_sidebar: "Japanese"
 STDDEV_SAMP(expr)
 ```
 
-## パラメータ
+## パラメーター
 
-`expr`: 式。テーブルの列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価されなければなりません。
+`expr`: 式。表の列である場合、TINYINT、SMALLINT、INT、BIGINT、LARGEINT、FLOAT、DOUBLE、またはDECIMALに評価される必要があります。
 
 ## 戻り値
 
@@ -37,4 +37,4 @@ group by datetime;
 
 ## キーワード
 
-STDDEV_SAMP, STDDEV, SAMP
+STDDEV_SAMP,STDDEV,SAMP

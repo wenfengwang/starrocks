@@ -6,7 +6,7 @@ displayed_sidebar: "Japanese"
 
 ## Description
 
-ポイントが有効なポイントタイプである場合、対応するY座標値を返します。
+ポイントが有効なポイントタイプの場合、対応するY座標値を返します。
 
 ## Syntax
 

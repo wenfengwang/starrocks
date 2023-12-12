@@ -17,15 +17,15 @@ BITMAP array_to_bitmap(array)
 
 ## パラメータ
 
-`array`: 配列内の要素はINT、TINYINT、またはSMALLINT型であることができます。
+`array`: 配列内の要素はINT、TINYINT、またはSMALLINTタイプであることができます。
 
 ## 戻り値
 
-BITMAP型の値を返します。
+BITMAPタイプの値を返します。
 
 ## 使用上の注意
 
-- 入力配列の要素のデータ型が無効な場合、例えばSTRINGやDECIMALの場合は、エラーが返されます。
+- 入力配列の要素のデータ型がSTRINGやDECIMALなど無効な場合、エラーが返されます。
 
 - 空の配列が入力された場合、空のBITMAP値が返されます。
 
@@ -33,7 +33,7 @@ BITMAP型の値を返します。
 
 ## 例
 
-例 1: 配列をBITMAP値に変換します。この関数は、BITMAP値を表示することができないため、`bitmap_to_array`に入れ子にする必要があります。
+Example 1: 配列をBITMAP値に変換します。BITMAP値は表示できないため、この関数は`bitmap_to_array`にネストする必要があります。
 
 ```Plain
 MySQL > select bitmap_to_array(array_to_bitmap([1,2,3]));
@@ -44,7 +44,7 @@ MySQL > select bitmap_to_array(array_to_bitmap([1,2,3]));
 +-------------------------------------------+
 ```
 
-例 2: 空の配列が入力された場合、空の配列が返されます。
+Example 2: 空の配列が入力されたら、空の配列が返されます。
 
 ```Plain
 MySQL > select bitmap_to_array(array_to_bitmap([]));
@@ -55,7 +55,7 @@ MySQL > select bitmap_to_array(array_to_bitmap([]));
 +--------------------------------------+
 ```
 
-例 3: `NULL`が入力された場合、`NULL`が返されます。
+Example 3: `NULL`が入力されたら、`NULL`が返されます。
 
 ```Plain
 MySQL > select array_to_bitmap(NULL);

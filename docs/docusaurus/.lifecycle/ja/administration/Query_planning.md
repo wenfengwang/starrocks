@@ -4,17 +4,17 @@ displayed_sidebar: "Japanese"
 
 # クエリ解析
 
-クエリのパフォーマンスを最適化する方法はよく問われる質問です。遅いクエリはユーザーエクスペリエンスやクラスタのパフォーマンスに影響を与えます。クエリのパフォーマンスを分析して最適化することが重要です。
+クエリのパフォーマンスの最適化方法はよくある質問です。遅いクエリはユーザーエクスペリエンスだけでなく、クラスタのパフォーマンスも損ないます。クエリのパフォーマンスを分析して最適化することが重要です。
 
-`fe/log/fe.audit.log` でクエリ情報を表示することができます。各クエリには`QueryID`が対応しており、これを使用してクエリの`QueryPlan`および`Profile`を検索することができます。`QueryPlan` は FE によって生成された実行プランであり、SQL ステートメントを解析しています。`Profile` は BE の実行結果であり、各ステップで消費される時間や各ステップで処理されるデータ量などの情報が含まれています。
+`fe/log/fe.audit.log` でクエリ情報を表示できます。それぞれのクエリには`QueryID`が対応しており、その`QueryID`を使用してクエリの`QueryPlan`と`Profile`を検索することができます。 `QueryPlan`はFEによってSQLステートメントを解析して生成された実行プランです。`Profile`はBEの実行結果であり、各ステップで消費された時間や各ステップで処理されるデータ量などの情報を含んでいます。
 
 ## プラン解析
 
-StarRocks では、SQL ステートメントのライフサイクルをクエリ解析、クエリプランニング、クエリ実行の３つのフェーズに分けることができます。クエリ解析は一般的にボトルネックにはなりません。なぜなら、分析ワークロードの必要な QPS が高くないためです。
+StarRocksでは、SQLステートメントのライフサイクルをクエリ解析、クエリプランニング、クエリ実行の3つのフェーズに分けることができます。 クエリ解析は、通常、分析ワークロードの必要なQPSが高くないため、ボトルネックにはなりません。
 
-StarRocks におけるクエリのパフォーマンスはクエリプランニングとクエリ実行によって決定されます。クエリプランニングは演算子（Join/Order/Aggregate）を調整し、クエリ実行は特定の操作を実行する責任があります。
+StarRocksにおけるクエリのパフォーマンスは、クエリプランニングとクエリ実行によって決まります。クエリプランニングは演算子（Join / Order / Aggregate）を調整する責任があり、クエリ実行は特定の操作を実行する責任があります。
 
-クエリプランは DBA にとってマクロな視点でクエリ情報にアクセスできるようにします。クエリプランはクエリパフォーマンスの鍵であり、DBA が参照できる優れたリソースです。以下のコードスニペットは`TPCDS query96`を使用して、クエリプランを表示する方法を示しています。
+クエリプランはDBAにとってマクロな視点を提供し、クエリの情報へのアクセスの鍵であり、DBAが参照できる良いリソースです。次のコードスニペットは、`TPCDSクエリ96`を例にとって、クエリプランを表示する方法を示しています。
 
 ~~~SQL
 -- query96.sql
@@ -33,14 +33,14 @@ where ss_sold_time_sk = time_dim.t_time_sk
 order by count(*) limit 100;
 ~~~
 
-クエリプランには、論理クエリプランと物理クエリプランの２種類があります。ここで説明するクエリプランは論理クエリプランを指します。`TPCDS query96.sql` に対応するクエリプランは以下の通りです。
+クエリプランには、論理クエリプランと物理クエリプランの2つのタイプがあります。ここで説明するクエリプランは、論理クエリプランを指します。 `TPCDS query96.sq`に対応するクエリプランは以下の通りです。
 
 ~~~sql
 +------------------------------------------------------------------------------+
-| 説明文字列                                                                    |
+| Explain String                                                               |
 +------------------------------------------------------------------------------+
 | PLAN FRAGMENT 0                                                              |
-|  OUTPUT EXPRS: <slot 11>                                                     |
+|  OUTPUT EXPRS:<slot 11>                                                      |
 |   PARTITION: UNPARTITIONED                                                   |
 |   RESULT SINK                                                                |
 |   12:MERGING-EXCHANGE                                                        |
@@ -106,7 +106,7 @@ order by count(*) limit 100;
 |      avgRowSize=0.0                                                          |
 |      numNodes=0                                                              |
 |      tuple ids: 0                                                            |
-|                                                                              |
+                                                                              |
 | PLAN FRAGMENT 2                                                              |
 |  OUTPUT EXPRS:                                                               |
 |   PARTITION: RANDOM                                                          |
@@ -127,7 +127,7 @@ order by count(*) limit 100;
 |      avgRowSize=0.0                                                          |
 |      numNodes=0                                                              |
 |      tuple ids: 3                                                            |
-|                                                                              |
+                                                                              |
 | PLAN FRAGMENT 3                                                              |
 |  OUTPUT EXPRS:                                                               |
 |   PARTITION: RANDOM                                                          |
@@ -147,7 +147,7 @@ order by count(*) limit 100;
 |      avgRowSize=0.0                                                          |
 |      numNodes=0                                                              |
 |      tuple ids: 1                                                            |
-|                                                                              |
+                                                                              |
 | PLAN FRAGMENT 4                                                              |
 |  OUTPUT EXPRS:                                                               |
 |   PARTITION: RANDOM                                                          |
@@ -168,41 +168,41 @@ order by count(*) limit 100;
 |      numNodes=0                                                              |
 |      tuple ids: 2                                                            |
 +------------------------------------------------------------------------------+
-128 行中 (0.02 秒)
+128 rows in set (0.02 sec)
 ~~~
 
-クエリ96には、複数のStarRocksの概念を含むクエリプランが示されています。
+クエリ96は、いくつかのStarRocksの概念を含むクエリプランを示しています。
 
-|名前|説明|
+|Name|Explanation|
 |--|--|
 |avgRowSize|スキャンされたデータ行の平均サイズ|
-|cardinality|スキャンされたテーブルのデータ行の合計数|
-|colocate|テーブルの共置モードの有無|
-|numNodes|スキャンするノードの数|
-|rollup|マテリアライズド・ビュー|
-|preaggregation|プリアグリゲーション|
-|predicates|クエリフィルタ|
+|cardinality|スキャンされたテーブルのデータ行の総数|
+|colocate|テーブルがコロケートモードにあるかどうか|
+|numNodes|スキャンされるノードの数|
+|rollup|マテリアライズドビュー|
+|preaggregation|事前集計|
+|predicates|述語、クエリのフィルタ|
 
-クエリ96のクエリプランは0から4までの５つのフラグメントに分かれており、ボトムアップで順に読むことができます。
-フラグメント4は`time_dim`テーブルをスキャンし、関連するクエリ条件（つまり、`time_dim.t_hour = 8かつtime_dim.t_minute>= 30`）を事前に実行します。このステップは述部押し込みとしても知られています。StarRocksは、集計テーブルの`PREAGGREGATION`を有効にするかどうかを決定します。前の図では、`time_dim`の事前集約は無効になっています。この場合、`time_dim`のすべての次元列が読み取られ、テーブルに多くの次元列がある場合にパフォーマンスに悪影響を及ぼす可能性があります。`time_dim`テーブルがデータ分割のために`range partition`を選択する場合、クエリプランでいくつかのパーティションが当たり、無関係なパーティションが自動的にフィルタリングされます。マテリアライズド・ビューがある場合、StarRocksはクエリに基づいてマテリアライズド・ビューを自動的に選択します。マテリアライズド・ビューがない場合、クエリは自動的に基本テーブルをアクセスします（たとえば、前の図で`ロールアップ：time_dim`）。
+クエリ96のクエリプランは0から4までの5つのフラグメントに分かれており、クエリプランを下から上に1つずつ読むことができます。
+フラグメント4は、`time_dim`テーブルをスキャンし、関連するクエリ条件（すなわち、`time_dim.t_hour = 8 and time_dim.t_minute >= 30`）を事前に実行する責務を担っています。このステップは述部の押し付けとしても知られています。StarRocksは、集約テーブルの`PREAGGREGATION`を有効にするかどうかを決定します。前の図では、`time_dim`の前集約は無効になっています。この場合、`time_dim`のすべての次元列が読み取られますが、テーブルに多くの次元列がある場合、パフォーマンスに悪影響を与える可能性があります。`time_dim`テーブルがデータの分割に`range partition`を選択すると、クエリプランでいくつかのパーティションがヒットし、関連のないパーティションが自動的にフィルタリングされます。マテリアライズド・ビューがある場合、StarRocksは自動的にクエリに基づいてマテリアライズド・ビューを選択します。マテリアライズド・ビューがない場合、クエリは自動的にベース・テーブルにヒットします（たとえば、前の図の`rollup: time_dim`）。
 
-スキャンが完了したら、フラグメント4が終了します。データは他のフラグメントに渡され、前の図でEXCHANGE ID: 09で示されているように、受信ノードラベル9に渡されます。
+スキャンが完了したら、フラグメント4は終了します。データは他のフラグメントに渡され、前の図のEXCHANGE ID：09で示されているように、受信ノード9に渡されます。
 
-クエリ96のクエリプランでは、フラグメント2、3、および4は類似した機能を持っていますが、異なるテーブルをスキャンする責任があります。特に、クエリの`Order/Aggregation/Join`操作はフラグメント1で実行されます。
+Query 96のクエリプランでは、フラグメント2、3、および4は類似の機能を持っていますが、異なるテーブルをスキャンする責務があります。具体的には、クエリ内の`Order/Aggregation/Join`操作は、フラグメント1で実行されます。
 
-フラグメント1では、`BROADCAST`メソッドを使用して`Order/Aggregation/Join`操作を実行します。つまり、小さなテーブルを大きなテーブルにブロードキャストします。両方のテーブルが大きい場合は、`SHUFFLE`メソッドを使用することをお勧めします。現在、StarRocksは`HASH JOIN`のみをサポートしています。`colocate`フィールドは、2つの結合されたテーブルが同じ方法でパーティション分割およびバケット分割されていることを示すために使用され、したがって、データを移行せずに結合操作をローカルで実行できます。結合操作が完了すると、上位レベルの`aggregation`、`order by`、および`top-n`操作が実行されます。
+フラグメント1では、`BROADCAST`メソッドを使用して`Order/Aggregation/Join`操作を行います。つまり、小さなテーブルを大きなテーブルにブロードキャストします。両方のテーブルが大きい場合は、`SHUFFLE`メソッドを使用することをお勧めします。現在、StarRocksは`HASH JOIN`のみをサポートしています。`colocate`フィールドは、2つの結合されたテーブルが同じ方法でパーティション分割およびバケット化されていることを示し、データを移行せずにローカルで結合操作を行うことができることを示しています。結合操作が完了すると、上位レベルでの`aggregation`、`order by`、および`top-n`操作が行われます。
 
-特定の式を削除することにより（演算子のみを保持）、クエリプランをより全体的な視点で表示することができます。次の図に示すように。
+具体的な表現を削除して（演算子のみ保持）、クエリプランをより大局的な視点で示すことができます。次の図に示すように。
 
 ![8-5](../assets/8-5.png)
 
 ## クエリヒント
 
-クエリヒントは、クエリオプティマイザにクエリの実行方法を明示的に示唆する指示またはコメントです。現在、StarRocksは変数設定ヒントと結合ヒントの2種類のヒントをサポートしています。ヒントは単一のクエリ内でのみ有効です。
+クエリヒントは、クエリの実行方法についてクエリオプティマイザへ明示的に示唆する指令またはコメントです。現在、StarRocksは変数設定ヒントと結合ヒントの2種類のヒントをサポートしています。ヒントは単一のクエリ内でのみ効果があります。
 
 ### 変数設定ヒント
 
-`SET_VAR`ヒントを使用して、1つ以上の[システム変数](../reference/System_variable.md)を設定することができます。 `SET_VAR`ヒントの構文は、SELECTやSUBMIT TASKステートメントでの`/*+ SET_VAR(var_name = value) */`の形式で表され、またはCREATE MATERIALIZED VIEW AS SELECTやCREATE VIEW AS SELECTなどの他のステートメントに含まれるSELECT句で使用されます。
+`SET_VAR`ヒントを使用して1つまたは複数の[システム変数](../reference/System_variable.md)を設定できます。このヒントの形式は、SELECTおよびSUBMIT TASKステートメント、あるいは他のステートメントに含まれるSELECT句での形式、例えばCREATE MATERIALIZED VIEW AS SELECTおよびCREATE VIEW AS SELECTなどで使用します。
 
 #### 構文
 
@@ -213,19 +213,19 @@ SUBMIT [/*+ SET_VAR(key=value [, key = value]*) */] TASK ...
 
 #### 例
 
-集計クエリの集計方法をヒント指定して、システム変数`streaming_preaggregation_mode`および`new_planner_agg_stage`を設定します。
+集約クエリ用にシステム変数`streaming_preaggregation_mode`および`new_planner_agg_stage`の値を設定して集約方法をヒントする。
 
 ~~~SQL
 SELECT /*+ SET_VAR (streaming_preaggregation_mode = 'force_streaming',new_planner_agg_stage = '2') */ SUM(sales_amount) AS total_sales_amount FROM sales_orders;
 ~~~
 
-クエリのタスク実行タイムアウト期間を`query_timeout`システム変数で設定するために、SUBMIT TASKステートメントで使用します。
+クエリのタスク実行タイムアウト期間をシステム変数`query_timeout`で設定する。
 
 ~~~SQL
 SUBMIT /*+ SET_VAR(query_timeout=3) */ TASK AS CREATE TABLE temp AS SELECT count(*) AS cnt FROM tbl1;
 ~~~
 
-マテリアライズド・ビューを作成する際に、クエリの実行タイムアウト期間を`query_timeout`システム変数で設定する場合、使用します。
+マテリアライズド・ビューを作成する際に、SELECT句内でシステム変数`query_timeout`を設定して、クエリの実行タイムアウト期間をヒントする。
 
 ~~~SQL
 CREATE MATERIALIZED VIEW mv 
@@ -238,7 +238,7 @@ AS SELECT /*+ SET_VAR(query_timeout=500) */ * from dual;
 
 ### 結合ヒント
 
-複数のテーブルを結合するクエリの場合、オプティマイザは通常、最適な結合実行方法を選択します。特別な場合では、結合ヒントを使用して、結合実行方法をオプティマイザに明示的に示唆したり、結合の再順序を無効にしたりすることができます。現在の結合ヒントは、Shuffle Join、Broadcast Join、Bucket Shuffle Join、またはColocate Joinとして結合実行方法を示唆します。結合ヒントを使用すると、オプティマイザは結合の再順序を実行しません。そのため、小さいテーブルを右側のテーブルとして選択する必要があります。また、[Colocate Join](../using_starrocks/Colocate_join.md)またはBucket Shuffle Joinを結合実行方法として示唆する場合、結合されたテーブルのデータ分布がこれらの結合実行方法の要件を満たしていることを確認する必要があります。そうでない場合、示唆された結合実行方法は効果を発揮しません。
+複数テーブルの結合クエリの場合、オプティマイザは通常、最適な結合実行方法を選択します。特定のケースでは、結合ヒントを使用してオプティマイザに結合実行方法を明示的に指示したり、Join Reorderを無効にしたりすることが可能です。現在、結合ヒントは、結合実行方法としてShuffle Join、Broadcast Join、Bucket Shuffle Join、またはColocate Joinを明示的に示唆することをサポートしています。結合ヒントを使用すると、オプティマイザはJoin Reorderを実行しません。そのため、小さいテーブルを右側のテーブルとして選択する必要があります。また、[Colocate Join](../using_starrocks/Colocate_join.md)またはBucket Shuffle Joinを結合実行方法として示唆する場合、結合されるテーブルのデータ分布がこれらの結合実行方法の要件を満たしていることを確認する必要があります。そうでない場合、示唆された結合実行方法は有効になりません。
 
 #### 構文
 
@@ -246,7 +246,7 @@ AS SELECT /*+ SET_VAR(query_timeout=500) */ * from dual;
 ... JOIN { [BROADCAST] | [SHUFFLE] | [BUCKET] | [COLOCATE] | [UNREORDER]} ...
 ~~~
 
-> **注意**
+> **注記**
 >
 > 結合ヒントは大文字と小文字を区別しません。
 
@@ -254,7 +254,7 @@ AS SELECT /*+ SET_VAR(query_timeout=500) */ * from dual;
 
 - Shuffle Join
 
-  テーブルAとテーブルBから同じバケット化キー値を持つデータ行をJoin操作を実行する前に、データ行をシャッフルする必要がある場合、結合実行方法をShuffle Joinとして示唆することができます。
+  テーブルAとテーブルBから同じバケットキーのデータ行をJoin操作前に、シャッフルを行う必要がある場合、結合実行方法としてShuffle Joinを示唆できます。
 
   ~~~SQL
   select k1 from t1 join [SHUFFLE] t2 on t1.k1 = t2.k2 group by t2.k2;
@@ -262,7 +262,7 @@ AS SELECT /*+ SET_VAR(query_timeout=500) */ * from dual;
 
 - Broadcast Join
   
-  テーブルAが大きいテーブルで、テーブルBが小さいテーブルである場合、結合実行方法をBroadcast Joinとして示唆することができます。テーブルBのデータはテーブルAのデータが存在するマシンに完全にブロードキャストされ、その後Join操作が実行されます。Shuffle Joinに比べて、Broadcast JoinではテーブルAのデータをシャッフルするコストが節約されます。
+  テーブルAが大きなテーブルであり、テーブルBが小さなテーブルである場合、結合実行方法をBroadcast Joinとして示唆できます。テーブルBのデータは、テーブルAのデータが存在するマシン全体に完全にブロードキャストされ、その後、Join操作が行われます。Shuffle Joinと比較して、Broadcast JoinはテーブルAのデータをシャッフルするコストを節約します。
 
   ~~~SQL
   select k1 from t1 join [BROADCAST] t2 on t1.k1 = t2.k2 group by t2.k2;
@@ -270,7 +270,7 @@ AS SELECT /*+ SET_VAR(query_timeout=500) */ * from dual;
 
 - Bucket Shuffle Join
   
-  結合クエリの結合等値条件にテーブルAのバケット化キーが含まれる場合、特にテーブルAとテーブルBの両方が大きなテーブルの場合、結合実行方法をBucket Shuffle Joinとして示唆することができます。テーブルBのデータは、テーブルAのデータのデータ分布に従って、テーブルAのデータが存在するマシンにシャッフルされ、その後Join操作が実行されます。Broadcast Joinに比べて、Bucket Shuffle JoinはテーブルBのデータが一度だけグローバルにシャッフルされるため、データ転送のコストが著しく削減されます。
+  結合クエリ内のJoin等結合式にテーブルAのバケットキーが含まれる場合、特にテーブルAとテーブルBの両方が大きなテーブルである場合、結合実行方法をBucket Shuffle Joinとして示唆できます。テーブルBのデータは、テーブルAのデータのデータ分布に従って、テーブルAのデータが存在するマシンにシャッフルされ、その後、Join操作が行われます。Broadcast Joinと比較して、Bucket Shuffle JoinはテーブルBのデータをグローバルで一度だけシャッフルするため、データ転送を大幅に削減します。
 
   ~~~SQL
   select k1 from t1 join [BUCKET] t2 on t1.k1 = t2.k2 group by t2.k2;
@@ -278,7 +278,7 @@ AS SELECT /*+ SET_VAR(query_timeout=500) */ * from dual;
 
 - Colocate Join
   
-  テーブルAとテーブルBが作成時に指定された同じコロケーショングループに属する場合、結合クエリで結合等値条件がテーブルAとBのバケット化キーを含む場合、結合実行方法をColocate Joinとして示唆することができます。同じキー値を持つデータはローカルで直接結合され、ノード間のデータ転送にかかる時間が削減され、クエリのパフォーマンスが向上します。
+  テーブルAとテーブルBが同じ配置グループに属しており、結合クエリ内のJoin等結合式にテーブルAとBのバケットキーが含まれる場合、結合実行方法をColocate Joinとして示唆できます。同じキー値を持つデータは直接ローカルで結合されるため、ノード間のデータ転送に費やす時間が短縮され、クエリのパフォーマンスが向上します。
 
   ~~~SQL
   select k1 from t1 join [COLOCATE] t2 on t1.k1 = t2.k2 group by t2.k2;
@@ -286,7 +286,7 @@ AS SELECT /*+ SET_VAR(query_timeout=500) */ * from dual;
 
 ### ビューの結合実行方法
 
-`EXPLAIN`コマンドを使用して実際の結合実行方法を表示します。返された結果が結合ヒントと一致する場合、結合ヒントが有効であることを意味します。
+`EXPLAIN`コマンドを使用して実際の結合実行方法を表示します。返される結果が結合ヒントと一致している場合、結合ヒントが有効であることを示します。
 
 ~~~SQL
 EXPLAIN select k1 from t1 join [COLOCATE] t2 on t1.k1 = t2.k2 group by t2.k2;
@@ -296,30 +296,27 @@ EXPLAIN select k1 from t1 join [COLOCATE] t2 on t1.k1 = t2.k2 group by t2.k2;
 
 ## SQLフィンガープリント
 
-SQLフィンガープリントは、遅いクエリを最適化し、システムリソースの利用を改善するために使用されます。StarRocksは、SQLフィンガープリント機能を使用して、遅いクエリログ（`fe.audit.log.slow_query`）のSQLステートメントを正規化し、異なるタイプのSQLステートメントをカテゴリ別に分類し、それぞれのSQLタイプのMD5ハッシュ値を計算して、遅いクエリを識別します。MD5ハッシュ値は、`Digest`フィールドで指定されます。
+SQLフィンガープリントは、遅いクエリを最適化し、システムリソースの利用を向上させるために使用されます。StarRocksは、SQLフィンガープリント機能を使用して、遅いクエリログ（`fe.audit.log.slow_query`）のSQLステートメントを正規化し、SQLステートメントを異なるタイプに分類し、それぞれのSQLタイプのMD5ハッシュ値を計算して遅いクエリを識別します。MD5ハッシュ値は`Digest`フィールドで指定されます。
 
 ~~~SQL
 2021-12-27 15:13:39,108 [slow_query] |Client=172.26.xx.xxx:54956|User=root|Db=default_cluster:test|State=EOF|Time=2469|ScanBytes=0|ScanRows=0|ReturnRows=6|StmtId=3|QueryId=824d8dc0-66e4-11ec-9fdc-00163e04d4c2|IsQuery=true|feIp=172.26.92.195|Stmt=select count(*) from test_basic group by id_bigint|Digest=51390da6b57461f571f0712d527320f4
 ~~~
 
-SQLステートメントの正規化は、ステートメントテキストをより正規化された形式に変換し、重要なステートメント構造のみを保存します。
+SQLステートメントの正規化は、ステートメントテキストをより正規化された形式に変換し、重要なステートメント構造だけを保持します。
 
-- データベースやテーブル名などのオブジェクト識別子を保存します。
+- データベースおよびテーブル名などのオブジェクト識別子を保持します。
 
-- 定数を疑問符（?）に変換します。
+- 定数を疑問符（？）に変換します。
 
 - コメントを削除し、スペースを整形します。
 
-たとえば、次の2つのSQLステートメントは、正規化後に同じタイプに属します。
+例えば、次の2つのSQLステートメントは正規化後、同じタイプに属します。
 
 - 正規化前のSQLステートメント
-~~~SQL
-SELECT * FROM orders WHERE customer_id=10 AND quantity>20
+```SQL
+SELECT * FROM 注文 WHERE 顧客id=10 そして 数量>20
 
 
 
-SELECT * FROM orders WHERE customer_id = 20 AND quantity > 100
-~~~
-```
-SELECT * FROM orders WHERE customer_id=? AND quantity>?
+SELECT * FROM 注文 WHERE 顧客id = 20 そして 数量 > 100
 ```

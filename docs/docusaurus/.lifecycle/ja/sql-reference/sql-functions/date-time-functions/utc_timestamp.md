@@ -1,3 +1,4 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -6,7 +7,7 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-現在のUTC日時を 'YYYY-MM-DD HH:MM:SS' または 'YYYYMMDDHHMMSS' 形式の値として返します。関数の使用方法に応じて、文字列または数値のコンテキストで返されます。
+関数の使用方法に応じて、文字列や数値のコンテキストで、現在のUTC日時を 'YYYY-MM-DD HH:MM:SS' または 'YYYYMMDDHHMMSS' 形式の値として返します。
 
 ## 構文
 
@@ -24,7 +25,7 @@ MySQL > select utc_timestamp(),utc_timestamp() + 1;
 | 2019-07-10 12:31:18 |      20190710123119 |
 +---------------------+---------------------+
 
--- 結果はv3.1以降マイクロ秒単位で正確です。
+-- v3.1 以降、結果はマイクロ秒単位で正確です。
 select utc_timestamp();
 +----------------------------+
 | utc_timestamp()            |
@@ -33,8 +34,9 @@ select utc_timestamp();
 +----------------------------+
 ```
 
-`utc_timestamp() + N` は、現在時刻に `N` 秒を追加することを意味します。
+`utc_timestamp() + N` は現在時刻に `N` 秒を加算します。
 
 ## キーワード
 
 UTC_TIMESTAMP, UTC, TIMESTAMP
+```

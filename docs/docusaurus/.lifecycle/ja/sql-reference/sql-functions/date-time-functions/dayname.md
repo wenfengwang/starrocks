@@ -8,7 +8,7 @@ displayed_sidebar: "Japanese"
 
 日付に対応する曜日を返します。
 
-`date`パラメータはDATEまたはDATETIMEの型でなければなりません。
+`date`パラメーターはDATEまたはDATETIME型でなければなりません。
 
 ## 構文
 

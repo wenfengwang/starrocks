@@ -1,3 +1,4 @@
+```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
@@ -6,21 +7,21 @@ displayed_sidebar: "Japanese"
 
 ## 説明
 
-`expr1` がNULLの場合、expr2を返します。`expr1` がNULLでない場合、`expr1` を返します。
+`expr1`がNULLの場合、expr2を返します。`expr1`がNULLでない場合、`expr1`を返します。
 
 ## 構文
 
 ```Haskell
-ifnull(expr1,expr2);
+ifnull(expr1, expr2);
 ```
 
 ## パラメーター
 
-`expr1` および `expr2` はデータ型で互換性が必要です。
+`expr1`と`expr2`はデータ型互換でなければなりません。
 
 ## 戻り値
 
-戻り値の型は `expr1` と同じです。
+戻り値の型は`expr1`と同じです。
 
 ## 例
 

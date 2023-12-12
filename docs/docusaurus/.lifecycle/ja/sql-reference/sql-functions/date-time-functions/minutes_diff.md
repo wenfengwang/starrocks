@@ -1,33 +1,32 @@
-```yaml
 ---
 displayed_sidebar: "Japanese"
 ---
 
 # minutes_diff
 
-## 説明
+## Description
 
-2つの日付式（`expr1` − `expr2`）間の分の差を分単位で正確に返します。
+日付式（`expr1` - `expr2`）の間の分の差を分単位で返します。
 
-## 構文
+## Syntax
 
 ```Haskell
 BIGINT minutes_diff(DATETIME expr1,DATETIME expr2);
 ```
 
-## パラメータ
+## Parameters
 
-- `expr1`: 終了時刻。DATETIME 型である必要があります。
+- `expr1`: 終了時刻。DATETIME型である必要があります。
 
-- `expr2`: 開始時刻。DATETIME 型である必要があります。
+- `expr2`: 開始時刻。DATETIME型である必要があります。
 
-## 戻り値
+## Return value
 
-BIGINT 値を返します。
+BIGINT値を返します。
 
-日付が存在しない場合は NULL が返されます。たとえば、2022-02-29 の場合です。
+たとえば、2022-02-29のような日付が存在しない場合、NULLが返されます。
 
-## 例
+## Examples
 
 ```Plain
 select minutes_diff('2010-11-30 23:59:59', '2010-11-30 20:58:59');
