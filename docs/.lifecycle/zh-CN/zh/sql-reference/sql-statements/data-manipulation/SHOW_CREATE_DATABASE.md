@@ -1,0 +1,44 @@
+---
+displayed_sidebar: "Chinese"
+---
+
+# 显示创建数据库
+
+查看指定数据库的创建语句。
+
+## 语法
+
+```sql
+SHOW CREATE DATABASE <db_name>
+```
+
+## 参数说明
+
+`db_name`：数据库的名称，必填。
+
+## 返回结果说明
+
+返回两个字段：
+
+- Database：数据库名称
+
+- Create Database：数据库的创建语句
+
+## 示例
+
+```sql
+mysql > show create database zj_test;
++----------+---------------------------+
+| Database | Create Database           |
++----------+---------------------------+
+| zj_test  | CREATE DATABASE `zj_test` |
++----------+---------------------------+
+```
+
+## 相关参考
+
+- [创建数据库](../data-definition/CREATE_DATABASE.md)
+- [显示数据库](SHOW_DATABASES.md)
+- [使用](../data-definition/USE.md)
+- [DESC](../Utility/DESCRIBE.md)
+- [删除数据库](../data-definition/DROP_DATABASE.md)

@@ -1,0 +1,57 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+这三个客户端在本教程中已进行测试，您只需要一个：
+
+- mysql CLI：您可以从Docker环境或您的计算机上运行。
+- [DBeaver](https://dbeaver.io/download/) 有社区版本和专业版本可用。
+- [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
+
+#### 配置客户端
+
+<Tabs groupId="client">
+<TabItem value="mysqlCLI" label="mysql CLI" default>
+
+使用 mysql CLI 的最简单方法是从 StarRocks 容器 `starrocks-fe` 中运行它：
+
+```bash
+docker compose exec starrocks-fe \
+mysql -P 9030 -h 127.0.0.1 -u root --prompt="StarRocks > "
+```
+
+:::提示
+所有 `docker compose` 命令必须从包含 `docker-compose.yml` 文件的目录中运行。
+:::
+
+如果您想安装 mysql CLI，请展开下面的 **mysql客户端安装**：
+
+<details>
+
+<summary>mysql客户端安装</summary>
+
+- macOS：如果您使用 Homebrew 并且不需要 MySQL Server，请运行 `brew install mysql` 来安装 CLI。
+- Linux：检查您的软件仓库系统是否有 `mysql` 客户端。例如，`yum install mariadb`。
+- Microsoft Windows：安装 [MySQL Community Server](https://dev.mysql.com/downloads/mysql/) 并运行提供的客户端，或者在 WSL 中运行 `mysql`。
+
+</details>
+
+</TabItem>
+
+<TabItem value="DBeaver" label="DBeaver" >
+
+- 安装 [DBeaver](https://dbeaver.io/download/)，并添加一个连接：
+![添加连接](./DBeaver-1.png)
+- 配置端口、IP 和用户名。测试连接，如果测试成功则点击完成：
+![配置和测试](./DBeaver-2.png)
+
+</TabItem>
+<TabItem value="MySQLWorkbench" label="MySQL Workbench">
+
+- 安装 [MySQL Workbench](https://dev.mysql.com/downloads/workbench)，并添加一个连接。
+- 配置端口、IP 和用户名，然后测试连接：
+![连接设置](./Workbench-1.png)
+- 检测到 Workbench 会检查特定的 MySQL 版本而导致出现警告。您可以忽略这些警告，并在提示时配置 Workbench 停止显示警告：
+![忽略警告](./Workbench-2.png)
+</TabItem>
+
+</Tabs>

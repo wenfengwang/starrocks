@@ -1,0 +1,62 @@
+```
+StarRocks Stream Load和curl带有许多参数。本教程中仅描述使用的参数，其余参数将在更多信息部分中链接。
+
+#### `--location-trusted`
+
+这将配置curl将凭据传递给任何重定向的URL。
+
+#### `-u root`
+
+用于登录StarRocks的用户名
+
+#### `-T filename`
+
+T代表传输，文件名。
+
+#### `label:name-num`
+
+与此Stream Load作业关联的标签。标签必须是唯一的，因此，如果多次运行作业，可以添加一个数字并不断增加。
+
+#### `column_separator:,`
+
+如果加载使用单个`,`的文件，则设置如上所示，如果使用其他分隔符，则在此处设置该分隔符。常见选择为`\t`，`,`和`|`。
+
+#### `skip_header:1`
+
+一些CSV文件具有单个标题行，列出了所有列名，有些则添加了第二行与数据类型。如果有一个或两个标题行，则将skip_header设置为`1`或`2`，如果没有，则将其设置为`0`。
+
+#### `enclose:\"`
+
+通常，将包含嵌入逗号的字符串用双引号括起来。本教程中使用的示例数据集包含包含逗号的地理位置，因此enclose设置为`\"`。请记住用`\`转义`"`。
+
+#### `max_filter_ratio:1`
+
+这允许数据中的一些错误。理想情况下，这应该设置为`0`，并且任何错误都会导致作业失败。将其设置为`1`以允许在调试过程中所有行都失败。
+
+#### `columns:`
+
+将CSV文件列映射到StarRocks表列。您会注意到CSV文件中有许多列，而表中只有少量列。未包含在表中的任何列将被跳过。
+
+您还会注意到在崩溃数据集的`columns:`行中包含一些数据转换。在CSV文件中经常会发现日期和时间不符合标准的情况。这是将崩溃的时间和日期数据转换为DATETIME类型的逻辑：
+
+##### 列线
+
+这是一条数据记录的开头。日期格式为`MM/DD/YYYY`，时间为`HH:MI`。由于DATETIME通常为`YYYY-MM-DD HH:MI:SS`，因此我们需要转换这些数据。
+
+```plaintext
+08/05/2014,9:10,BRONX,10469,40.8733019,-73.8536375,"(40.8733019, -73.8536375)",
+```
+
+这是`columns:`参数的开头：
+
+```bash
+-H "columns:tmp_CRASH_DATE, tmp_CRASH_TIME, CRASH_DATE=str_to_date(concat_ws(' ', tmp_CRASH_DATE, tmp_CRASH_TIME), '%m/%d/%Y %H:%i')
+```
+
+这指示StarRocks：
+- 将CSV文件的第一列内容分配给`tmp_CRASH_DATE`
+- 将CSV文件的第二列内容分配给`tmp_CRASH_TIME`
+- `concat_ws()`将`tmp_CRASH_DATE`和`tmp_CRASH_TIME`以空格连接在一起
+- `str_to_date()`从连接的字符串创建DATETIME
+- 将生成的DATETIME存储在列`CRASH_DATE`中
+```

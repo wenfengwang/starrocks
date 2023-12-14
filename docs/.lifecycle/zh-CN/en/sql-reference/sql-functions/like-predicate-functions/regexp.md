@@ -1,0 +1,50 @@
+---
+displayed_sidebar: "Chinese"
+---
+
+# 正则表达式
+
+## 描述
+
+检查给定表达式是否与`pattern`指定的正则表达式匹配。如果匹配，则返回1。否则返回0。如果任何输入参数为NULL，则返回NULL。
+
+regexp()支持比[like()](like.md)更复杂的匹配条件。
+
+## 语法
+
+```Haskell
+BOOLEAN regexp(VARCHAR expr, VARCHAR pattern);
+```
+
+## 参数
+
+- `expr`：字符串表达式。支持的数据类型为VARCHAR。
+
+- `pattern`：要匹配的模式。支持的数据类型为VARCHAR。
+
+## 返回值
+
+返回一个BOOLEAN值。
+
+## 示例
+
+```Plain Text
+mysql> select regexp("abc123","abc*");
++--------------------------+
+| regexp('abc123', 'abc*') |
++--------------------------+
+|                        1 |
++--------------------------+
+1 row in set (0.06 sec)
+
+select regexp("abc123","xyz*");
++--------------------------+
+| regexp('abc123', 'xyz*') |
++--------------------------+
+|                        0 |
++--------------------------+
+```
+
+## 关键词
+
+regexp, 正则
