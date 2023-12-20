@@ -1,0 +1,2 @@
+
+您只能作为对 StarRocks 表拥有 **INSERT** 权限的用户，才能将数据加载到这些 StarRocks 表中。如果您没有 **INSERT** 权限，请按照 [GRANT](../../sql-reference/sql-statements/account-management/GRANT.md) 中提供的指南，为连接到您的 StarRocks 集群的用户授予 **INSERT** 权限。

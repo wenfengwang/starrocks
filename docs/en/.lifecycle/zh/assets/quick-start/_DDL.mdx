@@ -1,0 +1,59 @@
+
+### 创建数据库
+
+在 `StarRocks > ` 提示符下输入这两行，然后按 Enter 键：
+
+```sql
+CREATE DATABASE IF NOT EXISTS quickstart;
+
+USE quickstart;
+```
+
+### 创建两个表
+
+#### 事故数据
+
+事故数据集包含的字段远比这些多，架构已经简化，仅包含可能有助于回答天气如何影响驾驶条件问题的字段。
+
+```sql
+CREATE TABLE IF NOT EXISTS crashdata (
+    CRASH_DATE DATETIME,
+    BOROUGH STRING,
+    ZIP_CODE STRING,
+    LATITUDE INT,
+    LONGITUDE INT,
+    LOCATION STRING,
+    ON_STREET_NAME STRING,
+    CROSS_STREET_NAME STRING,
+    OFF_STREET_NAME STRING,
+    CONTRIBUTING_FACTOR_VEHICLE_1 STRING,
+    CONTRIBUTING_FACTOR_VEHICLE_2 STRING,
+    COLLISION_ID INT,
+    VEHICLE_TYPE_CODE_1 STRING,
+    VEHICLE_TYPE_CODE_2 STRING
+);
+```
+
+#### 气象数据
+
+与事故数据相似，气象数据集有更多的列（总共有 125 列），但数据库中只包含预期能够回答相关问题的列。
+
+```sql
+CREATE TABLE IF NOT EXISTS weatherdata (
+    DATE DATETIME,
+    NAME STRING,
+    HourlyDewPointTemperature STRING,
+    HourlyDryBulbTemperature STRING,
+    HourlyPrecipitation STRING,
+    HourlyPresentWeatherType STRING,
+    HourlyPressureChange STRING,
+    HourlyPressureTendency STRING,
+    HourlyRelativeHumidity STRING,
+    HourlySkyConditions STRING,
+    HourlyVisibility STRING,
+    HourlyWetBulbTemperature STRING,
+    HourlyWindDirection STRING,
+    HourlyWindGustSpeed STRING,
+    HourlyWindSpeed STRING
+);
+```

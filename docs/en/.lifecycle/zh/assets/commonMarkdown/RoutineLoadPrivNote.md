@@ -1,0 +1,2 @@
+
+您只能作为对 StarRocks 表拥有 **INSERT** 权限的用户来管理在 StarRocks 表上运行的 Routine Load 作业。如果您没有 **INSERT** 权限，请按照 [GRANT](../../sql-reference/sql-statements/account-management/GRANT.md) 中提供的说明，为连接到您的 StarRocks 集群的用户授予 **INSERT** 权限。
