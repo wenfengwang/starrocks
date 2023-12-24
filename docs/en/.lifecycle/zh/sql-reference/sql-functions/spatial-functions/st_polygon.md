@@ -1,0 +1,30 @@
+---
+displayed_sidebar: English
+---
+
+# ST_Polygon, ST_PolyFromText, ST_PolygonFromText
+
+## 描述
+
+将 WKT（Well Known Text）转换为相应的多边形内存形式。
+
+## 语法
+
+```Haskell
+GEOMETRY ST_Polygon(VARCHAR wkt)
+```
+
+## 例子
+
+```Plain Text
+MySQL > SELECT ST_AsText(ST_Polygon('POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))'));
++------------------------------------------------------------------+
+| st_astext(st_polygon('POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))')) |
++------------------------------------------------------------------+
+| POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))                          |
++------------------------------------------------------------------+
+```
+
+## 关键词
+
+ST_POLYGON, ST_POLYFROMTEXT, ST_POLYGONFROMTEXT, ST, 多边形, POLYFROMTEXT, 多边形文本

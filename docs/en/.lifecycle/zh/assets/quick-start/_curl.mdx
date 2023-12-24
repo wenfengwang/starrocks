@@ -1,0 +1,61 @@
+
+StarRocks Stream Load 和 curl 有很多参数。此处仅介绍本教程中使用的内容，其余内容将在详细信息部分中链接。
+
+#### `--location-trusted`
+
+这会配置 curl 以向任何重定向的 URL 传递凭据。
+
+#### `-u root`
+
+用于登录 StarRocks 的用户名。
+
+#### `-T filename`
+
+T 代表传输，即要传输的文件名。
+
+#### `label:name-num`
+
+与此 Stream Load 作业关联的标签。标签必须是唯一的，因此如果多次运行作业，可以添加一个数字并不断递增。
+
+#### `column_separator:,`
+
+如果要加载使用单个`,`分隔的文件，则设置如上所示；如果使用其他分隔符，则在此处设置该分隔符。常见选项包括`\t`、`,`和`|`。
+
+#### `skip_header:1`
+
+某些 CSV 文件具有单个包含所有列名的标题行，而有些则添加了第二行用于数据类型。如果有一个或两个标题行，请将 skip_header 设置为`1`或`2`；如果没有标题行，则将其设置为`0`。
+
+#### `enclose:\"`
+
+通常会用双引号将包含嵌入逗号的字符串括起来。本教程中使用的示例数据集包含了包含逗号的地理位置，因此 enclose 设置为`\"`。请记得用`\`转义`"`。
+
+#### `max_filter_ratio:1`
+
+这允许数据中出现一些错误。理想情况下，应将其设置为`0`，这样作业将在出现任何错误时失败。但为了在调试期间允许所有行失败，它被设置为`1`。
+
+#### `columns:`
+
+将 CSV 文件列映射到 StarRocks 表列。您会注意到 CSV 文件中的列数比表中的列数要多得多。任何未包含在表中的列都将被跳过。
+
+您还会注意到，崩溃数据集的 `columns:` 行中包含了一些数据转换。在 CSV 文件中，发现不符合标准的日期和时间是非常常见的。以下是将崩溃数据的时间和日期转换为 DATETIME 类型的逻辑：
+
+##### 列行
+
+这是一条数据记录的开头。日期采用 `MM/DD/YYYY` 格式，时间为 `HH:MI`。由于 DATETIME 通常是 `YYYY-MM-DD HH:MI:SS`，我们需要对这些数据进行转换。
+
+```plaintext
+08/05/2014,9:10,BRONX,10469,40.8733019,-73.8536375,"(40.8733019, -73.8536375)",
+```
+
+这是 `columns:` 参数的开头：
+
+```bash
+-H "columns:tmp_CRASH_DATE, tmp_CRASH_TIME, CRASH_DATE=str_to_date(concat_ws(' ', tmp_CRASH_DATE, tmp_CRASH_TIME), '%m/%d/%Y %H:%i')"
+```
+
+这指示 StarRocks：
+- 将 CSV 文件的第一列内容分配给 `tmp_CRASH_DATE`
+- 将 CSV 文件的第二列内容分配给 `tmp_CRASH_TIME`
+- `concat_ws()` 将 `tmp_CRASH_DATE` 和 `tmp_CRASH_TIME` 以空格连接起来
+- `str_to_date()` 从连接的字符串创建 DATETIME
+- 将生成的 DATETIME 存储在列 `CRASH_DATE` 中
