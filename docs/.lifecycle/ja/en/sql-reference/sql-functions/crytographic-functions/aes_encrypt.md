@@ -1,0 +1,41 @@
+---
+displayed_sidebar: English
+---
+
+# aes_encrypt
+
+## 説明
+
+AES_128_ECB アルゴリズムを使用して文字列を暗号化し、バイナリ文字列を返します。
+
+AESはAdvanced Encryption Standardの略で、ECBはElectronic Code Bookの略です。文字列を暗号化するために使用されるキーは128ビットの文字列です。
+
+## 構文
+
+```Haskell
+aes_encrypt(str,key_str);
+```
+
+## パラメーター
+
+`str`: 暗号化する文字列。VARCHAR型でなければなりません。
+
+`key_str`: `str`を暗号化するために使用されるキー。VARCHAR型でなければなりません。
+
+## 戻り値
+
+VARCHAR型の値を返します。入力がNULLの場合は、NULLが返されます。
+
+## 例
+
+この関数を使用して`starrocks`をAES暗号化し、暗号化された文字列をBase64エンコードされた文字列に変換します。
+
+```Plain Text
+mysql> select to_base64(AES_ENCRYPT('starrocks','F3229A0B371ED2D9441B830D21A390C3'));
++-------------------------------------------------------------------------+
+| to_base64(aes_encrypt('starrocks', 'F3229A0B371ED2D9441B830D21A390C3')) |
++-------------------------------------------------------------------------+
+| uv/Lhzm74syo8JlfWarwKA==                                                |
++-------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+```
